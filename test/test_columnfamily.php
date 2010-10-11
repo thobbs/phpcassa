@@ -49,5 +49,58 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual($rows[$key2], $columns2);
         self::assertFalse(in_array($missing_key, $rows));
     }
+
+    public function test_insert_get_count() {
+        $key = 'TestColumnFamily.test_insert_get_count';
+        $cols = array('1' => 'val1', '2' => 'val2');
+        $this->cf->insert($key, $cols);
+        self::assertEqual($this->cf->get_count($key), 2);
+
+        self::assertEqual($this->cf->get_count($key, $columns=null, $column_start='1'), 2);
+        self::assertEqual($this->cf->get_count($key, $columns=null, $column_start='',
+                                               $column_finish='2'), 2);
+        self::assertEqual($this->cf->get_count($key, $columns=null, $column_start='1', $column_finish='2'), 2);
+        self::assertEqual($this->cf->get_count($key, $columns=null, $column_start='1', $column_finish='1'), 1);
+        self::assertEqual($this->cf->get_count($key, $columns=array('1', '2')), 2);
+        self::assertEqual($this->cf->get_count($key, $columns=array('1')), 1);
+    }
+
+    public function test_insert_multiget_count() {
+        $keys = array('TestColumnFamily.test_insert_multiget_count1',
+                      'TestColumnCamily.test_insert_multiget_count2',
+                      'TestColumnCamily.test_insert_multiget_count3');
+        $columns = array('1' => 'val1', '2' => 'val2');
+        foreach($keys as $key)
+            $this->cf->insert($key, $columns);
+
+        $result = $this->cf->multiget_count($keys);
+        self::assertEqual($result[$keys[0]], 2);
+        self::assertEqual($result[$keys[1]], 2);
+        self::assertEqual($result[$keys[2]], 2);
+
+        $result = $this->cf->multiget_count($keys, $columns=null, $column_start='1');
+        self::assertEqual(count($result), 3);
+        self::assertEqual($result[$keys[0]], 2);
+
+        $result = $this->cf->multiget_count($keys, $columns=null, $column_start='', $column_finish='2');
+        self::assertEqual(count($result), 3);
+        self::assertEqual($result[$keys[0]], 2);
+
+        $result = $this->cf->multiget_count($keys, $columns=null, $column_start='1', $column_finish='2');
+        self::assertEqual(count($result), 3);
+        self::assertEqual($result[$keys[0]], 2);
+
+        $result = $this->cf->multiget_count($keys, $columns=null, $column_start='1', $column_finish='1');
+        self::assertEqual(count($result), 3);
+        self::assertEqual($result[$keys[0]], 1);
+
+        $result = $this->cf->multiget_count($keys, $columns=array('1', '2'));
+        self::assertEqual(count($result), 3);
+        self::assertEqual($result[$keys[0]], 2);
+
+        $result = $this->cf->multiget_count($keys, $columns=array('1'));
+        self::assertEqual(count($result), 3);
+        self::assertEqual($result[$keys[0]], 1);
+    }
 }
 ?>

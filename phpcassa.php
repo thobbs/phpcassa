@@ -150,6 +150,7 @@ class ColumnFamily {
     const DEFAULT_COLUMN_LIMIT = 1024; // default max # of columns for get()
     const DEFAULT_COLUMN_TYPE = "UTF8Type";
     const DEFAULT_SUBCOLUMN_TYPE = null;
+    const MAX_COUNT = 2147483647; # 2^31 - 1
 
     private $client;
     private $column_family;
@@ -201,11 +202,11 @@ class ColumnFamily {
     }
 
     static private function create_slice_predicate($columns, $column_start, $column_finish,
-                                            $column_reversed, $column_count) {
+                                                   $column_reversed, $column_count) {
 
         $predicate = new cassandra_SlicePredicate();
-        if ($columns != null) {
-            $predicate->columns = $columns;
+        if ($columns !== NULL) {
+            $predicate->column_names = $columns;
         } else {
             $slice_range = new cassandra_SliceRange();
             $slice_range->count = $column_count;
@@ -229,7 +230,7 @@ class ColumnFamily {
                         $column_start="",
                         $column_finish="",
                         $column_reversed=False,
-                        $column_count=self::DEFAULT_COLUMN_LIMIT,
+                        $column_count=100,
                         $super_column=null,
                         $read_consistency_level=null) {
 
@@ -283,15 +284,32 @@ class ColumnFamily {
         return $ret;
     }
 
-    public function get_count($key, $super_column=null) {
-        $column_path = new cassandra_ColumnPath();
-        $column_path->column_family = $this->column_family;
-        $column_path->super_column = $super_column;
+    public function get_count($key,
+                              $columns=null,
+                              $column_start='',
+                              $column_finish='',
+                              $super_column=null,
+                              $read_consistency_level=null) {
 
-        $client = $this->$connection->connect();
-        $resp = $client->get_count($key, $column_path, $this->read_consistency_level);
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   false, self::MAX_COUNT);
 
-        return $resp;
+        return $this->client->get_count($key, $column_parent, $predicate, $this->rcl($read_consistency_level));
+    }
+
+    public function multiget_count($keys,
+                                   $columns=null,
+                                   $column_start='',
+                                   $column_finish='',
+                                   $super_column=null,
+                                   $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   false, self::MAX_COUNT);
+
+        return $this->client->multiget_count($keys, $column_parent, $predicate, $this->rcl($read_consistency_level));
     }
 
     public function get_range($start_key="", $end_key="", $row_count=self::DEFAULT_ROW_LIMIT, $slice_start="", $slice_finish="") {
