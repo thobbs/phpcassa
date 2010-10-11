@@ -1,6 +1,7 @@
 <?php
 require_once('simpletest/autorun.php');
-require_once('../phpcassa.php');
+require_once('../connection.php');
+require_once('../columnfamily.php');
 
 class TestColumnFamily extends UnitTestCase {
 
