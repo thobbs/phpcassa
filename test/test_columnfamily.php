@@ -102,5 +102,21 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual(count($result), 3);
         self::assertEqual($result[$keys[0]], 1);
     }
+
+    public function test_insert_get_range() {
+        $keys = array_map(function($x) {return 'test_get_range'.$x;}, range(0,4));
+        $columns = array('1' => 'val1', '2' => 'val2');
+        foreach ($keys as $key)
+            $this->cf->insert($key, $columns);
+
+        $rows = $this->cf->get_range($start_key=$keys[0], $finish_key=$keys[4]);
+        self::assertEqual(count($rows), count($keys));
+        foreach($rows as $row)
+            self::assertEqual($row, $columns);
+
+        $this->cf->insert('test_get_range5', $columns);
+        $rows = $this->cf->get_range($start_key=$keys[0], $finish_key=$keys[4]);
+        self::assertEqual(count($rows), count($keys));
+    }
 }
 ?>
