@@ -138,4 +138,54 @@ class TestColumnFamily extends UnitTestCase {
         }
     }
 }
+
+class TestSuperColumnFamily extends UnitTestCase {
+
+    private $client;
+    private $cf;
+
+    public function setUp() {
+        $this->client = new Connection('Keyspace1');
+        $this->cf = new ColumnFamily($this->client, 'Super1');
+    }
+
+    public function tearDown() {
+        $this->cf->truncate();
+    }
+
+    public function test_super() {
+        $key = 'TestSuperColumnFamily.test_super';
+        $columns = array('1' => array('sub1' => 'val1', 'sub2' => 'val2'),
+                         '2' => array('sub3' => 'val3', 'sub3' => 'val3'));
+        try {
+            $this->cf->get($key);
+            assert(false);
+        } catch (cassandra_NotFoundException $e) {
+        }
+
+        $this->cf->insert($key, $columns);
+        self::assertEqual($this->cf->get($key), $columns);
+        self::assertEqual($this->cf->multiget(array($key)), array($key => $columns));
+        self::assertEqual($this->cf->get_range($start_key=$key, $finish_key=$key), array($key => $columns));
+    }
+
+    public function test_super_column_argument() {
+        $key = 'TestSuperColumnFamily.test_super_column_argument';
+        $sub12 = array('sub1' => 'val1', 'sub2' => 'val2');
+        $sub34 = array('sub3' => 'val3', 'sub4' => 'val4');
+        $cols = array('1' => $sub12, '2' => $sub34);
+        $this->cf->insert($key, $cols);
+        self::assertEqual($this->cf->get($key, null, '', '', false, 100, $super_column='1'), $sub12);
+        try {
+            $this->cf->get($key, null, '', '', false, 100, $super_column='3');
+            assert(false);
+        } catch (cassandra_NotFoundException $e) {
+        }
+        self::assertEqual($this->cf->multiget(array($key), null, '', '', false, 100, $super_column='1'),
+                          array($key => $sub12));
+        self::assertEqual($this->cf->get_range($start_key=$key, $end_key=$key, 100, null, '',
+                                               '', false, 100, $super_column='1'),
+                          array($key => $sub12));
+    }
+}
 ?>

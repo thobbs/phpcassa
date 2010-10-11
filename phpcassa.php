@@ -205,7 +205,7 @@ class ColumnFamily {
                                                    $column_reversed, $column_count) {
 
         $predicate = new cassandra_SlicePredicate();
-        if ($columns !== NULL) {
+        if ($columns !== null) {
             $predicate->column_names = $columns;
         } else {
             $slice_range = new cassandra_SliceRange();
