@@ -362,7 +362,7 @@ class ColumnFamily {
 
         $deletion = new cassandra_Deletion();
         $deletion->timestamp = CassandraUtil::get_time();
-        #$deletion->super_column = $super_column;
+        $deletion->super_column = $super_column;
 
         if ($columns != null) {
             $predicate = new cassandra_SlicePredicate();
