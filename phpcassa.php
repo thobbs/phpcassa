@@ -1,88 +1,128 @@
 <?php
+$GLOBALS['THRIFT_ROOT'] = dirname(__FILE__) . '/thrift/';
+require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
 
-// Setting up nodes:
-//
-// CassandraConn::add_node('192.168.1.1', 9160);
-// CassandraConn::add_node('192.168.1.2', 5000);
-//
+class NoServerAvailable extends Exception { }
 
-// Querying:
-//
-// $users = new CassandraCF('Keyspace1', 'Users');
-// $users->insert('1', array('email' => 'hoan.tonthat@gmail.com', 'password' => 'test'));
-// $users->get('1');
-// $users->multiget(array(1, 2));
-// $users->get_count('1');
-// $users->get_range('1', '10');
-// $users->remove('1');
-// $users->remove('1', 'password');
-//
+class Connection {
 
-class CassandraConn {
-    const DEFAULT_THRIFT_PORT = 9160;
-    
-    static private $connections = array();
-    static private $last_error;
+    private static $default_servers = array(array('host' => 'localhost', 'port' => 9160));
 
-    static public function add_node($host,
-                                    $port=self::DEFAULT_THRIFT_PORT,
-                                    $framed_transport=false,
-                                    $send_timeout=null,
-                                    $recv_timeout=null,
-                                    $persist=false) {
-        try {
-            // Create Thrift transport and binary protocol cassandra client
-            $socket = new TSocket($host, $port, $persist);
-            if($send_timeout) $socket->setSendTimeout($send_timeout);
-            if($recv_timeout) $socket->setRecvTimeout($recv_timeout);
+    public function __construct($keyspace,
+                                $servers=null,
+                                $credentials=null,
+                                $framed_transport=True,
+                                $send_timeout=null,
+                                $recv_timeout=null,
+                                $retry_time=10) {
 
-            if($framed_transport) {
-                $transport = new TFramedTransport($socket, true, true);
-            } else {
-                $transport = new TBufferedTransport($socket, 1024, 1024);
-            }
+        $this->keyspace = $keyspace;
+        if ($servers == null)
+            $servers = self::$default_servers;
+        $this->servers = new ServerSet($servers, $retry_time);
+        $this->credentials = $credentials;
+        $this->framed_transport = $framed_transport;
+        $this->send_timeout = $send_timeout;
+        $this->recv_timeout = $recv_timeout;
 
-            $client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
-
-            // Store it in the connections
-            self::$connections[] = array(
-                'transport' => $transport,
-                'client'    => $client
-            );
-
-            // Done
-            return TRUE;
-        } catch (TException $tx) {
-            self::$last_error = 'TException: '.$tx->getMessage() . "\n";
-        }
-        return FALSE;
+        $this->connection = null;
     }
 
-    // Default client
-    static public function get_client($write_mode = false) {
-        // * Try to connect to every cassandra node in order
-        // * Failed connections will be retried
-        // * Once a connection is opened, it stays open
-        // * TODO: add random and round robin order
-        // * TODO: add write-preferred and read-preferred nodes
-        shuffle(self::$connections);
-        foreach(self::$connections as $connection) {
-            try {
-                $transport = $connection['transport'];
-                $client    = $connection['client'];
-
-                if(!$transport->isOpen()) {
-                    $transport->open();
-                }
-
-                return $client;
-            } catch (TException $tx) {
-                self::$last_error = 'TException: '.$tx->getMessage() . "\n";
-                continue;
+    public function connect() {
+        try {
+            $server = $this->servers->get();
+            if (!$this->connection) {
+                $this->connection = new ClientTransport($this->keyspace,
+                                                         $server,
+                                                         $this->credentials,
+                                                         $this->framed_transport,
+                                                         $this->send_timeout,
+                                                         $this->recv_timeout);
             }
+        } catch (TException $e) {
+            $this->servers->mark_dead($server);
+            return $this->connect();
+        }
+        return $this->connection->client;
+    }
+
+    public function close() {
+        if ($this->connection)
+            $this->connection->transport->close();
+    }
+}
+
+class ClientTransport {
+
+    public function __construct($keyspace,
+                                $server,
+                                $credentials,
+                                $framed_transport,
+                                $send_timeout,
+                                $recv_timeout) {
+
+        $host = $server['host'];
+        $port = $server['port'];
+        $socket = new TSocket($host, $port);
+
+        if($send_timeout) $socket->setSendTimeout($send_timeout);
+        if($recv_timeout) $socket->setRecvTimeout($recv_timeout);
+
+        if($framed_transport) {
+            $transport = new TFramedTransport($socket, true, true);
+        } else {
+            $transport = new TBufferedTransport($socket, 1024, 1024);
         }
 
-        throw new Exception("Could not connect to a cassandra server");
+        $client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
+        $transport->open();
+
+        # TODO check API major version match
+
+        $client->set_keyspace($keyspace);
+
+        if ($credentials) {
+            $request = cassandra_AuthenticationRequest($credentials);
+            $client->login($request);
+        }
+
+        $this->keyspace = $keyspace;
+        $this->client = $client;
+        $this->transport = $transport;
+    }
+}
+
+class ServerSet {
+
+    private $dead = array();
+
+    public function __construct($servers, $retry_time=10) {
+        $this->servers = $servers;
+        $this->retry_time = $retry_time;
+    }
+
+    public function get() {
+        if (count($this->dead) != 0) {
+            $revived = array_pop($this->dead);
+            if ($revived['time'] > time())  # Not yet, put it back
+                $this->dead[] = $revived;
+            else 
+                $this->servers[] = $revived;
+        }
+        if (!count($this->servers))
+            throw new NoServerAvailable();
+        
+        return $this->servers[array_rand($this->servers)];
+    }
+
+    public function mark_dead($server) {
+        unset($this->servers[$server]);
+        array_unshift($this->dead,
+                array('time' => time() + $this->retry_time, 'server' => $server));
     }
 }
 
@@ -98,20 +138,21 @@ class CassandraUtil {
         $time1 = microtime();
         settype($time1, 'string'); //needs converted to string, otherwise will omit trailing zeroes
         $time2 = explode(" ", $time1);
-        $time2[0] = preg_replace('/0./', '', $time2[0], 1);
-        $time3 = ($time2[1].$time2[0])/100;
+        $sub_secs = preg_replace('/0./', '', $time2[0], 1);
+        $time3 = ($time2[1].$sub_secs)/100;
         return $time3;
     }
 }
 
-class CassandraCF {
+class ColumnFamily {
+
     const DEFAULT_ROW_LIMIT = 1024; // default max # of rows for get_range()
     const DEFAULT_COLUMN_LIMIT = 1024; // default max # of columns for get()
     const DEFAULT_COLUMN_TYPE = "UTF8Type";
     const DEFAULT_SUBCOLUMN_TYPE = null;
 
-    public $keyspace;
-    public $column_family;
+    private $client;
+    private $column_family;
     public $is_super;
     public $read_consistency_level;
     public $write_consistency_level;
@@ -128,96 +169,116 @@ class CassandraCF {
     TimeUUIDType: a 128bit version 1 UUID, compared by timestamp
     */
 
-    public function __construct($keyspace, $column_family,
+    public function __construct($connection,
+                                $column_family,
                                 $is_super=false,
                                 $column_type=self::DEFAULT_COLUMN_TYPE,
                                 $subcolumn_type=self::DEFAULT_SUBCOLUMN_TYPE,
                                 $read_consistency_level=cassandra_ConsistencyLevel::ONE,
                                 $write_consistency_level=cassandra_ConsistencyLevel::ZERO) {
-        // Vars
-        $this->keyspace = $keyspace;
+
+        $this->client = $connection->connect();
         $this->column_family = $column_family;
-
         $this->is_super = $is_super;
-
         $this->column_type = $column_type;
         $this->subcolumn_type = $subcolumn_type;
-
         $this->read_consistency_level = $read_consistency_level;
         $this->write_consistency_level = $write_consistency_level;
-
-        // Toggles parsing columns
-        $this->parse_columns = true;
     }
 
-    public function get($key,
-                        $super_column=NULL,
-                        $slice_start="",
-                        $slice_finish="",
-                        $column_reversed=False,
-                        $column_count=self::DEFAULT_COLUMN_LIMIT) {
-        // If we do get($key, $x) on a non-super column
-        // we should just return that attribute
-        if(!$this->is_super && $super_column) {
-            $result = $this->get($key, NULL, array($super_column));
-            return $result[$super_column];
-        }
+    private function rcl($read_consistency_level) {
+        if ($read_consistency_level == null)
+            return $this->read_consistency_level;
+        else
+            return $read_consistency_level;
+    }
 
-        // Otherwise do a normal get query
-        $column_parent = new cassandra_ColumnParent();
-        $column_parent->column_family = $this->column_family;
-        $column_parent->super_column = $this->unparse_column_name($super_column, true);
+    private function wcl($write_consistency_level) {
+        if ($write_consistency_level == null)
+            return $this->write_consistency_level;
+        else
+            return $write_consistency_level;
+    }
+
+    static private function create_slice_predicate($columns, $column_start, $column_finish,
+                                            $column_reversed, $column_count) {
 
         $predicate = new cassandra_SlicePredicate();
-        if(is_array($slice_start)) {
-            // Treat this as a column_names query
-            $predicate->column_names = $slice_start;
+        if ($columns != null) {
+            $predicate->columns = $columns;
         } else {
-            // Treat this as a slice_range query
             $slice_range = new cassandra_SliceRange();
             $slice_range->count = $column_count;
             $slice_range->reversed = $column_reversed;
-            $slice_range->start  = $slice_start  ? $this->unparse_column_name($slice_start,  false) : "";
-            $slice_range->finish = $slice_finish ? $this->unparse_column_name($slice_finish, false) : "";
+            $slice_range->start  = $column_start;
+            $slice_range->finish = $column_finish;
             $predicate->slice_range = $slice_range;
         }
-
-        $client = CassandraConn::get_client();
-        $resp = $client->get_slice($this->keyspace, $key, $column_parent, $predicate, $this->read_consistency_level);
-
-        if($super_column) {
-            return $this->supercolumns_or_columns_to_array($resp, false);
-        } else {
-            return $this->supercolumns_or_columns_to_array($resp);
-        }
+        return $predicate;
     }
 
-    public function multiget($keys, $slice_start="", $slice_finish="") {
+    private function create_column_parent($super_column=null) {
         $column_parent = new cassandra_ColumnParent();
         $column_parent->column_family = $this->column_family;
-        $column_parent->super_column = NULL;
+        $column_parent->super_column = $this->unparse_column_name($super_column, true);
+        return $column_parent;
+    }
 
-        $predicate = new cassandra_SlicePredicate();
-        if(is_array($slice_start)) {
-            // Treat this as a column_names query
-            $predicate->column_names = $slice_start;
-        } else {
-            // Treat this as a slice_range query
-            $slice_range = new cassandra_SliceRange();
-            $slice_range->start  = $slice_start  ? $this->unparse_column_name($slice_start,  false) : "";
-            $slice_range->finish = $slice_finish ? $this->unparse_column_name($slice_finish, false) : "";
-            $predicate->slice_range = $slice_range;
+    public function get($key,
+                        $columns=null,
+                        $column_start="",
+                        $column_finish="",
+                        $column_reversed=False,
+                        $column_count=self::DEFAULT_COLUMN_LIMIT,
+                        $super_column=null,
+                        $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
+                                                  $column_reversed, $column_count);
+
+        $resp = $this->client->get_slice($key, $column_parent, $predicate, $this->rcl($read_consistency_level));
+        if (count($resp) == 0)
+            throw new cassandra_NotFoundException();
+
+        if ($super_column)
+            return $this->supercolumns_or_columns_to_array($resp, false);
+        else
+            return $this->supercolumns_or_columns_to_array($resp);
+    }
+
+    public function multiget($keys,
+                             $columns=null,
+                             $column_start="",
+                             $column_finish="",
+                             $column_reversed=False,
+                             $column_count=100,
+                             $super_column=null,
+                             $read_consistency_level=null)  {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
+                                                  $column_reversed, $column_count);
+
+        $resp = $this->client->multiget_slice($keys, $column_parent, $predicate,
+                                              $this->rcl($read_consistency_level));
+
+        $ret = array();
+        foreach($keys as $key) {
+            $ret[$key] = null;
         }
 
-        $client = CassandraConn::get_client();
-        $resp = $client->multiget_slice($this->keyspace, $keys, $column_parent, $predicate, $this->read_consistency_level);
-
-        $ret = null;
-//        foreach($keys as $sk => $k) {
-//            $ret[$k] = $this->supercolumns_or_columns_to_array($resp[$k]);
-//        }
+        $non_empty_keys = array();
         foreach($resp as $key => $val) {
-            $ret[$key] = $this->supercolumns_or_columns_to_array($val);
+            if (count($val) > 0) {
+                $non_empty_keys[] = $key;
+                $ret[$key] = $this->supercolumns_or_columns_to_array($val);
+            }
+        }
+
+        foreach($keys as $key) {
+            if (!in_array($key, $non_empty_keys))
+                unset($ret[$key]);
         }
         return $ret;
     }
@@ -227,8 +288,8 @@ class CassandraCF {
         $column_path->column_family = $this->column_family;
         $column_path->super_column = $super_column;
 
-        $client = CassandraConn::get_client();
-        $resp = $client->get_count($this->keyspace, $key, $column_path, $this->read_consistency_level);
+        $client = $this->$connection->connect();
+        $resp = $client->get_count($key, $column_path, $this->read_consistency_level);
 
         return $resp;
     }
@@ -255,8 +316,8 @@ class CassandraCF {
         $key_range->end_key   = $end_key;
         $key_range->count     = $row_count;
 
-        $client = CassandraConn::get_client();
-        $resp = $client->get_range_slices($this->keyspace, $column_parent, $predicate, $key_range, $this->read_consistency_level);
+        $client = $this->$connection->connect();
+        $resp = $client->get_range_slices($column_parent, $predicate, $key_range, $this->read_consistency_level);
 
         return $this->keyslices_to_array($resp);
     }
@@ -265,42 +326,41 @@ class CassandraCF {
         return new CassandraIterator($this, $start_key, $end_key, $row_count, $slice_start, $slice_end);
     }
 
-    public function insert($key, $columns=null) {
-        $timestamp = CassandraUtil::get_time();
+    public function insert($key,
+                           $columns,
+                           $timestamp=null,
+                           $ttl=null,
+                           $write_consistency_level=null) {
 
-        if(is_array($key)) {
-            // We ignore $columns and convert $key
-            // to an array map of all mutations
-            $cfmap = array();
-            foreach($key as $_key => $_columns) {
-                $cfmap[$_key][$this->column_family] = $this->array_to_mutation($_columns, $timestamp);
-            }
-        } else {
-            $cfmap = array();
-            $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp);
-        }
+        if ($timestamp == null)
+            $timestamp = CassandraUtil::get_time();
 
-        $client = CassandraConn::get_client();
-        $resp = $client->batch_mutate($this->keyspace, $cfmap, $this->write_consistency_level);
+        $cfmap = array();
+        $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp);
 
-        return $resp;
+        return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
     }
 
-    public function remove($key, $column_name=null) {
-        $timestamp = CassandraUtil::get_time();
+    public function remove($key, $columns=null, $super_column=null, $write_consistency_level) {
+        if ($timestamp == null)
+            $timestamp = CassandraUtil::get_time();
 
-        $column_path = new cassandra_ColumnPath();
-        $column_path->column_family = $this->column_family;
-        if($this->is_super) {
-            $column_path->super_column = $this->unparse_column_name($column_name, true);
-        } else {
-            $column_path->column = $this->unparse_column_name($column_name, false);
-        }
+        $deletion = cassandra_Deletion();
+        $deletion->timestamp = $timestamp;
+        $deletion->super_column = $super_column;
+        $predicate = new cassandra_SlicePredicate();
+        $predicate->columns = $columns;
+        $deletion->predicate = $predicate;
+        $mutation = new cassandra_Mutation();
+        $mutation->deletion = $deletion;
 
-        $client = CassandraConn::get_client();
-        $resp = $client->remove($this->keyspace, $key, $column_path, $timestamp, $this->write_consistency_level);
+        $mut_map = array($key => array($this->column_family => array(1 => $mutation))); 
 
-        return $resp;
+        return $this->client->batch_mutate($mut_map, $this->wcl($write_consistency_level));
+    }
+
+    public function truncate() {
+        return $this->client->truncate($this->column_family);
     }
 
     // Wrappers
@@ -356,12 +416,10 @@ class CassandraCF {
             if($c_or_sc->column) { // normal columns
                 $name  = $this->parse_column_name($c_or_sc->column->name, $parse_as_columns);
                 $value = $c_or_sc->column->value;
-
                 $ret[$name] = $value;
             } else if($c_or_sc->super_column) { // super columns
                 $name    = $this->parse_column_name($c_or_sc->super_column->name, $parse_as_columns);
                 $columns = $c_or_sc->super_column->columns;
-
                 $ret[$name] = $this->columns_to_array($columns);
             }
         }
