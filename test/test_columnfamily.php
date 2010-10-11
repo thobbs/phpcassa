@@ -118,5 +118,24 @@ class TestColumnFamily extends UnitTestCase {
         $rows = $this->cf->get_range($start_key=$keys[0], $finish_key=$keys[4]);
         self::assertEqual(count($rows), count($keys));
     }
+
+    public function test_remove() {
+        $key = 'TestColumnFamily.test_remove';
+        $columns = array('1' => 'val1', '2' => 'val2');
+        $this->cf->insert($key, $columns);
+
+        self::assertEqual($this->cf->get($key), $columns);
+
+        $this->cf->remove($key, array('2'));
+        unset($columns['2']);
+        self::assertEqual($this->cf->get($key), $columns);
+
+        $this->cf->remove($key);
+        try {
+            $this->cf->get($key);
+            self::assertTrue(false);
+        } catch (cassandra_NotFoundException $e) {
+        }
+    }
 }
 ?>

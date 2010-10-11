@@ -358,20 +358,22 @@ class ColumnFamily {
         return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
     }
 
-    public function remove($key, $columns=null, $super_column=null, $write_consistency_level) {
-        if ($timestamp == null)
-            $timestamp = CassandraUtil::get_time();
+    public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
 
-        $deletion = cassandra_Deletion();
-        $deletion->timestamp = $timestamp;
-        $deletion->super_column = $super_column;
-        $predicate = new cassandra_SlicePredicate();
-        $predicate->columns = $columns;
-        $deletion->predicate = $predicate;
+        $deletion = new cassandra_Deletion();
+        $deletion->timestamp = CassandraUtil::get_time();
+        #$deletion->super_column = $super_column;
+
+        if ($columns != null) {
+            $predicate = new cassandra_SlicePredicate();
+            $predicate->column_names = $columns;
+            $deletion->predicate = $predicate;
+        }
+
         $mutation = new cassandra_Mutation();
         $mutation->deletion = $deletion;
 
-        $mut_map = array($key => array($this->column_family => array(1 => $mutation))); 
+        $mut_map = array($key => array($this->column_family => array($mutation))); 
 
         return $this->client->batch_mutate($mut_map, $this->wcl($write_consistency_level));
     }
