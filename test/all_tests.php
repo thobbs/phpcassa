@@ -5,6 +5,7 @@ class AllTests extends TestSuite {
     function AllTests() {
         $this->TestSuite('All tests');
         $this->addFile('test_columnfamily.php');
+        $this->addFile('test_autopacking.php');
     }
 }
 ?>

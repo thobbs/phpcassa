@@ -1,347 +1,300 @@
 <?php
-/*-
- * Copyright (c) 2008 Fredrik Lindberg - http://www.shapeshifter.se
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- */
+/*
+   DrUUID RFC4122 library for PHP5
+    by J. King (http://jkingweb.ca/)
+   Licensed under MIT license
+
+   See http://jkingweb.ca/code/php/lib.uuid/
+    for documentation
+    
+   Last revised 2010-02-15
+*/
 
 /*
- * UUID (RFC4122) Generator
- * http://tools.ietf.org/html/rfc4122
- *
- * Implements version 1, 3, 4 and 5
- */
+Copyright (c) 2009 J. King
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+
 class UUID {
-    /* UUID versions */
-    const UUID_TIME     = 1;    /* Time based UUID */
-    const UUID_NAME_MD5     = 3;    /* Name based (MD5) UUID */
-    const UUID_RANDOM     = 4;    /* Random UUID */
-    const UUID_NAME_SHA1     = 5;    /* Name based (SHA1) UUID */
+ const MD5  = 3;
+ const SHA1 = 5;
+ const clearVer = 15;  // 00001111  Clears all bits of version byte with AND
+ const clearVar = 63;  // 00111111  Clears all relevant bits of variant byte with AND
+ const varRes   = 224; // 11100000  Variant reserved for future use
+ const varMS    = 192; // 11000000  Microsft GUID variant
+ const varRFC   = 128; // 10000000  The RFC 4122 variant (this variant)
+ const varNCS   = 0;   // 00000000  The NCS compatibility variant
+ const version1 = 16;  // 00010000
+ const version3 = 48;  // 00110000
+ const version4 = 64;  // 01000000
+ const version5 = 80;  // 01010000
+ const interval = 0x01b21dd213814000; // Time (in 100ns steps) between the start of the UTC and Unix epochs
+ const nsDNS  = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+ const nsURL  = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+ const nsOID  = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
+ const nsX500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
+ protected static $randomFunc = 'randomTwister';
+ protected static $randomSource = NULL;
+ //instance properties
+ protected $bytes;
+ protected $hex;
+ protected $string;
+ protected $urn;
+ protected $version;
+ protected $variant;
+ protected $node;
+ protected $time;
+ 
+ public static function mint($ver = 1, $node = NULL, $ns = NULL) {
+  /* Create a new UUID based on provided data. */
+  switch((int) $ver) {
+   case 1:
+    return new self(self::mintTime($node));
+   case 2:
+    // Version 2 is not supported 
+    throw new UUIDException("Version 2 is unsupported.");
+   case 3:
+    return new self(self::mintName(self::MD5, $node, $ns));
+   case 4:
+    return new self(self::mintRand());
+   case 5:
+    return new self(self::mintName(self::SHA1, $node, $ns));
+   default:
+    throw new UUIDException("Selected version is invalid or unsupported.");
+  }
+ }
 
-    /* UUID formats */
-    const FMT_FIELD     = 100;
-    const FMT_STRING     = 101;
-    const FMT_BINARY     = 102;
-    const FMT_QWORD     = 1;    /* Quad-word, 128-bit (not impl.) */
-    const FMT_DWORD     = 2;    /* Double-word, 64-bit (not impl.) */
-    const FMT_WORD         = 4;    /* Word, 32-bit (not impl.) */
-    const FMT_SHORT        = 8;    /* Short (not impl.) */
-    const FMT_BYTE        = 16;    /* Byte */
-    const FMT_DEFAULT     = 16;
+ public static function import($uuid) {
+  /* Import an existing UUID. */
+  return new self(self::makeBin($uuid, 16));
+ }   
 
-    /* Field UUID representation */
-    static private $m_uuid_field = array(
-        'time_low' => 0,        /* 32-bit */
-        'time_mid' => 0,        /* 16-bit */
-        'time_hi' => 0,            /* 16-bit */
-        'clock_seq_hi' => 0,        /*  8-bit */
-        'clock_seq_low' => 0,        /*  8-bit */
-        'node' => array()        /* 48-bit */
-    );
+ public static function compare($a, $b) {
+  /* Compares the binary representations of two UUIDs.
+     The comparison will return true if they are bit-exact,
+      or if neither is valid. */
+  if (self::makeBin($a, 16)==self::makeBin($b, 16))
+   return TRUE;
+  else
+   return FALSE;
+ }
 
-    static private $m_generate = array(
-        self::UUID_TIME => "generateTime",
-        self::UUID_RANDOM => "generateRandom",
-        self::UUID_NAME_MD5 => "generateNameMD5",
-        self::UUID_NAME_SHA1 => "generateNameSHA1"
-    );
+ public function __toString() {
+  return $this->string;
+ }
 
-    static private $m_convert = array(
-        self::FMT_FIELD => array(
-            self::FMT_BYTE => "conv_field2byte",
-            self::FMT_STRING => "conv_field2string",
-            self::FMT_BINARY => "conv_field2binary"
-        ),
-        self::FMT_BYTE => array(
-            self::FMT_FIELD => "conv_byte2field",
-            self::FMT_STRING => "conv_byte2string",
-            self::FMT_BINARY => "conv_byte2binary"
-        ),
-        self::FMT_STRING => array(
-            self::FMT_BYTE => "conv_string2byte",
-            self::FMT_FIELD => "conv_string2field",
-            self::FMT_BINARY => "conv_string2binary"
-        ),
-        self::FMT_BINARY => array(
-            self::FMT_BYTE => "conv_binary2byte",
-            self::FMT_FIELD => "conv_binary2field",
-            self::FMT_STRING => "conv_binary2string"
-        ),
-    );
-
-    /* Swap byte order of a 32-bit number */
-    static private function swap32($x) {
-        return (($x & 0x000000ff) << 24) | (($x & 0x0000ff00) << 8) |
-            (($x & 0x00ff0000) >> 8) | (($x & 0xff000000) >> 24);
+ public function __get($var) {
+  switch($var) {
+   case "bytes":
+    return $this->bytes;
+   case "hex":
+    return bin2hex($this->bytes);
+   case "string":
+    return $this->__toString();
+   case "urn":
+    return "urn:uuid:".$this->__toString();
+   case "version":
+    return ord($this->bytes[6]) >> 4;
+   case "variant":
+    $byte = ord($this->bytes[8]);
+    if ($byte >= self::varRes)
+     return 3;
+    if ($byte >= self::varMS)
+     return 2;
+    if ($byte >= self::varRFC)
+     return 1;
+    else
+     return 0;
+   case "node":
+    if (ord($this->bytes[6])>>4==1)
+     return bin2hex(substr($this->bytes,10));
+    else
+     return NULL; 
+   case "time":
+    if (ord($this->bytes[6])>>4==1) {
+     // Restore contiguous big-endian byte order
+     $time = bin2hex($this->bytes[6].$this->bytes[7].$this->bytes[4].$this->bytes[5].$this->bytes[0].$this->bytes[1].$this->bytes[2].$this->bytes[3]);
+     // Clear version flag
+     $time[0] = "0"; 
+     // Do some reverse arithmetic to get a Unix timestamp
+     $time = (hexdec($time) - self::interval) / 10000000;
+     return $time;
     }
+    else
+     return NULL;
+   default:
+    return NULL;
+  }
+ }
 
-    /* Swap byte order of a 16-bit number */
-    static private function swap16($x) {
-        return (($x & 0x00ff) << 8) | (($x & 0xff00) >> 8);
-    }
+ protected function __construct($uuid) {
+  if (strlen($uuid) != 16)
+   throw new UUIDException("Input must be a 128-bit integer.");
+  $this->bytes  = $uuid;
+  // Optimize the most common use
+  $this->string = 
+   bin2hex(substr($uuid,0,4))."-".
+   bin2hex(substr($uuid,4,2))."-".
+   bin2hex(substr($uuid,6,2))."-".
+   bin2hex(substr($uuid,8,2))."-".
+   bin2hex(substr($uuid,10,6));
+ }
 
-    /* Auto-detect UUID format */
-    static private function detectFormat($src) {
-        if (is_string($src))
-            return self::FMT_STRING;
-        else if (is_array($src)) {
-            $len = count($src);
-            if ($len == 1 || ($len % 2) == 0)
-                return $len;
-            else
-                return (-1);
-        }
-        else
-            return self::FMT_BINARY;
-    }
+ protected static function mintTime($node = NULL) {
+  /* Generates a Version 1 UUID.  
+     These are derived from the time at which they were generated. */
+  // Get time since Gregorian calendar reform in 100ns intervals
+  // This is exceedingly difficult because of PHP's (and pack()'s) 
+  //  integer size limits.
+  // Note that this will never be more accurate than to the microsecond.
+  $time = microtime(1) * 10000000 + self::interval;
+  // Convert to a string representation
+  $time = sprintf("%F", $time);
+  preg_match("/^\d+/", $time, $time); //strip decimal point
+  // And now to a 64-bit binary representation
+  $time = base_convert($time[0], 10, 16);
+  $time = pack("H*", str_pad($time, 16, "0", STR_PAD_LEFT));
+  // Reorder bytes to their proper locations in the UUID
+  $uuid  = $time[4].$time[5].$time[6].$time[7].$time[2].$time[3].$time[0].$time[1];
+  // Generate a random clock sequence
+  $uuid .= self::randomBytes(2);
+  // set variant
+  $uuid[8] = chr(ord($uuid[8]) & self::clearVar | self::varRFC);
+  // set version
+  $uuid[6] = chr(ord($uuid[6]) & self::clearVer | self::version1);
+  // Set the final 'node' parameter, a MAC address
+  if ($node) 
+   $node = self::makeBin($node, 6);
+  if (!$node) { 
+    // If no node was provided or if the node was invalid, 
+    //  generate a random MAC address and set the multicast bit
+   $node = self::randomBytes(6);
+   $node[0] = pack("C", ord($node[0]) | 1);
+  }
+  $uuid .= $node;
+  return $uuid;
+ }
 
-    /*
-     * Public API, generate a UUID of 'type' in format 'fmt' for
-     * the given namespace 'ns' and node 'node'
-     */
-    static public function generate($type, $fmt = self::FMT_BYTE,
-        $node = "", $ns = "") {
-        $func = self::$m_generate[$type];
-        if (!isset($func))
-            return null;
-        $conv = self::$m_convert[self::FMT_FIELD][$fmt];
+ protected static function mintRand() {
+  /* Generate a Version 4 UUID.  
+     These are derived soly from random numbers. */
+  // generate random fields
+  $uuid = self::randomBytes(16);
+  // set variant
+  $uuid[8] = chr(ord($uuid[8]) & self::clearVar | self::varRFC);
+  // set version
+  $uuid[6] = chr(ord($uuid[6]) & self::clearVer | self::version4);
+  return $uuid;
+ }
 
-        $uuid = self::$func($ns, $node);
-        return self::$conv($uuid);
-    }
+ protected static function mintName($ver, $node, $ns) {
+  /* Generates a Version 3 or Version 5 UUID.
+     These are derived from a hash of a name and its namespace, in binary form. */
+  if (!$node)
+   throw new UUIDException("A name-string is required for Version 3 or 5 UUIDs.");
+  // if the namespace UUID isn't binary, make it so
+  $ns = self::makeBin($ns, 16);
+  if (!$ns)
+   throw new UUIDException("A binary namespace is required for Version 3 or 5 UUIDs.");
+  switch($ver) {
+   case self::MD5: 
+    $version = self::version3;
+    $uuid = md5($ns.$node,1);
+    break;
+   case self::SHA1:
+    $version = self::version5;
+    $uuid = substr(sha1($ns.$node,1),0, 16);
+    break;
+  }
+  // set variant
+  $uuid[8] = chr(ord($uuid[8]) & self::clearVar | self::varRFC);
+  // set version
+  $uuid[6] = chr(ord($uuid[6]) & self::clearVer | $version);
+  return ($uuid);
+ }
 
-    /*
-     * Public API, convert a UUID from one format to another
-     */
-    static public function convert($uuid, $from, $to) {
-        $conv = self::$m_convert[$from][$to];
-        if (!isset($conv))
-            return ($uuid);
+ protected static function makeBin($str, $len) {
+  /* Insure that an input string is either binary or hexadecimal.
+     Returns binary representation, or false on failure. */
+  if ($str instanceof self)
+   return $str->bytes;
+  if (strlen($str)==$len)
+   return $str;
+  else
+   $str = preg_replace("/^urn:uuid:/is", "", $str); // strip URN scheme and namespace
+   $str = preg_replace("/[^a-f0-9]/is", "", $str);  // strip non-hex characters
+   if (strlen($str) != ($len * 2))
+    return FALSE;
+   else
+    return pack("H*", $str);
+ }
 
-        return (self::$conv($uuid));
-    }
+ public static function initRandom() {
+  /* Look for a system-provided source of randomness, which is usually crytographically secure.
+     /dev/urandom is tried first simply out of bias for Linux systems. */
+  if (is_readable('/dev/urandom')) {
+   self::$randomSource = fopen('/dev/urandom', 'rb');
+   self::$randomFunc = 'randomFRead';
+  }
+  else if (class_exists('COM', 0)) {
+   try {
+    self::$randomSource = new COM('CAPICOM.Utilities.1');  // See http://msdn.microsoft.com/en-us/library/aa388182(VS.85).aspx
+    self::$randomFunc = 'randomCOM';
+   }
+   catch(Exception $e) {}
+  }
+  return self::$randomFunc;
+ } 
 
-    /*
-     * Generate an UUID version 4 (pseudo random)
-     */
-    static private function generateRandom($ns, $node) {
-        $uuid = self::$m_uuid_field;
+ public static function randomBytes($bytes) {
+  return call_user_func(array('self', self::$randomFunc), $bytes);
+ } 
 
-        $uuid['time_hi'] = (4 << 12) | (mt_rand(0, 0x1000));
-        $uuid['clock_seq_hi'] = (1 << 7) | mt_rand(0, 128);
-        $uuid['time_low'] = mt_rand(0, 0xffff) + (mt_rand(0, 0xffff) << 16);
-        $uuid['time_mid'] = mt_rand(0, 0xffff);
-        $uuid['clock_seq_low'] = mt_rand(0, 255);
-        for ($i = 0; $i < 6; $i++)
-            $uuid['node'][$i] = mt_rand(0, 255);
-        return ($uuid);
-    }
-
-    /*
-     * Generate UUID version 3 and 5 (name based)
-     */
-    static private function generateName($ns, $node, $hash, $version) {
-        $ns_fmt = self::detectFormat($ns);
-        $field = self::convert($ns, $ns_fmt, self::FMT_FIELD);
-
-        /* Swap byte order to keep it in big endian on all platforms */
-        $field['time_low'] = self::swap32($field['time_low']);
-        $field['time_mid'] = self::swap16($field['time_mid']);
-        $field['time_hi'] = self::swap16($field['time_hi']);
-
-        /* Convert the namespace to binary and concatenate node */
-        $raw = self::convert($field, self::FMT_FIELD, self::FMT_BINARY);
-        $raw .= $node;
-
-        /* Hash the namespace and node and convert to a byte array */
-        $val = $hash($raw, true);    
-        $tmp = unpack('C16', $val);
-        foreach (array_keys($tmp) as $key)
-            $byte[$key - 1] = $tmp[$key];
-
-        /* Convert byte array to a field array */
-        $field = self::conv_byte2field($byte);
-
-        $field['time_low'] = self::swap32($field['time_low']);
-        $field['time_mid'] = self::swap16($field['time_mid']);
-        $field['time_hi'] = self::swap16($field['time_hi']);
-
-        /* Apply version and constants */
-        $field['clock_seq_hi'] &= 0x3f;
-        $field['clock_seq_hi'] |= (1 << 7);
-        $field['time_hi'] &= 0x0fff;
-        $field['time_hi'] |= ($version << 12);
-
-        return ($field);    
-    }
-    static private function generateNameMD5($ns, $node) {
-        return self::generateName($ns, $node, "md5",
-            self::UUID_NAME_MD5);
-    }
-    static private function generateNameSHA1($ns, $node) {
-        return self::generateName($ns, $node, "sha1",
-            self::UUID_NAME_SHA1);
-    }
-
-    /*
-     * Generate UUID version 1 (time based)
-     */
-    static private function generateTime($ns, $node) {
-        $uuid = self::$m_uuid_field;
-
-        /*
-         * Get current time in 100 ns intervals. The magic value
-         * is the offset between UNIX epoch and the UUID UTC
-         * time base October 15, 1582.
-         */
-        $tp = gettimeofday();
-        $time = ($tp['sec'] * 10000000) + ($tp['usec'] * 10) +
-            0x01B21DD213814000;
-
-        $uuid['time_low'] = $time & 0xffffffff;
-        /* Work around PHP 32-bit bit-operation limits */
-        $high = intval($time / 0xffffffff);
-        $uuid['time_mid'] = $high & 0xffff;
-        $uuid['time_hi'] = (($high >> 16) & 0xfff) | (self::UUID_TIME << 12);
-        
-        /*
-         * We don't support saved state information and generate
-         * a random clock sequence each time.
-         */
-        $uuid['clock_seq_hi'] = 0x80 | mt_rand(0, 64);
-        $uuid['clock_seq_low'] = mt_rand(0, 255);
-
-        /*
-         * Node should be set to the 48-bit IEEE node identifier, but
-         * we leave it for the user to supply the node.
-         */
-        for ($i = 0; $i < 6; $i++)
-            $uuid['node'][$i] = ord(substr($node, $i, 1));
-
-        return ($uuid);
-    }
-
-    /* Assumes correct byte order */
-    static private function conv_field2byte($src) {
-        $uuid[0] = ($src['time_low'] & 0xff000000) >> 24;
-        $uuid[1] = ($src['time_low'] & 0x00ff0000) >> 16;
-        $uuid[2] = ($src['time_low'] & 0x0000ff00) >> 8;
-        $uuid[3] = ($src['time_low'] & 0x000000ff);
-        $uuid[4] = ($src['time_mid'] & 0xff00) >> 8;
-        $uuid[5] = ($src['time_mid'] & 0x00ff);
-        $uuid[6] = ($src['time_hi'] & 0xff00) >> 8;
-        $uuid[7] = ($src['time_hi'] & 0x00ff);
-        $uuid[8] = $src['clock_seq_hi'];
-        $uuid[9] = $src['clock_seq_low'];
-
-        for ($i = 0; $i < 6; $i++)
-            $uuid[10+$i] = $src['node'][$i];
-
-        return ($uuid);
-    }
-
-    static private function conv_field2string($src) {
-        $str = sprintf(
-            '%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x',
-            ($src['time_low']), ($src['time_mid']), ($src['time_hi']),
-            $src['clock_seq_hi'], $src['clock_seq_low'],
-            $src['node'][0], $src['node'][1], $src['node'][2],
-            $src['node'][3], $src['node'][4], $src['node'][5]);
-        return ($str);
-    }
-
-    static private function conv_field2binary($src) {
-        $byte = self::conv_field2byte($src);
-        return self::conv_byte2binary($byte);
-    }
-
-    static private function conv_byte2field($uuid) {
-        $field = self::$m_uuid_field;
-        $field['time_low'] = ($uuid[0] << 24) | ($uuid[1] << 16) |
-            ($uuid[2] << 8) | $uuid[3];
-        $field['time_mid'] = ($uuid[4] << 8) | $uuid[5];
-        $field['time_hi'] = ($uuid[6] << 8) | $uuid[7];
-        $field['clock_seq_hi'] = $uuid[8];
-        $field['clock_seq_low'] = $uuid[9];
-
-        for ($i = 0; $i < 6; $i++)
-            $field['node'][$i] = $uuid[10+$i];
-        return ($field);
-    }
-
-    static public function conv_byte2string($src) {
-        $field = self::conv_byte2field($src);
-        return self::conv_field2string($field);
-    }
-
-    static private function conv_byte2binary($src) {
-        $raw = pack('C16', $src[0], $src[1], $src[2], $src[3],
-            $src[4], $src[5], $src[6], $src[7], $src[8], $src[9],
-            $src[10], $src[11], $src[12], $src[13], $src[14], $src[15]);
-        return ($raw);
-    }
-
-    static private function conv_string2field($src) {
-        $parts = sscanf($src, '%x-%x-%x-%x-%02x%02x%02x%02x%02x%02x');
-        $field = self::$m_uuid_field;
-        $field['time_low'] = ($parts[0]);
-        $field['time_mid'] = ($parts[1]);
-        $field['time_hi'] = ($parts[2]);
-        $field['clock_seq_hi'] = ($parts[3] & 0xff00) >> 8;
-        $field['clock_seq_low'] = $parts[3] & 0x00ff;
-        for ($i = 0; $i < 6; $i++)
-            $field['node'][$i] = $parts[4+$i];
-
-        return ($field);
-    }
-
-    static private function conv_string2byte($src) {
-        $field = self::conv_string2field($src);
-        return self::conv_field2byte($field);
-    }
-
-    static private function conv_string2binary($src) {
-        $byte = self::conv_string2byte($src);
-        return self::conv_byte2binary($byte);
-    }
-    
-    static private function conv_binary2byte($src) {
-        $byte = array();
-        $tmp = unpack('C16', $src);
-        foreach (array_keys($tmp) as $key)
-            $byte[$key - 1] = $tmp[$key];
-        
-        return $byte;
-    }
-    
-    static private function conv_binary2field($src) {
-        $byte = self::conv_binary2byte($src);
-        return self::conv_byte2field($byte);
-    }
-
-    static private function conv_binary2string($src) {
-        $byte = self::conv_binary2byte($src);
-        return self::conv_byte2string($byte);
-    }
+ protected static function randomTwister($bytes) {
+  /* Get the specified number of random bytes, using mt_rand().
+     Randomness is returned as a string of bytes. */
+  $rand = "";
+  for ($a = 0; $a < $bytes; $a++) {
+   $rand .= chr(mt_rand(0, 255));
+  } 
+  return $rand;
+ }
+ 
+ protected static function randomFRead($bytes) {
+  /* Get the specified number of random bytes using a file handle 
+     previously opened with UUID::initRandom().
+     Randomness is returned as a string of bytes. */
+  return fread(self::$randomSource, $bytes);
+ }
+ 
+ protected static function randomCOM($bytes) {
+  /* Get the specified number of random bytes using Windows'
+     randomness source via a COM object previously created by UUID::initRandom().
+     Randomness is returned as a string of bytes. */
+  return base64_decode(self::$randomSource->GetRandom($bytes,0)); // straight binary mysteriously doesn't work, hence the base64
+ }
 }
 
+class UUIDException extends Exception {
+}

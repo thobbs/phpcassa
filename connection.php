@@ -12,6 +12,8 @@ class Connection {
 
     private static $default_servers = array(array('host' => 'localhost', 'port' => 9160));
 
+    public $keyspace;
+
     public function __construct($keyspace,
                                 $servers=null,
                                 $credentials=null,
@@ -37,11 +39,11 @@ class Connection {
             $server = $this->servers->get();
             if (!$this->connection) {
                 $this->connection = new ClientTransport($this->keyspace,
-                                                         $server,
-                                                         $this->credentials,
-                                                         $this->framed_transport,
-                                                         $this->send_timeout,
-                                                         $this->recv_timeout);
+                                                        $server,
+                                                        $this->credentials,
+                                                        $this->framed_transport,
+                                                        $this->send_timeout,
+                                                        $this->recv_timeout);
             }
         } catch (TException $e) {
             $this->servers->mark_dead($server);
