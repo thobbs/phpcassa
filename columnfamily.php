@@ -6,7 +6,21 @@ class CassandraUtil {
 
     static public function uuid1($node=null) {
         $uuid = UUID::mint(1, $node);
-        print "uuid: $uuid->string\n";
+        return $uuid->bytes;
+    }
+
+    static public function uuid3($null=null, $namespace=null) {
+        $uuid = UUID::mint(3, $node, $namespace);
+        return $uuid->bytes;
+    }
+
+    static public function uuid4() {
+        $uuid = UUID::mint(4);
+        return $uuid->bytes;
+    }
+
+    static public function uuid5($node, $namespace=null) {
+        $uuid = UUID::mint(5, $node, $namespace);
         return $uuid->bytes;
     }
 
@@ -344,8 +358,11 @@ class ColumnFamily {
             return pack('N', $value); // Unsigned 32bit big-endian
         else if ($data_type == 'AsciiType')
             return self::pack_str($value, strlen($value));
-        else if ($data_type == 'UTF8Type')
-            return self::pack_str($value, strlen($value)); # TODO
+        else if ($data_type == 'UTF8Type') {
+            if (mb_detect_encoding($value, "UTF-8") != "UTF-8")
+                $value = utf8_encode($value);
+            return self::pack_str($value, strlen($value));
+        }
         else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType') {
             return self::pack_str($value, 16);
         }
@@ -363,7 +380,7 @@ class ColumnFamily {
         else if ($data_type == 'AsciiType')
             return self::unpack_str($value, strlen($value));
         else if ($data_type == 'UTF8Type')
-            return self::unpack_str($value, strlen($value)); # TODO
+            return utf8_decode(self::unpack_str($value, strlen($value)));
         else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType') {
             return $value;
         }
