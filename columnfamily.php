@@ -354,8 +354,9 @@ class ColumnFamily {
     private function pack($value, $data_type) {
         if ($data_type == 'LongType')
             return self::pack_long($value);
-        else if ($data_type == 'IntegerType')
+        else if ($data_type == 'IntegerType') {
             return pack('N', $value); // Unsigned 32bit big-endian
+        }
         else if ($data_type == 'AsciiType')
             return self::pack_str($value, strlen($value));
         else if ($data_type == 'UTF8Type') {
@@ -668,8 +669,8 @@ class ColumnFamily {
         $ret = null;
         foreach($array as $name => $value) {
             $column = new cassandra_Column();
-            $column->name = $this->unparse_column_name($name, false);
-            $column->value = $this->to_column_value($value);
+            $column->name = $this->pack_name($name, false);
+            $column->value = $this->pack_value($value, $name);
             $column->timestamp = $timestamp;
 
             $ret[] = $column;
