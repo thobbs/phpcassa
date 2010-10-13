@@ -45,11 +45,16 @@ class ColumnFamily {
 
     private $client;
     private $column_family;
-    public $is_super;
+    private $is_super;
+    private $cf_data_type;
+    private $col_name_type;
+    private $supercol_name_type;
+    private $col_type_dict;
+
+    public $autopack_names;
+    public $autopack_values;
     public $read_consistency_level;
     public $write_consistency_level;
-    public $column_type;
-    public $subcolumn_type;
 
     /*
     BytesType: Simple sort by byte value. No validation is performed.
@@ -62,22 +67,17 @@ class ColumnFamily {
 
     public function __construct($connection,
                                 $column_family,
-                                $is_super=false,
-                                $column_type=self::DEFAULT_COLUMN_TYPE,
-                                $subcolumn_type=self::DEFAULT_SUBCOLUMN_TYPE,
+                                $autopack_names=true,
+                                $autopack_values=true,
                                 $read_consistency_level=cassandra_ConsistencyLevel::ONE,
                                 $write_consistency_level=cassandra_ConsistencyLevel::ZERO) {
 
         $this->client = $connection->connect();
         $this->column_family = $column_family;
-        $this->is_super = $is_super;
-        $this->column_type = $column_type;
-        $this->subcolumn_type = $subcolumn_type;
+        $this->autopack_names = $autopack_names;
+        $this->autopack_values = $autopack_values;
         $this->read_consistency_level = $read_consistency_level;
         $this->write_consistency_level = $write_consistency_level;
-        $this->autopack_names = true;
-        $this->autopack_values = true;
-        $this->parse_columns = false;
 
         $this->cf_data_type = 'BytesType';
         $this->col_name_type = 'BytesType';
@@ -163,7 +163,7 @@ class ColumnFamily {
     private function create_column_parent($super_column=null) {
         $column_parent = new cassandra_ColumnParent();
         $column_parent->column_family = $this->column_family;
-        $column_parent->super_column = $this->unparse_column_name($super_column, true);
+        $column_parent->super_column = $this->pack_name($super_column, true);
         return $column_parent;
     }
 
@@ -676,54 +676,6 @@ class ColumnFamily {
             $ret[] = $column;
         }
         return $ret;
-    }
-
-    public function to_column_value($thing) {
-        if($thing === null) return "";
-
-        return $thing;
-    }
-
-    // ARGH
-    public function parse_column_name($column_name, $is_column=true) {
-        if(!$this->parse_columns) return $column_name;
-        if(!$column_name) return NULL;
-
-        $type = $is_column ? $this->column_type : $this->subcolumn_type;
-        if($type == "LexicalUUIDType" || $type == "TimeUUIDType") {
-            return UUID::convert($column_name, UUID::FMT_BINARY, UUID::FMT_STRING);
-        } else if($type == "LongType") {
-            return $this->unpack_longtype($column_name);
-        } else {
-            return $column_name;
-        }
-    }
-
-    public function unparse_column_name($column_name, $is_column=true) {
-        if(!$this->parse_columns) return $column_name;
-        if(!$column_name) return NULL;
-
-        $type = $is_column ? $this->column_type : $this->subcolumn_type;
-        if($type == "LexicalUUIDType" || $type == "TimeUUIDType") {
-            return UUID::convert($column_name, UUID::FMT_STRING, UUID::FMT_BINARY);
-        } else if($type == "LongType") {
-            return $this->pack_longtype($column_name);
-        } else {
-            return $column_name;
-        }
-    }
-    
-    // See http://webcache.googleusercontent.com/search?q=cache:9jjbeSy434UJ:wiki.apache.org/cassandra/FAQ+cassandra+php+%22A+long+is+exactly+8+bytes%22&cd=1&hl=en&ct=clnk&gl=us
-    public function pack_longtype($x) {
-        return pack('C8',
-            ($x >> 56) & 0xff, ($x >> 48) & 0xff, ($x >> 40) & 0xff, ($x >> 32) & 0xff,
-            ($x >> 24) & 0xff, ($x >> 16) & 0xff, ($x >> 8) & 0xff, $x & 0xff
-        );
-    }
-
-    public function unpack_longtype($x) {
-        $a = unpack('C8', $x);
-        return ($a[1] << 56) + ($a[2] << 48) + ($a[3] << 40) + ($a[4] << 32) + ($a[5] << 24) + ($a[6] << 16) + ($a[7] << 8) + $a[8];
     }
 }
 
