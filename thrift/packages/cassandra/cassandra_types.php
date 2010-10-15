@@ -8,7 +8,6 @@ include_once $GLOBALS['THRIFT_ROOT'].'/Thrift.php';
 
 
 $GLOBALS['cassandra_E_ConsistencyLevel'] = array(
-  'ZERO' => 0,
   'ONE' => 1,
   'QUORUM' => 2,
   'DCQUORUM' => 3,
@@ -18,7 +17,6 @@ $GLOBALS['cassandra_E_ConsistencyLevel'] = array(
 );
 
 final class cassandra_ConsistencyLevel {
-  const ZERO = 0;
   const ONE = 1;
   const QUORUM = 2;
   const DCQUORUM = 3;
@@ -26,7 +24,6 @@ final class cassandra_ConsistencyLevel {
   const ALL = 5;
   const ANY = 6;
   static public $__names = array(
-    0 => 'ZERO',
     1 => 'ONE',
     2 => 'QUORUM',
     3 => 'DCQUORUM',
@@ -2479,6 +2476,11 @@ class cassandra_CfDef {
   public $id = null;
   public $min_compaction_threshold = null;
   public $max_compaction_threshold = null;
+  public $row_cache_save_period_in_seconds = null;
+  public $key_cache_save_period_in_seconds = null;
+  public $memtable_flush_after_mins = null;
+  public $memtable_throughput_in_mb = null;
+  public $memtable_operations_in_millions = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2552,6 +2554,26 @@ class cassandra_CfDef {
           'var' => 'max_compaction_threshold',
           'type' => TType::I32,
           ),
+        19 => array(
+          'var' => 'row_cache_save_period_in_seconds',
+          'type' => TType::I32,
+          ),
+        20 => array(
+          'var' => 'key_cache_save_period_in_seconds',
+          'type' => TType::I32,
+          ),
+        21 => array(
+          'var' => 'memtable_flush_after_mins',
+          'type' => TType::I32,
+          ),
+        22 => array(
+          'var' => 'memtable_throughput_in_mb',
+          'type' => TType::I32,
+          ),
+        23 => array(
+          'var' => 'memtable_operations_in_millions',
+          'type' => TType::DOUBLE,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -2602,6 +2624,21 @@ class cassandra_CfDef {
       }
       if (isset($vals['max_compaction_threshold'])) {
         $this->max_compaction_threshold = $vals['max_compaction_threshold'];
+      }
+      if (isset($vals['row_cache_save_period_in_seconds'])) {
+        $this->row_cache_save_period_in_seconds = $vals['row_cache_save_period_in_seconds'];
+      }
+      if (isset($vals['key_cache_save_period_in_seconds'])) {
+        $this->key_cache_save_period_in_seconds = $vals['key_cache_save_period_in_seconds'];
+      }
+      if (isset($vals['memtable_flush_after_mins'])) {
+        $this->memtable_flush_after_mins = $vals['memtable_flush_after_mins'];
+      }
+      if (isset($vals['memtable_throughput_in_mb'])) {
+        $this->memtable_throughput_in_mb = $vals['memtable_throughput_in_mb'];
+      }
+      if (isset($vals['memtable_operations_in_millions'])) {
+        $this->memtable_operations_in_millions = $vals['memtable_operations_in_millions'];
       }
     }
   }
@@ -2748,6 +2785,41 @@ class cassandra_CfDef {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 19:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->row_cache_save_period_in_seconds);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 20:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->key_cache_save_period_in_seconds);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 21:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->memtable_flush_after_mins);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 22:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->memtable_throughput_in_mb);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 23:
+          if ($ftype == TType::DOUBLE) {
+            $xfer += $input->readDouble($this->memtable_operations_in_millions);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -2851,6 +2923,31 @@ class cassandra_CfDef {
     if ($this->max_compaction_threshold !== null) {
       $xfer += $output->writeFieldBegin('max_compaction_threshold', TType::I32, 18);
       $xfer += $output->writeI32($this->max_compaction_threshold);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->row_cache_save_period_in_seconds !== null) {
+      $xfer += $output->writeFieldBegin('row_cache_save_period_in_seconds', TType::I32, 19);
+      $xfer += $output->writeI32($this->row_cache_save_period_in_seconds);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->key_cache_save_period_in_seconds !== null) {
+      $xfer += $output->writeFieldBegin('key_cache_save_period_in_seconds', TType::I32, 20);
+      $xfer += $output->writeI32($this->key_cache_save_period_in_seconds);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->memtable_flush_after_mins !== null) {
+      $xfer += $output->writeFieldBegin('memtable_flush_after_mins', TType::I32, 21);
+      $xfer += $output->writeI32($this->memtable_flush_after_mins);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->memtable_throughput_in_mb !== null) {
+      $xfer += $output->writeFieldBegin('memtable_throughput_in_mb', TType::I32, 22);
+      $xfer += $output->writeI32($this->memtable_throughput_in_mb);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->memtable_operations_in_millions !== null) {
+      $xfer += $output->writeFieldBegin('memtable_operations_in_millions', TType::DOUBLE, 23);
+      $xfer += $output->writeDouble($this->memtable_operations_in_millions);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
