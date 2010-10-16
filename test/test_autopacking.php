@@ -419,6 +419,135 @@ class TestAutopacking extends UnitTestCase {
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
         }
+    }
+
+    private function make_sub_group($cf, $cols) {
+        $diction = array(222222222222 => array($cols[0] => self::$VALS[0],
+                                               $cols[1] => self::$VALS[1],
+                                               $cols[2] => self::$VALS[2]));
+        return array('cf' => $cf, 'cols' => $cols, 'dict' => $diction);
+    }
+
+    public function test_super_column_family_subs() {
+        $LONG = 222222222222;
+
+        $type_groups = array();
+
+        $long_cols = array(111111111111,
+                           222222222222,
+                           333333333333);
+        $type_groups[] = self::make_sub_group($this->cf_suplong_sublong, $long_cols);
+
+        $int_cols = array(1, 2, 3);
+        $type_groups[] = self::make_sub_group($this->cf_suplong_subint, $int_cols);
+
+        $time_cols = array($this->TIME1, $this->TIME2, $this->TIME3);
+        $type_groups[] = self::make_sub_group($this->cf_suplong_subtime, $time_cols);
+
+        $lex_cols = array($this->LEX1, $this->LEX2, $this->LEX3);
+        $type_groups[] = self::make_sub_group($this->cf_suplong_sublex, $lex_cols);
+
+        $ascii_cols = array('aaaa', 'bbbb', 'cccc');
+        $type_groups[] = self::make_sub_group($this->cf_suplong_subascii, $ascii_cols);
+
+        $utf8_cols = array("a&#1047;", "b&#1048;", "c&#1049;"); 
+        $type_groups[] = self::make_sub_group($this->cf_suplong_subutf8, $utf8_cols);
+
+
+        foreach($type_groups as $group) {
+
+            $cf = $group['cf'];
+            print "$cf->column_family\n";
+
+            $group['cf']->insert(self::$KEYS[0], $group['dict']);
+            self::assertEqual($group['cf']->get(self::$KEYS[0]),
+                              $group['dict']);
+            self::assertEqual($group['cf']->get(self::$KEYS[0], $columns=array($LONG)),
+                              $group['dict']);
+
+            # A start and end that are the same
+            self::assertEqual($group['cf']->get(self::$KEYS[0], $columns=null,
+                                                $column_start=$LONG,
+                                                $column_finish=$LONG),
+                              $group['dict']);
+
+            self::assertEqual($group['cf']->get_count(self::$KEYS[0]), 1);
+
+            ### remove() tests ###
+
+            $group['cf']->remove(self::$KEYS[0], $columns=null, $super_column=$LONG);
+            self::assertEqual($group['cf']->get_count(self::$KEYS[0]), 0);
+
+            # Insert more than one row
+            $group['cf']->insert(self::$KEYS[0], $group['dict']);
+            $group['cf']->insert(self::$KEYS[1], $group['dict']);
+            $group['cf']->insert(self::$KEYS[2], $group['dict']);
+
+
+            ### multiget() tests ###
+
+            $result = $group['cf']->multiget(self::$KEYS);
+            foreach(range(0,2) as $i)            
+                self::assertEqual($result[self::$KEYS[0]], $group['dict']);
+
+            $result = $group['cf']->multiget(array(self::$KEYS[2]));
+            self::assertEqual($result[self::$KEYS[2]], $group['dict']);
+
+            $result = $group['cf']->multiget(self::$KEYS, $columns=array($LONG));
+            foreach(range(0,2) as $i)
+                self::assertEqual($result[self::$KEYS[$i]], $group['dict']);
+
+            $result = $group['cf']->multiget(self::$KEYS,
+                                             $columns=null,
+                                             $column_start='',
+                                             $column_finish='',
+                                             $column_reverse=False,
+                                             $count=ColumnFamily::DEFAULT_COLUMN_COUNT,
+                                             $supercolumn=$LONG);
+            foreach(range(0,2) as $i)
+                self::assertEqual($result[self::$KEYS[$i]], $group['dict'][$LONG]);
+
+            $result = $group['cf']->multiget(self::$KEYS,
+                                             $columns=null,
+                                             $column_start=$LONG,
+                                             $column_finish=$LONG);
+            foreach(range(0,2) as $i)
+                self::assertEqual($result[self::$KEYS[$i]], $group['dict']);
+
+            ### get_range() tests ###
+
+            $result = $group['cf']->get_range($key_start=self::$KEYS[0]);
+            foreach($result as $subres) {
+                self::assertEqual($subres, $group['dict']);
+            }
+
+            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
+                                              $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $columns=null,
+                                              $column_start=$LONG,
+                                              $column_finish=$LONG);
+            foreach($result as $subres)
+                self::assertEqual($subres, $group['dict']);
+
+            $result = $group['cf']->get_range($key_start=self::$KEYS[0],
+                                              $key_finish='',
+                                              $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $columns=array($LONG));
+            foreach($result as $subres)
+                self::assertEqual($subres, $group['dict']);
+
+            $result = $group['cf']->get_range($key_start=self::$KEYS[0],
+                                              $key_finish='',
+                                              $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $columns=null,
+                                              $column_start='',
+                                              $column_finish='',
+                                              $column_revered=False,
+                                              $column_count=ColumnFamily::DEFAULT_COLUMN_COUNT,
+                                              $super_column=$LONG);
+            foreach($result as $subres)
+                self::assertEqual($subres, $group['dict'][$LONG]);
+        }
 
     }
 }

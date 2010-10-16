@@ -469,8 +469,8 @@ class ColumnFamily {
         return $this->client->multiget_count($keys, $column_parent, $predicate, $this->rcl($read_consistency_level));
     }
 
-    public function get_range($start_key="",
-                              $end_key="",
+    public function get_range($key_start="",
+                              $key_finish="",
                               $row_count=self::DEFAULT_ROW_COUNT,
                               $columns=null,
                               $column_start="",
@@ -486,8 +486,8 @@ class ColumnFamily {
                                                   $column_count);
 
         $key_range = new cassandra_KeyRange();
-        $key_range->start_key = $start_key;
-        $key_range->end_key   = $end_key;
+        $key_range->start_key = $key_start;
+        $key_range->end_key   = $key_finish;
         $key_range->count     = $row_count;
 
         $resp = $this->client->get_range_slices($column_parent, $predicate, $key_range,
