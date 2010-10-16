@@ -44,7 +44,7 @@ class ColumnFamily {
     const MAX_COUNT = 2147483647; # 2^31 - 1
 
     private $client;
-    private $column_family;
+    public $column_family;
     private $is_super;
     private $cf_data_type;
     private $col_name_type;
@@ -70,7 +70,7 @@ class ColumnFamily {
                                 $autopack_names=true,
                                 $autopack_values=true,
                                 $read_consistency_level=cassandra_ConsistencyLevel::ONE,
-                                $write_consistency_level=cassandra_ConsistencyLevel::ZERO) {
+                                $write_consistency_level=cassandra_ConsistencyLevel::ONE) {
 
         $this->client = $connection->connect();
         $this->column_family = $column_family;
@@ -143,13 +143,25 @@ class ColumnFamily {
             return $write_consistency_level;
     }
 
-    static private function create_slice_predicate($columns, $column_start, $column_finish,
+    private function create_slice_predicate($columns, $column_start, $column_finish,
                                                    $column_reversed, $column_count) {
 
         $predicate = new cassandra_SlicePredicate();
         if ($columns !== null) {
-            $predicate->column_names = $columns;
+            $packed_cols = array();
+            foreach($columns as $col)
+                $packed_cols[] = $this->pack_name($col, $is_supercol_name=$this->is_super);
+            $predicate->column_names = $packed_cols;
         } else {
+            if ($column_start != null and $column_start != '')
+                $column_start = $this->pack_name($column_start,
+                                                 $is_supercol_name=$this->is_super,
+                                                 $slice_end=self::SLICE_START);
+            if ($column_finish != null and $column_finish != '')
+                $column_finish = $this->pack_name($column_finish,
+                                                 $is_supercol_name=$this->is_super,
+                                                  $slice_end=self::SLICE_FINISH);
+
             $slice_range = new cassandra_SliceRange();
             $slice_range->count = $column_count;
             $slice_range->reversed = $column_reversed;
@@ -170,22 +182,6 @@ class ColumnFamily {
     const NON_SLICE = 0;
     const SLICE_START = 1;
     const SLICE_FINISH = 2;
-
-    private function pack_slice_cols(&$super_column,
-                                     &$column_start,
-                                     &$column_finish) {
-        if ($super_column != null)
-            $super_column = $this->pack_name($super_column,
-                                             $is_supercol_name=true);
-        if ($column_start != '')
-            $column_start = $this->pack_name($column_start,
-                                             $is_supercol_name=false,
-                                             $slice_end=self::SLICE_START);
-        if ($column_finish != '')
-            $column_finish = $this->pack_name($column_finish,
-                                              $is_supercol_name=false,
-                                              $slice_end=self::SLICE_FINISH);
-    }
 
     private function pack_name($value, $is_supercol_name=false, $slice_end=self::NON_SLICE) {
         if (!$this->autopack_names)
@@ -398,17 +394,8 @@ class ColumnFamily {
                         $super_column=null,
                         $read_consistency_level=null) {
 
-        $this->pack_slice_cols($super_column, $column_start, $column_finish);
-
-        $packed_cols = null;
-        if ($columns != null) {
-            $packed_cols = array();
-            foreach($columns as $col)
-                $packed_cols[] = $this->pack_name($col, $is_supercol_name=$this->is_super);
-        }
-
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($packed_cols, $column_start, $column_finish,
+        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
                                                   $column_reversed, $column_count);
 
         $resp = $this->client->get_slice($key, $column_parent, $predicate, $this->rcl($read_consistency_level));
@@ -532,11 +519,10 @@ class ColumnFamily {
 
         $deletion = new cassandra_Deletion();
         $deletion->timestamp = CassandraUtil::get_time();
-        $deletion->super_column = $super_column;
+        $deletion->super_column = $this->pack_name($super_column, true);
 
         if ($columns != null) {
-            $predicate = new cassandra_SlicePredicate();
-            $predicate->column_names = $columns;
+            $predicate = $this->create_slice_predicate($columns, '', '', false, self::DEFAULT_COLUMN_COUNT);
             $deletion->predicate = $predicate;
         }
 
