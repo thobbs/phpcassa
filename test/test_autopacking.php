@@ -36,6 +36,14 @@ class TestAutopacking extends UnitTestCase {
         $this->cf_suplong_subascii = new ColumnFamily($this->client, 'SuperLongSubAscii');
         $this->cf_suplong_subutf8  = new ColumnFamily($this->client, 'SuperLongSubUTF8');
 
+        $this->cf_valid_long  = new ColumnFamily($this->client, 'ValidatorLong');
+        $this->cf_valid_int   = new ColumnFamily($this->client, 'ValidatorInt');
+        $this->cf_valid_time  = new ColumnFamily($this->client, 'ValidatorTime');
+        $this->cf_valid_lex   = new ColumnFamily($this->client, 'ValidatorLex');
+        $this->cf_valid_ascii = new ColumnFamily($this->client, 'ValidatorAscii');
+        $this->cf_valid_utf8  = new ColumnFamily($this->client, 'ValidatorUTF8');
+        $this->cf_valid_bytes = new ColumnFamily($this->client, 'ValidatorBytes');
+
         $this->cfs = array($this->cf_long, $this->cf_int, $this->cf_ascii,
                            $this->cf_time, $this->cf_lex, $this->cf_utf8,
 
@@ -44,7 +52,12 @@ class TestAutopacking extends UnitTestCase {
 
                            $this->cf_suplong_sublong, $this->cf_suplong_subint,
                            $this->cf_suplong_subtime, $this->cf_suplong_sublex,
-                           $this->cf_suplong_subascii, $this->cf_suplong_subutf8);
+                           $this->cf_suplong_subascii, $this->cf_suplong_subutf8,
+
+                           $this->cf_valid_long, $this->cf_valid_int,
+                           $this->cf_valid_time, $this->cf_valid_lex,
+                           $this->cf_valid_ascii, $this->cf_valid_utf8,
+                           $this->cf_valid_bytes);
          
         $this->TIME1 = CassandraUtil::uuid1();
         $this->TIME2 = CassandraUtil::uuid1();
@@ -181,9 +194,6 @@ class TestAutopacking extends UnitTestCase {
 
         foreach($type_groups as $group) {
 
-            $cf = $group['cf'];
-            print "$cf->column_family\n";
-
             $group['cf']->insert(self::$KEYS[0], $group['dict']);
             self::assertEqual($group['cf']->get(self::$KEYS[0]), $group['dict']);
 
@@ -316,9 +326,6 @@ class TestAutopacking extends UnitTestCase {
         $type_groups[] = self::make_super_group($this->cf_suputf8, $utf8_cols);
 
         foreach($type_groups as $group) {
-
-            $cf = $group['cf'];
-            print "$cf->column_family\n";
 
             $group['cf']->insert(self::$KEYS[0], $group['dict']);
             self::assertEqual($group['cf']->get(self::$KEYS[0]), $group['dict']);
@@ -456,9 +463,6 @@ class TestAutopacking extends UnitTestCase {
 
         foreach($type_groups as $group) {
 
-            $cf = $group['cf'];
-            print "$cf->column_family\n";
-
             $group['cf']->insert(self::$KEYS[0], $group['dict']);
             self::assertEqual($group['cf']->get(self::$KEYS[0]),
                               $group['dict']);
@@ -548,7 +552,44 @@ class TestAutopacking extends UnitTestCase {
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict'][$LONG]);
         }
+    }
 
+    public function test_validated_columns(){
+
+        # Longs
+        $col = array('subcol' => 222222222222);
+        $this->cf_valid_long->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_long->get(self::$KEYS[0]), $col);
+
+        # Integers
+        $col = array('subcol' => 2);
+        $this->cf_valid_int->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_int->get(self::$KEYS[0]), $col);
+
+        # TimeUUIDs
+        $col = array('subcol' => $this->TIME1);
+        $this->cf_valid_time->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_time->get(self::$KEYS[0]), $col);
+
+        # LexicalUUIDs
+        $col = array('subcol' => $this->LEX1);
+        $this->cf_valid_lex->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_lex->get(self::$KEYS[0]), $col);
+
+        # ASCII
+        $col = array('subcol' => 'aaa');
+        $this->cf_valid_ascii->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_ascii->get(self::$KEYS[0]), $col);
+
+        # UTF8
+        $col = array('subcol' => "a&#1047;");
+        $this->cf_valid_utf8->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_utf8->get(self::$KEYS[0]), $col);
+
+        # BytesType
+        $col = array('subcol' => 'aaa123');
+        $this->cf_valid_bytes->insert(self::$KEYS[0], $col);
+        self::assertEqual($this->cf_valid_bytes->get(self::$KEYS[0]), $col);
     }
 }
 ?>
