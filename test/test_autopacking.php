@@ -44,6 +44,8 @@ class TestAutopacking extends UnitTestCase {
         $this->cf_valid_utf8  = new ColumnFamily($this->client, 'ValidatorUTF8');
         $this->cf_valid_bytes = new ColumnFamily($this->client, 'ValidatorBytes');
 
+        $this->cf_def_valid = new ColumnFamily($this->client, 'DefaultValidator');
+
         $this->cfs = array($this->cf_long, $this->cf_int, $this->cf_ascii,
                            $this->cf_time, $this->cf_lex, $this->cf_utf8,
 
@@ -57,7 +59,9 @@ class TestAutopacking extends UnitTestCase {
                            $this->cf_valid_long, $this->cf_valid_int,
                            $this->cf_valid_time, $this->cf_valid_lex,
                            $this->cf_valid_ascii, $this->cf_valid_utf8,
-                           $this->cf_valid_bytes);
+                           $this->cf_valid_bytes,
+
+                           $this->cf_def_valid);
          
         $this->TIME1 = CassandraUtil::uuid1();
         $this->TIME2 = CassandraUtil::uuid1();
@@ -590,6 +594,18 @@ class TestAutopacking extends UnitTestCase {
         $col = array('subcol' => 'aaa123');
         $this->cf_valid_bytes->insert(self::$KEYS[0], $col);
         self::assertEqual($this->cf_valid_bytes->get(self::$KEYS[0]), $col);
+    }
+
+    public function test_default_validated_columns() {
+        $col_cf = array('aaaaaa' => 222222222222);
+        $col_cm = array('subcol' => $this->TIME1);
+
+        # Both of these inserts work, as cf allows
+        # longs and cm for 'subcol' allows TimeUUIDs
+        $this->cf_def_valid->insert(self::$KEYS[0], $col_cf);
+        $this->cf_def_valid->insert(self::$KEYS[0], $col_cm);
+        self::assertEqual($this->cf_def_valid->get(self::$KEYS[0]),
+                          array('aaaaaa' => 222222222222, 'subcol' => $this->TIME1));
     }
 }
 ?>
