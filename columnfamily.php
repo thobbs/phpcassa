@@ -56,15 +56,6 @@ class ColumnFamily {
     public $read_consistency_level;
     public $write_consistency_level;
 
-    /*
-    BytesType: Simple sort by byte value. No validation is performed.
-    AsciiType: Like BytesType, but validates that the input can be parsed as US-ASCII.
-    UTF8Type: A string encoded as UTF8
-    LongType: A 64bit long
-    LexicalUUIDType: A 128bit UUID, compared lexically (by byte value)
-    TimeUUIDType: a 128bit version 1 UUID, compared by timestamp
-    */
-
     public function __construct($connection,
                                 $column_family,
                                 $autopack_names=true,
@@ -106,13 +97,191 @@ class ColumnFamily {
         }
         if ($this->autopack_values) {
             $this->cf_data_type = self::extract_type_name($cfdef->default_validation_class);
-            foreach($cfdef->column_metadata as $coldef)
-                $this->col_type_dict[$coldef->name] = self::extract_type_name($coldef->validation_class);
+            foreach($cfdef->column_metadata as $coldef) {
+                $this->col_type_dict[$coldef->name] =
+                        self::extract_type_name($coldef->validation_class);
+            }
         }
     }
 
-    private static $TYPES = array('BytesType', 'LongType', 'IntegerType', 'UTF8Type', 'AsciiType',
-         'LexicalUUIDType', 'TimeUUIDType');
+    public function get($key,
+                        $columns=null,
+                        $column_start="",
+                        $column_finish="",
+                        $column_reversed=False,
+                        $column_count=self::DEFAULT_COLUMN_COUNT,
+                        $super_column=null,
+                        $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
+                                                  $column_reversed, $column_count);
+
+        $resp = $this->client->get_slice($key, $column_parent, $predicate,
+                                         $this->rcl($read_consistency_level));
+        if (count($resp) == 0)
+            throw new cassandra_NotFoundException();
+
+        return $this->supercolumns_or_columns_to_array($resp);
+    }
+
+    public function multiget($keys,
+                             $columns=null,
+                             $column_start="",
+                             $column_finish="",
+                             $column_reversed=False,
+                             $column_count=self::DEFAULT_COLUMN_COUNT,
+                             $super_column=null,
+                             $read_consistency_level=null)  {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
+                                                  $column_reversed, $column_count);
+
+        $resp = $this->client->multiget_slice($keys, $column_parent, $predicate,
+                                              $this->rcl($read_consistency_level));
+
+        $ret = array();
+        foreach($keys as $key) {
+            $ret[$key] = null;
+        }
+
+        $non_empty_keys = array();
+        foreach($resp as $key => $val) {
+            if (count($val) > 0) {
+                $non_empty_keys[] = $key;
+                $ret[$key] = $this->supercolumns_or_columns_to_array($val);
+            }
+        }
+
+        foreach($keys as $key) {
+            if (!in_array($key, $non_empty_keys))
+                unset($ret[$key]);
+        }
+        return $ret;
+    }
+
+    public function get_count($key,
+                              $columns=null,
+                              $column_start='',
+                              $column_finish='',
+                              $super_column=null,
+                              $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   false, self::MAX_COUNT);
+
+        return $this->client->get_count($key, $column_parent, $predicate,
+                                        $this->rcl($read_consistency_level));
+    }
+
+    public function multiget_count($keys,
+                                   $columns=null,
+                                   $column_start='',
+                                   $column_finish='',
+                                   $super_column=null,
+                                   $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   false, self::MAX_COUNT);
+
+        return $this->client->multiget_count($keys, $column_parent, $predicate,
+                                             $this->rcl($read_consistency_level));
+    }
+
+    public function get_range($key_start="",
+                              $key_finish="",
+                              $row_count=self::DEFAULT_ROW_COUNT,
+                              $columns=null,
+                              $column_start="",
+                              $column_finish="",
+                              $column_reversed=false,
+                              $column_count=self::DEFAULT_COLUMN_COUNT,
+                              $super_column=null,
+                              $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start,
+                                                  $column_finish, $column_reversed,
+                                                  $column_count);
+
+        $key_range = new cassandra_KeyRange();
+        $key_range->start_key = $key_start;
+        $key_range->end_key   = $key_finish;
+        $key_range->count     = $row_count;
+
+        $resp = $this->client->get_range_slices($column_parent, $predicate, $key_range,
+                                                $this->rcl($read_consistency_level));
+
+        return $this->keyslices_to_array($resp);
+    }
+
+    public function get_range_iterator($key_start="",
+                                       $key_finish="",
+                                       $row_count=self::DEFAULT_ROW_COUNT,
+                                       $columns=null,
+                                       $column_start="",
+                                       $column_finish="",
+                                       $column_reversed=false,
+                                       $column_count=self::DEFAULT_COLUMN_COUNT,
+                                       $super_column=null,
+                                       $read_consistency_level=null) {
+
+        return new CassandraIterator($this,
+                                     $key_start, $key_finish, $row_count,
+                                     $columns, $column_start, $column_finish,
+                                     $column_reversed, $column_count,
+                                     $super_column,
+                                     $read_consistency_level);
+    }
+
+    public function insert($key,
+                           $columns,
+                           $timestamp=null,
+                           $ttl=null,
+                           $write_consistency_level=null) {
+
+        if ($timestamp == null)
+            $timestamp = CassandraUtil::get_time();
+
+        $cfmap = array();
+        $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp);
+
+        return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
+    }
+
+    public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
+
+        $deletion = new cassandra_Deletion();
+        $deletion->timestamp = CassandraUtil::get_time();
+        $deletion->super_column = $this->pack_name($super_column, true);
+
+        if ($columns != null) {
+            $predicate = $this->create_slice_predicate($columns, '', '', false,
+                                                       self::DEFAULT_COLUMN_COUNT);
+            $deletion->predicate = $predicate;
+        }
+
+        $mutation = new cassandra_Mutation();
+        $mutation->deletion = $deletion;
+
+        $mut_map = array($key => array($this->column_family => array($mutation))); 
+
+        return $this->client->batch_mutate($mut_map, $this->wcl($write_consistency_level));
+    }
+
+    public function truncate() {
+        return $this->client->truncate($this->column_family);
+    }
+
+
+    /********************* Helper functions *************************/
+
+    private static $TYPES = array('BytesType', 'LongType', 'IntegerType',
+                                  'UTF8Type', 'AsciiType', 'LexicalUUIDType',
+                                  'TimeUUIDType');
 
     private static function extract_type_name($type_string) {
         if ($type_string == null or $type_string == '')
@@ -325,14 +494,13 @@ class ColumnFamily {
 
             $value = $hi * 4294967296 + $lo;
 
-            if ($isNeg) {
+            if ($isNeg)
                 $value = 0 - $value;
-            }
+
         } else {
             // Upcast negatives in LSB bit
-            if ($arr[2] & 0x80000000) {
+            if ($arr[2] & 0x80000000)
                 $arr[2] = $arr[2] & 0xffffffff;
-            }
 
             // Check for a negative
             if ($arr[1] & 0x80000000) {
@@ -350,9 +518,8 @@ class ColumnFamily {
     private function pack($value, $data_type) {
         if ($data_type == 'LongType')
             return self::pack_long($value);
-        else if ($data_type == 'IntegerType') {
+        else if ($data_type == 'IntegerType')
             return pack('N', $value); // Unsigned 32bit big-endian
-        }
         else if ($data_type == 'AsciiType')
             return self::pack_str($value, strlen($value));
         else if ($data_type == 'UTF8Type') {
@@ -360,9 +527,8 @@ class ColumnFamily {
                 $value = utf8_encode($value);
             return self::pack_str($value, strlen($value));
         }
-        else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType') {
+        else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType')
             return self::pack_str($value, 16);
-        }
         else
             return $value;
     }
@@ -378,214 +544,23 @@ class ColumnFamily {
             return self::unpack_str($value, strlen($value));
         else if ($data_type == 'UTF8Type')
             return utf8_decode(self::unpack_str($value, strlen($value)));
-        else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType') {
+        else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType')
             return $value;
-        }
         else
             return $value;
     }
 
-    public function get($key,
-                        $columns=null,
-                        $column_start="",
-                        $column_finish="",
-                        $column_reversed=False,
-                        $column_count=self::DEFAULT_COLUMN_COUNT,
-                        $super_column=null,
-                        $read_consistency_level=null) {
-
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
-                                                  $column_reversed, $column_count);
-
-        $resp = $this->client->get_slice($key, $column_parent, $predicate, $this->rcl($read_consistency_level));
-        if (count($resp) == 0)
-            throw new cassandra_NotFoundException();
-
-        return $this->supercolumns_or_columns_to_array($resp);
-    }
-
-    public function multiget($keys,
-                             $columns=null,
-                             $column_start="",
-                             $column_finish="",
-                             $column_reversed=False,
-                             $column_count=self::DEFAULT_COLUMN_COUNT,
-                             $super_column=null,
-                             $read_consistency_level=null)  {
-
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
-                                                  $column_reversed, $column_count);
-
-        $resp = $this->client->multiget_slice($keys, $column_parent, $predicate,
-                                              $this->rcl($read_consistency_level));
-
-        $ret = array();
-        foreach($keys as $key) {
-            $ret[$key] = null;
-        }
-
-        $non_empty_keys = array();
-        foreach($resp as $key => $val) {
-            if (count($val) > 0) {
-                $non_empty_keys[] = $key;
-                $ret[$key] = $this->supercolumns_or_columns_to_array($val);
-            }
-        }
-
-        foreach($keys as $key) {
-            if (!in_array($key, $non_empty_keys))
-                unset($ret[$key]);
-        }
-        return $ret;
-    }
-
-    public function get_count($key,
-                              $columns=null,
-                              $column_start='',
-                              $column_finish='',
-                              $super_column=null,
-                              $read_consistency_level=null) {
-
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   false, self::MAX_COUNT);
-
-        return $this->client->get_count($key, $column_parent, $predicate, $this->rcl($read_consistency_level));
-    }
-
-    public function multiget_count($keys,
-                                   $columns=null,
-                                   $column_start='',
-                                   $column_finish='',
-                                   $super_column=null,
-                                   $read_consistency_level=null) {
-
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   false, self::MAX_COUNT);
-
-        return $this->client->multiget_count($keys, $column_parent, $predicate, $this->rcl($read_consistency_level));
-    }
-
-    public function get_range($key_start="",
-                              $key_finish="",
-                              $row_count=self::DEFAULT_ROW_COUNT,
-                              $columns=null,
-                              $column_start="",
-                              $column_finish="",
-                              $column_reversed=false,
-                              $column_count=self::DEFAULT_COLUMN_COUNT,
-                              $super_column=null,
-                              $read_consistency_level=null) {
-
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start,
-                                                  $column_finish, $column_reversed,
-                                                  $column_count);
-
-        $key_range = new cassandra_KeyRange();
-        $key_range->start_key = $key_start;
-        $key_range->end_key   = $key_finish;
-        $key_range->count     = $row_count;
-
-        $resp = $this->client->get_range_slices($column_parent, $predicate, $key_range,
-                                                $this->rcl($read_consistency_level));
-
-        return $this->keyslices_to_array($resp);
-    }
-
-    public function get_range_iterator($start_key="", $end_key="", $row_count=self::DEFAULT_ROW_LIMIT, $slice_start="", $slice_finish="") {
-        return new CassandraIterator($this, $start_key, $end_key, $row_count, $slice_start, $slice_end);
-    }
-
-    public function insert($key,
-                           $columns,
-                           $timestamp=null,
-                           $ttl=null,
-                           $write_consistency_level=null) {
-
-        if ($timestamp == null)
-            $timestamp = CassandraUtil::get_time();
-
-        $cfmap = array();
-        $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp);
-
-        return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
-    }
-
-    public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
-
-        $deletion = new cassandra_Deletion();
-        $deletion->timestamp = CassandraUtil::get_time();
-        $deletion->super_column = $this->pack_name($super_column, true);
-
-        if ($columns != null) {
-            $predicate = $this->create_slice_predicate($columns, '', '', false, self::DEFAULT_COLUMN_COUNT);
-            $deletion->predicate = $predicate;
-        }
-
-        $mutation = new cassandra_Mutation();
-        $mutation->deletion = $deletion;
-
-        $mut_map = array($key => array($this->column_family => array($mutation))); 
-
-        return $this->client->batch_mutate($mut_map, $this->wcl($write_consistency_level));
-    }
-
-    public function truncate() {
-        return $this->client->truncate($this->column_family);
-    }
-
-    // Wrappers
-    public function get_list($key, $key_name='key', $slice_start="", $slice_finish="") {
-        // Must be on supercols!
-        $resp = $this->get($key, NULL, $slice_start, $slice_finish);
-        $ret = array();
-        foreach($resp as $_key => $_value) {
-            $_value[$key_name] = $_key;
-            $ret[] = $_value;
-        }
-        return $ret;
-    }
-
-    public function get_range_list($key_name='key', $start_key="", $end_key="",
-                                   $row_count=self::DEFAULT_ROW_LIMIT, $slice_start="", $slice_finish="") {
-        $resp = $this->get_range($start_key, $end_key, $row_count, $slice_start, $slice_finish);
-        $ret = array();
-        foreach($resp as $_key => $_value) {
-            if(!empty($_value)) { // filter nulls
-                $_value[$key_name] = $_key;
-                $ret[] = $_value;
-            }
-        }
-        return $ret;
-    }
-
-    public function multiget_list($keys, $key_name='key', $slice_start="", $slice_finish="") {
-        $resp = $this->multiget($keys, $slice_start, $slice_finish);
-        $ret = array();
-        foreach($resp as $_key => $_value) {
-            $_value[$key_name] = $_key;
-            $ret[] = $_value;
-        }
-        return $ret;
-    }
-
-    // Helpers for parsing Cassandra's thrift objects into PHP arrays
-    public function keyslices_to_array($keyslices) {
+    private function keyslices_to_array($keyslices) {
         $ret = null;
         foreach($keyslices as $keyslice) {
-            $key     = $keyslice->key;
+            $key = $keyslice->key;
             $columns = $keyslice->columns;
-
             $ret[$key] = $this->supercolumns_or_columns_to_array($columns);
         }
         return $ret;
     }
 
-    public function supercolumns_or_columns_to_array($array_of_c_or_sc) {
+    private function supercolumns_or_columns_to_array($array_of_c_or_sc) {
         $ret = null;
         foreach($array_of_c_or_sc as $c_or_sc) {
             if($c_or_sc->column) { // normal columns
@@ -601,7 +576,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    public function columns_to_array($array_of_c) {
+    private function columns_to_array($array_of_c) {
         $ret = null;
         foreach($array_of_c as $c) {
             $name  = $this->unpack_name($c->name, false);
@@ -611,8 +586,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    // Helpers for turning PHP arrays into Cassandra's thrift objects
-    public function array_to_mutation($array, $timestamp=null) {
+    private function array_to_mutation($array, $timestamp=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
         $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp);
@@ -625,7 +599,7 @@ class ColumnFamily {
         return $ret;
     }
     
-    public function array_to_supercolumns_or_columns($array, $timestamp=null) {
+    private function array_to_supercolumns_or_columns($array, $timestamp=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
         $ret = null;
@@ -649,7 +623,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    public function array_to_columns($array, $timestamp=null) {
+    private function array_to_columns($array, $timestamp=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
         $ret = null;
@@ -665,47 +639,64 @@ class ColumnFamily {
     }
 }
 
-class CassandraIterator implements Iterator {
-    const DEFAULT_BUFFER_SIZE = 1024; // default max # of rows for get_range()
+// Iterates over a column family row-by-row, typically with only a subset
+// of each row's columns.
+class ColumnFamilyIterator implements Iterator {
 
-    // Options
-    public $column_family;
-    public $buffer_size;
-    public $start_key, $end_key;
-    public $start_slice, $end_slice;
+    private $column_family;
+    private $buffer_size;
+    private $key_start, $key_finish;
+    private $columns, $column_start, $column_finish, $columns_reversed, $column_count;
+    private $super_column;
+    private $read_consistency_level;
 
-    // State
-    public $current_buffer;
-    public $next_start_key;
-    public $beyond_last_field;
+    private $current_buffer;
+    private $next_start_key;
+    private $is_valid;
 
     public function __construct($column_family,
-                                $start_key="",
-                                $end_key="",
-                                $buffer_size=self::DEFAULT_BUFFER_SIZE,
-                                $start_slice="",
-                                $end_slice="") {
-        // Lets go
+                                $key_start="",
+                                $key_finish="",
+                                $buffer_size=self::DEFAULT_ROW_COUNT,
+                                $columns=null,
+                                $column_start="",
+                                $column_finish="",
+                                $column_reversed=false,
+                                $column_count=ColumnFamily::DEFAULT_COLUMN_COUNT,
+                                $super_column=null,
+                                $read_consistency_level=cassandra_ConsistencyLevel::ONE) {
+
         $this->column_family = $column_family;
-        $this->start_key     = $start_key;
-        $this->end_key       = $end_key;
-        $this->buffer_size   = $buffer_size;
-        $this->start_slice   = $start_slice;
-        $this->end_slice     = $end_slice;
+        $this->key_start = $key_start;
+        $this->key_finish = $key_finish;
+        $this->buffer_size = $buffer_size;
+        $this->columns = $columns;
+        $this->column_start = $column_start;
+        $this->column_finish = $column_finish;
+        $this->column_reversed = $column_reversed;
+        $this->column_count = $column_count;
+        $this->super_column = $super_column;
+        $this->read_consistency_level = $read_consistency_level;
     }
 
-    // Interface
-    public function rewind() {
-        // Setup first buffer
-        $this->beyond_last_field = false;
-        $this->next_start_key = $this->start_key;
+    private function get_buffer() {
         $this->current_buffer = $this->column_family->get_range(
             $this->next_start_key,
             $this->end_key,
             $this->buffer_size,
-            $this->start_slice,
-            $this->end_slice
-        );
+            $this->column_start,
+            $this->column_finish,
+            $this->column_reversed,
+            $this->column_count,
+            $this->super_column,
+            $this->read_consistency_level);
+    }
+
+    public function rewind() {
+        // Setup first buffer
+        $this->is_valid = true;
+        $this->next_start_key = $this->start_key;
+        $this->get_buffer();
     }
 
     public function current() {
@@ -717,53 +708,37 @@ class CassandraIterator implements Iterator {
     }
 
     public function next() {
-        // See http://www.php.net/manual/en/function.current.php#81431
-        // for figuring if we are at the end
         $next = next($this->current_buffer);
-        $key  = key($this->current_buffer);
-        if(!isset($key)) {
-            $this->beyond_last_field = true;
-            return false;
-        } else {
-            return $next;
-        }
-    }
+        $key = key($this->current_buffer);
 
-    public function valid() {
-        if($this->beyond_last_field && count($this->current_buffer) < $this->buffer_size) {
-            // Stop if we were at the last buffer (we got less that $buffer_size elements returned)
-            return false;
-        } else if($this->beyond_last_field) {
+        $beyond_last_field = !isset($key);
+
+        if($beyond_last_field && count($this->current_buffer) < $this->buffer_size) {
+            // This was the last page
+            $this->is_valid = false;
+        } else if($beyond_last_field) {
             // Set the next start key
             end($this->current_buffer);
             $this->next_start_key = key($this->current_buffer);
 
             // Get the next buffer
-            $this->current_buffer = $this->column_family->get_range(
-                $this->next_start_key,
-                $this->end_key,
-                $this->buffer_size,
-                $this->start_slice,
-                $this->end_slice
-            );
+            $this->get_buffer();
 
             // If the result set is 1, we can stop
             // because the first item should always
             // be skipped
             if(count($this->current_buffer) == 1) {
-                return false;
+                $this->is_valid = false;
             } else {
                 // Skip 1st item (because it is the last buffer's last key)
                 next($this->current_buffer);
-
-                // Let us iterate again
-                $this->beyond_last_field = false;
-                return true;
+                $this->is_valid = true;
             }
-        } else {
-            // Normal iteration
-            return true;
         }
+    }
+
+    public function valid() {
+        return $this->is_valid;
     }
 }
 
