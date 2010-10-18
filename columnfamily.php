@@ -39,8 +39,6 @@ class ColumnFamily {
 
     const DEFAULT_ROW_COUNT = 100; // default max # of rows for get_range()
     const DEFAULT_COLUMN_COUNT = 100; // default max # of columns for get()
-    const DEFAULT_COLUMN_TYPE = "BytesType";
-    const DEFAULT_SUBCOLUMN_TYPE = null;
     const MAX_COUNT = 2147483647; # 2^31 - 1
 
     private $client;
