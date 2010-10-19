@@ -4,26 +4,45 @@ require_once('uuid.php');
 
 class CassandraUtil {
 
+    /**
+     * Generate a v1 UUID (timestamp based)
+     * @return string a byte[] representation of a UUID 
+     */
     static public function uuid1($node=null) {
         $uuid = UUID::mint(1, $node);
         return $uuid->bytes;
     }
 
+    /**
+     * Generate a v3 UUID
+     * @return string a byte[] representation of a UUID 
+     */
     static public function uuid3($null=null, $namespace=null) {
         $uuid = UUID::mint(3, $node, $namespace);
         return $uuid->bytes;
     }
 
+    /**
+     * Generate a v4 UUID
+     * @return string a byte[] representation of a UUID 
+     */
     static public function uuid4() {
         $uuid = UUID::mint(4);
         return $uuid->bytes;
     }
 
+    /**
+     * Generate a v5 UUID
+     * @return string a byte[] representation of a UUID 
+     */
     static public function uuid5($node, $namespace=null) {
         $uuid = UUID::mint(5, $node, $namespace);
         return $uuid->bytes;
     }
 
+    /**
+     * Get a timestamp with microsecond precision
+     */
     static public function get_time() {
         // By Zach Buller (zachbuller@gmail.com)
         $time1 = microtime();
@@ -35,25 +54,53 @@ class CassandraUtil {
     }
 }
 
+/**
+ * Representation of a ColumnFamily in Cassandra.  This may be used for
+ * standard column families or super column families. All data insertions,
+ * deletions, or retrievals will go through a ColumnFamily.
+ */
 class ColumnFamily {
 
+    /** The default limit to the number of rows retrieved in queries. */
     const DEFAULT_ROW_COUNT = 100; // default max # of rows for get_range()
+    /** The default limit to the number of columns retrieved in queries. */
     const DEFAULT_COLUMN_COUNT = 100; // default max # of columns for get()
+    /** The maximum number that can be returned by get_count(). */
     const MAX_COUNT = 2147483647; # 2^31 - 1
 
     private $client;
-    public $column_family;
+    private $column_family;
     private $is_super;
     private $cf_data_type;
     private $col_name_type;
     private $supercol_name_type;
     private $col_type_dict;
 
+    /** @var bool whether or not column names are automatically packed/unpacked */
     public $autopack_names;
+    /** @var bool whether or not column values are automatically packed/unpacked */
     public $autopack_values;
+    /** @var cassandra_ConsistencyLevel the default read consistency level */
     public $read_consistency_level;
+    /** @var cassandra_ConsistencyLevel the default write consistency level */
     public $write_consistency_level;
 
+    /**
+     * Constructs a ColumnFamily.
+     *
+     * @param Connection the connection to use for this ColumnFamily
+     * @param string the name of the column family in Cassandra
+     * @param bool whether or not to automatically convert column names 
+     *             to and from their binary representation in Cassandra
+     *             based on their comparator type
+     * @param bool whether or not to automatically convert column values
+     *             to and from their binary representation in Cassandra
+                   based on their validator type
+     * @param cassandra_ConsistencyLevel the default consistency level for
+     *             read operations on this column family
+     * @param cassandra_ConsistencyLevel the default consistency level for
+     *             write operations on this column family
+     */
     public function __construct($connection,
                                 $column_family,
                                 $autopack_names=true,
@@ -102,6 +149,21 @@ class ColumnFamily {
         }
     }
 
+    /**
+     * Fetch a row from this column family.
+     *
+     * @param string $key row key to fetch
+     * @param mixed[] $columns limit the columns or super columns fetched to this list
+     * @param mixed $column_start only fetch columns with name >= this
+     * @param mixed $column_finish only fetch columns with name <= this
+     * @param bool $column_reversed fetch the columns in reverse order
+     * @param int $column_count limit the number of columns returned to this amount
+     * @param mixed $super_column return only columns in this super column
+     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return mixed array(column_name => column_value)
+     */
     public function get($key,
                         $columns=null,
                         $column_start="",
@@ -123,6 +185,21 @@ class ColumnFamily {
         return $this->supercolumns_or_columns_to_array($resp);
     }
 
+    /**
+     * Fetch a set of rows from this column family.
+     *
+     * @param string[] $keys row keys to fetch
+     * @param mixed[] $columns limit the columns or super columns fetched to this list
+     * @param mixed $column_start only fetch columns with name >= this
+     * @param mixed $column_finish only fetch columns with name <= this
+     * @param bool $column_reversed fetch the columns in reverse order
+     * @param int $column_count limit the number of columns returned to this amount
+     * @param mixed $super_column return only columns in this super column
+     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return mixed array(key => array(column_name => column_value))
+     */
     public function multiget($keys,
                              $columns=null,
                              $column_start="",
@@ -159,6 +236,19 @@ class ColumnFamily {
         return $ret;
     }
 
+    /**
+     * Count the number of columns in a row.
+     *
+     * @param string $key row to be counted
+     * @param mixed[] $columns limit the possible columns or super columns counted to this list
+     * @param mixed $column_start only count columns with name >= this
+     * @param mixed $column_finish only count columns with name <= this
+     * @param mixed $super_column count only columns in this super column
+     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return int
+     */
     public function get_count($key,
                               $columns=null,
                               $column_start='',
@@ -174,6 +264,19 @@ class ColumnFamily {
                                         $this->rcl($read_consistency_level));
     }
 
+    /**
+     * Count the number of columns in a set of rows.
+     *
+     * @param string[] $keys rows to be counted
+     * @param mixed[] $columns limit the possible columns or super columns counted to this list
+     * @param mixed $column_start only count columns with name >= this
+     * @param mixed $column_finish only count columns with name <= this
+     * @param mixed $super_column count only columns in this super column
+     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return mixed array(row_key => row_count)
+     */
     public function multiget_count($keys,
                                    $columns=null,
                                    $column_start='',
@@ -189,6 +292,23 @@ class ColumnFamily {
                                              $this->rcl($read_consistency_level));
     }
 
+    /**
+     * Fetch a range of rows from this column family.
+     *
+     * @param string $key_start fetch rows with a key >= this
+     * @param string $key_finish fetch rows with a key <= this
+     * @param int $row_count limit the number of rows returned to this amount
+     * @param mixed[] $columns limit the columns or super columns fetched to this list
+     * @param mixed $column_start only fetch columns with name >= this
+     * @param mixed $column_finish only fetch columns with name <= this
+     * @param bool $column_reversed fetch the columns in reverse order
+     * @param int $column_count limit the number of columns returned to this amount
+     * @param mixed $super_column return only columns in this super column
+     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return mixed array(row_key => array(column_name => column_value))
+     */
     public function get_range($key_start="",
                               $key_finish="",
                               $row_count=self::DEFAULT_ROW_COUNT,
@@ -216,6 +336,23 @@ class ColumnFamily {
         return $this->keyslices_to_array($resp);
     }
 
+    /**
+     * Get an iterator over a range of rows.
+     *
+     * @param string $key_start fetch rows with a key >= this
+     * @param string $key_finish fetch rows with a key <= this
+     * @param int $row_count limit the number of rows returned to this amount
+     * @param mixed[] $columns limit the columns or super columns fetched to this list
+     * @param mixed $column_start only fetch columns with name >= this
+     * @param mixed $column_finish only fetch columns with name <= this
+     * @param bool $column_reversed fetch the columns in reverse order
+     * @param int $column_count limit the number of columns returned to this amount
+     * @param mixed $super_column return only columns in this super column
+     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return ColumnFamilyIterator
+     */
     public function get_range_iterator($key_start="",
                                        $key_finish="",
                                        $row_count=self::DEFAULT_ROW_COUNT,
@@ -227,14 +364,26 @@ class ColumnFamily {
                                        $super_column=null,
                                        $read_consistency_level=null) {
 
-        return new CassandraIterator($this,
-                                     $key_start, $key_finish, $row_count,
-                                     $columns, $column_start, $column_finish,
-                                     $column_reversed, $column_count,
-                                     $super_column,
-                                     $read_consistency_level);
+        return new ColumnFamilyIterator($this,
+                                        $key_start, $key_finish, $row_count,
+                                        $columns, $column_start, $column_finish,
+                                        $column_reversed, $column_count,
+                                        $super_column,
+                                        $read_consistency_level);
     }
 
+    /**
+     * Insert or update columns in a row.
+     *
+     * @param string $key the row to insert or update the columns in
+     * @param mixed $columns array(column_name => column_value) the columns to insert or update
+     * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
+     *        result in a timestamp being generated for you
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return int the timestamp for the operation
+     */
     public function insert($key,
                            $columns,
                            $timestamp=null,
@@ -250,6 +399,17 @@ class ColumnFamily {
         return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
     }
 
+    /**
+     * Remove columns from a row.
+     *
+     * @param string $key the row to remove columns from
+     * @param mixed[] $columns the columns to remove. If null, the entire row will be removed.
+     * @param mixed $super_column only remove this super column
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return int the timestamp for the operation
+     */
     public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
 
         $deletion = new cassandra_Deletion();
@@ -270,6 +430,17 @@ class ColumnFamily {
         return $this->client->batch_mutate($mut_map, $this->wcl($write_consistency_level));
     }
 
+    /*
+     * Mark the entire column family as deleted.
+     *
+     * From the user's perspective a successful call to truncate will result
+     * complete data deletion from cfname. Internally, however, disk space
+     * will not be immediatily released, as with all deletes in cassandra,
+     * this one only marks the data as deleted.
+     *
+     * The operation succeeds only if all hosts in the cluster at available
+     * and will throw an UnavailableException if some hosts are down.
+     */
     public function truncate() {
         return $this->client->truncate($this->column_family);
     }
@@ -637,8 +808,10 @@ class ColumnFamily {
     }
 }
 
-// Iterates over a column family row-by-row, typically with only a subset
-// of each row's columns.
+/*
+ * Iterates over a column family row-by-row, typically with only a subset
+ * of each row's columns.
+ */
 class ColumnFamilyIterator implements Iterator {
 
     private $column_family;
