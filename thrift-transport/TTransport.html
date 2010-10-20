@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class TTransport</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class TTransport</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|													<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Base interface for a transport agent.</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_thrift---transport---TTransport.php.html">/thrift/transport/TTransport.php</a> (line <span class="field">45</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TMemoryBuffer.html">TMemoryBuffer</a></td>
+					<td>
+											A memory buffer is a tranpsort that simply reads from and writes to an  in-memory string buffer. Anytime you call write on it, the data is simply  placed into a buffer, and anytime you call read, data is read from that  buffer.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TNullTransport.html">TNullTransport</a></td>
+					<td>
+											Transport that only accepts writes and ignores them.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/THttpClient.html">THttpClient</a></td>
+					<td>
+											HTTP client for Thrift
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TFramedTransport.html">TFramedTransport</a></td>
+					<td>
+											Framed transport. Writes and reads data in chunks that are stamped with  their length.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TPhpStream.html">TPhpStream</a></td>
+					<td>
+											Php stream transport. Reads to and writes from the php standard streams  php://input and php://output
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TSocket.html">TSocket</a></td>
+					<td>
+											Sockets implementation of the TTransport interface.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TBufferedTransport.html">TBufferedTransport</a></td>
+					<td>
+											Buffered transport. Stores data to an internal buffer that it doesn't  actually write out until flush is called. For reading, we do a greedy  read and then serve data out of the internal buffer.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																												
+												<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#close" title="details" class="method-name">close</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#flush" title="details" class="method-name">flush</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isOpen" title="details" class="method-name">isOpen</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#open" title="details" class="method-name">open</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#read" title="details" class="method-name">read</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$len</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#readAll" title="details" class="method-name">readAll</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$len</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#write" title="details" class="method-name">write</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$buf</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodclose" id="close"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">close</span> (line <span class="line-number">64</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Close the transport.</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			close
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TMemoryBuffer.html#methodclose">TMemoryBuffer::close()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TNullTransport.html#methodclose">TNullTransport::close()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/THttpClient.html#methodclose">THttpClient::close()</a>
+								: Close the transport.
+							</li>
+					<li>
+				<a href="../thrift-transport/TFramedTransport.html#methodclose">TFramedTransport::close()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TPhpStream.html#methodclose">TPhpStream::close()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodclose">TSocket::close()</a>
+								: Closes the socket.
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodclose">TBufferedTransport::close()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodflush" id="flush"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">flush</span> (line <span class="line-number">105</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Flushes any pending data out of a buffer</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> TTransportException if a writing error occurs</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			flush
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/THttpClient.html#methodflush">THttpClient::flush()</a>
+								: Opens and sends the actual request over the HTTP connection
+							</li>
+					<li>
+				<a href="../thrift-transport/TFramedTransport.html#methodflush">TFramedTransport::flush()</a>
+								: Writes the output buffer to the stream in the format of a 4-byte length  followed by the actual data.
+							</li>
+					<li>
+				<a href="../thrift-transport/TPhpStream.html#methodflush">TPhpStream::flush()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodflush">TSocket::flush()</a>
+								: Flush output to the socket.
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodflush">TBufferedTransport::flush()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodisOpen" id="isOpen"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isOpen</span> (line <span class="line-number">52</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Whether this transport is open.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if open</li>
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isOpen
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TMemoryBuffer.html#methodisOpen">TMemoryBuffer::isOpen()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TNullTransport.html#methodisOpen">TNullTransport::isOpen()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/THttpClient.html#methodisOpen">THttpClient::isOpen()</a>
+								: Whether this transport is open.
+							</li>
+					<li>
+				<a href="../thrift-transport/TFramedTransport.html#methodisOpen">TFramedTransport::isOpen()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TPhpStream.html#methodisOpen">TPhpStream::isOpen()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodisOpen">TSocket::isOpen()</a>
+								: Tests whether this is open
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodisOpen">TBufferedTransport::isOpen()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodopen" id="open"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">open</span> (line <span class="line-number">59</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Open the transport for reading/writing</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">throws:</span> TTransportException if cannot open</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			open
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TMemoryBuffer.html#methodopen">TMemoryBuffer::open()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TNullTransport.html#methodopen">TNullTransport::open()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/THttpClient.html#methodopen">THttpClient::open()</a>
+								: Open the transport for reading/writing
+							</li>
+					<li>
+				<a href="../thrift-transport/TFramedTransport.html#methodopen">TFramedTransport::open()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TPhpStream.html#methodopen">TPhpStream::open()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodopen">TSocket::open()</a>
+								: Connects the socket.
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocketPool.html#methodopen">TSocketPool::open()</a>
+								: Connects the socket by iterating through all the servers in the pool  and trying to find one that works.
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodopen">TBufferedTransport::open()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodread" id="read"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">read</span> (line <span class="line-number">73</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Read some data into the array.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The data that has been read</li>
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">throws:</span> TTransportException if cannot read any more data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			read
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$len</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$len</span><span class="var-description">: How much to read</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TMemoryBuffer.html#methodread">TMemoryBuffer::read()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TNullTransport.html#methodread">TNullTransport::read()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/THttpClient.html#methodread">THttpClient::read()</a>
+								: Read some data into the array.
+							</li>
+					<li>
+				<a href="../thrift-transport/TFramedTransport.html#methodread">TFramedTransport::read()</a>
+								: Reads from the buffer. When more data is required reads another entire  chunk and serves future reads out of that.
+							</li>
+					<li>
+				<a href="../thrift-transport/TPhpStream.html#methodread">TPhpStream::read()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodread">TSocket::read()</a>
+								: Read from the socket
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodread">TBufferedTransport::read()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodreadAll" id="readAll"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">readAll</span> (line <span class="line-number">81</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Guarantees that the full amount of data is read.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The data, of exact length</li>
+				<li><span class="field">throws:</span> TTransportException if cannot read data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			readAll
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$len</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$len</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodreadAll">TSocket::readAll()</a>
+								: Uses stream get contents to do the reading
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodreadAll">TBufferedTransport::readAll()</a>
+								: The reason that we customize readAll here is that the majority of PHP  streams are already internally buffered by PHP. The socket stream, for  example, buffers internally and blocks if you call read with $len greater  than the amount of data available, unlike recv() in C.
+							</li>
+				</ul>
+	</div>
+<a name="methodwrite" id="write"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">write</span> (line <span class="line-number">98</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Writes the given data out.</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">throws:</span> TTransportException if writing fails</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			write
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$buf</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$buf</span><span class="var-description">: The data to write</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TMemoryBuffer.html#methodwrite">TMemoryBuffer::write()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TNullTransport.html#methodwrite">TNullTransport::write()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/THttpClient.html#methodwrite">THttpClient::write()</a>
+								: Writes some data into the pending buffer
+							</li>
+					<li>
+				<a href="../thrift-transport/TFramedTransport.html#methodwrite">TFramedTransport::write()</a>
+								: Writes some data to the pending output buffer.
+							</li>
+					<li>
+				<a href="../thrift-transport/TPhpStream.html#methodwrite">TPhpStream::write()</a>
+							</li>
+					<li>
+				<a href="../thrift-transport/TSocket.html#methodwrite">TSocket::write()</a>
+								: Write to the socket.
+							</li>
+					<li>
+				<a href="../thrift-transport/TBufferedTransport.html#methodwrite">TBufferedTransport::write()</a>
+							</li>
+				</ul>
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 18 Oct 2010 19:59:59 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class TSocket</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class TSocket</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sockets implementation of the TTransport interface.</p>
+		<p class="notes">
+			Located in <a class="field" href="_thrift---transport---TSocket.php.html">/thrift/transport/TSocket.php</a> (line <span class="field">29</span>)
+		</p>
+		
+				
+		<pre><a href="../thrift-transport/TTransport.html">TTransport</a>
+   |
+   --TSocket</pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../thrift-transport/TSocketPool.html">TSocketPool</a></td>
+					<td>
+											Sockets implementation of the TTransport interface that allows connection  to a pool of servers.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$debugHandler_" title="details" class="var-name">$debugHandler_</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$debug_" title="details" class="var-name">$debug_</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$host_" title="details" class="var-name">$host_</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$port_" title="details" class="var-name">$port_</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																												
+												<div class="method-definition">
+											<span class="method-result">TSocket</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$host</span> = <span class="var-default">'localhost'</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$port</span> = <span class="var-default">9090</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$persist</span> = <span class="var-default">FALSE</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$debugHandler</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#close" title="details" class="method-name">close</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#flush" title="details" class="method-name">flush</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getHost" title="details" class="method-name">getHost</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#getPort" title="details" class="method-name">getPort</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">bool</span>
+										<a href="#isOpen" title="details" class="method-name">isOpen</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#open" title="details" class="method-name">open</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#read" title="details" class="method-name">read</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$len</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#readAll" title="details" class="method-name">readAll</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$len</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDebug" title="details" class="method-name">setDebug</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$debug</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setRecvTimeout" title="details" class="method-name">setRecvTimeout</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$timeout</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setSendTimeout" title="details" class="method-name">setSendTimeout</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$timeout</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#write" title="details" class="method-name">write</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$buf</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$debugHandler_" id="$debugHandler_"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$debugHandler_</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">92</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Debug handler</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$debug_" id="$debug_"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$debug_</span>
+			 = <span class="var-default"> FALSE</span>			(line <span class="line-number">85</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Debugging on?</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$host_" id="$host_"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$host_</span>
+			 = <span class="var-default"> 'localhost'</span>			(line <span class="line-number">43</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remote hostname</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$port_" id="$port_"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$port_</span>
+			 = <span class="var-default"> '9090'</span>			(line <span class="line-number">50</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remote port</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">102</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Socket constructor</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">TSocket</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$host</span> = <span class="var-default">'localhost'</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$port</span> = <span class="var-default">9090</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$persist</span> = <span class="var-default">FALSE</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$debugHandler</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$host</span><span class="var-description">: Remote hostname</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$port</span><span class="var-description">: Remote port</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$persist</span><span class="var-description">: Whether to use a persistent socket</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$debugHandler</span><span class="var-description">: Function to call for error logging</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TSocketPool.html#method__construct">TSocketPool::__construct()</a>
+								: Socket pool constructor
+							</li>
+				</ul>
+	</div>
+<a name="methodclose" id="close"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">close</span> (line <span class="line-number">201</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Closes the socket.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			close
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodclose">TTransport::close()</a></dt>
+						<dd>Close the transport.</dd>
+					</dl>
+			
+	</div>
+<a name="methodflush" id="flush"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">flush</span> (line <span class="line-number">303</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Flush output to the socket.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			flush
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodflush">TTransport::flush()</a></dt>
+						<dd>Flushes any pending data out of a buffer</dd>
+					</dl>
+			
+	</div>
+<a name="methodgetHost" id="getHost"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getHost</span> (line <span class="line-number">144</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the host that this socket is connected to</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> host</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getHost
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetPort" id="getPort"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPort</span> (line <span class="line-number">153</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the remote port that this socket is connected to</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> port</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			getPort
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodisOpen" id="isOpen"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isOpen</span> (line <span class="line-number">162</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Tests whether this is open</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if the socket is open</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			isOpen
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodisOpen">TTransport::isOpen()</a></dt>
+						<dd>Whether this transport is open.</dd>
+					</dl>
+			
+	</div>
+<a name="methodopen" id="open"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">open</span> (line <span class="line-number">169</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Connects the socket.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			open
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodopen">TTransport::open()</a></dt>
+						<dd>Open the transport for reading/writing</dd>
+					</dl>
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../thrift-transport/TSocketPool.html#methodopen">TSocketPool::open()</a>
+								: Connects the socket by iterating through all the servers in the pool  and trying to find one that works.
+							</li>
+				</ul>
+	</div>
+<a name="methodread" id="read"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">read</span> (line <span class="line-number">255</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Read from the socket</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Binary data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			read
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$len</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$len</span><span class="var-description">: How many bytes</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodread">TTransport::read()</a></dt>
+						<dd>Read some data into the array.</dd>
+					</dl>
+			
+	</div>
+<a name="methodreadAll" id="readAll"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">readAll</span> (line <span class="line-number">214</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Uses stream get contents to do the reading</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Binary data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			readAll
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$len</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$len</span><span class="var-description">: How many bytes</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodreadAll">TTransport::readAll()</a></dt>
+						<dd>Guarantees that the full amount of data is read.</dd>
+					</dl>
+			
+	</div>
+<a name="methodsetDebug" id="setDebug"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDebug</span> (line <span class="line-number">135</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets debugging output on or off</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDebug
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$debug</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$debug</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetRecvTimeout" id="setRecvTimeout"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setRecvTimeout</span> (line <span class="line-number">126</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the receive timeout.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setRecvTimeout
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$timeout</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$timeout</span><span class="var-description">: Timeout in milliseconds.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetSendTimeout" id="setSendTimeout"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setSendTimeout</span> (line <span class="line-number">117</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the send timeout.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setSendTimeout
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$timeout</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$timeout</span><span class="var-description">: Timeout in milliseconds.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodwrite" id="write"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">write</span> (line <span class="line-number">279</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Write to the socket.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			write
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$buf</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$buf</span><span class="var-description">: The data to write</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-transport/TTransport.html#methodwrite">TTransport::write()</a></dt>
+						<dd>Writes the given data out.</dd>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../thrift-transport/TTransport.html">TTransport</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodclose">TTransport::close()</a></span><br>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodflush">TTransport::flush()</a></span><br>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodisOpen">TTransport::isOpen()</a></span><br>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodopen">TTransport::open()</a></span><br>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodread">TTransport::read()</a></span><br>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodreadAll">TTransport::readAll()</a></span><br>
+													<span class="method-name"><a href="../thrift-transport/TTransport.html#methodwrite">TTransport::write()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 18 Oct 2010 19:59:59 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class TBinaryProtocolAccelerated</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class TBinaryProtocolAccelerated</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-consts">Constants</a>
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Accelerated binary protocol: used in conjunction with the thrift_protocol</p>
+<p class="description"><p>extension for faster deserialization</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_thrift---protocol---TBinaryProtocol.php.html">/thrift/protocol/TBinaryProtocol.php</a> (line <span class="field">414</span>)
+		</p>
+		
+				
+		<pre><a href="../thrift-protocol/TProtocol.html">TProtocol</a>
+   |
+   --<a href="../thrift-protocol/TBinaryProtocol.html">TBinaryProtocol</a>
+      |
+      --TBinaryProtocolAccelerated</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-consts">Constants</a>
+							
+															<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												
+												<div class="method-definition">
+											<span class="method-result">TBinaryProtocolAccelerated</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$trans</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$strictRead</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$strictWrite</span> = <span class="var-default">true</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isStrictRead" title="details" class="method-name">isStrictRead</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isStrictWrite" title="details" class="method-name">isStrictWrite</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-consts">Constants</a>
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../thrift-protocol/TBinaryProtocol.html">TBinaryProtocol</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../thrift-protocol/TBinaryProtocol.html#var$strictRead_">TBinaryProtocol::$strictRead_</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../thrift-protocol/TBinaryProtocol.html#var$strictWrite_">TBinaryProtocol::$strictWrite_</a></span><br>
+							</span>
+											</blockquote> 
+									<p>Inherited from <span class="classname"><a href="../thrift-protocol/TProtocol.html">TProtocol</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../thrift-protocol/TProtocol.html#var$TBINARYPROTOCOLACCELERATED">TProtocol::$TBINARYPROTOCOLACCELERATED</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../thrift-protocol/TProtocol.html#var$trans_">TProtocol::$trans_</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																			<a href="#sec-consts">Constants</a>
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">415</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">TBinaryProtocolAccelerated</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$trans</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$strictRead</span> = <span class="var-default">false</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$strictWrite</span> = <span class="var-default">true</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$trans</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$strictRead</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$strictWrite</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../thrift-protocol/TBinaryProtocol.html#method__construct">TBinaryProtocol::__construct()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodisStrictRead" id="isStrictRead"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isStrictRead</span> (line <span class="line-number">423</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isStrictRead
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodisStrictWrite" id="isStrictWrite"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isStrictWrite</span> (line <span class="line-number">426</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isStrictWrite
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../thrift-protocol/TBinaryProtocol.html">TBinaryProtocol</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#method__construct">TBinaryProtocol::__construct()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadBool">TBinaryProtocol::readBool()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadByte">TBinaryProtocol::readByte()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadDouble">TBinaryProtocol::readDouble()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadFieldBegin">TBinaryProtocol::readFieldBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadFieldEnd">TBinaryProtocol::readFieldEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadI16">TBinaryProtocol::readI16()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadI32">TBinaryProtocol::readI32()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadI64">TBinaryProtocol::readI64()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadListBegin">TBinaryProtocol::readListBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadListEnd">TBinaryProtocol::readListEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadMapBegin">TBinaryProtocol::readMapBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadMapEnd">TBinaryProtocol::readMapEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadMessageBegin">TBinaryProtocol::readMessageBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadMessageEnd">TBinaryProtocol::readMessageEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadSetBegin">TBinaryProtocol::readSetBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadSetEnd">TBinaryProtocol::readSetEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadString">TBinaryProtocol::readString()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadStructBegin">TBinaryProtocol::readStructBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodreadStructEnd">TBinaryProtocol::readStructEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteBool">TBinaryProtocol::writeBool()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteByte">TBinaryProtocol::writeByte()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteDouble">TBinaryProtocol::writeDouble()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteFieldBegin">TBinaryProtocol::writeFieldBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteFieldEnd">TBinaryProtocol::writeFieldEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteFieldStop">TBinaryProtocol::writeFieldStop()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteI16">TBinaryProtocol::writeI16()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteI32">TBinaryProtocol::writeI32()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteI64">TBinaryProtocol::writeI64()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteListBegin">TBinaryProtocol::writeListBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteListEnd">TBinaryProtocol::writeListEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteMapBegin">TBinaryProtocol::writeMapBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteMapEnd">TBinaryProtocol::writeMapEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteMessageBegin">TBinaryProtocol::writeMessageBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteMessageEnd">TBinaryProtocol::writeMessageEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteSetBegin">TBinaryProtocol::writeSetBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteSetEnd">TBinaryProtocol::writeSetEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteString">TBinaryProtocol::writeString()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteStructBegin">TBinaryProtocol::writeStructBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TBinaryProtocol.html#methodwriteStructEnd">TBinaryProtocol::writeStructEnd()</a></span><br>
+											</blockquote>
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../thrift-protocol/TProtocol.html">TProtocol</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#method__construct">TProtocol::__construct()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodgetTransport">TProtocol::getTransport()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadBool">TProtocol::readBool()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadByte">TProtocol::readByte()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadDouble">TProtocol::readDouble()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadFieldBegin">TProtocol::readFieldBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadFieldEnd">TProtocol::readFieldEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadI16">TProtocol::readI16()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadI32">TProtocol::readI32()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadI64">TProtocol::readI64()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadListBegin">TProtocol::readListBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadListEnd">TProtocol::readListEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadMapBegin">TProtocol::readMapBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadMapEnd">TProtocol::readMapEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadMessageBegin">TProtocol::readMessageBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadMessageEnd">TProtocol::readMessageEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadSetBegin">TProtocol::readSetBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadSetEnd">TProtocol::readSetEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadString">TProtocol::readString()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadStructBegin">TProtocol::readStructBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodreadStructEnd">TProtocol::readStructEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodskip">TProtocol::skip()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodskipBinary">TProtocol::skipBinary()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteBool">TProtocol::writeBool()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteByte">TProtocol::writeByte()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteDouble">TProtocol::writeDouble()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteFieldBegin">TProtocol::writeFieldBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteFieldEnd">TProtocol::writeFieldEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteFieldStop">TProtocol::writeFieldStop()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteI16">TProtocol::writeI16()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteI32">TProtocol::writeI32()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteI64">TProtocol::writeI64()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteListBegin">TProtocol::writeListBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteListEnd">TProtocol::writeListEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteMapBegin">TProtocol::writeMapBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteMapEnd">TProtocol::writeMapEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteMessageBegin">TProtocol::writeMessageBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteMessageEnd">TProtocol::writeMessageEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteSetBegin">TProtocol::writeSetBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteSetEnd">TProtocol::writeSetEnd()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteString">TProtocol::writeString()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteStructBegin">TProtocol::writeStructBegin()</a></span><br>
+													<span class="method-name"><a href="../thrift-protocol/TProtocol.html#methodwriteStructEnd">TProtocol::writeStructEnd()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-vars">Vars</a>
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Constants</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../thrift-protocol/TBinaryProtocol.html">TBinaryProtocol</a></span></p>
+					<blockquote>
+													<img src="../media/images/Variable.png" />
+							<span class="const-title">
+								<span class="const-name"><a href="../thrift-protocol/TBinaryProtocol.html#constVERSION_1">TBinaryProtocol::VERSION_1</a></span><br>
+							</span>
+													<img src="../media/images/Variable.png" />
+							<span class="const-title">
+								<span class="const-name"><a href="../thrift-protocol/TBinaryProtocol.html#constVERSION_MASK">TBinaryProtocol::VERSION_MASK</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 18 Oct 2010 19:59:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>
