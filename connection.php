@@ -6,8 +6,16 @@ require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
 
+/**
+ * @package phpcassa
+ * @subpackage connection
+ */
 class NoServerAvailable extends Exception { }
 
+/**
+ * @package phpcassa
+ * @subpackage connection
+ */
 class Connection {
 
     private static $default_servers = array(array('host' => 'localhost', 'port' => 9160));
@@ -58,6 +66,9 @@ class Connection {
     }
 }
 
+/**
+ * @access private
+ */
 class ClientTransport {
 
     public function __construct($keyspace,
@@ -98,6 +109,9 @@ class ClientTransport {
     }
 }
 
+/**
+ * @access private
+ */
 class ServerSet {
 
     private $dead = array();

@@ -2,6 +2,10 @@
 require_once('connection.php');
 require_once('uuid.php');
 
+/**
+ * @package phpcassa
+ * @subpackage columnfamily
+ */
 class CassandraUtil {
 
     /**
@@ -58,6 +62,9 @@ class CassandraUtil {
  * Representation of a ColumnFamily in Cassandra.  This may be used for
  * standard column families or super column families. All data insertions,
  * deletions, or retrievals will go through a ColumnFamily.
+ *
+ * @package phpcassa
+ * @subpackage columnfamily
  */
 class ColumnFamily {
 
@@ -808,9 +815,12 @@ class ColumnFamily {
     }
 }
 
-/*
+/**
  * Iterates over a column family row-by-row, typically with only a subset
  * of each row's columns.
+ *
+ * @package phpcassa
+ * @subpackage columnfamily
  */
 class ColumnFamilyIterator implements Iterator {
 

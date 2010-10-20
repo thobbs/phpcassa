@@ -36,6 +36,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
+/**
+ * @package phpcassa
+ * @subpackage uuid
+ */
 class UUID {
  const MD5  = 3;
  const SHA1 = 5;
@@ -296,5 +300,9 @@ class UUID {
  }
 }
 
+/**
+ * @package phpcassa
+ * @subpackage uuid
+ */
 class UUIDException extends Exception {
 }
