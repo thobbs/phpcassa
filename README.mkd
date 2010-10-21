@@ -1,8 +1,8 @@
 phpcassa
 ========
 
-* In progress toward compatibility with Cassandra 0.7
-* Direct port of pycassa
+* In progress toward compatibility with [Apache Cassandra](http://cassandra.apache.org) 0.7
+* Direct port of [pycassa](http://github.com/pycassa/pycassa)
 
 API Documentation
 -----------------
@@ -44,8 +44,8 @@ Removing
 Other
 -----
 
-    $users->get_count('key1'); // counts the number of columns in user 1 (in this case 2)
-    $users->get_range('key1', 'key9'); // gets all users between '1' and '9'
+    $users->get_count('key1'); // counts the number of columns in row 'key1'
+    $users->get_range('key1', 'key9'); // gets all rows with keys between '1' and '9'
 
 Getting Help
 ------------
