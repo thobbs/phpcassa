@@ -130,9 +130,11 @@ class TestColumnFamily extends UnitTestCase {
         }
 
         # Keys at the end that we don't want
-        foreach (range(201, 210) as $i)
+        foreach (range(201, 300) as $i)
             $cf->insert('key'.$i, $columns);
 
+
+        # Buffer size = 10; rowcount is divisible by buffer size
         $count = 0;
         foreach ($cf->get_range() as $key => $cols) {
             self::assertTrue(in_array($key, $keys));
@@ -141,10 +143,11 @@ class TestColumnFamily extends UnitTestCase {
         }
         self::assertEqual($count, 100);
 
+
+        # Buffer size larger than row count
         $cf = new ColumnFamily($this->client, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=1000);
-
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
             self::assertTrue(in_array($key, $keys));
@@ -153,10 +156,24 @@ class TestColumnFamily extends UnitTestCase {
         }
         self::assertEqual($count, 100);
 
+
+        # Buffer size larger than row count, less than total number of rows
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=150);
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+
+        # Odd number for batch size
         $cf = new ColumnFamily($this->client, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
-
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
             self::assertTrue(in_array($key, $keys));
@@ -165,22 +182,11 @@ class TestColumnFamily extends UnitTestCase {
         }
         self::assertEqual($count, 100);
 
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
-                               $read_consistency_level=$cl, $write_consistency_level=$cl,
-                               $buffer_size=7);
 
-        $count = 0;
-        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
-            self::assertTrue(in_array($key, $keys));
-            unset($keys[$key]);
-            $count++;
-        }
-        self::assertEqual($count, 100);
-
+        # Smallest buffer size available
         $cf = new ColumnFamily($this->client, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
-
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
             self::assertTrue(in_array($key, $keys));
@@ -188,6 +194,65 @@ class TestColumnFamily extends UnitTestCase {
             $count++;
         }
         self::assertEqual($count, 100);
+
+
+        # Put the remaining keys in our list
+        foreach (range(201, 300) as $i)
+            $keys[] = 'key'.$i;
+
+
+        # Row count above total number of rows
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=2);
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+
+
+        # Row count above total number of rows
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=7);
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+
+
+ 
+        # Row count above total number of rows, buffer_size = total number of rows
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=200);
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+ 
+ 
+        # Row count above total number of rows, buffer_size = total number of rows
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=10000);
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+     
 
         $cf->truncate();
     }

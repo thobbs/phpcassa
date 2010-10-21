@@ -916,6 +916,7 @@ class ColumnFamilyIterator implements Iterator {
             return;
         }
 
+        # If the very first row is a deleted row
         if (count(current($this->current_buffer)) == 0)
             $this->next();
     }
@@ -944,25 +945,34 @@ class ColumnFamilyIterator implements Iterator {
 
         $beyond_last_field = !isset($key);
 
-        if($beyond_last_field && count($this->current_buffer) < $this->buffer_size) {
-            // This was the last page in the column family
+        if($beyond_last_field && count($this->current_buffer) < $this->buffer_size)
+        {
+            # This was the last page in the column family
             $this->is_valid = false;
-        } else if($beyond_last_field) {
-            // Set the next start key
+        }
+        else if($beyond_last_field)
+        {
+            # Set the next start key
             end($this->current_buffer);
             $this->next_start_key = key($this->current_buffer);
 
-            // Get the next buffer
+            # Get the next buffer
             $this->get_buffer();
 
-            // If the result set is 1, we can stop
-            // because the first item should always
-            // be skipped
-            if(count($this->current_buffer) == 1) {
+            # If the result set is 1, we can stop because the first item
+            # should always be skipped
+            if(count($this->current_buffer) == 1)
+            {
                 $this->is_valid = false;
-            } else {
+            }
+            else
+            {
                 next($this->current_buffer);
-                $this->is_valid = true;
+                # Skip the row if it's empty
+                if (count(current($this->current_buffer)) == 0)
+                    $this->next();
+                else
+                    $this->is_valid = true;
             }
         }
     }
