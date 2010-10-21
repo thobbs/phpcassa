@@ -4,71 +4,43 @@ phpcassa
 * In progress toward compatibility with Cassandra 0.7
 * Direct port of pycassa
 
-Including files
----------------
+Opening Connections
+-------------------
 
-    <?php
+    $conn = new Connection('Keyspace1');
 
-    // Copy all the files in this repository to your include directory.
+or
 
-    $GLOBALS['THRIFT_ROOT'] = dirname(__FILE__) . '/include/thrift/';
-    require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';
-    require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
-    require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
-    require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
-    require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
-
-    include_once(dirname(__FILE__) . '/include/phpcassa.php');
-    include_once(dirname(__FILE__) . '/include/uuid.php');
-
-    ?>
-
-Setting up nodes
-----------------
-
-    <?php
-    CassandraConn::add_node('192.168.1.1', 9160);
-    CassandraConn::add_node('192.168.1.2', 5000);
-    ?>
+    $conn = new Connection('Keyspace1', $servers=array('host' => '192.168.2.1', 'port' => 9160));
 
 Create a column family object
 -----------------------------
 
-    <?php
-    $users = new CassandraCF('Keyspace1', 'Users'); // ColumnFamily
-    $super = new CassandraCF('Keyspace1', 'SuperColumn', true); // SuperColumnFamily
-    ?>
+    $users = new CassandraCF($conn, 'Standard1'); // ColumnFamily
+    $super = new CassandraCF($conn' 'Super1'); // SuperColumnFamily
 
 Inserting
 ---------
 
-    <?php
-    $users->insert('1', array('email' => 'hoan.tonthat@gmail.com', 'password' => 'test'));
-    ?>
+    $users->insert('key', array('column1' => 'value1', 'column2' => 'value2'));
 
 Querying
 --------
 
-    <?php
-    $users->get('1'); // array('email' => 'hoan.tonthat@gmail.com', 'password' => 'test')
-    $users->multiget(array('1', '2')); // array('1' => array('email' => 'hoan.tonthat@gmail.com', 'password' => 'test'))
-    ?>
+    $users->get('key'); 
+    $users->multiget(array('key1', 'key2'));
 
 Removing
 --------
 
-    <?php
-    $users->remove('1'); // removes whole object
-    $users->remove('1', 'password'); // removes 'password' field
-    ?>
+    $users->remove('key1'); // removes whole row
+    $users->remove('key1', 'column1'); // removes 'column1'
 
 Other
 -----
 
-    <?php
-    $users->get_count('1'); // counts the number of columns in user 1 (in this case 2)
-    $users->get_range('1', '10'); // gets all users between '1' and '10'
-    ?>
+    $users->get_count('key1'); // counts the number of columns in user 1 (in this case 2)
+    $users->get_range('key1', 'key9'); // gets all users between '1' and '9'
 
 Getting Help
 ------------
@@ -88,3 +60,4 @@ AUTHORS
 * Todd Zusman
 * Yancho Georgiev (yancho@inspirestudio.net)
 * Pieter Maes (maescool@gmail.com)
+* Tyler Hobbs
