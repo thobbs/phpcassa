@@ -7,7 +7,7 @@ phpcassa
 API Documentation
 -----------------
 
-http://thobbs.github.com/phpcassa
+[[phpcassa API documentation|http://thobbs.github.com/phpcassa]]
 
 Opening Connections
 -------------------
