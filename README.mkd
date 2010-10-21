@@ -17,7 +17,6 @@ Create a column family object
 -----------------------------
 
     $users = new CassandraCF($conn, 'Standard1'); // ColumnFamily
-
     $super = new CassandraCF($conn' 'Super1'); // SuperColumnFamily
 
 Inserting
@@ -29,21 +28,18 @@ Querying
 --------
 
     $users->get('key'); 
-
     $users->multiget(array('key1', 'key2'));
 
 Removing
 --------
 
     $users->remove('key1'); // removes whole row
-
     $users->remove('key1', 'column1'); // removes 'column1'
 
 Other
 -----
 
     $users->get_count('key1'); // counts the number of columns in user 1 (in this case 2)
-
     $users->get_range('key1', 'key9'); // gets all users between '1' and '9'
 
 Getting Help
