@@ -75,6 +75,8 @@ class ColumnFamily {
     /** The maximum number that can be returned by get_count(). */
     const MAX_COUNT = 2147483647; # 2^31 - 1
 
+    const DEFAULT_BUFFER_SIZE = 8096;
+
     private $client;
     private $column_family;
     private $is_super;
@@ -95,25 +97,30 @@ class ColumnFamily {
     /**
      * Constructs a ColumnFamily.
      *
-     * @param Connection the connection to use for this ColumnFamily
-     * @param string the name of the column family in Cassandra
-     * @param bool whether or not to automatically convert column names 
-     *             to and from their binary representation in Cassandra
-     *             based on their comparator type
-     * @param bool whether or not to automatically convert column values
-     *             to and from their binary representation in Cassandra
-                   based on their validator type
-     * @param cassandra_ConsistencyLevel the default consistency level for
-     *             read operations on this column family
-     * @param cassandra_ConsistencyLevel the default consistency level for
-     *             write operations on this column family
+     * @param Connection $connection the connection to use for this ColumnFamily
+     * @param string $column_family the name of the column family in Cassandra
+     * @param bool $autopack_names whether or not to automatically convert column names 
+     *        to and from their binary representation in Cassandra
+     *        based on their comparator type
+     * @param bool $autopack_values whether or not to automatically convert column values
+     *        to and from their binary representation in Cassandra
+     *        based on their validator type
+     * @param cassandra_ConsistencyLevel $read_consistency_level the default consistency
+     *        level for read operations on this column family
+     * @param cassandra_ConsistencyLevel $write_consistency_level the default consistency
+     *        level for write operations on this column family
+     * @param int $buffer_size When calling `get_range`, the intermediate results need
+     *        to be buffered if we are fetching many rows, otherwise the Cassandra
+     *        server will overallocate memory and fail.  This is the size of
+     *        that buffer in number of rows.
      */
     public function __construct($connection,
                                 $column_family,
                                 $autopack_names=true,
                                 $autopack_values=true,
                                 $read_consistency_level=cassandra_ConsistencyLevel::ONE,
-                                $write_consistency_level=cassandra_ConsistencyLevel::ONE) {
+                                $write_consistency_level=cassandra_ConsistencyLevel::ONE,
+                                $buffer_size=self::DEFAULT_BUFFER_SIZE) {
 
         $this->client = $connection->connect();
         $this->column_family = $column_family;
@@ -121,6 +128,7 @@ class ColumnFamily {
         $this->autopack_values = $autopack_values;
         $this->read_consistency_level = $read_consistency_level;
         $this->write_consistency_level = $write_consistency_level;
+        $this->buffer_size = $buffer_size;
 
         $this->cf_data_type = 'BytesType';
         $this->col_name_type = 'BytesType';
@@ -299,33 +307,34 @@ class ColumnFamily {
                                              $this->rcl($read_consistency_level));
     }
 
-    /**
-     * Fetch a range of rows from this column family.
-     *
-     * @param string $key_start fetch rows with a key >= this
-     * @param string $key_finish fetch rows with a key <= this
-     * @param int $row_count limit the number of rows returned to this amount
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
-     * @param mixed $super_column return only columns in this super column
-     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
-     *        number of nodes that must respond before the operation returns
-     *
-     * @return mixed array(row_key => array(column_name => column_value))
-     */
-    public function get_range($key_start="",
-                              $key_finish="",
-                              $row_count=self::DEFAULT_ROW_COUNT,
-                              $columns=null,
-                              $column_start="",
-                              $column_finish="",
-                              $column_reversed=false,
-                              $column_count=self::DEFAULT_COLUMN_COUNT,
-                              $super_column=null,
-                              $read_consistency_level=null) {
+
+   /**
+    * Fetch a range of rows from this column family.
+    *
+    * @param string $key_start fetch rows with a key >= this
+    * @param string $key_finish fetch rows with a key <= this
+    * @param int $row_count limit the number of rows returned to this amount
+    * @param mixed[] $columns limit the columns or super columns fetched to this list
+    * @param mixed $column_start only fetch columns with name >= this
+    * @param mixed $column_finish only fetch columns with name <= this
+    * @param bool $column_reversed fetch the columns in reverse order
+    * @param int $column_count limit the number of columns returned to this amount
+    * @param mixed $super_column return only columns in this super column
+    * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+    * number of nodes that must respond before the operation returns
+    *
+    * @return mixed array(row_key => array(column_name => column_value))
+    */
+    public function get_small_range_as_array($key_start="",
+                                             $key_finish="",
+                                             $row_count=self::DEFAULT_ROW_COUNT,
+                                             $columns=null,
+                                             $column_start="",
+                                             $column_finish="",
+                                             $column_reversed=false,
+                                             $column_count=self::DEFAULT_COLUMN_COUNT,
+                                             $super_column=null,
+                                             $read_consistency_level=null) {
 
         $column_parent = $this->create_column_parent($super_column);
         $predicate = self::create_slice_predicate($columns, $column_start,
@@ -334,8 +343,8 @@ class ColumnFamily {
 
         $key_range = new cassandra_KeyRange();
         $key_range->start_key = $key_start;
-        $key_range->end_key   = $key_finish;
-        $key_range->count     = $row_count;
+        $key_range->end_key = $key_finish;
+        $key_range->count = $row_count;
 
         $resp = $this->client->get_range_slices($column_parent, $predicate, $key_range,
                                                 $this->rcl($read_consistency_level));
@@ -357,21 +366,34 @@ class ColumnFamily {
      * @param mixed $super_column return only columns in this super column
      * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
+     * @param int $buffer_size When calling `get_range`, the intermediate results need
+     *        to be buffered if we are fetching many rows, otherwise the Cassandra
+     *        server will overallocate memory and fail.  This is the size of
+     *        that buffer in number of rows.
      *
      * @return ColumnFamilyIterator
      */
-    public function get_range_iterator($key_start="",
-                                       $key_finish="",
-                                       $row_count=self::DEFAULT_ROW_COUNT,
-                                       $columns=null,
-                                       $column_start="",
-                                       $column_finish="",
-                                       $column_reversed=false,
-                                       $column_count=self::DEFAULT_COLUMN_COUNT,
-                                       $super_column=null,
-                                       $read_consistency_level=null) {
+    public function get_range($key_start="",
+                              $key_finish="",
+                              $row_count=self::DEFAULT_ROW_COUNT,
+                              $columns=null,
+                              $column_start="",
+                              $column_finish="",
+                              $column_reversed=false,
+                              $column_count=self::DEFAULT_COLUMN_COUNT,
+                              $super_column=null,
+                              $read_consistency_level=null,
+                              $buffer_size=null) {
 
-        return new ColumnFamilyIterator($this,
+        if ($buffer_size == null)
+            $buffer_size = $this->buffer_size;
+        if ($buffer_size < 2) {
+            $ire = new cassandra_InvalidRequestException();
+            $ire->setMessage('buffer_size cannot be less than 2');
+            throw $ire;
+        }
+
+        return new ColumnFamilyIterator($this, $buffer_size,
                                         $key_start, $key_finish, $row_count,
                                         $columns, $column_start, $column_finish,
                                         $column_reversed, $column_count,
@@ -826,7 +848,7 @@ class ColumnFamilyIterator implements Iterator {
 
     private $column_family;
     private $buffer_size;
-    private $key_start, $key_finish;
+    private $key_start, $key_finish, $row_count;
     private $columns, $column_start, $column_finish, $columns_reversed, $column_count;
     private $super_column;
     private $read_consistency_level;
@@ -834,11 +856,13 @@ class ColumnFamilyIterator implements Iterator {
     private $current_buffer;
     private $next_start_key;
     private $is_valid;
+    private $rows_seen, $rows_seen_this_page;
 
     public function __construct($column_family,
+                                $buffer_size,
                                 $key_start="",
                                 $key_finish="",
-                                $buffer_size=self::DEFAULT_ROW_COUNT,
+                                $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                 $columns=null,
                                 $column_start="",
                                 $column_finish="",
@@ -850,7 +874,7 @@ class ColumnFamilyIterator implements Iterator {
         $this->column_family = $column_family;
         $this->key_start = $key_start;
         $this->key_finish = $key_finish;
-        $this->buffer_size = $buffer_size;
+        $this->row_count = $row_count;
         $this->columns = $columns;
         $this->column_start = $column_start;
         $this->column_finish = $column_finish;
@@ -858,26 +882,42 @@ class ColumnFamilyIterator implements Iterator {
         $this->column_count = $column_count;
         $this->super_column = $super_column;
         $this->read_consistency_level = $read_consistency_level;
+
+        $this->buffer_size = $buffer_size;
+        if ($row_count != null)
+            $this->buffer_size = min($row_count, $buffer_size);
     }
 
     private function get_buffer() {
-        $this->current_buffer = $this->column_family->get_range(
+        $this->current_buffer = $this->column_family->get_small_range_as_array(
             $this->next_start_key,
-            $this->end_key,
+            $this->key_finish,
             $this->buffer_size,
+            $this->columns,
             $this->column_start,
             $this->column_finish,
             $this->column_reversed,
             $this->column_count,
             $this->super_column,
             $this->read_consistency_level);
+        $this->rows_seen_this_page = 0;
     }
 
     public function rewind() {
         // Setup first buffer
+        $this->rows_seen = 0;
         $this->is_valid = true;
-        $this->next_start_key = $this->start_key;
+        $this->next_start_key = $this->key_start;
         $this->get_buffer();
+
+        # If nothing was inserted, this may happen
+        if (count($this->current_buffer) == 0) {
+            $this->is_valid = false;
+            return;
+        }
+
+        if (count(current($this->current_buffer)) == 0)
+            $this->next();
     }
 
     public function current() {
@@ -890,12 +930,22 @@ class ColumnFamilyIterator implements Iterator {
 
     public function next() {
         $next = next($this->current_buffer);
+        if (count(current($this->current_buffer)) == 0)
+            $this->next();
+
         $key = key($this->current_buffer);
+
+        $this->rows_seen++;
+        $this->rows_seen_this_page++;
+        if ($this->rows_seen > $this->row_count) {
+            $this->is_valid = false;
+            return;
+        }
 
         $beyond_last_field = !isset($key);
 
         if($beyond_last_field && count($this->current_buffer) < $this->buffer_size) {
-            // This was the last page
+            // This was the last page in the column family
             $this->is_valid = false;
         } else if($beyond_last_field) {
             // Set the next start key
@@ -911,7 +961,6 @@ class ColumnFamilyIterator implements Iterator {
             if(count($this->current_buffer) == 1) {
                 $this->is_valid = false;
             } else {
-                // Skip 1st item (because it is the last buffer's last key)
                 next($this->current_buffer);
                 $this->is_valid = true;
             }

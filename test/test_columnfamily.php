@@ -100,19 +100,96 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual($result[self::$KEYS[0]], 1);
     }
 
-    public function test_insert_get_range() {
+    public function test_insert_get_small_range_as_array() {
         $columns = array('1' => 'val1', '2' => 'val2');
         foreach (self::$KEYS as $key)
             $this->cf->insert($key, $columns);
 
-        $rows = $this->cf->get_range($start_key=self::$KEYS[0], $finish_key=self::$KEYS[2]);
+        $rows = $this->cf->get_small_range_as_array($start_key=self::$KEYS[0], $finish_key=self::$KEYS[2]);
         self::assertEqual(count($rows), count(self::$KEYS));
         foreach($rows as $row)
             self::assertEqual($row, $columns);
 
-        $this->cf->insert('test_get_range5', $columns);
-        $rows = $this->cf->get_range($start_key=self::$KEYS[0], $finish_key=self::$KEYS[2]);
+        $this->cf->insert(self::$KEYS[0], $columns);
+        $rows = $this->cf->get_small_range_as_array($start_key=self::$KEYS[0], $finish_key=self::$KEYS[2]);
         self::assertEqual(count($rows), count(self::$KEYS));
+    }
+
+    public function test_insert_get_range() {
+        $cl = cassandra_ConsistencyLevel::ONE;
+        $cf = new ColumnFamily($this->client,
+                               'Standard1', true, true,
+                               $read_consistency_level=$cl,
+                               $write_consistency_level=$cl,
+                               $buffer_size=10);
+        $keys = array();
+        $columns = array('c' => 'v');
+        foreach (range(100, 200) as $i) {
+            $keys[] = 'key'.$i;
+            $cf->insert('key'.$i, $columns);
+        }
+
+        # Keys at the end that we don't want
+        foreach (range(201, 210) as $i)
+            $cf->insert('key'.$i, $columns);
+
+        $count = 0;
+        foreach ($cf->get_range() as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=1000);
+
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=7);
+
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=7);
+
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=2);
+
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+        $cf->truncate();
     }
 
     public function test_remove() {
@@ -163,8 +240,8 @@ class TestSuperColumnFamily extends UnitTestCase {
         $this->cf->insert(self::$KEYS[0], $columns);
         self::assertEqual($this->cf->get(self::$KEYS[0]), $columns);
         self::assertEqual($this->cf->multiget(array(self::$KEYS[0])), array(self::$KEYS[0] => $columns));
-        self::assertEqual($this->cf->get_range($start_key=self::$KEYS[0],
-                                               $finish_key=self::$KEYS[0]),
+        self::assertEqual($this->cf->get_small_range_as_array($start_key=self::$KEYS[0],
+                                                              $finish_key=self::$KEYS[0]),
                           array(self::$KEYS[0] => $columns));
     }
 
@@ -182,7 +259,7 @@ class TestSuperColumnFamily extends UnitTestCase {
         }
         self::assertEqual($this->cf->multiget(array($key), null, '', '', false, 100, $super_column='1'),
                           array($key => $sub12));
-        self::assertEqual($this->cf->get_range($start_key=$key, $end_key=$key, 100, null, '',
+        self::assertEqual($this->cf->get_small_range_as_array($start_key=$key, $end_key=$key, 100, null, '',
                                                '', false, 100, $super_column='1'),
                           array($key => $sub12));
     }

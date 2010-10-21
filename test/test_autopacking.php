@@ -279,21 +279,21 @@ class TestAutopacking extends UnitTestCase {
 
             ### get_range() tests ###
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0]);
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0]);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                              $columns=null,
-                                              $column_start=$group['cols'][0],
-                                              $column_finish=$group['cols'][2]);
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0], $key_finish='',
+                                                             $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                                             $columns=null,
+                                                             $column_start=$group['cols'][0],
+                                                             $column_finish=$group['cols'][2]);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                              $columns=$group['cols']);
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0], $key_finish='',
+                                                             $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                                             $columns=$group['cols']);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
         }
@@ -412,11 +412,11 @@ class TestAutopacking extends UnitTestCase {
 
             ### get_range() tests ###
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0]);
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0]);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0], $key_finish='',
                                               $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
                                               $column_start=$group['cols'][0],
@@ -424,7 +424,7 @@ class TestAutopacking extends UnitTestCase {
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0], $key_finish='',
                                               $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=$group['cols']);
             foreach($result as $subres)
@@ -524,12 +524,12 @@ class TestAutopacking extends UnitTestCase {
 
             ### get_range() tests ###
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0]);
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0]);
             foreach($result as $subres) {
                 self::assertEqual($subres, $group['dict']);
             }
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0], $key_finish='',
                                               $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
                                               $column_start=$LONG,
@@ -537,14 +537,14 @@ class TestAutopacking extends UnitTestCase {
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0],
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0],
                                               $key_finish='',
                                               $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=array($LONG));
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0],
+            $result = $group['cf']->get_small_range_as_array($key_start=self::$KEYS[0],
                                               $key_finish='',
                                               $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
