@@ -50,7 +50,7 @@ Other
 Getting Help
 ------------
 
-* Mailing list: http://groups.google.com/group/phpcassa
+* Mailing list: [phpcassa on google groups](http://groups.google.com/group/phpcassa]
 * IRC: Channel #cassandra on irc.freenode.net
 
 AUTHORS
