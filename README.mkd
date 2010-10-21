@@ -4,6 +4,11 @@ phpcassa
 * In progress toward compatibility with Cassandra 0.7
 * Direct port of pycassa
 
+API Documentation
+-----------------
+
+http://thobbs.github.com/phpcassa
+
 Opening Connections
 -------------------
 
