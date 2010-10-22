@@ -56,6 +56,42 @@ class CassandraUtil {
         $time3 = ($time2[1].$sub_secs)/100;
         return $time3;
     }
+
+    /**
+     * Constructs an IndexExpression to be used in an IndexClause, which can
+     * be used with get_indexed_slices().
+     * @param mixed $column_name the name of the column this expression will apply to;
+     *        this column may or may not be indexed
+     * @param mixed $value the value that will be compared to column values using op
+     * @param classandra_IndexOperator $op the binary operator to apply to column values
+     *        and the 'value' parameter.  Defaults to testing for equality.
+     * @return cassandra_IndexExpression
+     */
+    static public function create_index_expression($column_name, $value,
+                                                   $op=cassandra_IndexOperator::EQ) {
+        $ie = new cassandra_IndexExpression();
+        $ie->column_name = $column_name;
+        $ie->value = $value;
+        $ie->op = $op;
+        return $ie;
+    }
+
+    /**
+     * Constructs a cassandra_IndexClause for use with get_indexed_slices().
+     * @param cassandra_IndexExpression[] $expr_list the list of expressions to match; at
+     *        least one of these must be on an indexed column
+     * @param string $start_key the key to begin searching from
+     * @param int $count the number of results to return
+     * @return cassandra_IndexClause
+     */
+    static public function create_index_clause($expr_list, $start_key='',
+                                               $count=ColumnFamily::DEFAULT_COLUMN_COUNT) {
+        $ic = new cassandra_IndexClause();
+        $ic->expressions = $expr_list;
+        $ic->start_key = $start_key;
+        $ic->count = $count;
+        return $ic;
+    }
 }
 
 /**
@@ -399,6 +435,50 @@ class ColumnFamily {
                                         $column_reversed, $column_count,
                                         $super_column,
                                         $read_consistency_level);
+    }
+
+   /**
+    * Fetch a set of rows from this column family based on an index clause.
+    *
+    * @param cassandra_IndexClause $index_clause limits the keys that are returned based
+    *        on expressions that compare the value of a column to a given value.  At least
+    *        one of the expressions in the IndexClause must be on an indexed column. You
+    *        can use the CassandraUtil::create_index_expression() and
+    *        CassandraUtil::create_index_clause() methods to help build this.
+    * @param mixed[] $columns limit the columns or super columns fetched to this list
+    * @param mixed $column_start only fetch columns with name >= this
+    * @param mixed $column_finish only fetch columns with name <= this
+    * @param bool $column_reversed fetch the columns in reverse order
+    * @param int $column_count limit the number of columns returned to this amount
+    * @param mixed $super_column return only columns in this super column
+    * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+    * number of nodes that must respond before the operation returns
+    *
+    * @return mixed array(row_key => array(column_name => column_value))
+    */
+    public function get_indexed_slices($index_clause,
+                                       $columns=null,
+                                       $column_start='',
+                                       $column_finish='',
+                                       $column_reversed=false,
+                                       $column_count=self::DEFAULT_COLUMN_COUNT,
+                                       $super_column=null,
+                                       $read_consistency_level=null) {
+
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start,
+                                                  $column_finish, $column_reversed,
+                                                  $column_count);
+
+        foreach($index_clause->expressions as $expr) {
+            $expr->value = $this->pack_value($expr->value, $expr->column_name);
+            $expr->column_name = $this->pack_name($expr->column_name);
+        }
+
+        $resp = $this->client->get_indexed_slices($column_parent, $index_clause, $predicate,
+                                                  $this->rcl($read_consistency_level));
+
+        return $this->keyslices_to_array($resp);
     }
 
     /**

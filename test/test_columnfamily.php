@@ -257,6 +257,24 @@ class TestColumnFamily extends UnitTestCase {
         $cf->truncate();
     }
 
+    public function test_get_indexed_slices() {
+        $indexed_cf = new ColumnFamily($this->client, 'Indexed1');
+
+        $columns = array('birthdate' => 1);
+
+        foreach(range(1,3) as $i)
+            $indexed_cf->insert('key'.$i, $columns);
+
+        $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
+        $clause = CassandraUtil::create_index_clause(array($expr));
+        $result = $indexed_cf->get_indexed_slices($clause);
+        self::assertEqual(count($result), 3);
+        foreach(range(1,3) as $i)
+            self::assertEqual($result['key'.$i], $columns);
+
+        $indexed_cf->truncate();
+    }
+
     public function test_remove() {
         $columns = array('1' => 'val1', '2' => 'val2');
         $this->cf->insert(self::$KEYS[0], $columns);
