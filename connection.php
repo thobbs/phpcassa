@@ -138,8 +138,6 @@ class ServerSet {
     }
 
     public function mark_dead($server) {
-        print $server;
-        Print_r($server);
         unset($this->servers[$server['host'].$server['port']]);
         array_unshift($this->dead,
                 array('time' => time() + $this->retry_time, 'server' => $server));
