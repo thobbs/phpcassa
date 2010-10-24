@@ -54,6 +54,7 @@ class Connection {
                                                         $this->recv_timeout);
             }
         } catch (TException $e) {
+            print "Exception opening connection: $e";
             $this->servers->mark_dead($server);
             return $this->connect();
         }
