@@ -24,16 +24,28 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <endian.h>
-#include <byteswap.h>
+#include <sys/param.h>
 #include <stdexcept>
+
+#ifndef bswap_64
+#define	bswap_64(x)     (((uint64_t)(x) << 56) | \
+                        (((uint64_t)(x) << 40) & 0xff000000000000ULL) | \
+                        (((uint64_t)(x) << 24) & 0xff0000000000ULL) | \
+                        (((uint64_t)(x) << 8)  & 0xff00000000ULL) | \
+                        (((uint64_t)(x) >> 8)  & 0xff000000ULL) | \
+                        (((uint64_t)(x) >> 24) & 0xff0000ULL) | \
+                        (((uint64_t)(x) >> 40) & 0xff00ULL) | \
+                        ((uint64_t)(x)  >> 56))
+#endif
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 #define htonll(x) bswap_64(x)
 #define ntohll(x) bswap_64(x)
-#else
+#elif __BYTE_ORDER == __BIG_ENDIAN
 #define htonll(x) x
 #define ntohll(x) x
+#else
+#error Unknown __BYTE_ORDER
 #endif
 
 enum TType {
@@ -152,7 +164,6 @@ public:
 
   ~PHPOutputTransport() {
     flush();
-    directFlush();
   }
 
   void write(const char* data, size_t len) {
@@ -203,6 +214,7 @@ public:
       buffer_ptr = buffer;
       buffer_used = 0;
     }
+    directFlush();
   }
 
 protected:
@@ -218,12 +230,12 @@ protected:
   void directWrite(const char* data, size_t len) {
     zval writefn;
     ZVAL_STRING(&writefn, "write", 0);
-    char* newbuf = (char*)emalloc(buffer_used + 1);
-    memcpy(newbuf, buffer, buffer_used);
-    newbuf[buffer_used] = '\0';
+    char* newbuf = (char*)emalloc(len + 1);
+    memcpy(newbuf, data, len);
+    newbuf[len] = '\0';
     zval *args[1];
     MAKE_STD_ZVAL(args[0]);
-    ZVAL_STRINGL(args[0], newbuf, buffer_used, 0);
+    ZVAL_STRINGL(args[0], newbuf, len, 0);
     TSRMLS_FETCH();
     zval ret;
     ZVAL_NULL(&ret);
@@ -901,19 +913,19 @@ PHP_FUNCTION(thrift_protocol_write_binary) {
     RETURN_NULL();
   }
 
-  PHPOutputTransport transport(*args[0]);
-  const char* method_name = Z_STRVAL_PP(args[1]);
-  convert_to_long(*args[2]);
-  int32_t msgtype = Z_LVAL_PP(args[2]);
-  zval* request_struct = *args[3];
-  convert_to_long(*args[4]);
-  int32_t seqID = Z_LVAL_PP(args[4]);
-  convert_to_boolean(*args[5]);
-  bool strictWrite = Z_BVAL_PP(args[5]);
-  efree(args);
-  args = NULL;
-
   try {
+    PHPOutputTransport transport(*args[0]);
+    const char* method_name = Z_STRVAL_PP(args[1]);
+    convert_to_long(*args[2]);
+    int32_t msgtype = Z_LVAL_PP(args[2]);
+    zval* request_struct = *args[3];
+    convert_to_long(*args[4]);
+    int32_t seqID = Z_LVAL_PP(args[4]);
+    convert_to_boolean(*args[5]);
+    bool strictWrite = Z_BVAL_PP(args[5]);
+    efree(args);
+    args = NULL;
+
     if (strictWrite) {
       int32_t version = VERSION_1 | msgtype;
       transport.writeI32(version);
@@ -930,6 +942,7 @@ PHP_FUNCTION(thrift_protocol_write_binary) {
         throw_tprotocolexception("Attempt to send non-Thrift object", INVALID_DATA);
     }
     binary_serialize_spec(request_struct, transport, Z_ARRVAL_P(spec));
+    transport.flush();
   } catch (const PHPExceptionWrapper& ex) {
     zend_throw_exception_object(ex TSRMLS_CC);
     RETURN_NULL();
@@ -962,14 +975,14 @@ PHP_FUNCTION(thrift_protocol_read_binary) {
     RETURN_NULL();
   }
 
-  PHPInputTransport transport(*args[0]);
-  char* obj_typename = Z_STRVAL_PP(args[1]);
-  convert_to_boolean(*args[2]);
-  bool strict_read = Z_BVAL_PP(args[2]);
-  efree(args);
-  args = NULL;
-
   try {
+    PHPInputTransport transport(*args[0]);
+    char* obj_typename = Z_STRVAL_PP(args[1]);
+    convert_to_boolean(*args[2]);
+    bool strict_read = Z_BVAL_PP(args[2]);
+    efree(args);
+    args = NULL;
+
     int8_t messageType = 0;
     int32_t sz = transport.readI32();
 
