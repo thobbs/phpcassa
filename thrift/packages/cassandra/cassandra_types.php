@@ -474,20 +474,20 @@ class cassandra_NotFoundException extends TException {
 class cassandra_InvalidRequestException extends TException {
   static $_TSPEC;
 
-  public $why = null;
+  public $message = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['why'])) {
-        $this->why = $vals['why'];
+      if (isset($vals['message'])) {
+        $this->message = $vals['message'];
       }
     }
   }
@@ -513,7 +513,7 @@ class cassandra_InvalidRequestException extends TException {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->why);
+            $xfer += $input->readString($this->message);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -531,9 +531,9 @@ class cassandra_InvalidRequestException extends TException {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('InvalidRequestException');
-    if ($this->why !== null) {
-      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
-      $xfer += $output->writeString($this->why);
+    if ($this->message !== null) {
+      $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
+      $xfer += $output->writeString($this->message);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -646,20 +646,20 @@ class cassandra_TimedOutException extends TException {
 class cassandra_AuthenticationException extends TException {
   static $_TSPEC;
 
-  public $why = null;
+  public $message = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['why'])) {
-        $this->why = $vals['why'];
+      if (isset($vals['message'])) {
+        $this->message = $vals['message'];
       }
     }
   }
@@ -685,7 +685,7 @@ class cassandra_AuthenticationException extends TException {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->why);
+            $xfer += $input->readString($this->message);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -703,9 +703,9 @@ class cassandra_AuthenticationException extends TException {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('AuthenticationException');
-    if ($this->why !== null) {
-      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
-      $xfer += $output->writeString($this->why);
+    if ($this->message !== null) {
+      $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
+      $xfer += $output->writeString($this->message);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -718,20 +718,20 @@ class cassandra_AuthenticationException extends TException {
 class cassandra_AuthorizationException extends TException {
   static $_TSPEC;
 
-  public $why = null;
+  public $message = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['why'])) {
-        $this->why = $vals['why'];
+      if (isset($vals['message'])) {
+        $this->message = $vals['message'];
       }
     }
   }
@@ -757,7 +757,7 @@ class cassandra_AuthorizationException extends TException {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->why);
+            $xfer += $input->readString($this->message);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -775,9 +775,9 @@ class cassandra_AuthorizationException extends TException {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('AuthorizationException');
-    if ($this->why !== null) {
-      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
-      $xfer += $output->writeString($this->why);
+    if ($this->message !== null) {
+      $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
+      $xfer += $output->writeString($this->message);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -2467,7 +2467,6 @@ class cassandra_CfDef {
   public $subcomparator_type = null;
   public $comment = null;
   public $row_cache_size = 0;
-  public $preload_row_cache = false;
   public $key_cache_size = 200000;
   public $read_repair_chance = 1;
   public $column_metadata = null;
@@ -2512,10 +2511,6 @@ class cassandra_CfDef {
         9 => array(
           'var' => 'row_cache_size',
           'type' => TType::DOUBLE,
-          ),
-        10 => array(
-          'var' => 'preload_row_cache',
-          'type' => TType::BOOL,
           ),
         11 => array(
           'var' => 'key_cache_size',
@@ -2597,9 +2592,6 @@ class cassandra_CfDef {
       }
       if (isset($vals['row_cache_size'])) {
         $this->row_cache_size = $vals['row_cache_size'];
-      }
-      if (isset($vals['preload_row_cache'])) {
-        $this->preload_row_cache = $vals['preload_row_cache'];
       }
       if (isset($vals['key_cache_size'])) {
         $this->key_cache_size = $vals['key_cache_size'];
@@ -2707,13 +2699,6 @@ class cassandra_CfDef {
         case 9:
           if ($ftype == TType::DOUBLE) {
             $xfer += $input->readDouble($this->row_cache_size);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 10:
-          if ($ftype == TType::BOOL) {
-            $xfer += $input->readBool($this->preload_row_cache);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -2866,11 +2851,6 @@ class cassandra_CfDef {
     if ($this->row_cache_size !== null) {
       $xfer += $output->writeFieldBegin('row_cache_size', TType::DOUBLE, 9);
       $xfer += $output->writeDouble($this->row_cache_size);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->preload_row_cache !== null) {
-      $xfer += $output->writeFieldBegin('preload_row_cache', TType::BOOL, 10);
-      $xfer += $output->writeBool($this->preload_row_cache);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->key_cache_size !== null) {
