@@ -114,10 +114,12 @@ class ClientTransport {
  */
 class ServerSet {
 
+    private $servers = array();
     private $dead = array();
 
     public function __construct($servers, $retry_time=10) {
-        $this->servers = $servers;
+        foreach($servers as $server)
+            $this->servers[$server['host'].$server['port']] = $server;
         $this->retry_time = $retry_time;
     }
 
@@ -127,7 +129,7 @@ class ServerSet {
             if ($revived['time'] > time())  # Not yet, put it back
                 $this->dead[] = $revived;
             else 
-                $this->servers[] = $revived;
+                $this->servers[$revived['host'.$revived['port']]] = $revived['server'];
         }
         if (!count($this->servers))
             throw new NoServerAvailable();
@@ -136,7 +138,9 @@ class ServerSet {
     }
 
     public function mark_dead($server) {
-        unset($this->servers[$server]);
+        print $server;
+        Print_r($server);
+        unset($this->servers[$server['host'].$server['port']]);
         array_unshift($this->dead,
                 array('time' => time() + $this->retry_time, 'server' => $server));
     }
