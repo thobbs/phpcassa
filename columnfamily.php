@@ -488,6 +488,7 @@ class ColumnFamily {
      * @param mixed $columns array(column_name => column_value) the columns to insert or update
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
+     * @param ttl Time to live for column value. after ttl seconds it will be deleted.
      * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -503,7 +504,7 @@ class ColumnFamily {
             $timestamp = CassandraUtil::get_time();
 
         $cfmap = array();
-        $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp);
+        $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
 
         return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
     }
@@ -864,10 +865,10 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function array_to_mutation($array, $timestamp=null) {
+    private function array_to_mutation($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
-        $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp);
+        $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp, $ttl);
         $ret = null;
         foreach($c_or_sc as $row) {
             $mutation = new cassandra_Mutation();
@@ -877,7 +878,7 @@ class ColumnFamily {
         return $ret;
     }
     
-    private function array_to_supercolumns_or_columns($array, $timestamp=null) {
+    private function array_to_supercolumns_or_columns($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
         $ret = null;
@@ -886,7 +887,7 @@ class ColumnFamily {
             if(is_array($value)) {
                 $c_or_sc->super_column = new cassandra_SuperColumn();
                 $c_or_sc->super_column->name = $this->pack_name($name, true);
-                $c_or_sc->super_column->columns = $this->array_to_columns($value, $timestamp);
+                $c_or_sc->super_column->columns = $this->array_to_columns($value, $timestamp, $ttl);
                 $c_or_sc->super_column->timestamp = $timestamp;
             } else {
                 $c_or_sc = new cassandra_ColumnOrSuperColumn();
@@ -894,6 +895,7 @@ class ColumnFamily {
                 $c_or_sc->column->name = $this->pack_name($name, false);
                 $c_or_sc->column->value = $this->pack_value($value, $name);
                 $c_or_sc->column->timestamp = $timestamp;
+                $c_or_sc->column->ttl = $ttl;
             }
             $ret[] = $c_or_sc;
         }
@@ -901,7 +903,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function array_to_columns($array, $timestamp=null) {
+    private function array_to_columns($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
         $ret = null;
@@ -910,7 +912,7 @@ class ColumnFamily {
             $column->name = $this->pack_name($name, false);
             $column->value = $this->pack_value($value, $name);
             $column->timestamp = $timestamp;
-
+            $column->ttl = $ttl;
             $ret[] = $column;
         }
         return $ret;
