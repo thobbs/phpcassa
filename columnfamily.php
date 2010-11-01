@@ -488,7 +488,7 @@ class ColumnFamily {
      * @param mixed $columns array(column_name => column_value) the columns to insert or update
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
-     * @param ttl Time to live for column value. after ttl seconds it will be deleted.
+     * @param int $ttl time to live for the column; after ttl seconds it will be deleted
      * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
