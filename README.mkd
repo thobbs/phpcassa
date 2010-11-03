@@ -24,7 +24,7 @@ Create a column family object
 -----------------------------
 
     $users = new ColumnFamily($conn, 'Standard1'); // ColumnFamily
-    $super = new ColumnFamily($conn' 'Super1'); // SuperColumnFamily
+    $super = new ColumnFamily($conn, 'Super1'); // SuperColumnFamily
 
 Inserting
 ---------
