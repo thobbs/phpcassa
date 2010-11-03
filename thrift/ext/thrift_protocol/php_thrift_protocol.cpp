@@ -163,7 +163,7 @@ public:
   }
 
   ~PHPOutputTransport() {
-    flush();
+    //flush();
   }
 
   void write(const char* data, size_t len) {
