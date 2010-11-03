@@ -3,6 +3,7 @@ phpcassa
 
 * In progress toward compatibility with [Apache Cassandra](http://cassandra.apache.org) 0.7
 * Direct port of [pycassa](http://github.com/pycassa/pycassa)
+* Support for TBinaryProtocolAccelerated (uses a C extension)
 
 API Documentation
 -----------------
@@ -48,6 +49,29 @@ Other
 
     $users->get_count('key1'); // counts the number of columns in row 'key1'
     $users->get_range('key1', 'key9'); // gets all rows with keys between '1' and '9'
+
+Using the C Extension
+---------------------
+
+The C extension is crucial for phpcassa's performance.
+
+You need to configure and make to be able to use the C extension.
+
+   cd thrift/ext/thrift_protocol
+   ./configure
+   make
+
+You then need to make thrift_protocol.so accessible and usable by
+php. In my case, this meant adding the following line to
+/etc/php5/cli/php.ini:
+
+   extension=thrift_protocol.so
+
+And copying the .so file to php's extensions directory:
+
+   sudo cp phpcassa/thrift/ext/thrift_protocol/modules/thrift_protocol.so /usr/lib/php5/20090626/
+
+If you know a good general way to do this, let me know.
 
 Getting Help
 ------------
