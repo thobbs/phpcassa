@@ -25,7 +25,6 @@ class TestColumnFamily extends UnitTestCase {
     }
 
     public function test_empty() {
-        $key = 'TestColumnFamily.test_empty';
         try {
             $this->cf->get(self::$KEYS[0]);
             self::asertTrue(false);
