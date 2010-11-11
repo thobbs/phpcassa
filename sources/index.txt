@@ -31,7 +31,7 @@ Bugs and feature requests for **phpcassa** are currently tracked through the `gi
 
 Contributing
 ------------
-**pycassa** encourages you to offer any contributions or ideas you have.
+**phpcassa** encourages you to offer any contributions or ideas you have.
 Contributing to the documentation or examples, reporting bugs, requesting
 features, and (of course) improving the code are all equally welcome.
 To contribute, fork the project on
