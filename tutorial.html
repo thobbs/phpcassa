@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &mdash; phpcassa v0.1-beta documentation</title>
+    <link rel="stylesheet" href="static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1-beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="phpcassa v0.1-beta documentation" href="index.html" />
+    <link rel="next" title="API Documentation" href="api/index.html" />
+    <link rel="prev" title="Installing" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api/index.html" title="API Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">phpcassa v0.1-beta documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#making-a-connection">Making a Connection</a></li>
+<li><a class="reference internal" href="#getting-a-columnfamily">Getting a ColumnFamily</a></li>
+<li><a class="reference internal" href="#inserting-data">Inserting Data</a></li>
+<li><a class="reference internal" href="#getting-data">Getting Data</a></li>
+<li><a class="reference internal" href="#counting">Counting</a></li>
+<li><a class="reference internal" href="#super-columns">Super Columns</a></li>
+<li><a class="reference internal" href="#typed-column-names-and-values">Typed Column Names and Values</a></li>
+<li><a class="reference internal" href="#indexes">Indexes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api/index.html"
+                        title="next chapter">API Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="sources/tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial is intended as an introduction to working with
+Cassandra and <strong>phpcassa</strong>.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Before we start, make sure that you have <strong>phpcassa</strong>
+<a class="reference internal" href="installation.html"><em>installed</em></a>. The following
+should execute without raising an exception:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">require_once(&#39;phpcassa/connection.php&#39;);</span>
+<span class="x">require_once(&#39;phpcassa/columnfamily.php&#39;);</span>
+</pre></div>
+</div>
+<p>This tutorial also assumes that a Cassandra instance is running on the
+default host and port. Read the <a class="reference external" href="http://wiki.apache.org/cassandra/GettingStarted">instructions for getting started
+with Cassandra</a>.
+You can start Cassandra like so:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">pwd</span>
+~/cassandra
+<span class="nv">$ </span>bin/cassandra -f
+</pre></div>
+</div>
+<p>and import the included schema to start out:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>bin/schematool localhost 8080 import
+</pre></div>
+</div>
+</div>
+<div class="section" id="making-a-connection">
+<h2>Making a Connection<a class="headerlink" href="#making-a-connection" title="Permalink to this headline">¶</a></h2>
+<p>The first step when working with <strong>phpcassa</strong> is to create a
+<tt class="xref py py-class docutils literal"><span class="pre">Connection</span></tt> to the running cassandra instance:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$conn = new Connection(&#39;Keyspace&#39;);</span>
+</pre></div>
+</div>
+<p>The above code will connect on the default host and port. We can also
+specify the host and port explicitly, as follows:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$conn = new Connection(&#39;Keyspace1&#39;, [&#39;localhost:9160&#39;]);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-a-columnfamily">
+<h2>Getting a ColumnFamily<a class="headerlink" href="#getting-a-columnfamily" title="Permalink to this headline">¶</a></h2>
+<p>A column family is a collection of rows and columns in Cassandra,
+and can be thought of as roughly the equivalent of a table in a
+relational database. We&#8217;ll use one of the column families that
+were already included in the schema file:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family = new ColumnFamily($conn, &#39;Standard1&#39;);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inserting-data">
+<h2>Inserting Data<a class="headerlink" href="#inserting-data" title="Permalink to this headline">¶</a></h2>
+<p>To insert a row into a column family we can use the
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::insert()</span></tt> method:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;insert(&#39;row_key&#39;, array(&#39;col_name&#39; =&gt; &#39;col_val&#39;));</span>
+</pre></div>
+</div>
+<p>We can also insert more than one column at a time:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;insert(&#39;row_key&#39;, array(&#39;name1&#39; =&gt; &#39;val1&#39;, &#39;name2&#39; =&gt; &#39;val2&#39;));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-data">
+<h2>Getting Data<a class="headerlink" href="#getting-data" title="Permalink to this headline">¶</a></h2>
+<p>There are many more ways to get data out of Cassandra than there are
+to insert data.</p>
+<p>The simplest way to get data is to use
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get()</span></tt>:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;get(&#39;row_key&#39;);</span>
+<span class="x">// returns: array(&#39;colname&#39; =&gt; &#39;col_val&#39;)</span>
+</pre></div>
+</div>
+<p>Without any other arguments, <tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get()</span></tt>
+returns every column in the row (up to <cite>$column_count</cite>, which defaults to 100).
+If you only want a few of the columns and you know them by name, you can
+specify them using a <cite>$columns</cite> argument:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;get(&#39;row_key&#39;, $columns=array(&#39;name1&#39;, &#39;name2&#39;));</span>
+<span class="x">// returns: array(&#39;name1&#39; =&gt; &#39;foo&#39;, &#39;name2&#39; =&gt; &#39;bar&#39;)</span>
+</pre></div>
+</div>
+<p>We may also get a slice (or subrange) or the columns in a row. To do this,
+use the <cite>$column_start</cite> and <cite>$column_finish</cite> parameters.  One or both of these may
+be left empty to allow the slice to extend to one or both ends the.
+Note that <cite>$column_finish</cite> is inclusive. Assuming we&#8217;ve inserted several
+columns with names &#8216;1&#8217; through &#8216;9&#8217;, we can do the following:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family.get(&#39;row_key&#39;, $columns=null, $column_start=&#39;5&#39;, $column_finish=&#39;7&#39;);</span>
+<span class="x">// returns: array(&#39;5&#39; =&gt; &#39;foo&#39;, &#39;6&#39; =&gt; &#39;bar&#39;, &#39;7&#39; =&gt; &#39;baz&#39;)</span>
+</pre></div>
+</div>
+<p>There are also two ways to get multiple rows at the same time.
+The first is to specify them by name using
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::multiget()</span></tt>:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;multiget([&#39;row_key1&#39;, &#39;row_key2&#39;]);</span>
+<span class="x">// returns: array(&#39;row_key1&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;), &#39;row_key2&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;))</span>
+</pre></div>
+</div>
+<p>The other way is to get a range of keys at once by using
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get_range()</span></tt>. The parameter
+<cite>$key_finish</cite> is also inclusive here, too.  Assuming we&#8217;ve inserted some rows
+with keys &#8216;row_key1&#8217; through &#8216;row_key9&#8217;, we can do this:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;get_range($key_start=&#39;row_key5&#39;, $key_finish=&#39;row_key7&#39;);</span>
+<span class="x">// returns an Iterator over:</span>
+<span class="x">// array(&#39;row_key5&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;),</span>
+<span class="x">//       &#39;row_key6&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;),</span>
+<span class="x">//       &#39;row_key7&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;))</span>
+</pre></div>
+</div>
+<p>It&#8217;s also possible to specify a set of columns or a slice for
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::multiget()</span></tt> and
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get_range()</span></tt> just like we did for
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get()</span></tt>.</p>
+</div>
+<div class="section" id="counting">
+<h2>Counting<a class="headerlink" href="#counting" title="Permalink to this headline">¶</a></h2>
+<p>If you just want to know how many columns are in a row, you can use
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get_count()</span></tt>:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;get_count(&#39;row_key&#39;);</span>
+<span class="x">// returns: 3</span>
+</pre></div>
+</div>
+<p>If you only want to get a count of the number of columns that are inside
+of a slice or have particular names, you can do that as well:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;get_count(&#39;row_key&#39;, $columns=array(&#39;foo&#39;, &#39;bar&#39;));</span>
+<span class="x">// returns: 2</span>
+<span class="x">$column_family-&gt;get_count(&#39;row_key&#39;, $column_start=&#39;foo&#39;);</span>
+<span class="x">// returns: 3</span>
+</pre></div>
+</div>
+<p>You can also do this in parallel for multiple rows using
+<tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::multiget_count()</span></tt>:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;multiget_count(array(&#39;fib0&#39;, &#39;fib1&#39;, &#39;fib2&#39;, &#39;fib3&#39;, &#39;fib4&#39;));</span>
+<span class="x">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 5)</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;multiget_count(array(&#39;fib0&#39;, &#39;fib1&#39;, &#39;fib2&#39;, &#39;fib3&#39;, &#39;fib4&#39;),</span>
+<span class="x">                               $columns=array(&#39;col1&#39;, &#39;col2&#39;, &#39;col3&#39;));</span>
+<span class="x">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 3)</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family-&gt;multiget_count(array(&#39;fib0&#39;, &#39;fib1&#39;, &#39;fib2&#39;, &#39;fib3&#39;, &#39;fib4&#39;),</span>
+<span class="x">                               $columns=null, $column_start=&#39;col1&#39;, $column_finish=&#39;col3&#39;)</span>
+<span class="x">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 3)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="super-columns">
+<h2>Super Columns<a class="headerlink" href="#super-columns" title="Permalink to this headline">¶</a></h2>
+<p>Cassandra allows you to group columns in &#8220;super columns&#8221;. In a
+<tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt> file, this looks like this:</p>
+<div class="highlight-python"><pre>- name: Super1
+  column_type: Super</pre>
+</div>
+<p>To use a super column in <strong>phpcassa</strong>, you only need to
+add an extra level to the array:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family = new ColumnFamily($conn, &#39;Super1&#39;);</span>
+<span class="x">$column_family-&gt;insert(&#39;row_key&#39;, array(&#39;supercol_name&#39; =&gt; array(&#39;col_name&#39; =&gt; &#39;col_val&#39;)));</span>
+<span class="x">$column_family-&gt;get(&#39;row_key&#39;);</span>
+<span class="x">// returns: array(&#39;supercol_name&#39; =&gt; (&#39;col_name&#39; =&gt; &#39;col_val&#39;))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="typed-column-names-and-values">
+<h2>Typed Column Names and Values<a class="headerlink" href="#typed-column-names-and-values" title="Permalink to this headline">¶</a></h2>
+<p>In Cassandra 0.7, you can specify a comparator type for column names
+and a validator type for column values.</p>
+<p>The types available are:</p>
+<ul class="simple">
+<li>BytesType - no type</li>
+<li>IntegerType - 32 bit integer</li>
+<li>LongType - 64 bit integer</li>
+<li>AsciiType - ASCII string</li>
+<li>UTF8Type - UTF8 encoded string</li>
+<li>TimeUUIDType - version 1 UUID (timestamp based)</li>
+<li>LexicalUUID - non-version 1 UUID</li>
+</ul>
+<p>The column name comparator types affect how columns are sorted within
+a row. You can use these with standard column families as well as with
+super column families; with super column families, the subcolumns may
+even have a different comparator type.  Here&#8217;s an example <tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt>:</p>
+<div class="highlight-python"><pre>- name: StandardInt
+  column_type: Standard
+  compare_with: IntegerType
+
+- name: SuperLongSubAscii
+  column_type: Super
+  compare_with: LongType
+  compare_subcolumns_with: AsciiType</pre>
+</div>
+<p>Cassandra still requires you to pack these types into a binary format it
+can understand.  Fortunately, when <strong>phpcassa</strong> sees that a column family
+uses these types, it knows to pack and unpack these data types automatically
+for you. So, if we want to write to the StandardInt column family, we can do
+the following:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family = new ColumnFamily($conn, &#39;StandardInt&#39;);</span>
+<span class="x">$column_family-&gt;insert(&#39;row_key&#39;, array(42 =&gt; &#39;some_val&#39;));</span>
+<span class="x">$column_family-&gt;get(&#39;row_key&#39;)</span>
+<span class="x">// returns: array(42 =&gt; &#39;some_val&#39;)</span>
+</pre></div>
+</div>
+<p>Notice that 42 is an integer here, not a string.</p>
+<p>As mentioned above, Cassandra also offers validators on column values with
+the same set of types.  Validators can be set for an entire column family,
+for individual columns, or both.  Here&#8217;s another example <tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt>:</p>
+<div class="highlight-python"><pre>- name: AllLongs
+  column_type: Standard
+  default_validation_class: LongType
+
+- name: OneUUID
+  column_type: Standard
+  column_metadata:
+    - name: uuid
+      validator_class: TimeUUIDType
+
+- name: LongsExceptUUID
+  column_type: Standard
+  default_validation_class: LongType
+  column_metadata:
+    - name: uuid
+      validator_class: TimeUUIDType</pre>
+</div>
+<p><strong>phpcassa</strong> knows to pack these column values automatically too:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family = new ColumnFamily($connection, &#39;LongsExceptUUID&#39;)</span>
+<span class="x">$column_family-&gt;insert(&#39;row_key&#39;, array(&#39;foo&#39;  123456789, &#39;uuid&#39; =&gt; CassandraUtil::uuid1()));</span>
+<span class="x">$column_family-&gt;get(&#39;row_key&#39;);</span>
+<span class="x">// returns: array(&#39;foo&#39; =&gt; 123456789, &#39;uuid&#39; =&gt; UUID(&#39;5880c4b8-bd1a-11df-bbe1-00234d21610a&#39;))</span>
+</pre></div>
+</div>
+<p>Of course, if <strong>phpcassa</strong>&#8216;s automatic behavior isn&#8217;t working for you, you
+can turn it off when you create the
+<tt class="xref py py-class docutils literal"><span class="pre">ColumnFamily</span></tt>:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family = new ColumnFamily($conn, &#39;Standard1&#39;,</span>
+<span class="x">                                  $autopack_names=False,</span>
+<span class="x">                                  $autopack_values=False);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="indexes">
+<h2>Indexes<a class="headerlink" href="#indexes" title="Permalink to this headline">¶</a></h2>
+<p>Cassandra 0.7.0 adds support for secondary indexes, which allow you to
+efficiently get only rows which match a certain expression.</p>
+<p>To use secondary indexes with Cassandra, you need to specify what columns
+will be indexed.  In a <tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt> file, this might look like:</p>
+<div class="highlight-python"><pre>- name: Indexed1
+  column_type: Standard
+  column_metadata:
+    - name: birthdate
+      validator_class: LongType
+      index_type: KEYS</pre>
+</div>
+<p>In order to use <tt class="xref py py-meth docutils literal"><span class="pre">ColumnFamily::get_indexed_slices()</span></tt>
+to get data from Indexed1 using the indexed column, we need to create an
+<tt class="xref py py-class docutils literal"><span class="pre">IndexClause</span></tt> which contains a list of <tt class="xref py py-class docutils literal"><span class="pre">IndexExpression</span></tt>
+objects.  The functions <tt class="xref py py-meth docutils literal"><span class="pre">CassandraUtil::create_index_expression()</span></tt>
+<tt class="xref py py-meth docutils literal"><span class="pre">CassandraUtil::create_index_clause()</span></tt> is designed to make this easier.</p>
+<p>Suppose we are only interested in rows where &#8216;birthdate&#8217; is 1984. We might do
+the following:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="x">$column_family = new ColumnFamily($conn, &#39;Indexed1&#39;);</span>
+<span class="x">$index_exp = CassandraUtil::create_index_expression(&#39;birthdate&#39;, 1984);</span>
+<span class="x">$index_clause = CassandraUtil::create_index_clause(array($index_exp));</span>
+<span class="x">$col_fam-&gt;get_indexed_slices($index_clause);</span>
+<span class="x">// returns: array(&#39;winston smith&#39; =&gt; array(&#39;birthdate&#39; =&gt; 1984))</span>
+</pre></div>
+</div>
+<p>Although at least one <tt class="xref py py-class docutils literal"><span class="pre">IndexExpression</span></tt> in every clause
+must be on an indexed column, you may also have other expressions which are
+on non-indexed columns.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="api/index.html" title="API Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing"
+             >previous</a> |</li>
+        <li><a href="index.html">phpcassa v0.1-beta documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
+    </div>
+  </body>
+</html>
