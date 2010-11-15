@@ -248,6 +248,9 @@ class ColumnFamily {
      * @param mixed $super_column return only columns in this super column
      * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
+     * @param int $buffer_size the number of keys to multiget at a single time. If your
+     *        rows are large, having a high buffer size gives poor performance; if your
+     *        rows are small, consider increasing this value.
      *
      * @return mixed array(key => array(column_name => column_value))
      */
@@ -258,18 +261,41 @@ class ColumnFamily {
                              $column_reversed=False,
                              $column_count=self::DEFAULT_COLUMN_COUNT,
                              $super_column=null,
-                             $read_consistency_level=null)  {
+                             $read_consistency_level=null,
+                             $buffer_size=16)  {
 
         $column_parent = $this->create_column_parent($super_column);
         $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
                                                   $column_reversed, $column_count);
 
-        $resp = $this->client->multiget_slice($keys, $column_parent, $predicate,
-                                              $this->rcl($read_consistency_level));
-
         $ret = array();
         foreach($keys as $key) {
             $ret[$key] = null;
+        }
+
+        $resp = array();
+        if(count($keys) <= $buffer_size) {
+            $resp = $this->client->multiget_slice($keys, $column_parent, $predicate,
+                                                  $this->rcl($read_consistency_level));
+        } else {
+            $subset_keys = array();
+            $i = 0;
+            foreach($keys as $key) {
+                $i += 1;
+                $subset_keys[] = $key;
+                if ($i == $buffer_size) {
+                    $sub_resp = $this->client->multiget_slice($subset_keys, $column_parent, $predicate,
+                                                              $this->rcl($read_consistency_level));
+                    $subset_keys = array();
+                    $i = 0;
+                    $resp = array_merge($resp, $sub_resp);
+                }
+            }
+            if (count($subset_keys) != 0) {
+                $sub_resp = $this->client->multiget_slice($subset_keys, $column_parent, $predicate,
+                                                          $this->rcl($read_consistency_level));
+                $resp = array_merge($resp, $sub_resp);
+            }
         }
 
         $non_empty_keys = array();
