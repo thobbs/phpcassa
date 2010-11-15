@@ -50,8 +50,20 @@ class TestColumnFamily extends UnitTestCase {
         self::assertFalse(in_array(self::$KEYS[2], $rows));
     }
 
+    public function test_batch_insert() {
+        $columns1 = array('1' => 'val1', '2' => 'val2');
+        $columns2 = array('3' => 'val1', '4' => 'val2');
+        $rows = array(self::$KEYS[0] => $columns1,
+                      self::$KEYS[1] => $columns2);
+        $this->cf->batch_insert($rows);
+        $rows = $this->cf->multiget(self::$KEYS);
+        self::assertEqual(count($rows), 2);
+        self::assertEqual($rows[self::$KEYS[0]], $columns1);
+        self::assertEqual($rows[self::$KEYS[1]], $columns2);
+        self::assertFalse(in_array(self::$KEYS[2], $rows));
+    }
+
     public function test_insert_get_count() {
-        $key = 'TestColumnFamily.test_insert_get_count';
         $cols = array('1' => 'val1', '2' => 'val2');
         $this->cf->insert(self::$KEYS[0], $cols);
         self::assertEqual($this->cf->get_count(self::$KEYS[0]), 2);
@@ -258,6 +270,7 @@ class TestColumnFamily extends UnitTestCase {
 
     public function test_get_indexed_slices() {
         $indexed_cf = new ColumnFamily($this->client, 'Indexed1');
+        $indexed_cf->truncate();
 
         $columns = array('birthdate' => 1);
 

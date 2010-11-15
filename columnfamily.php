@@ -514,7 +514,7 @@ class ColumnFamily {
      * @param mixed $columns array(column_name => column_value) the columns to insert or update
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
-     * @param int $ttl time to live for the column; after ttl seconds it will be deleted
+     * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
      * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -531,6 +531,31 @@ class ColumnFamily {
 
         $cfmap = array();
         $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
+
+        return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
+    }
+
+    /**
+     * Insert or update columns in multiple rows. Note that this operation is only atomic
+     * per row.
+     *
+     * @param array $rows an array of keys, each of which maps to an array of columns. This
+     *        looks like array(key => array(column_name => column_value))
+     * @param int $timestamp the timestamp to use for these insertions. Leaving this as null will
+     *        result in a timestamp being generated for you
+     * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     *
+     * @return int the timestamp for the operation
+     */
+    public function batch_insert($rows, $timestamp=null, $ttl=null, $write_consistency_level=null) {
+        if ($timestamp == null)
+            $timestamp = CassandraUtil::get_time();
+
+        $cfmap = array();
+        foreach($rows as $key => $columns)
+            $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
 
         return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
     }
