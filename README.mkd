@@ -5,10 +5,13 @@ phpcassa
 * Direct port of [pycassa](http://github.com/pycassa/pycassa)
 * Support for TBinaryProtocolAccelerated (uses a C extension)
 
-API Documentation
------------------
+Documentation
+-------------
 
-[phpcassa API documentation](http://thobbs.github.com/phpcassa)
+While this README includes some useful information, the official and more
+thorough documentation can be found here:
+
+[http://thobbs.github.com/phpcassa](http://thobbs.github.com/phpcassa)
 
 Opening Connections
 -------------------
