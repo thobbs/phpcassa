@@ -16,6 +16,12 @@ class NoServerAvailable extends Exception { }
  * @package phpcassa
  * @subpackage connection
  */
+class IncompatibleAPIException extends Exception { }
+
+/**
+ * @package phpcassa
+ * @subpackage connection
+ */
 class Connection {
 
     private static $default_servers = array(array('host' => 'localhost', 'port' => 9160));
@@ -72,6 +78,8 @@ class Connection {
  */
 class ClientTransport {
 
+    const LOWEST_COMPATIBLE_VERSION = 17;
+
     public function __construct($keyspace,
                                 $server,
                                 $credentials,
@@ -96,6 +104,14 @@ class ClientTransport {
         $transport->open();
 
         # TODO check API major version match
+        $server_version = explode(".", $client->describe_version());
+        $server_version = $server_version[0];
+        if ($server_version < self::LOWEST_COMPATIBLE_VERSION) {
+            $ver = self::LOWEST_COMPATIBLE_VERSION;
+            throw new IncompatbleAPIException("The server's API version is too ".
+                "low to be comptible with phpcassa (server: $server_version, ".
+                "lowest compatible version: $ver)");
+        }
 
         $client->set_keyspace($keyspace);
 
