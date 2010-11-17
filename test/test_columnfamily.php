@@ -111,21 +111,6 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual($result[self::$KEYS[0]], 1);
     }
 
-    public function test_insert_get_small_range_as_array() {
-        $columns = array('1' => 'val1', '2' => 'val2');
-        foreach (self::$KEYS as $key)
-            $this->cf->insert($key, $columns);
-
-        $rows = $this->cf->get_small_range_as_array($start_key=self::$KEYS[0], $finish_key=self::$KEYS[2]);
-        self::assertEqual(count($rows), count(self::$KEYS));
-        foreach($rows as $row)
-            self::assertEqual($row, $columns);
-
-        $this->cf->insert(self::$KEYS[0], $columns);
-        $rows = $this->cf->get_small_range_as_array($start_key=self::$KEYS[0], $finish_key=self::$KEYS[2]);
-        self::assertEqual(count($rows), count(self::$KEYS));
-    }
-
     public function test_insert_get_range() {
         $cl = cassandra_ConsistencyLevel::ONE;
         $cf = new ColumnFamily($this->client,
@@ -268,6 +253,151 @@ class TestColumnFamily extends UnitTestCase {
         $cf->truncate();
     }
 
+    public function test_batched_get_indexed_slices() {
+
+        $cl = cassandra_ConsistencyLevel::ONE;
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=10);
+        $cf->truncate();
+
+        $keys = array();
+        $columns = array('birthdate' => 1);
+        foreach (range(100, 200) as $i) {
+            $keys[] = 'key'.$i;
+            $cf->insert('key'.$i, $columns);
+        }
+
+        # Keys at the end that we don't want
+        foreach (range(201, 300) as $i)
+            $cf->insert('key'.$i, $columns);
+
+
+        $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
+        $clause = CassandraUtil::create_index_clause(array($expr), 100);
+
+        # Buffer size = 10; rowcount is divisible by buffer size
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+        # Buffer size larger than row count
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=1000);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+
+        # Buffer size larger than row count, less than total number of rows
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=150);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+
+        # Odd number for batch size
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=7);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+
+        # Smallest buffer size available
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=2);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 100);
+
+
+        # Put the remaining keys in our list
+        foreach (range(201, 300) as $i)
+            $keys[] = 'key'.$i;
+
+
+        # Row count above total number of rows
+        $clause->count = 10000;
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=2);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+
+
+        # Row count above total number of rows
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=7);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+
+
+ 
+        # Row count above total number of rows, buffer_size = total number of rows
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=200);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+ 
+ 
+        # Row count above total number of rows, buffer_size = total number of rows
+        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $buffer_size=10000);
+        $count = 0;
+        foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+            $count++;
+        }
+        self::assertEqual($count, 201);
+
+        $cf->truncate();
+    }
+
     public function test_get_indexed_slices() {
         $indexed_cf = new ColumnFamily($this->client, 'Indexed1');
         $indexed_cf->truncate();
@@ -278,11 +408,53 @@ class TestColumnFamily extends UnitTestCase {
             $indexed_cf->insert('key'.$i, $columns);
 
         $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
-        $clause = CassandraUtil::create_index_clause(array($expr));
+        $clause = CassandraUtil::create_index_clause(array($expr), 10000);
         $result = $indexed_cf->get_indexed_slices($clause);
-        self::assertEqual(count($result), 3);
-        foreach(range(1,3) as $i)
-            self::assertEqual($result['key'.$i], $columns);
+
+        $count = 0;
+        foreach($result as $key => $cols) {
+            $count++;
+            self::assertEqual($columns, $cols);
+            self::assertEqual($key, "key$count");
+        }
+        self::assertEqual($count, 3);
+
+        # Insert and remove a matching row at the beginning
+        $indexed_cf->insert('key0', $columns);
+        $indexed_cf->remove('key0');
+        # Insert and remove a matching row at the end
+        $indexed_cf->insert('key4', $columns);
+        $indexed_cf->remove('key4');
+        # Remove a matching row from the middle 
+        $indexed_cf->remove('key2');
+
+        $result = $indexed_cf->get_indexed_slices($clause);
+
+        $count = 0;
+        foreach($result as $key => $cols) {
+            $count++;
+            self::assertTrue($key == "key1" || $key == "key3");
+        }
+        self::assertEqual($count, 2);
+
+        $indexed_cf->truncate();
+
+        $keys = array();
+        foreach(range(1,1000) as $i) {
+            $indexed_cf->insert("key$i", $columns);
+            if ($i % 50 != 0)
+                $indexed_cf->remove("key$i");
+            else
+                $keys[] = "key$i";
+        }
+
+        $count = 0;
+        foreach($result as $key => $cols) {
+            $count++;
+            self::assertTrue(in_array($key, $keys));
+            unset($keys[$key]);
+        }
+        self::assertEqual($count, 20);
 
         $indexed_cf->truncate();
     }
@@ -335,9 +507,13 @@ class TestSuperColumnFamily extends UnitTestCase {
         $this->cf->insert(self::$KEYS[0], $columns);
         self::assertEqual($this->cf->get(self::$KEYS[0]), $columns);
         self::assertEqual($this->cf->multiget(array(self::$KEYS[0])), array(self::$KEYS[0] => $columns));
-        self::assertEqual($this->cf->get_small_range_as_array($start_key=self::$KEYS[0],
-                                                              $finish_key=self::$KEYS[0]),
-                          array(self::$KEYS[0] => $columns));
+        $response = $this->cf->get_range($start_key=self::$KEYS[0],
+                                         $finish_key=self::$KEYS[0]);
+        foreach($response as $key => $cols) {
+            #should only be one row
+            self::assertEqual($key, self::$KEYS[0]);
+            self::assertEqual($cols, $columns);
+        }
     }
 
     public function test_super_column_argument() {
@@ -354,9 +530,13 @@ class TestSuperColumnFamily extends UnitTestCase {
         }
         self::assertEqual($this->cf->multiget(array($key), null, '', '', false, 100, $super_column='1'),
                           array($key => $sub12));
-        self::assertEqual($this->cf->get_small_range_as_array($start_key=$key, $end_key=$key, 100, null, '',
-                                               '', false, 100, $super_column='1'),
-                          array($key => $sub12));
+        $response = $this->cf->get_range($start_key=$key, $end_key=$key, 100, null, '',
+                                               '', false, 100, $super_column='1');
+        foreach($response as $res_key => $cols) {
+            #should only be one row
+            self::assertEqual($res_key, $key);
+            self::assertEqual($cols, $sub12);
+        }
     }
 }
 ?>

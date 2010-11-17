@@ -113,7 +113,7 @@ class ColumnFamily {
 
     const DEFAULT_BUFFER_SIZE = 8096;
 
-    private $client;
+    public $client;
     private $column_family;
     private $is_super;
     private $cf_data_type;
@@ -369,51 +369,6 @@ class ColumnFamily {
                                              $this->rcl($read_consistency_level));
     }
 
-
-   /**
-    * Fetch a range of rows from this column family.
-    *
-    * @param string $key_start fetch rows with a key >= this
-    * @param string $key_finish fetch rows with a key <= this
-    * @param int $row_count limit the number of rows returned to this amount
-    * @param mixed[] $columns limit the columns or super columns fetched to this list
-    * @param mixed $column_start only fetch columns with name >= this
-    * @param mixed $column_finish only fetch columns with name <= this
-    * @param bool $column_reversed fetch the columns in reverse order
-    * @param int $column_count limit the number of columns returned to this amount
-    * @param mixed $super_column return only columns in this super column
-    * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
-    * number of nodes that must respond before the operation returns
-    *
-    * @return mixed array(row_key => array(column_name => column_value))
-    */
-    public function get_small_range_as_array($key_start="",
-                                             $key_finish="",
-                                             $row_count=self::DEFAULT_ROW_COUNT,
-                                             $columns=null,
-                                             $column_start="",
-                                             $column_finish="",
-                                             $column_reversed=false,
-                                             $column_count=self::DEFAULT_COLUMN_COUNT,
-                                             $super_column=null,
-                                             $read_consistency_level=null) {
-
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start,
-                                                  $column_finish, $column_reversed,
-                                                  $column_count);
-
-        $key_range = new cassandra_KeyRange();
-        $key_range->start_key = $key_start;
-        $key_range->end_key = $key_finish;
-        $key_range->count = $row_count;
-
-        $resp = $this->client->get_range_slices($column_parent, $predicate, $key_range,
-                                                $this->rcl($read_consistency_level));
-
-        return $this->keyslices_to_array($resp);
-    }
-
     /**
      * Get an iterator over a range of rows.
      *
@@ -433,7 +388,7 @@ class ColumnFamily {
      *        server will overallocate memory and fail.  This is the size of
      *        that buffer in number of rows.
      *
-     * @return ColumnFamilyIterator
+     * @return RangeColumnFamilyIterator
      */
     public function get_range($key_start="",
                               $key_finish="",
@@ -455,12 +410,15 @@ class ColumnFamily {
             throw $ire;
         }
 
-        return new ColumnFamilyIterator($this, $buffer_size,
-                                        $key_start, $key_finish, $row_count,
-                                        $columns, $column_start, $column_finish,
-                                        $column_reversed, $column_count,
-                                        $super_column,
-                                        $read_consistency_level);
+        $column_parent = $this->create_column_parent($super_column);
+        $predicate = self::create_slice_predicate($columns, $column_start,
+                                                  $column_finish, $column_reversed,
+                                                  $column_count);
+
+        return new RangeColumnFamilyIterator($this, $buffer_size,
+                                             $key_start, $key_finish, $row_count,
+                                             $column_parent, $predicate,
+                                             $this->rcl($read_consistency_level));
     }
 
    /**
@@ -489,22 +447,36 @@ class ColumnFamily {
                                        $column_reversed=false,
                                        $column_count=self::DEFAULT_COLUMN_COUNT,
                                        $super_column=null,
-                                       $read_consistency_level=null) {
+                                       $read_consistency_level=null,
+                                       $buffer_size=null) {
+
+        if ($buffer_size == null)
+            $buffer_size = $this->buffer_size;
+        if ($buffer_size < 2) {
+            $ire = new cassandra_InvalidRequestException();
+            $ire->setMessage('buffer_size cannot be less than 2');
+            throw $ire;
+        }
+
+        $new_clause = new cassandra_IndexClause();
+        foreach($index_clause->expressions as $expr) {
+            $new_expr = new cassandra_IndexExpression();
+            $new_expr->value = $this->pack_value($expr->value, $expr->column_name);
+            $new_expr->column_name = $this->pack_name($expr->column_name);
+            $new_expr->op = $expr->op;
+            $new_clause->expressions[] = $new_expr;
+        }
+        $new_clause->start_key = $index_clause->start_key;
+        $new_clause->count = $index_clause->count;
 
         $column_parent = $this->create_column_parent($super_column);
         $predicate = self::create_slice_predicate($columns, $column_start,
                                                   $column_finish, $column_reversed,
                                                   $column_count);
 
-        foreach($index_clause->expressions as $expr) {
-            $expr->value = $this->pack_value($expr->value, $expr->column_name);
-            $expr->column_name = $this->pack_name($expr->column_name);
-        }
-
-        $resp = $this->client->get_indexed_slices($column_parent, $index_clause, $predicate,
-                                                  $this->rcl($read_consistency_level));
-
-        return $this->keyslices_to_array($resp);
+        return new IndexedColumnFamilyIterator($this, $new_clause, $buffer_size,
+                                               $column_parent, $predicate,
+                                               $this->rcl($read_consistency_level));
     }
 
     /**
@@ -880,7 +852,7 @@ class ColumnFamily {
             return $value;
     }
 
-    private function keyslices_to_array($keyslices) {
+    public function keyslices_to_array($keyslices) {
         $ret = null;
         foreach($keyslices as $keyslice) {
             $key = $keyslice->key;
@@ -970,77 +942,45 @@ class ColumnFamily {
     }
 }
 
-/**
- * Iterates over a column family row-by-row, typically with only a subset
- * of each row's columns.
- *
- * @package phpcassa
- * @subpackage columnfamily
- */
 class ColumnFamilyIterator implements Iterator {
 
-    private $column_family;
-    private $buffer_size;
-    private $key_start, $key_finish, $row_count;
-    private $columns, $column_start, $column_finish, $columns_reversed, $column_count;
-    private $super_column;
-    private $read_consistency_level;
+    protected $column_family;
+    protected $buffer_size;
+    protected $row_count;
+    protected $read_consistency_level;
+    protected $column_parent, $predicate;
 
-    private $current_buffer;
-    private $next_start_key;
-    private $is_valid;
-    private $rows_seen, $rows_seen_this_page;
+    protected $current_buffer;
+    protected $next_start_key, $orig_start_key;
+    protected $is_valid;
+    protected $rows_seen;
 
-    public function __construct($column_family,
-                                $buffer_size,
-                                $key_start="",
-                                $key_finish="",
-                                $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                $columns=null,
-                                $column_start="",
-                                $column_finish="",
-                                $column_reversed=false,
-                                $column_count=ColumnFamily::DEFAULT_COLUMN_COUNT,
-                                $super_column=null,
-                                $read_consistency_level=cassandra_ConsistencyLevel::ONE) {
+    protected function __construct($column_family,
+                                   $buffer_size,
+                                   $row_count,
+                                   $orig_start_key,
+                                   $column_parent,
+                                   $predicate,
+                                   $read_consistency_level) {
 
         $this->column_family = $column_family;
-        $this->key_start = $key_start;
-        $this->key_finish = $key_finish;
+        $this->buffer_size = $buffer_size;
         $this->row_count = $row_count;
-        $this->columns = $columns;
-        $this->column_start = $column_start;
-        $this->column_finish = $column_finish;
-        $this->column_reversed = $column_reversed;
-        $this->column_count = $column_count;
-        $this->super_column = $super_column;
+        $this->orig_start_key = $orig_start_key;
+        $this->next_start_key = $orig_start_key;
+        $this->column_parent = $column_parent;
+        $this->predicate = $predicate;
         $this->read_consistency_level = $read_consistency_level;
 
-        $this->buffer_size = $buffer_size;
-        if ($row_count != null)
-            $this->buffer_size = min($row_count, $buffer_size);
-    }
-
-    private function get_buffer() {
-        $this->current_buffer = $this->column_family->get_small_range_as_array(
-            $this->next_start_key,
-            $this->key_finish,
-            $this->buffer_size,
-            $this->columns,
-            $this->column_start,
-            $this->column_finish,
-            $this->column_reversed,
-            $this->column_count,
-            $this->super_column,
-            $this->read_consistency_level);
-        $this->rows_seen_this_page = 0;
+        if ($this->row_count != null)
+            $this->buffer_size = min($this->row_count, $buffer_size);
     }
 
     public function rewind() {
         // Setup first buffer
         $this->rows_seen = 0;
         $this->is_valid = true;
-        $this->next_start_key = $this->key_start;
+        $this->next_start_key = $this->orig_start_key;
         $this->get_buffer();
 
         # If nothing was inserted, this may happen
@@ -1052,6 +992,8 @@ class ColumnFamilyIterator implements Iterator {
         # If the very first row is a deleted row
         if (count(current($this->current_buffer)) == 0)
             $this->next();
+        else
+            $this->rows_seen++;
     }
 
     public function current() {
@@ -1062,56 +1004,155 @@ class ColumnFamilyIterator implements Iterator {
         return key($this->current_buffer);
     }
 
+    public function valid() {
+        return $this->is_valid;
+    }
+
     public function next() {
-        $next = next($this->current_buffer);
-        if (count(current($this->current_buffer)) == 0)
-            $this->next();
+        $beyond_last_row = false;
 
-        $key = key($this->current_buffer);
-
-        $this->rows_seen++;
-        $this->rows_seen_this_page++;
-        if ($this->rows_seen > $this->row_count) {
-            $this->is_valid = false;
-            return;
-        }
-
-        $beyond_last_field = !isset($key);
-
-        if($beyond_last_field && count($this->current_buffer) < $this->buffer_size)
+        # If we haven't run off the end
+        if ($this->current_buffer != null)
         {
-            # This was the last page in the column family
-            $this->is_valid = false;
-        }
-        else if($beyond_last_field)
-        {
-            # Set the next start key
-            end($this->current_buffer);
+            # Save this key incase we run off the end
             $this->next_start_key = key($this->current_buffer);
+            next($this->current_buffer);
 
-            # Get the next buffer
+            if (count(current($this->current_buffer)) == 0)
+            {
+                # this is an empty row, skip it
+                $key = key($this->current_buffer);
+                $this->next();
+            }
+            else # count > 0
+            {
+                $key = key($this->current_buffer);
+                $beyond_last_row = !isset($key);
+
+                if (!$beyond_last_row)
+                {
+                    $this->rows_seen++;
+                    if ($this->rows_seen > $this->row_count) {
+                        $this->is_valid = false;
+                        return;
+                    }
+                }
+            }
+        }
+        else
+        {
+            $beyond_last_row = true;
+        }
+
+        if($beyond_last_row && $this->current_page_size < $this->expected_page_size)
+        {
+            # The page was shorter than we expected, so we know that this
+            # was the last page in the column family
+            $this->is_valid = false;
+        }
+        else if($beyond_last_row)
+        {
+            # We've reached the end of this page, but there should be more
+            # in the CF
+            
+            # Get the next buffer (next_start_key has already been set)
             $this->get_buffer();
 
             # If the result set is 1, we can stop because the first item
             # should always be skipped
             if(count($this->current_buffer) == 1)
-            {
                 $this->is_valid = false;
-            }
             else
-            {
-                next($this->current_buffer);
-                # Skip the row if it's empty
-                if (count(current($this->current_buffer)) == 0)
-                    $this->next();
-                else
-                    $this->is_valid = true;
-            }
+                $this->next();
         }
     }
+}
 
-    public function valid() {
-        return $this->is_valid;
+/**
+ * Iterates over a column family row-by-row, typically with only a subset
+ * of each row's columns.
+ *
+ * @package phpcassa
+ * @subpackage columnfamily
+ */
+class RangeColumnFamilyIterator extends ColumnFamilyIterator {
+
+    private $key_start, $key_finish;
+
+    public function __construct($column_family, $buffer_size,
+                                $key_start, $key_finish, $row_count,
+                                $column_parent, $predicate,
+                                $read_consistency_level) {
+
+        $this->key_start = $key_start;
+        $this->key_finish = $key_finish;
+
+        parent::__construct($column_family, $buffer_size, $row_count,
+                            $key_start, $column_parent, $predicate,
+                            $read_consistency_level);
+    }
+
+    protected function get_buffer() {
+        if($this->row_count != null)
+            $buff_sz = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
+        else
+            $buff_sz = $this->buffer_size;
+        $this->expected_page_size = $buff_sz;
+
+        $key_range = new cassandra_KeyRange();
+        $key_range->start_key = $this->next_start_key;
+        $key_range->end_key = $this->key_finish;
+        $key_range->count = $buff_sz;
+
+        $resp = $this->column_family->client->get_range_slices(
+                $this->column_parent, $this->predicate,
+                $key_range, $this->read_consistency_level);
+
+        $this->current_buffer = $this->column_family->keyslices_to_array($resp);
+        $this->current_page_size = count($this->current_buffer);
+    }
+}
+
+/**
+ * Iterates over a column family row-by-row, typically with only a subset
+ * of each row's columns.
+ *
+ * @package phpcassa
+ * @subpackage columnfamily
+ */
+class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
+
+    private $index_clause;
+
+    public function __construct($column_family, $index_clause, $buffer_size,
+                                $column_parent, $predicate,
+                                $read_consistency_level) {
+
+        $this->index_clause = $index_clause;
+        $row_count = $index_clause->count;
+        $orig_start_key = $index_clause->start_key;
+
+        parent::__construct($column_family, $buffer_size, $row_count,
+                            $orig_start_key, $column_parent, $predicate,
+                            $read_consistency_level);
+    }
+
+    protected function get_buffer() {
+        # Figure out how many rows we need to get and record that
+        if($this->row_count != null)
+            $this->index_clause->count = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
+        else
+            $this->index_clause->count = $this->buffer_size;
+        $this->expected_page_size = $this->index_clause->count;
+
+        $this->index_clause->start_key = $this->next_start_key;
+        $resp = $this->column_family->client->get_indexed_slices(
+            $this->column_parent,
+            $this->index_clause,
+            $this->predicate,
+            $this->read_consistency_level);
+        $this->current_buffer = $this->column_family->keyslices_to_array($resp);
+        $this->current_page_size = count($this->current_buffer);
     }
 }
 
