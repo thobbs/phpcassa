@@ -1,830 +1,757 @@
-<html>
-<head>
-<title>Docs For Class cassandra_CfDef</title>
-<link rel="stylesheet" type="text/css" href="../media/style.css">
-</head>
-<body>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class cassandra_CfDef</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class cassandra_CfDef</h2>
 
-<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
-  <tr>
-    <td class="header_top">default</td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-  <tr>
-    <td class="header_menu">
-        
-                                    
-                                                                                          		  [ <a href="../classtrees_default.html" class="menu">class tree: default</a> ]
-		  [ <a href="../elementindex_default.html" class="menu">index: default</a> ]
-		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
-    </td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-</table>
-
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="200" class="menu">
-      <b>Packages:</b><br />
-              <a href="../li_default.html">default</a><br />
-              <a href="../li_columnfamily.html">columnfamily</a><br />
-              <a href="../li_connection.html">connection</a><br />
-              <a href="../li_uuid.html">uuid</a><br />
-            <br /><br />
-                        <b>Files:</b><br />
-      	  <div class="package">
-			<a href="../default/_thrift---packages---cassandra---cassandra_types.php.html">		cassandra_types.php
-		</a><br>
-	  </div><br />
-      
-      
-            <b>Classes:</b><br />
-        <div class="package">
-		    		<a href="../default/cassandra_AuthenticationException.html">cassandra_AuthenticationException</a><br />
-	    		<a href="../default/cassandra_AuthenticationRequest.html">cassandra_AuthenticationRequest</a><br />
-	    		<a href="../default/cassandra_AuthorizationException.html">cassandra_AuthorizationException</a><br />
-	    		<a href="../default/cassandra_CfDef.html">cassandra_CfDef</a><br />
-	    		<a href="../default/cassandra_Column.html">cassandra_Column</a><br />
-	    		<a href="../default/cassandra_ColumnDef.html">cassandra_ColumnDef</a><br />
-	    		<a href="../default/cassandra_ColumnOrSuperColumn.html">cassandra_ColumnOrSuperColumn</a><br />
-	    		<a href="../default/cassandra_ColumnParent.html">cassandra_ColumnParent</a><br />
-	    		<a href="../default/cassandra_ColumnPath.html">cassandra_ColumnPath</a><br />
-	    		<a href="../default/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a><br />
-	    		<a href="../default/cassandra_Deletion.html">cassandra_Deletion</a><br />
-	    		<a href="../default/cassandra_IndexClause.html">cassandra_IndexClause</a><br />
-	    		<a href="../default/cassandra_IndexExpression.html">cassandra_IndexExpression</a><br />
-	    		<a href="../default/cassandra_IndexOperator.html">cassandra_IndexOperator</a><br />
-	    		<a href="../default/cassandra_IndexType.html">cassandra_IndexType</a><br />
-	    		<a href="../default/cassandra_InvalidRequestException.html">cassandra_InvalidRequestException</a><br />
-	    		<a href="../default/cassandra_KeyCount.html">cassandra_KeyCount</a><br />
-	    		<a href="../default/cassandra_KeyRange.html">cassandra_KeyRange</a><br />
-	    		<a href="../default/cassandra_KeySlice.html">cassandra_KeySlice</a><br />
-	    		<a href="../default/cassandra_KsDef.html">cassandra_KsDef</a><br />
-	    		<a href="../default/cassandra_Mutation.html">cassandra_Mutation</a><br />
-	    		<a href="../default/cassandra_NotFoundException.html">cassandra_NotFoundException</a><br />
-	    		<a href="../default/cassandra_SlicePredicate.html">cassandra_SlicePredicate</a><br />
-	    		<a href="../default/cassandra_SliceRange.html">cassandra_SliceRange</a><br />
-	    		<a href="../default/cassandra_SuperColumn.html">cassandra_SuperColumn</a><br />
-	    		<a href="../default/cassandra_TimedOutException.html">cassandra_TimedOutException</a><br />
-	    		<a href="../default/cassandra_TokenRange.html">cassandra_TokenRange</a><br />
-	    		<a href="../default/cassandra_UnavailableException.html">cassandra_UnavailableException</a><br />
-	  </div>
-                </td>
-    <td>
-      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
-
-<h1>Class: cassandra_CfDef</h1>
-Source Location: /thrift/packages/cassandra/cassandra_types.php<br /><br />
-
-
-<table width="100%" border="0">
-<tr><td valign="top">
-
-<h3><a href="#class_details">Class Overview</a></h3>
-<pre></pre><br />
-<div class="description"></div><br /><br />
-
-
-
-
-
-
-        
-</td>
-
-<td valign="top">
-<h3><a href="#class_vars">Variables</a></h3>
-<ul>
-    <li><a href="../default/cassandra_CfDef.html#var$column_metadata">$column_metadata</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$column_type">$column_type</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$comment">$comment</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$comparator_type">$comparator_type</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$default_validation_class">$default_validation_class</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$gc_grace_seconds">$gc_grace_seconds</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$id">$id</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$keyspace">$keyspace</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$key_cache_save_period_in_seconds">$key_cache_save_period_in_seconds</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$key_cache_size">$key_cache_size</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$max_compaction_threshold">$max_compaction_threshold</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$memtable_flush_after_mins">$memtable_flush_after_mins</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$memtable_operations_in_millions">$memtable_operations_in_millions</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$memtable_throughput_in_mb">$memtable_throughput_in_mb</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$min_compaction_threshold">$min_compaction_threshold</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$name">$name</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$preload_row_cache">$preload_row_cache</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$read_repair_chance">$read_repair_chance</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$row_cache_save_period_in_seconds">$row_cache_save_period_in_seconds</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$row_cache_size">$row_cache_size</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$subcomparator_type">$subcomparator_type</a></li>
-    <li><a href="../default/cassandra_CfDef.html#var$_TSPEC">$_TSPEC</a></li>
-  </ul>
-</td>
-
-
-<td valign="top">
-<h3><a href="#class_methods">Methods</a></h3>
-<ul>
-    <li><a href="../default/cassandra_CfDef.html#method__construct">__construct</a></li>
-    <li><a href="../default/cassandra_CfDef.html#methodgetName">getName</a></li>
-    <li><a href="../default/cassandra_CfDef.html#methodread">read</a></li>
-    <li><a href="../default/cassandra_CfDef.html#methodwrite">write</a></li>
-  </ul>
-</td>
-
-</tr></table>
-<hr />
-
-<table width="100%" border="0"><tr>
-
-
-
-
-
-
-</tr></table>
-<hr />
-
-<a name="class_details"></a>
-<h3>Class Details</h3>
-<div class="tags">
-[line 2460]<br />
-</div><br /><br />
-<div class="top">[ <a href="#top">Top</a> ]</div><br />
-
-<hr />
-<a name="class_vars"></a>
-<h3>Class Variables</h3>
-<div class="tags">
-	<a name="var$_TSPEC"></a>
-	<p></p>
-	<h4>static $_TSPEC = <span class="value"></span></h4>
-	<p>[line 2461]</p>
-  
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$column_metadata"></a>
-	<p></p>
-	<h4>$column_metadata = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2473]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$column_type"></a>
-	<p></p>
-	<h4>$column_type = <span class="value">&nbsp;&quot;Standard&quot;</span></h4>
-	<p>[line 2465]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$comment"></a>
-	<p></p>
-	<h4>$comment = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2468]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$comparator_type"></a>
-	<p></p>
-	<h4>$comparator_type = <span class="value">&nbsp;&quot;BytesType&quot;</span></h4>
-	<p>[line 2466]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$default_validation_class"></a>
-	<p></p>
-	<h4>$default_validation_class = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2475]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$gc_grace_seconds"></a>
-	<p></p>
-	<h4>$gc_grace_seconds = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2474]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$id"></a>
-	<p></p>
-	<h4>$id = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2476]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$keyspace"></a>
-	<p></p>
-	<h4>$keyspace = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2463]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$key_cache_save_period_in_seconds"></a>
-	<p></p>
-	<h4>$key_cache_save_period_in_seconds = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2480]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$key_cache_size"></a>
-	<p></p>
-	<h4>$key_cache_size = <span class="value">&nbsp;200000</span></h4>
-	<p>[line 2471]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$max_compaction_threshold"></a>
-	<p></p>
-	<h4>$max_compaction_threshold = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2478]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$memtable_flush_after_mins"></a>
-	<p></p>
-	<h4>$memtable_flush_after_mins = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2481]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$memtable_operations_in_millions"></a>
-	<p></p>
-	<h4>$memtable_operations_in_millions = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2483]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$memtable_throughput_in_mb"></a>
-	<p></p>
-	<h4>$memtable_throughput_in_mb = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2482]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$min_compaction_threshold"></a>
-	<p></p>
-	<h4>$min_compaction_threshold = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2477]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$name"></a>
-	<p></p>
-	<h4>$name = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2464]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$preload_row_cache"></a>
-	<p></p>
-	<h4>$preload_row_cache = <span class="value">&nbsp;false</span></h4>
-	<p>[line 2470]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$read_repair_chance"></a>
-	<p></p>
-	<h4>$read_repair_chance = <span class="value">&nbsp;1</span></h4>
-	<p>[line 2472]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$row_cache_save_period_in_seconds"></a>
-	<p></p>
-	<h4>$row_cache_save_period_in_seconds = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2479]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$row_cache_size"></a>
-	<p></p>
-	<h4>$row_cache_size = <span class="value">&nbsp;0</span></h4>
-	<p>[line 2469]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$subcomparator_type"></a>
-	<p></p>
-	<h4>$subcomparator_type = <span class="value">&nbsp;null</span></h4>
-	<p>[line 2467]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-</div><br />
-
-<hr />
-<a name="class_methods"></a>
-<h3>Class Methods</h3>
-<div class="tags">
-
-  <hr />
-	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 2485]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>cassandra_CfDef __construct(
-[
-$vals = null])</code>
-    </td></tr></table>
-    </td></tr></table><br />
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+		<p class="notes">
+			Located in <a class="field" href="_thrift---packages---cassandra---cassandra_types.php.html">/thrift/packages/cassandra/cassandra_types.php</a> (line <span class="field">2460</span>)
+		</p>
+		
+				
+		<pre></pre>
 	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+			</div>
 </div>
-<br /><br />
 
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																																																																																												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$_TSPEC" title="details" class="var-name">$_TSPEC</a>
+				</div>
+																				<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$column_metadata" title="details" class="var-name">$column_metadata</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$column_type" title="details" class="var-name">$column_type</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$comment" title="details" class="var-name">$comment</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$comparator_type" title="details" class="var-name">$comparator_type</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$default_validation_class" title="details" class="var-name">$default_validation_class</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$gc_grace_seconds" title="details" class="var-name">$gc_grace_seconds</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$id" title="details" class="var-name">$id</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$keyspace" title="details" class="var-name">$keyspace</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$key_cache_save_period_in_seconds" title="details" class="var-name">$key_cache_save_period_in_seconds</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$key_cache_size" title="details" class="var-name">$key_cache_size</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$max_compaction_threshold" title="details" class="var-name">$max_compaction_threshold</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$memtable_flush_after_mins" title="details" class="var-name">$memtable_flush_after_mins</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$memtable_operations_in_millions" title="details" class="var-name">$memtable_operations_in_millions</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$memtable_throughput_in_mb" title="details" class="var-name">$memtable_throughput_in_mb</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$min_compaction_threshold" title="details" class="var-name">$min_compaction_threshold</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$name" title="details" class="var-name">$name</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$read_repair_chance" title="details" class="var-name">$read_repair_chance</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$row_cache_save_period_in_seconds" title="details" class="var-name">$row_cache_save_period_in_seconds</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$row_cache_size" title="details" class="var-name">$row_cache_size</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$subcomparator_type" title="details" class="var-name">$subcomparator_type</a>
+				</div>
+																			</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																				
+												<div class="method-definition">
+											<span class="method-result">cassandra_CfDef</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$vals</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getName" title="details" class="method-name">getName</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#read" title="details" class="method-name">read</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$input</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#write" title="details" class="method-name">write</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$output</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$_TSPEC" id="$_TSPEC"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$_TSPEC</span>
+						(line <span class="line-number">2461</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">&nbsp;&nbsp;</td>
-        <td><b>$vals</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodgetName"></a>
-	<h3>method getName <span class="smalllinenumber">[line 2646]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void getName(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+		
+		
+
 </div>
-<br /><br />
+<a name="var$column_metadata" id="$column_metadata"><!-- --></A>
+<div class="oddrow">
 
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodread"></a>
-	<h3>method read <span class="smalllinenumber">[line 2650]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void read(
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$column_metadata</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2472</span>)
+		</span>
+	</div>
 
-$input)</code>
-    </td></tr></table>
-    </td></tr></table><br />
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
 	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+	
+		
+		
+
 </div>
-<br /><br />
+<a name="var$column_type" id="$column_type"><!-- --></A>
+<div class="evenrow">
 
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">&nbsp;&nbsp;</td>
-        <td><b>$input</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodwrite"></a>
-	<h3>method write <span class="smalllinenumber">[line 2833]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void write(
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$column_type</span>
+			 = <span class="var-default"> &quot;Standard&quot;</span>			(line <span class="line-number">2465</span>)
+		</span>
+	</div>
 
-$output)</code>
-    </td></tr></table>
-    </td></tr></table><br />
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
 	
-		<br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+	
+		
+		
+
 </div>
-<br /><br />
+<a name="var$comment" id="$comment"><!-- --></A>
+<div class="oddrow">
 
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$comment</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2468</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">&nbsp;&nbsp;</td>
-        <td><b>$output</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-</div><br />
+	
+		
+		
+
+</div>
+<a name="var$comparator_type" id="$comparator_type"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$comparator_type</span>
+			 = <span class="var-default"> &quot;BytesType&quot;</span>			(line <span class="line-number">2466</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$default_validation_class" id="$default_validation_class"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$default_validation_class</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2474</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$gc_grace_seconds" id="$gc_grace_seconds"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$gc_grace_seconds</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2473</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$id" id="$id"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$id</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2475</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$keyspace" id="$keyspace"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$keyspace</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2463</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$key_cache_save_period_in_seconds" id="$key_cache_save_period_in_seconds"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$key_cache_save_period_in_seconds</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2479</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$key_cache_size" id="$key_cache_size"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$key_cache_size</span>
+			 = <span class="var-default"> 200000</span>			(line <span class="line-number">2470</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$max_compaction_threshold" id="$max_compaction_threshold"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$max_compaction_threshold</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2477</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$memtable_flush_after_mins" id="$memtable_flush_after_mins"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$memtable_flush_after_mins</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2480</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$memtable_operations_in_millions" id="$memtable_operations_in_millions"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$memtable_operations_in_millions</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2482</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$memtable_throughput_in_mb" id="$memtable_throughput_in_mb"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$memtable_throughput_in_mb</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2481</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$min_compaction_threshold" id="$min_compaction_threshold"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$min_compaction_threshold</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2476</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$name" id="$name"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$name</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2464</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$read_repair_chance" id="$read_repair_chance"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$read_repair_chance</span>
+			 = <span class="var-default"> 1</span>			(line <span class="line-number">2471</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$row_cache_save_period_in_seconds" id="$row_cache_save_period_in_seconds"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$row_cache_save_period_in_seconds</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2478</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$row_cache_size" id="$row_cache_size"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$row_cache_size</span>
+			 = <span class="var-default"> 0</span>			(line <span class="line-number">2469</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$subcomparator_type" id="$subcomparator_type"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$subcomparator_type</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">2467</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">2484</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">cassandra_CfDef</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$vals</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$vals</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetName" id="getName"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getName</span> (line <span class="line-number">2638</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getName
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodread" id="read"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">read</span> (line <span class="line-number">2642</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			read
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$input</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$input</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodwrite" id="write"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">write</span> (line <span class="line-number">2818</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			write
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$output</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$output</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
 
 
-        <div class="credit">
-		    <hr />
-		    Documentation generated on Tue, 19 Oct 2010 17:59:19 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
-	      </div>
-      </td></tr></table>
-    </td>
-  </tr>
-</table>
-
-</body>
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 17 Nov 2010 14:10:52 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
 </html>
