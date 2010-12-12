@@ -77,6 +77,8 @@ class TestAutopacking extends UnitTestCase {
             foreach(self::$KEYS as $key)
                 $cf->remove($key);
         }
+        if ($this->client)
+            $this->client->close();
     }
 
     public function test_basic_ints() {

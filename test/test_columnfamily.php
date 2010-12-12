@@ -16,8 +16,11 @@ class TestColumnFamily extends UnitTestCase {
     }
 
     public function tearDown() {
-        foreach(self::$KEYS as $key)
-            $this->cf->remove($key);
+        if ($this->cf)
+            foreach(self::$KEYS as $key)
+                $this->cf->remove($key);
+        if ($this->client)
+            $this->client->close();
     }
 
     public function test_opening_connection() {
