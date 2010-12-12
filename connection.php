@@ -142,10 +142,12 @@ class ServerSet {
     public function get() {
         if (count($this->dead) != 0) {
             $revived = array_pop($this->dead);
-            if ($revived['time'] > time())  # Not yet, put it back
+            if ($revived['time'] > time()) { # Not yet, put it back
                 $this->dead[] = $revived;
-            else 
-                $this->servers[$revived['host'.$revived['port']]] = $revived['server'];
+            } else {
+                $revived_server = $revived['server'];
+                $this->servers[$revived_server['host'].$revived_server['port']] = $revived_server;
+            }
         }
         if (!count($this->servers))
             throw new NoServerAvailable();
