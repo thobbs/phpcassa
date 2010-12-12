@@ -9,6 +9,16 @@ require_once('uuid.php');
 class CassandraUtil {
 
     /**
+     * Creates a UUID object from a byte representation.
+     * @param string $bytes the byte representation of a UUID, which is
+     *        what is returned from functions like uuid1()
+     * @return a UUID object
+     */
+    static public function import($bytes) {
+        return UUID::import($bytes);
+    }
+
+    /**
      * Generate a v1 UUID (timestamp based)
      * @return string a byte[] representation of a UUID 
      */
