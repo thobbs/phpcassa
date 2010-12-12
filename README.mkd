@@ -61,6 +61,7 @@ The C extension is crucial for phpcassa's performance.
 You need to configure and make to be able to use the C extension.
 
     cd thrift/ext/thrift_protocol
+    phpize
     ./configure
     make
     sudo make install
