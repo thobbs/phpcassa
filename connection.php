@@ -107,7 +107,7 @@ class ClientTransport {
         $server_version = $server_version[0];
         if ($server_version < self::LOWEST_COMPATIBLE_VERSION) {
             $ver = self::LOWEST_COMPATIBLE_VERSION;
-            throw new IncompatbleAPIException("The server's API version is too ".
+            throw new IncompatibleAPIException("The server's API version is too ".
                 "low to be comptible with phpcassa (server: $server_version, ".
                 "lowest compatible version: $ver)");
         }
