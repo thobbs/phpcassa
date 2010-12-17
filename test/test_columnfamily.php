@@ -531,8 +531,10 @@ class TestSuperColumnFamily extends UnitTestCase {
             assert(false);
         } catch (cassandra_NotFoundException $e) {
         }
+
         self::assertEqual($this->cf->multiget(array($key), null, '', '', false, 100, $super_column='1'),
                           array($key => $sub12));
+
         $response = $this->cf->get_range($start_key=$key, $end_key=$key, 100, null, '',
                                                '', false, 100, $super_column='1');
         foreach($response as $res_key => $cols) {
@@ -540,6 +542,13 @@ class TestSuperColumnFamily extends UnitTestCase {
             self::assertEqual($res_key, $key);
             self::assertEqual($cols, $sub12);
         }
+
+        self::assertEqual($this->cf->get_count($key), 2);
+        $this->cf->remove($key, null, '1');
+        self::assertEqual($this->cf->get_count($key), 1);
+        $this->cf->remove($key, array('sub3'), '2');
+        self::assertEqual($this->cf->get_count($key), 1);
+        self::assertEqual($this->cf->get($key), array('2' => array('sub4' => 'val4')));
     }
 }
 ?>

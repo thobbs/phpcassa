@@ -555,8 +555,20 @@ class ColumnFamily {
      */
     public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
 
+        $timestamp = CassandraUtil::get_time();
+
+        if ($columns == null || count($columns) == 1)
+        {
+            $cp = new cassandra_ColumnPath();
+            $cp->column_family = $this->column_family;
+            $cp->super_column = $this->pack_name($super_column, true);
+            if ($columns != null)
+                $cp->column = $this->pack_name($columns[0], false);
+            return $this->client->remove($key, $cp, $timestamp, $this->wcl($write_consistency_level));
+        }
+
         $deletion = new cassandra_Deletion();
-        $deletion->timestamp = CassandraUtil::get_time();
+        $deletion->timestamp = $timestamp;
         $deletion->super_column = $this->pack_name($super_column, true);
 
         if ($columns != null) {
