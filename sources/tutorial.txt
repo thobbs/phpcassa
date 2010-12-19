@@ -46,7 +46,7 @@ specify the host and port explicitly, as follows:
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace1', ['localhost:9160']);
+  $conn = new Connection('Keyspace1', array(array('host' => localhost, 'port' => 9160)));
 
 Getting a ColumnFamily
 ----------------------
