@@ -60,6 +60,9 @@ class Connection {
                                                         $this->recv_timeout);
             }
         } catch (TException $e) {
+            $h = $server['host'];
+            $err = (string)$e;
+            error_log("Error connecting to $h: $err", 0);
             $this->servers->mark_dead($server);
             return $this->connect();
         }
