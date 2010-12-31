@@ -609,5 +609,12 @@ class TestAutopacking extends UnitTestCase {
         self::assertEqual($this->cf_def_valid->get(self::$KEYS[0]),
                           array('aaaaaa' => 222222222222, 'subcol' => $this->TIME1));
     }
+
+    public function test_uuid1_generation() {
+        $micros = 1293769171436849;
+        $uuid = CassandraUtil::import(CassandraUtil::uuid1(null, $micros)); 
+        $t = (int)($uuid->time * 1000000);
+        self::assertWithinMargin($micros, $t, 100);
+    }
 }
 ?>

@@ -21,9 +21,13 @@ class CassandraUtil {
     /**
      * Generate a v1 UUID (timestamp based)
      * @return string a byte[] representation of a UUID 
+     * @param string $node what to use for the MAC portion of the UUID.  This will be generated
+     *        randomly if left as NULL
+     * @param int $time timestamp to use for the UUID.  This should be a number of microseconds
+     *        since the UNIX epoch.
      */
-    static public function uuid1($node=null) {
-        $uuid = UUID::mint(1, $node);
+    static public function uuid1($node=null, $time=null) {
+        $uuid = UUID::mint(1, $node, null, $time);
         return $uuid->bytes;
     }
 

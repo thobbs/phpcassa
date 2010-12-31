@@ -35,6 +35,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
+require_once('columnfamily.php');
 
 /**
  * @package phpcassa
@@ -70,11 +71,11 @@ class UUID {
  protected $node;
  protected $time;
  
- public static function mint($ver = 1, $node = NULL, $ns = NULL) {
+ public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL) {
   /* Create a new UUID based on provided data. */
   switch((int) $ver) {
    case 1:
-    return new self(self::mintTime($node));
+    return new self(self::mintTime($node, $time));
    case 2:
     // Version 2 is not supported 
     throw new UUIDException("Version 2 is unsupported.");
@@ -165,14 +166,28 @@ class UUID {
    bin2hex(substr($uuid,10,6));
  }
 
- protected static function mintTime($node = NULL) {
+ protected static function get_time() {
+    $time1 = microtime();
+    settype($time1, 'string'); //convert to string to keep trailing zeroes
+    $time2 = explode(" ", $time1);
+    $sub_secs = preg_replace('/0./', '', $time2[0], 1);
+    $time3 = ($time2[1].$sub_secs)/100;
+    return $time3;
+ }
+
+
+ protected static function mintTime($node = NULL, $time_arg = NULL) {
   /* Generates a Version 1 UUID.  
      These are derived from the time at which they were generated. */
   // Get time since Gregorian calendar reform in 100ns intervals
   // This is exceedingly difficult because of PHP's (and pack()'s) 
   //  integer size limits.
   // Note that this will never be more accurate than to the microsecond.
-  $time = microtime(1) * 10000000 + self::interval;
+  if ($time_arg == NULL) {
+   $time = CassandraUtil::get_time() * 10 + self::interval;
+  } else {
+   $time = $time_arg * 10 + self::interval;
+  }
   // Convert to a string representation
   $time = sprintf("%F", $time);
   preg_match("/^\d+/", $time, $time); //strip decimal point
