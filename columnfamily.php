@@ -562,8 +562,12 @@ class ColumnFamily {
             $cp = new cassandra_ColumnPath();
             $cp->column_family = $this->column_family;
             $cp->super_column = $this->pack_name($super_column, true);
-            if ($columns != null)
-                $cp->column = $this->pack_name($columns[0], false);
+            if ($columns != null) {
+                if ($this->is_super && $super_column == null)
+                    $cp->super_column = $this->pack_name($columns[0], true);
+                else
+                    $cp->column = $this->pack_name($columns[0], false);
+            }
             return $this->client->remove($key, $cp, $timestamp, $this->wcl($write_consistency_level));
         }
 
