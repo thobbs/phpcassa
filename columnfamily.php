@@ -35,7 +35,7 @@ class CassandraUtil {
      * Generate a v3 UUID
      * @return string a byte[] representation of a UUID 
      */
-    static public function uuid3($null=null, $namespace=null) {
+    static public function uuid3($node=null, $namespace=null) {
         $uuid = UUID::mint(3, $node, $namespace);
         return $uuid->bytes;
     }
