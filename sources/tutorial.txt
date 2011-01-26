@@ -41,8 +41,8 @@ The first step when working with **phpcassa** is to create a
 
   $conn = new Connection('Keyspace');
 
-The above code will connect on the default host and port. We can also
-specify the host and port explicitly, as follows:
+The above code will connect on the default host and port of `localhost:9160`.
+We can also explicitly specify an array of host and port combinations as follows:
 
 .. code-block:: php
 
@@ -53,7 +53,7 @@ Getting a ColumnFamily
 A column family is a collection of rows and columns in Cassandra,
 and can be thought of as roughly the equivalent of a table in a
 relational database. We'll use one of the column families that
-were already included in the schema file:
+were already included in the default schema file:
 
 .. code-block:: php
 
@@ -74,15 +74,13 @@ We can also insert more than one column at a time:
 
   $column_family->insert('row_key', array('name1' => 'val1', 'name2' => 'val2'));
 
-.. todo: batch_insert
+And we can insert more than one row at a time:
 
-.. And we can insert more than one row at a time:
+.. code-block:: php
 
-.. .. code-block:: php
-
-..   $column_family.batch_insert({'row1': {'name1':'val1', 'name2':'val2'},
-..   ...                       'row2': {'foo':'bar'})
-..   1354491238721387
+   $column_family->batch_insert(
+       array('row1' => array('name1' => 'val1', 'name2' => 'val2'),
+       array('row2' => array('foo' => 'bar');
 
 Getting Data
 ------------
@@ -334,7 +332,10 @@ the following:
   $index_exp = CassandraUtil::create_index_expression('birthdate', 1984);
   $index_clause = CassandraUtil::create_index_clause(array($index_exp));
   $col_fam->get_indexed_slices($index_clause);
-  // returns: array('winston smith' => array('birthdate' => 1984))
+  // returns an Iterator over:
+  //   array('winston smith' => array('birthdate' => 1984))
+
+Note that an Iterator is returned, not an array.
 
 Although at least one 
 `IndexExpression <http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html>`_

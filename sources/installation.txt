@@ -3,7 +3,16 @@
 Installing
 ==========
 Copying the `phpcassa` directory into your path should be enough to
-begin using **phpcassa**.  This will not automatically allow the
+begin using **phpcassa**.  
+
+You can import the modules by including the following lines:
+
+.. code-block:: php
+
+    include_once('phpcassa/connection.php');
+    include_once('phpcassa/columnfamily.php');
+
+This will not automatically allow the
 C extension to be used, though.
 
 C Extension
@@ -15,11 +24,16 @@ You need to configure and make to be able to use the C extension:
 .. code-block:: bash
 
     cd thrift/ext/thrift_protocol
+    phpize
     ./configure
     make
     sudo make install
 
-Add the following line to your php.ini file:
+You need to have a PHP 5 dev package installed in order to do this.  On
+Debian-derived systems, the package is named 'php5-dev' and on Red Hat-derived
+systems it is 'php-devel'.
+
+You need to add the following line to your php.ini file:
 
 ::
 
