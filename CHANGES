@@ -1,0 +1,18 @@
+Changes in 0.7.a.3
+
+  * Fix typo in throwing IncompatibleAPIException
+  * Use remove() instead of batch_mutate() when possible 
+  * Log connection errors with error_log()
+  * Fix bug with remove() on Super CFs
+  * Allow a microsecond timestamp to be passed in for UUID v1 creation
+  * Fix CassandraUtil::uuid3() param name 
+
+Changes in 0.7.a.2
+
+  * Fix server revival bug 
+  * Remove print statement from Connection on connection failure 
+  * Add a convenience import() method to CassandraUtil 
+
+Changes in 0.7.a1
+
+  * Initial release
