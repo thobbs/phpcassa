@@ -1,12 +1,11 @@
 phpcassa |release| Documentation
 ================================
 
-Contents
---------
 **phpcassa** is a PHP client for
 `Apache Cassandra <http://cassandra.apache.org>`_.
 
-
+Contents
+--------
 :doc:`installation`
   How to install **phpcassa**.
 
@@ -23,14 +22,18 @@ Contents
 Help
 ------------
 Mailing List
-  * Mail to `phpcassa@googlegroups.com <mailto:phpcassa@googlegroups.com>`_ or `view online <http://groups.google.com/group/phpcassa>`_.
+  * Mail to `phpcassa@googlegroups.com <mailto:phpcassa@googlegroups.com>`_ or
+    `view online <http://groups.google.com/group/phpcassa>`_.
 
 IRC
-  * Use #cassandra on `irc.freenode.net <http://freenode.net>`_.  If you don't have an IRC client, you can use `freenode's web based client <http://webchat.freenode.net/?channels=#cassandra>`_.
+  * Use #cassandra on `irc.freenode.net <http://freenode.net>`_.  If you don't
+    have an IRC client, you can use
+    `freenode's web based client <http://webchat.freenode.net/?channels=#cassandra>`_.
 
 Issues
 ------
-Bugs and feature requests for **phpcassa** are currently tracked through the `github issue tracker <http://github.com/thobbs/phpcassa/issues>`_.
+Bugs and feature requests for **phpcassa** are currently tracked through the
+`github issue tracker <http://github.com/thobbs/phpcassa/issues>`_.
 
 Contributing
 ------------

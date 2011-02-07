@@ -126,9 +126,13 @@ You can start Cassandra like so:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$conn</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>The above code will connect on the default host and port. We can also
-specify the host and port explicitly, as follows:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$conn</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="s1">&#39;Keyspace1&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="nx">localhost</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="m">9160</span><span class="p">)));</span>
+<p>The above code will connect the default host &#8216;localhost&#8217; at the default
+port of 9160.</p>
+<p>We can also specify a list of hosts and port explicitly, as follows:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$servers</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;192.168.2.6&#39;</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="m">9160</span><span class="p">)</span>
+<span class="nv">$servers</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;192.168.2.7&#39;</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="m">9160</span><span class="p">)</span>
+<span class="nv">$servers</span><span class="p">[</span><span class="m">3</span><span class="p">]</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;192.168.2.8&#39;</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="m">9160</span><span class="p">)</span>
+<span class="nv">$conn</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="s1">&#39;Keyspace1&#39;</span><span class="p">,</span> <span class="nx">servers</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -136,8 +140,11 @@ specify the host and port explicitly, as follows:</p>
 <h2>Getting a ColumnFamily<a class="headerlink" href="#getting-a-columnfamily" title="Permalink to this headline">¶</a></h2>
 <p>A column family is a collection of rows and columns in Cassandra,
 and can be thought of as roughly the equivalent of a table in a
-relational database. We&#8217;ll use one of the column families that
-were already included in the schema file:</p>
+relational database.</p>
+<p>All data inserting, retrieval, and deletion is performed through
+a ColumnFamily object in phpcassa.</p>
+<p>As an example, we&#8217;ll use one of the column families that were
+already included in the schema file:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Standard1&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -151,6 +158,12 @@ were already included in the schema file:</p>
 </div>
 <p>We can also insert more than one column at a time:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name1&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val1&#39;</span><span class="p">,</span> <span class="s1">&#39;name2&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val2&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>And we can insert more than one row at a time:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">batch_insert</span><span class="p">(</span>
+    <span class="k">array</span><span class="p">(</span><span class="s1">&#39;row1&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name1&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val1&#39;</span><span class="p">,</span> <span class="s1">&#39;name2&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val2&#39;</span><span class="p">)),</span>
+    <span class="k">array</span><span class="p">(</span><span class="s1">&#39;row2&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bar&#39;</span><span class="p">)));</span>
 </pre></div>
 </div>
 </div>
@@ -204,12 +217,23 @@ some rows with keys &#8216;row_key1&#8217; through &#8216;row_key9&#8217;, we ca
 <span class="p">}</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Cassandra must be using an OrderPreservingPartitioner for you to be
+able to get a meaningful range of rows; the default, RandomPartitioner,
+stores rows in the order of the MD5 hash of their keys. See
+<a class="reference external" href="http://www.datastax.com/docs/0.7/operations/clustering#partitioners">http://www.datastax.com/docs/0.7/operations/clustering#partitioners</a>.</p>
+</div>
 <p>It&#8217;s also possible to specify a set of columns or a slice for
 <a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#multiget">ColumnFamily::multiget()</a>
 and
 <a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get_range">ColumnFamily::get_range()</a>,
 just like we did for
 <a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get">ColumnFamily::get()</a></p>
+<p>The last way to get multiple rows at a time is to take advantage of
+secondary indexes by using
+<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get_indexed_slices">ColumnFamily::get_indexed_slices()</a>,
+which is described in the <a class="reference internal" href="#indexes">Indexes</a> section.</p>
 </div>
 <div class="section" id="counting">
 <h2>Counting<a class="headerlink" href="#counting" title="Permalink to this headline">¶</a></h2>
