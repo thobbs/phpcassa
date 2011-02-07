@@ -41,8 +41,8 @@ The first step when working with **phpcassa** is to create a
 
   $conn = new Connection('Keyspace');
 
-The above code will connect on the default host and port of `localhost:9160`.
-We can also explicitly specify an array of host and port combinations as follows:
+The above code will connect on the default host and port. We can also
+specify the host and port explicitly, as follows:
 
 .. code-block:: php
 
@@ -53,7 +53,7 @@ Getting a ColumnFamily
 A column family is a collection of rows and columns in Cassandra,
 and can be thought of as roughly the equivalent of a table in a
 relational database. We'll use one of the column families that
-were already included in the default schema file:
+were already included in the schema file:
 
 .. code-block:: php
 
@@ -74,13 +74,15 @@ We can also insert more than one column at a time:
 
   $column_family->insert('row_key', array('name1' => 'val1', 'name2' => 'val2'));
 
-And we can insert more than one row at a time:
+.. todo: batch_insert
 
-.. code-block:: php
+.. And we can insert more than one row at a time:
 
-   $column_family->batch_insert(
-       array('row1' => array('name1' => 'val1', 'name2' => 'val2'),
-       array('row2' => array('foo' => 'bar');
+.. .. code-block:: php
+
+..   $column_family.batch_insert({'row1': {'name1':'val1', 'name2':'val2'},
+..   ...                       'row2': {'foo':'bar'})
+..   1354491238721387
 
 Getting Data
 ------------
@@ -113,7 +115,7 @@ columns with names '1' through '9', we can do the following:
 
 .. code-block:: php
 
-  $column_family.get('row_key', $columns=null, $column_start='5', $column_finish='7');
+  $column_family->get('row_key', $columns=null, $column_start='5', $column_finish='7');
   // returns: array('5' => 'foo', '6' => 'bar', '7' => 'baz')
 
 There are also two ways to get multiple rows at the same time.
@@ -132,11 +134,16 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
 
 .. code-block:: php
 
-  $column_family->get_range($key_start='row_key5', $key_finish='row_key7');
+  $rows = $column_family->get_range($key_start='row_key5', $key_finish='row_key7');
   // returns an Iterator over:
   // array('row_key5' => array('name' => 'val'),
   //       'row_key6' => array('name' => 'val'),
   //       'row_key7' => array('name' => 'val'))
+
+  foreach($rows as $key => $columns) {
+      // Do stuff with $key or $columns
+      Print_r($columns);
+  }
 
 It's also possible to specify a set of columns or a slice for 
 `ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
@@ -331,11 +338,14 @@ the following:
   $column_family = new ColumnFamily($conn, 'Indexed1');
   $index_exp = CassandraUtil::create_index_expression('birthdate', 1984);
   $index_clause = CassandraUtil::create_index_clause(array($index_exp));
-  $col_fam->get_indexed_slices($index_clause);
+  $rows = $column_family->get_indexed_slices($index_clause);
   // returns an Iterator over:
-  //   array('winston smith' => array('birthdate' => 1984))
+  //    array('winston smith' => array('birthdate' => 1984))
 
-Note that an Iterator is returned, not an array.
+  foreach($rows as $key => $columns) {
+      // Do stuff with $key and $columns
+      Print_r($columns)
+  }
 
 Although at least one 
 `IndexExpression <http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html>`_
