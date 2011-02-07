@@ -115,7 +115,7 @@ columns with names '1' through '9', we can do the following:
 
 .. code-block:: php
 
-  $column_family.get('row_key', $columns=null, $column_start='5', $column_finish='7');
+  $column_family->get('row_key', $columns=null, $column_start='5', $column_finish='7');
   // returns: array('5' => 'foo', '6' => 'bar', '7' => 'baz')
 
 There are also two ways to get multiple rows at the same time.
@@ -134,11 +134,16 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
 
 .. code-block:: php
 
-  $column_family->get_range($key_start='row_key5', $key_finish='row_key7');
+  $rows = $column_family->get_range($key_start='row_key5', $key_finish='row_key7');
   // returns an Iterator over:
   // array('row_key5' => array('name' => 'val'),
   //       'row_key6' => array('name' => 'val'),
   //       'row_key7' => array('name' => 'val'))
+
+  foreach($rows as $key => $columns) {
+      // Do stuff with $key or $columns
+      Print_r($columns);
+  }
 
 It's also possible to specify a set of columns or a slice for 
 `ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
@@ -333,8 +338,14 @@ the following:
   $column_family = new ColumnFamily($conn, 'Indexed1');
   $index_exp = CassandraUtil::create_index_expression('birthdate', 1984);
   $index_clause = CassandraUtil::create_index_clause(array($index_exp));
-  $col_fam->get_indexed_slices($index_clause);
-  // returns: array('winston smith' => array('birthdate' => 1984))
+  $rows = $column_family->get_indexed_slices($index_clause);
+  // returns an Iterator over:
+  //    array('winston smith' => array('birthdate' => 1984))
+
+  foreach($rows as $key => $columns) {
+      // Do stuff with $key and $columns
+      Print_r($columns)
+  }
 
 Although at least one 
 `IndexExpression <http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html>`_
