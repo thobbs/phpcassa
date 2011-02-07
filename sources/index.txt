@@ -16,6 +16,9 @@ Contents
 `API Documentation <api/index.html>`_
   The **phpcassa** API documentation.
 
+:doc:`troubleshooting`
+  Troubleshooting connection and other problems.
+
 
 Help
 ------------
@@ -65,5 +68,5 @@ Indices and tables
 
    installation
    tutorial
+   troubleshooting
    changelog
-

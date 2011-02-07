@@ -39,5 +39,4 @@ None
 
 Changes in 0.7.a1
 -----------------
-
-- Initial release
+Initial release

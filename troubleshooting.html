@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installing &mdash; phpcassa v0.7.a.3 documentation</title>
+    <title>Troubleshooting &mdash; phpcassa v0.7.a.3 documentation</title>
     <link rel="stylesheet" href="static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="phpcassa v0.7.a.3 documentation" href="index.html" />
-    <link rel="next" title="Tutorial" href="tutorial.html" />
-    <link rel="prev" title="phpcassa 0.7.a.3 Documentation" href="index.html" /> 
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,10 +34,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="tutorial.html" title="Tutorial"
+          <a href="changelog.html" title="Changelog"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="phpcassa 0.7.a.3 Documentation"
+          <a href="tutorial.html" title="Tutorial"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">phpcassa v0.7.a.3 documentation</a> &raquo;</li> 
       </ul>
@@ -46,21 +46,21 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Installing</a><ul>
-<li><a class="reference internal" href="#c-extension">C Extension</a></li>
+<li><a class="reference internal" href="#">Troubleshooting</a><ul>
+<li><a class="reference internal" href="#a-connection-attempt-failed-because-the-connected-party-did-not-properly-respond">&#8220;A connection attempt failed because the connected party did not properly respond&#8221;</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">phpcassa 0.7.a.3 Documentation</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="tutorial.html"
-                        title="next chapter">Tutorial</a></p>
+                        title="previous chapter">Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="changelog.html"
+                        title="next chapter">Changelog</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="sources/installation.txt"
+    <li><a href="sources/troubleshooting.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -84,25 +84,13 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="installing">
-<span id="id1"></span><h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
-<p>Copying the <cite>phpcassa</cite> directory into your path should be enough to
-begin using <strong>phpcassa</strong>.  This will not automatically allow the
-C extension to be used, though.</p>
-<div class="section" id="c-extension">
-<h2>C Extension<a class="headerlink" href="#c-extension" title="Permalink to this headline">¶</a></h2>
-<p>The C extension is crucial for phpcassa&#8217;s performance.</p>
-<p>You need to configure and make to be able to use the C extension:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd </span>thrift/ext/thrift_protocol
-./configure
-make
-sudo make install
-</pre></div>
-</div>
-<p>Add the following line to your php.ini file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">extension</span><span class="o">=</span><span class="n">thrift_protocol</span><span class="o">.</span><span class="n">so</span>
-</pre></div>
-</div>
+  <div class="section" id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-connection-attempt-failed-because-the-connected-party-did-not-properly-respond">
+<h2>&#8220;A connection attempt failed because the connected party did not properly respond&#8221;<a class="headerlink" href="#a-connection-attempt-failed-because-the-connected-party-did-not-properly-respond" title="Permalink to this headline">¶</a></h2>
+<p>This may be an issue on Windows systems: see
+<a class="reference external" href="http://ryan.rawswift.com/2010/03/29/a-connection-attempt-failed-because-the-connected-party-did-not-properly-respond/">here</a>
+for the solution.</p>
 </div>
 </div>
 
@@ -119,10 +107,10 @@ sudo make install
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="tutorial.html" title="Tutorial"
+          <a href="changelog.html" title="Changelog"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="phpcassa 0.7.a.3 Documentation"
+          <a href="tutorial.html" title="Tutorial"
              >previous</a> |</li>
         <li><a href="index.html">phpcassa v0.7.a.3 documentation</a> &raquo;</li> 
       </ul>
