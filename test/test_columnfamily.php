@@ -5,32 +5,26 @@ require_once('../columnfamily.php');
 
 class TestColumnFamily extends UnitTestCase {
 
-    private $client;
+    private $pool;
     private $cf;
 
     private static $KEYS = array('key1', 'key2', 'key3');
 
     public function setUp() {
-        $this->client = new Connection('Keyspace1');
-        $this->cf = new ColumnFamily($this->client, 'Standard1');
+        $this->pool = new ConnectionPool('Keyspace1');
+        $this->cf = new ColumnFamily($this->pool, 'Standard1');
     }
 
     public function tearDown() {
         if ($this->cf)
             foreach(self::$KEYS as $key)
                 $this->cf->remove($key);
-        if ($this->client)
-            $this->client->close();
-    }
-
-    public function test_opening_connection() {
-        $this->client->connect();
     }
 
     public function test_empty() {
         try {
             $this->cf->get(self::$KEYS[0]);
-            self::asertTrue(false);
+            self::assertTrue(false);
         } catch (cassandra_NotFoundException $e) {
         }
     }
@@ -116,7 +110,7 @@ class TestColumnFamily extends UnitTestCase {
 
     public function test_insert_get_range() {
         $cl = cassandra_ConsistencyLevel::ONE;
-        $cf = new ColumnFamily($this->client,
+        $cf = new ColumnFamily($this->pool,
                                'Standard1', true, true,
                                $read_consistency_level=$cl,
                                $write_consistency_level=$cl,
@@ -144,7 +138,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Buffer size larger than row count
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=1000);
         $count = 0;
@@ -157,7 +151,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Buffer size larger than row count, less than total number of rows
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=150);
         $count = 0;
@@ -170,7 +164,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Odd number for batch size
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -183,7 +177,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Smallest buffer size available
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -201,7 +195,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Row count above total number of rows
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -214,7 +208,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Row count above total number of rows
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -228,7 +222,7 @@ class TestColumnFamily extends UnitTestCase {
 
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=200);
         $count = 0;
@@ -241,7 +235,7 @@ class TestColumnFamily extends UnitTestCase {
  
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new ColumnFamily($this->client, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10000);
         $count = 0;
@@ -259,7 +253,7 @@ class TestColumnFamily extends UnitTestCase {
     public function test_batched_get_indexed_slices() {
 
         $cl = cassandra_ConsistencyLevel::ONE;
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10);
         $cf->truncate();
@@ -289,7 +283,7 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual($count, 100);
 
         # Buffer size larger than row count
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=1000);
         $count = 0;
@@ -302,7 +296,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Buffer size larger than row count, less than total number of rows
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=150);
         $count = 0;
@@ -315,7 +309,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Odd number for batch size
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -328,7 +322,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Smallest buffer size available
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -347,7 +341,7 @@ class TestColumnFamily extends UnitTestCase {
 
         # Row count above total number of rows
         $clause->count = 10000;
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -360,7 +354,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Row count above total number of rows
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -374,7 +368,7 @@ class TestColumnFamily extends UnitTestCase {
 
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=200);
         $count = 0;
@@ -387,7 +381,7 @@ class TestColumnFamily extends UnitTestCase {
  
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new ColumnFamily($this->client, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10000);
         $count = 0;
@@ -402,7 +396,7 @@ class TestColumnFamily extends UnitTestCase {
     }
 
     public function test_get_indexed_slices() {
-        $indexed_cf = new ColumnFamily($this->client, 'Indexed1');
+        $indexed_cf = new ColumnFamily($this->pool, 'Indexed1');
         $indexed_cf->truncate();
 
         $columns = array('birthdate' => 1);
@@ -483,14 +477,14 @@ class TestColumnFamily extends UnitTestCase {
 
 class TestSuperColumnFamily extends UnitTestCase {
 
-    private $client;
+    private $pool;
     private $cf;
 
     private static $KEYS = array('key1', 'key2', 'key3');
 
     public function setUp() {
-        $this->client = new Connection('Keyspace1');
-        $this->cf = new ColumnFamily($this->client, 'Super1');
+        $this->pool = new ConnectionPool('Keyspace1');
+        $this->cf = new ColumnFamily($this->pool, 'Super1');
     }
 
     public function tearDown() {

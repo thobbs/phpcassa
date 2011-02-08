@@ -13,7 +13,7 @@ class TestLargeOps extends UnitTestCase {
     private $cf;
 
     public function setUp() {
-        $this->client = new Connection('Keyspace1');
+        $this->client = new ConnectionPool('Keyspace1');
 
         $this->cf = new ColumnFamily($this->client, 'Standard1');
     }

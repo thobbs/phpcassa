@@ -13,7 +13,7 @@ class TestAutopacking extends UnitTestCase {
     private $cf;
 
     public function setUp() {
-        $this->client = new Connection('Keyspace1');
+        $this->client = new ConnectionPool('Keyspace1');
 
         $this->cf_long  = new ColumnFamily($this->client, 'StdLong');
         $this->cf_int   = new ColumnFamily($this->client, 'StdInteger');

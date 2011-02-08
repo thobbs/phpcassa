@@ -164,7 +164,7 @@ class ColumnFamily {
      *        server will overallocate memory and fail.  This is the size of
      *        that buffer in number of rows.
      */
-    public function __construct($connection,
+    public function __construct($pool,
                                 $column_family,
                                 $autopack_names=true,
                                 $autopack_values=true,
@@ -172,7 +172,7 @@ class ColumnFamily {
                                 $write_consistency_level=cassandra_ConsistencyLevel::ONE,
                                 $buffer_size=self::DEFAULT_BUFFER_SIZE) {
 
-        $this->client = $connection->connect();
+        $this->pool = $pool;
         $this->column_family = $column_family;
         $this->autopack_names = $autopack_names;
         $this->autopack_values = $autopack_values;
@@ -185,7 +185,15 @@ class ColumnFamily {
         $this->supercol_name_type = 'BytesType';
         $this->col_type_dict = array();
 
-        $ks = $this->client->describe_keyspace($connection->keyspace);
+        $conn = $this->pool->get();
+        try {
+            $ks = $conn->client->describe_keyspace($this->pool->keyspace);
+        } catch (Exception $ex) {
+            $this->pool->return_conn($conn);
+            throw $ex;
+        }
+        $this->pool->return_conn($conn);
+
         $cf_def = null;
         foreach($ks->cf_defs as $cfdef) {
             if ($cfdef->name == $this->column_family) {
@@ -242,8 +250,10 @@ class ColumnFamily {
         $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
                                                   $column_reversed, $column_count);
 
-        $resp = $this->client->get_slice($key, $column_parent, $predicate,
-                                         $this->rcl($read_consistency_level));
+        $resp = $this->pool->call("get_slice",
+            $key, $column_parent, $predicate,
+            $this->rcl($read_consistency_level));
+
         if (count($resp) == 0)
             throw new cassandra_NotFoundException();
 
@@ -289,8 +299,9 @@ class ColumnFamily {
 
         $resp = array();
         if(count($keys) <= $buffer_size) {
-            $resp = $this->client->multiget_slice($keys, $column_parent, $predicate,
-                                                  $this->rcl($read_consistency_level));
+            $resp = $this->pool->call("multiget_slice",
+                $keys, $column_parent, $predicate,
+                $this->rcl($read_consistency_level));
         } else {
             $subset_keys = array();
             $i = 0;
@@ -298,16 +309,18 @@ class ColumnFamily {
                 $i += 1;
                 $subset_keys[] = $key;
                 if ($i == $buffer_size) {
-                    $sub_resp = $this->client->multiget_slice($subset_keys, $column_parent, $predicate,
-                                                              $this->rcl($read_consistency_level));
+                    $sub_resp = $this->pool->call("multiget_slice",
+                        $subset_keys, $column_parent, $predicate,
+                        $this->rcl($read_consistency_level));
                     $subset_keys = array();
                     $i = 0;
                     $resp = array_merge($resp, $sub_resp);
                 }
             }
             if (count($subset_keys) != 0) {
-                $sub_resp = $this->client->multiget_slice($subset_keys, $column_parent, $predicate,
-                                                          $this->rcl($read_consistency_level));
+                $sub_resp = $this->pool->call("multiget_slice",
+                    $subset_keys, $column_parent, $predicate,
+                    $this->rcl($read_consistency_level));
                 $resp = array_merge($resp, $sub_resp);
             }
         }
@@ -351,8 +364,8 @@ class ColumnFamily {
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    false, self::MAX_COUNT);
 
-        return $this->client->get_count($key, $column_parent, $predicate,
-                                        $this->rcl($read_consistency_level));
+        return $this->pool->call("get_count", $key, $column_parent, $predicate,
+            $this->rcl($read_consistency_level));
     }
 
     /**
@@ -379,8 +392,8 @@ class ColumnFamily {
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    false, self::MAX_COUNT);
 
-        return $this->client->multiget_count($keys, $column_parent, $predicate,
-                                             $this->rcl($read_consistency_level));
+        return $this->pool->call("multiget_count", $keys, $column_parent, $predicate,
+            $this->rcl($read_consistency_level));
     }
 
     /**
@@ -518,7 +531,7 @@ class ColumnFamily {
         $cfmap = array();
         $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
 
-        return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
+        return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
     }
 
     /**
@@ -543,7 +556,7 @@ class ColumnFamily {
         foreach($rows as $key => $columns)
             $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
 
-        return $this->client->batch_mutate($cfmap, $this->wcl($write_consistency_level));
+        return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
     }
 
     /**
@@ -572,7 +585,8 @@ class ColumnFamily {
                 else
                     $cp->column = $this->pack_name($columns[0], false);
             }
-            return $this->client->remove($key, $cp, $timestamp, $this->wcl($write_consistency_level));
+            return $this->pool->call("remove", $key, $cp, $timestamp,
+                $this->wcl($write_consistency_level));
         }
 
         $deletion = new cassandra_Deletion();
@@ -590,7 +604,7 @@ class ColumnFamily {
 
         $mut_map = array($key => array($this->column_family => array($mutation))); 
 
-        return $this->client->batch_mutate($mut_map, $this->wcl($write_consistency_level));
+        return $this->pool->call("batch_mutate", $mut_map, $this->wcl($write_consistency_level));
     }
 
     /*
@@ -605,7 +619,7 @@ class ColumnFamily {
      * and will throw an UnavailableException if some hosts are down.
      */
     public function truncate() {
-        return $this->client->truncate($this->column_family);
+        return $this->pool->call("truncate", $this->column_family);
     }
 
 
@@ -1134,9 +1148,8 @@ class RangeColumnFamilyIterator extends ColumnFamilyIterator {
         $key_range->end_key = $this->key_finish;
         $key_range->count = $buff_sz;
 
-        $resp = $this->column_family->client->get_range_slices(
-                $this->column_parent, $this->predicate,
-                $key_range, $this->read_consistency_level);
+        $resp = $this->column_family->pool->call("get_range_slices", $this->column_parent, $this->predicate,
+            $key_range, $this->read_consistency_level);
 
         $this->current_buffer = $this->column_family->keyslices_to_array($resp);
         $this->current_page_size = count($this->current_buffer);
@@ -1176,11 +1189,10 @@ class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
         $this->expected_page_size = $this->index_clause->count;
 
         $this->index_clause->start_key = $this->next_start_key;
-        $resp = $this->column_family->client->get_indexed_slices(
-            $this->column_parent,
-            $this->index_clause,
-            $this->predicate,
-            $this->read_consistency_level);
+        $resp = $this->column_family->pool->call("get_indexed_slices",
+                $this->column_parent, $this->index_clause, $this->predicate,
+                $this->read_consistency_level);
+
         $this->current_buffer = $this->column_family->keyslices_to_array($resp);
         $this->current_page_size = count($this->current_buffer);
     }
