@@ -63,6 +63,38 @@ class TestPooling extends UnitTestCase {
         self::assertEqual($stats['failed'], 0);
         self::assertEqual($stats['recycled'], 10);
     }
+
+    public function test_multiple_servers() {
+        $servers = array('localhost:9160', '127.0.0.1:9160', '127.0.0.1');
+        $pool = new ConnectionPool('Keyspace1', $servers);
+        $cf = new ColumnFamily($pool, 'Standard1');
+        foreach (range(1, 50) as $i) {
+            $cf->insert('key', array('c' => 'v'));
+        }
+        $stats = $pool->stats();
+        self::assertEqual($stats['created'], 6);
+        self::assertEqual($stats['failed'], 0);
+    }
+
+    public function test_initial_connection_failure() {
+        $servers = array('localhost', 'foobar');
+        $pool = new ConnectionPool('Keyspace1', $servers);
+        $stats = $pool->stats();
+        self::assertEqual($stats['created'], 5);
+        self::assertTrue($stats['failed'] == 5 || $stats['failed'] == 4);
+        $cf = new ColumnFamily($pool, 'Standard1');
+        foreach (range(1, 50) as $i) {
+            $cf->insert('key', array('c' => 'v'));
+        }
+        $pool->dispose();
+
+        $servers = array('barfoo', 'foobar');
+        try {
+            $pool = new ConnectionPool('Keyspace1', $servers);
+            self::assertTrue(false);
+        } catch (NoServerAvailable $ex) {
+        }
+    }
 }
 
 class MockClient extends CassandraClient {

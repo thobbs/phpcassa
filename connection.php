@@ -151,21 +151,24 @@ class ConnectionPool {
     private function make_conn() {
         // Keep trying to make a new connection, stopping after we've
         // tried every server twice
-        foreach(range(1, count($this->servers) * 2) as $i)
+        foreach (range(1, count($this->servers) * 2) as $i)
         {
             try {
+                $this->list_position = ($this->list_position + 1) % count($this->servers);
                 $new_conn = new Connection($this->keyspace, $this->servers[$this->list_position],
                     $this->credentials, $this->framed_transport, $this->send_timeout, $this->recv_timeout);
                 array_push($this->queue, $new_conn);
-                $this->list_position = ($this->list_position + 1) % count($this->servers);
                 $this->stats['created'] += 1;
                 return;
             } catch (TException $e) {
                 $h = $this->servers[$this->list_position];
                 $err = (string)$e;
                 error_log("Error connecting to $h: $err", 0);
+                $this->stats['failed'] += 1;
             }
         }
+        throw new NoServerAvailable("An attempt was made to connect to every server twice, but " .
+                                    "all attempts failed.");
     }
 
     public function get() {
@@ -213,7 +216,7 @@ class ConnectionPool {
                 $this->handle_conn_failure($conn, $f, $ue, $retry_count);
             }
         }
-        throw new MaxRetriesException();
+        throw new MaxRetriesException("An attempt to execute $f failed $this->max_retries times.");
     }
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
