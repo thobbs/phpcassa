@@ -6,6 +6,8 @@ class AllTests extends TestSuite {
         $this->TestSuite('All tests');
         $this->addFile('test_columnfamily.php');
         $this->addFile('test_autopacking.php');
+        $this->addFile('test_large_ops.php');
+        $this->addFile('test_pooling.php');
     }
 }
 ?>
