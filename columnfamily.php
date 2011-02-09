@@ -185,14 +185,7 @@ class ColumnFamily {
         $this->supercol_name_type = 'BytesType';
         $this->col_type_dict = array();
 
-        $conn = $this->pool->get();
-        try {
-            $ks = $conn->client->describe_keyspace($this->pool->keyspace);
-        } catch (Exception $ex) {
-            $this->pool->return_conn($conn);
-            throw $ex;
-        }
-        $this->pool->return_conn($conn);
+        $ks = $this->pool->call("describe_keyspace", $this->pool->keyspace);
 
         $cf_def = null;
         foreach($ks->cf_defs as $cfdef) {
