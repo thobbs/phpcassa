@@ -29,6 +29,7 @@ class Connection {
     const LOWEST_COMPATIBLE_VERSION = 17;
     public $keyspace;
     public $client;
+    public $op_count;
 
     public function __construct($keyspace,
                                 $server,
@@ -76,6 +77,7 @@ class Connection {
         $this->keyspace = $keyspace;
         $this->client = $client;
         $this->transport = $transport;
+        $this->op_count = 0;
     }
 
     public function close() {
@@ -117,20 +119,27 @@ class ConnectionPool {
         $this->credentials = $credentials;
         $this->framed_transport = $framed_transport;
 
+        $this->stats = array(
+            'created' => 0,
+            'failed' => 0,
+            'recycled' => 0);
+
         if ($servers == NULL)
             $servers = self::$default_servers;
         $this->servers = $servers;
-        $this->pool_size = count($this->servers);
+        $this->pool_size = max(count($this->servers) * 2, 5);
 
         $this->queue = array();
 
         // Randomly permute the server list
         $n = count($servers);
-        foreach (range(0, $n - 1) as $i) {
-            $j = rand($i, $n - 1);
-            $temp = $servers[$j];
-            $servers[$j] = $servers[$i];
-            $servers[$i] = $temp;
+        if ($n > 1) {
+            foreach (range(0, $n - 1) as $i) {
+                $j = rand($i, $n - 1);
+                $temp = $servers[$j];
+                $servers[$j] = $servers[$i];
+                $servers[$i] = $temp;
+            }
         }
         $this->list_position = 0;
 
@@ -147,7 +156,8 @@ class ConnectionPool {
                 $new_conn = new Connection($this->keyspace, $this->servers[$this->list_position],
                     $this->credentials, $this->framed_transport, $this->send_timeout, $this->recv_timeout);
                 array_push($this->queue, $new_conn);
-                $this->list_position += 1;
+                $this->list_position = ($this->list_position + 1) % count($this->servers);
+                $this->stats['created'] += 1;
                 return;
             } catch (TException $e) {
                 $h = $this->servers[$this->list_position];
@@ -174,12 +184,23 @@ class ConnectionPool {
         $this->dispose();
     }
 
+    public function stats() {
+        return $this->stats;
+    }
+
     public function call() {
         $args = func_get_args(); // Get all of the args passed to this function
         $f = array_shift($args); // pull the function from the beginning
         $retry_count = 0;
         foreach (range(1, $this->max_retries) as $retry_count) {
             $conn = $this->get();
+            if ($conn->op_count >= $this->recycle) {
+                $this->stats['recycled'] += 1;
+                $conn->close();
+                $this->make_conn();
+                $conn = $this->get();
+            }
+            $conn->op_count += 1;
             try {
                 $resp = call_user_func_array(array($conn->client, $f), $args);
                 $this->return_conn($conn);
@@ -197,6 +218,7 @@ class ConnectionPool {
         $err = (string)$exc;
         error_log("Error performing $f on $h: $err", 0);
         $conn->close();
+        $this->stats['failed'] += 1;
         usleep(self::BASE_BACKOFF * pow(2, $retry_count) * MICROS);
         $this->pool->make_conn();
     }
