@@ -38,6 +38,7 @@ class Connection {
                                 $send_timeout=null,
                                 $recv_timeout=null)
     {
+        $this->server = $server;
         $server = explode(':', $server);
         $host = $server[0];
         if(count($server) == 2)
@@ -88,7 +89,7 @@ class Connection {
 
 class ConnectionPool {
 
-    const BASE_BACKOFF = 0.01;
+    const BASE_BACKOFF = 0.1;
     const MICROS = 1000000;
     private static $default_servers = array('localhost:9160');
 
@@ -104,10 +105,10 @@ class ConnectionPool {
 
     public function __construct($keyspace,
                                 $servers=NULL,
+                                $max_retries=5,
                                 $send_timeout=1,
                                 $recv_timeout=1,
                                 $recycle=10000,
-                                $max_retries=5,
                                 $credentials=NULL,
                                 $framed_transport=true)
     {
@@ -171,7 +172,13 @@ class ConnectionPool {
         return array_shift($this->queue);
     }
 
-    public function return_conn($connection) {
+    public function return_connection($connection) {
+        if ($connection->op_count >= $this->recycle) {
+            $this->stats['recycled'] += 1;
+            $connection->close();
+            $this->make_conn();
+            $connection = $this->get();
+        }
         array_push($this->queue, $connection);
     }
 
@@ -194,16 +201,11 @@ class ConnectionPool {
         $retry_count = 0;
         foreach (range(1, $this->max_retries) as $retry_count) {
             $conn = $this->get();
-            if ($conn->op_count >= $this->recycle) {
-                $this->stats['recycled'] += 1;
-                $conn->close();
-                $this->make_conn();
-                $conn = $this->get();
-            }
+
             $conn->op_count += 1;
             try {
                 $resp = call_user_func_array(array($conn->client, $f), $args);
-                $this->return_conn($conn);
+                $this->return_connection($conn);
                 return $resp;
             } catch (cassandra_TimedOutException $toe) {
                 $this->handle_conn_failure($conn, $f, $toe, $retry_count);
@@ -216,11 +218,11 @@ class ConnectionPool {
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
         $err = (string)$exc;
-        error_log("Error performing $f on $h: $err", 0);
+        error_log("Error performing $f on $conn->server: $err", 0);
         $conn->close();
         $this->stats['failed'] += 1;
-        usleep(self::BASE_BACKOFF * pow(2, $retry_count) * MICROS);
-        $this->pool->make_conn();
+        usleep(self::BASE_BACKOFF * pow(2, $retry_count) * self::MICROS);
+        $this->make_conn();
     }
 
 }
