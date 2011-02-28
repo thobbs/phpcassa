@@ -7,7 +7,8 @@ require_once('../uuid.php');
 class TestPooling extends UnitTestCase {
 
     public function test_failover_under_limit() {
-        $pool = new ConnectionPool('Keyspace1');
+        $tservers = array(array('host' => 'localhost', 'port' => 9160));
+        $pool = new Connection('Keyspace1', $tservers);
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 5);
         foreach (range(1, 4) as $i) {
@@ -24,7 +25,7 @@ class TestPooling extends UnitTestCase {
     }
 
     public function test_failover_over_limit() {
-        $pool = new ConnectionPool('Keyspace1');
+        $pool = new ConnectionPool('Keyspace1', NULL, 4);
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 5);
         foreach (range(1, 5) as $i) {

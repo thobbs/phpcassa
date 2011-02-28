@@ -11,7 +11,7 @@ class TestColumnFamily extends UnitTestCase {
     private static $KEYS = array('key1', 'key2', 'key3');
 
     public function setUp() {
-        $this->pool = new ConnectionPool('Keyspace1');
+        $this->pool = new Connection('Keyspace1');
         $this->cf = new ColumnFamily($this->pool, 'Standard1');
     }
 
@@ -483,7 +483,7 @@ class TestSuperColumnFamily extends UnitTestCase {
     private static $KEYS = array('key1', 'key2', 'key3');
 
     public function setUp() {
-        $this->pool = new ConnectionPool('Keyspace1');
+        $this->pool = new Connection('Keyspace1');
         $this->cf = new ColumnFamily($this->pool, 'Super1');
     }
 

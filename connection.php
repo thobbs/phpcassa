@@ -24,9 +24,10 @@ class MaxRetriesException extends Exception { }
  * @package phpcassa
  * @subpackage connection
  */
-class Connection {
+class ConnectionWrapper {
 
     const LOWEST_COMPATIBLE_VERSION = 17;
+    const DEFAULT_PORT = 9160;
     public $keyspace;
     public $client;
     public $op_count;
@@ -44,7 +45,7 @@ class Connection {
         if(count($server) == 2)
             $port = (int)$server[1];
         else
-            $port = 9160;
+            $port = self::DEFAULT_PORT;
         $socket = new TSocket($host, $port);
 
         if($send_timeout) $socket->setSendTimeout($send_timeout);
@@ -91,6 +92,7 @@ class ConnectionPool {
 
     const BASE_BACKOFF = 0.1;
     const MICROS = 1000000;
+    const MAX_RETRIES = 2147483647; // 2^31 - 1
     private static $default_servers = array('localhost:9160');
 
     public $keyspace;
@@ -151,11 +153,12 @@ class ConnectionPool {
     private function make_conn() {
         // Keep trying to make a new connection, stopping after we've
         // tried every server twice
+        $err = "";
         foreach (range(1, count($this->servers) * 2) as $i)
         {
             try {
                 $this->list_position = ($this->list_position + 1) % count($this->servers);
-                $new_conn = new Connection($this->keyspace, $this->servers[$this->list_position],
+                $new_conn = new ConnectionWrapper($this->keyspace, $this->servers[$this->list_position],
                     $this->credentials, $this->framed_transport, $this->send_timeout, $this->recv_timeout);
                 array_push($this->queue, $new_conn);
                 $this->stats['created'] += 1;
@@ -168,7 +171,7 @@ class ConnectionPool {
             }
         }
         throw new NoServerAvailable("An attempt was made to connect to every server twice, but " .
-                                    "all attempts failed.");
+                                    "all attempts failed. The last error was: $err");
     }
 
     public function get() {
@@ -201,8 +204,16 @@ class ConnectionPool {
     public function call() {
         $args = func_get_args(); // Get all of the args passed to this function
         $f = array_shift($args); // pull the function from the beginning
+
         $retry_count = 0;
-        foreach (range(1, $this->max_retries) as $retry_count) {
+        if ($this->max_retries == -1)
+            $tries =  self::MAX_RETRIES;
+        elseif ($this->max_retries == 0)
+            $tries = 1;
+        else
+            $tries = $this->max_retries + 1;
+
+        foreach (range(1, $tries) as $retry_count) {
             $conn = $this->get();
 
             $conn->op_count += 1;
@@ -211,12 +222,18 @@ class ConnectionPool {
                 $this->return_connection($conn);
                 return $resp;
             } catch (cassandra_TimedOutException $toe) {
+                $last_err = $toe;
                 $this->handle_conn_failure($conn, $f, $toe, $retry_count);
             } catch (cassandra_UnavailableException $ue) {
+                $last_err = $ue;
+                $this->handle_conn_failure($conn, $f, $ue, $retry_count);
+            } catch (TTransportException $tte) {
+                $last_err = $tte;
                 $this->handle_conn_failure($conn, $f, $ue, $retry_count);
             }
         }
-        throw new MaxRetriesException("An attempt to execute $f failed $this->max_retries times.");
+        throw new MaxRetriesException("An attempt to execute $f failed $tries times.".
+                                      " The last error was " . (string)$last_err);
     }
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
@@ -228,5 +245,30 @@ class ConnectionPool {
         $this->make_conn();
     }
 
+}
+
+class Connection extends ConnectionPool {
+    // Here for backwards compatibility reasons only
+    public function __construct($keyspace,
+                                $servers=NULL,
+                                $max_retries=5,
+                                $send_timeout=1,
+                                $recv_timeout=1,
+                                $recycle=10000,
+                                $credentials=NULL,
+                                $framed_transport=true)
+    {
+        if ($servers != NULL) {
+            $new_servers = array();
+            foreach ($servers as $server) {
+                $new_servers[] = $server['host'] . ':' . (string)$server['port'];
+            }
+        } else {
+            $new_servers = NULL;
+        }
+
+        parent::__construct($keyspace, $new_servers, $max_retries, $send_timeout,
+            $recv_timeout, $recycle, $credentials, $framed_transport);
+    }
 }
 ?>
