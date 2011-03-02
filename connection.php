@@ -252,8 +252,8 @@ class Connection extends ConnectionPool {
     public function __construct($keyspace,
                                 $servers=NULL,
                                 $max_retries=5,
-                                $send_timeout=1,
-                                $recv_timeout=1,
+                                $send_timeout=5000,
+                                $recv_timeout=5000,
                                 $recycle=10000,
                                 $credentials=NULL,
                                 $framed_transport=true)
