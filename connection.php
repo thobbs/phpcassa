@@ -229,7 +229,7 @@ class ConnectionPool {
                 $this->handle_conn_failure($conn, $f, $ue, $retry_count);
             } catch (TTransportException $tte) {
                 $last_err = $tte;
-                $this->handle_conn_failure($conn, $f, $ue, $retry_count);
+                $this->handle_conn_failure($conn, $f, $tte, $retry_count);
             }
         }
         throw new MaxRetriesException("An attempt to execute $f failed $tries times.".
