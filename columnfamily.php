@@ -185,7 +185,7 @@ class ColumnFamily {
         $this->supercol_name_type = 'BytesType';
         $this->col_type_dict = array();
 
-        $ks = $this->pool->call("describe_keyspace", $this->pool->keyspace);
+        $ks = $this->pool->describe_keyspace();
 
         $cf_def = null;
         foreach($ks->cf_defs as $cfdef) {
