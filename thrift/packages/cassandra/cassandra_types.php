@@ -10,8 +10,8 @@ include_once $GLOBALS['THRIFT_ROOT'].'/Thrift.php';
 $GLOBALS['cassandra_E_ConsistencyLevel'] = array(
   'ONE' => 1,
   'QUORUM' => 2,
-  'DCQUORUM' => 3,
-  'DCQUORUMSYNC' => 4,
+  'LOCAL_QUORUM' => 3,
+  'EACH_QUORUM' => 4,
   'ALL' => 5,
   'ANY' => 6,
 );
@@ -19,15 +19,15 @@ $GLOBALS['cassandra_E_ConsistencyLevel'] = array(
 final class cassandra_ConsistencyLevel {
   const ONE = 1;
   const QUORUM = 2;
-  const DCQUORUM = 3;
-  const DCQUORUMSYNC = 4;
+  const LOCAL_QUORUM = 3;
+  const EACH_QUORUM = 4;
   const ALL = 5;
   const ANY = 6;
   static public $__names = array(
     1 => 'ONE',
     2 => 'QUORUM',
-    3 => 'DCQUORUM',
-    4 => 'DCQUORUMSYNC',
+    3 => 'LOCAL_QUORUM',
+    4 => 'EACH_QUORUM',
     5 => 'ALL',
     6 => 'ANY',
   );
@@ -474,20 +474,20 @@ class cassandra_NotFoundException extends TException {
 class cassandra_InvalidRequestException extends TException {
   static $_TSPEC;
 
-  public $message = null;
+  public $why = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'message',
+          'var' => 'why',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['why'])) {
+        $this->why = $vals['why'];
       }
     }
   }
@@ -513,7 +513,7 @@ class cassandra_InvalidRequestException extends TException {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
+            $xfer += $input->readString($this->why);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -531,9 +531,9 @@ class cassandra_InvalidRequestException extends TException {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('InvalidRequestException');
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
-      $xfer += $output->writeString($this->message);
+    if ($this->why !== null) {
+      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
+      $xfer += $output->writeString($this->why);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -646,20 +646,20 @@ class cassandra_TimedOutException extends TException {
 class cassandra_AuthenticationException extends TException {
   static $_TSPEC;
 
-  public $message = null;
+  public $why = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'message',
+          'var' => 'why',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['why'])) {
+        $this->why = $vals['why'];
       }
     }
   }
@@ -685,7 +685,7 @@ class cassandra_AuthenticationException extends TException {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
+            $xfer += $input->readString($this->why);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -703,9 +703,9 @@ class cassandra_AuthenticationException extends TException {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('AuthenticationException');
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
-      $xfer += $output->writeString($this->message);
+    if ($this->why !== null) {
+      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
+      $xfer += $output->writeString($this->why);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -718,20 +718,20 @@ class cassandra_AuthenticationException extends TException {
 class cassandra_AuthorizationException extends TException {
   static $_TSPEC;
 
-  public $message = null;
+  public $why = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'message',
+          'var' => 'why',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['why'])) {
+        $this->why = $vals['why'];
       }
     }
   }
@@ -757,7 +757,7 @@ class cassandra_AuthorizationException extends TException {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
+            $xfer += $input->readString($this->why);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -775,9 +775,9 @@ class cassandra_AuthorizationException extends TException {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('AuthorizationException');
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
-      $xfer += $output->writeString($this->message);
+    if ($this->why !== null) {
+      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
+      $xfer += $output->writeString($this->why);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
