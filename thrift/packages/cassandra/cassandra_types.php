@@ -67,7 +67,7 @@ final class cassandra_IndexType {
   );
 }
 
-class cassandra_Column {
+class cassandra_Column extends TBase {
   static $_TSPEC;
 
   public $name = null;
@@ -97,18 +97,7 @@ class cassandra_Column {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['name'])) {
-        $this->name = $vals['name'];
-      }
-      if (isset($vals['value'])) {
-        $this->value = $vals['value'];
-      }
-      if (isset($vals['timestamp'])) {
-        $this->timestamp = $vals['timestamp'];
-      }
-      if (isset($vals['ttl'])) {
-        $this->ttl = $vals['ttl'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -118,88 +107,14 @@ class cassandra_Column {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->value);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I64) {
-            $xfer += $input->readI64($this->timestamp);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->ttl);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('Column', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('Column');
-    if ($this->name !== null) {
-      $xfer += $output->writeFieldBegin('name', TType::STRING, 1);
-      $xfer += $output->writeString($this->name);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->value !== null) {
-      $xfer += $output->writeFieldBegin('value', TType::STRING, 2);
-      $xfer += $output->writeString($this->value);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->timestamp !== null) {
-      $xfer += $output->writeFieldBegin('timestamp', TType::I64, 3);
-      $xfer += $output->writeI64($this->timestamp);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->ttl !== null) {
-      $xfer += $output->writeFieldBegin('ttl', TType::I32, 4);
-      $xfer += $output->writeI32($this->ttl);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('Column', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_SuperColumn {
+class cassandra_SuperColumn extends TBase {
   static $_TSPEC;
 
   public $name = null;
@@ -224,12 +139,7 @@ class cassandra_SuperColumn {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['name'])) {
-        $this->name = $vals['name'];
-      }
-      if (isset($vals['columns'])) {
-        $this->columns = $vals['columns'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -239,87 +149,14 @@ class cassandra_SuperColumn {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::LST) {
-            $this->columns = array();
-            $_size0 = 0;
-            $_etype3 = 0;
-            $xfer += $input->readListBegin($_etype3, $_size0);
-            for ($_i4 = 0; $_i4 < $_size0; ++$_i4)
-            {
-              $elem5 = null;
-              $elem5 = new cassandra_Column();
-              $xfer += $elem5->read($input);
-              $this->columns []= $elem5;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('SuperColumn', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('SuperColumn');
-    if ($this->name !== null) {
-      $xfer += $output->writeFieldBegin('name', TType::STRING, 1);
-      $xfer += $output->writeString($this->name);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->columns !== null) {
-      if (!is_array($this->columns)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('columns', TType::LST, 2);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->columns));
-        {
-          foreach ($this->columns as $iter6)
-          {
-            $xfer += $iter6->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('SuperColumn', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_ColumnOrSuperColumn {
+class cassandra_ColumnOrSuperColumn extends TBase {
   static $_TSPEC;
 
   public $column = null;
@@ -341,12 +178,7 @@ class cassandra_ColumnOrSuperColumn {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column'])) {
-        $this->column = $vals['column'];
-      }
-      if (isset($vals['super_column'])) {
-        $this->super_column = $vals['super_column'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -356,69 +188,11 @@ class cassandra_ColumnOrSuperColumn {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRUCT) {
-            $this->column = new cassandra_Column();
-            $xfer += $this->column->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRUCT) {
-            $this->super_column = new cassandra_SuperColumn();
-            $xfer += $this->super_column->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('ColumnOrSuperColumn', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('ColumnOrSuperColumn');
-    if ($this->column !== null) {
-      if (!is_object($this->column)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('column', TType::STRUCT, 1);
-      $xfer += $this->column->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->super_column !== null) {
-      if (!is_object($this->super_column)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('super_column', TType::STRUCT, 2);
-      $xfer += $this->super_column->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('ColumnOrSuperColumn', self::$_TSPEC, $output);
   }
-
 }
 
 class cassandra_NotFoundException extends TException {
@@ -438,37 +212,11 @@ class cassandra_NotFoundException extends TException {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('NotFoundException', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('NotFoundException');
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('NotFoundException', self::$_TSPEC, $output);
   }
-
 }
 
 class cassandra_InvalidRequestException extends TException {
@@ -486,9 +234,7 @@ class cassandra_InvalidRequestException extends TException {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['why'])) {
-        $this->why = $vals['why'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -498,49 +244,11 @@ class cassandra_InvalidRequestException extends TException {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->why);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('InvalidRequestException', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('InvalidRequestException');
-    if ($this->why !== null) {
-      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
-      $xfer += $output->writeString($this->why);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('InvalidRequestException', self::$_TSPEC, $output);
   }
-
 }
 
 class cassandra_UnavailableException extends TException {
@@ -560,37 +268,11 @@ class cassandra_UnavailableException extends TException {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('UnavailableException', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('UnavailableException');
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('UnavailableException', self::$_TSPEC, $output);
   }
-
 }
 
 class cassandra_TimedOutException extends TException {
@@ -610,37 +292,11 @@ class cassandra_TimedOutException extends TException {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('TimedOutException', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('TimedOutException');
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('TimedOutException', self::$_TSPEC, $output);
   }
-
 }
 
 class cassandra_AuthenticationException extends TException {
@@ -658,9 +314,7 @@ class cassandra_AuthenticationException extends TException {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['why'])) {
-        $this->why = $vals['why'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -670,49 +324,11 @@ class cassandra_AuthenticationException extends TException {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->why);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('AuthenticationException', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('AuthenticationException');
-    if ($this->why !== null) {
-      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
-      $xfer += $output->writeString($this->why);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('AuthenticationException', self::$_TSPEC, $output);
   }
-
 }
 
 class cassandra_AuthorizationException extends TException {
@@ -730,9 +346,7 @@ class cassandra_AuthorizationException extends TException {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['why'])) {
-        $this->why = $vals['why'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -742,52 +356,14 @@ class cassandra_AuthorizationException extends TException {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->why);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('AuthorizationException', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('AuthorizationException');
-    if ($this->why !== null) {
-      $xfer += $output->writeFieldBegin('why', TType::STRING, 1);
-      $xfer += $output->writeString($this->why);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('AuthorizationException', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_ColumnParent {
+class cassandra_ColumnParent extends TBase {
   static $_TSPEC;
 
   public $column_family = null;
@@ -807,12 +383,7 @@ class cassandra_ColumnParent {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column_family'])) {
-        $this->column_family = $vals['column_family'];
-      }
-      if (isset($vals['super_column'])) {
-        $this->super_column = $vals['super_column'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -822,64 +393,14 @@ class cassandra_ColumnParent {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->column_family);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->super_column);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('ColumnParent', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('ColumnParent');
-    if ($this->column_family !== null) {
-      $xfer += $output->writeFieldBegin('column_family', TType::STRING, 3);
-      $xfer += $output->writeString($this->column_family);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->super_column !== null) {
-      $xfer += $output->writeFieldBegin('super_column', TType::STRING, 4);
-      $xfer += $output->writeString($this->super_column);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('ColumnParent', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_ColumnPath {
+class cassandra_ColumnPath extends TBase {
   static $_TSPEC;
 
   public $column_family = null;
@@ -904,15 +425,7 @@ class cassandra_ColumnPath {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column_family'])) {
-        $this->column_family = $vals['column_family'];
-      }
-      if (isset($vals['super_column'])) {
-        $this->super_column = $vals['super_column'];
-      }
-      if (isset($vals['column'])) {
-        $this->column = $vals['column'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -922,76 +435,14 @@ class cassandra_ColumnPath {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->column_family);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->super_column);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 5:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->column);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('ColumnPath', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('ColumnPath');
-    if ($this->column_family !== null) {
-      $xfer += $output->writeFieldBegin('column_family', TType::STRING, 3);
-      $xfer += $output->writeString($this->column_family);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->super_column !== null) {
-      $xfer += $output->writeFieldBegin('super_column', TType::STRING, 4);
-      $xfer += $output->writeString($this->super_column);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->column !== null) {
-      $xfer += $output->writeFieldBegin('column', TType::STRING, 5);
-      $xfer += $output->writeString($this->column);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('ColumnPath', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_SliceRange {
+class cassandra_SliceRange extends TBase {
   static $_TSPEC;
 
   public $start = null;
@@ -1021,18 +472,7 @@ class cassandra_SliceRange {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['start'])) {
-        $this->start = $vals['start'];
-      }
-      if (isset($vals['finish'])) {
-        $this->finish = $vals['finish'];
-      }
-      if (isset($vals['reversed'])) {
-        $this->reversed = $vals['reversed'];
-      }
-      if (isset($vals['count'])) {
-        $this->count = $vals['count'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1042,88 +482,14 @@ class cassandra_SliceRange {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->start);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->finish);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::BOOL) {
-            $xfer += $input->readBool($this->reversed);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->count);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('SliceRange', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('SliceRange');
-    if ($this->start !== null) {
-      $xfer += $output->writeFieldBegin('start', TType::STRING, 1);
-      $xfer += $output->writeString($this->start);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->finish !== null) {
-      $xfer += $output->writeFieldBegin('finish', TType::STRING, 2);
-      $xfer += $output->writeString($this->finish);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->reversed !== null) {
-      $xfer += $output->writeFieldBegin('reversed', TType::BOOL, 3);
-      $xfer += $output->writeBool($this->reversed);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->count !== null) {
-      $xfer += $output->writeFieldBegin('count', TType::I32, 4);
-      $xfer += $output->writeI32($this->count);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('SliceRange', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_SlicePredicate {
+class cassandra_SlicePredicate extends TBase {
   static $_TSPEC;
 
   public $column_names = null;
@@ -1148,12 +514,7 @@ class cassandra_SlicePredicate {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column_names'])) {
-        $this->column_names = $vals['column_names'];
-      }
-      if (isset($vals['slice_range'])) {
-        $this->slice_range = $vals['slice_range'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1163,90 +524,14 @@ class cassandra_SlicePredicate {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::LST) {
-            $this->column_names = array();
-            $_size7 = 0;
-            $_etype10 = 0;
-            $xfer += $input->readListBegin($_etype10, $_size7);
-            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
-            {
-              $elem12 = null;
-              $xfer += $input->readString($elem12);
-              $this->column_names []= $elem12;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRUCT) {
-            $this->slice_range = new cassandra_SliceRange();
-            $xfer += $this->slice_range->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('SlicePredicate', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('SlicePredicate');
-    if ($this->column_names !== null) {
-      if (!is_array($this->column_names)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('column_names', TType::LST, 1);
-      {
-        $output->writeListBegin(TType::STRING, count($this->column_names));
-        {
-          foreach ($this->column_names as $iter13)
-          {
-            $xfer += $output->writeString($iter13);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->slice_range !== null) {
-      if (!is_object($this->slice_range)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('slice_range', TType::STRUCT, 2);
-      $xfer += $this->slice_range->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('SlicePredicate', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_IndexExpression {
+class cassandra_IndexExpression extends TBase {
   static $_TSPEC;
 
   public $column_name = null;
@@ -1271,15 +556,7 @@ class cassandra_IndexExpression {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column_name'])) {
-        $this->column_name = $vals['column_name'];
-      }
-      if (isset($vals['op'])) {
-        $this->op = $vals['op'];
-      }
-      if (isset($vals['value'])) {
-        $this->value = $vals['value'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1289,76 +566,14 @@ class cassandra_IndexExpression {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->column_name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->op);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->value);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('IndexExpression', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('IndexExpression');
-    if ($this->column_name !== null) {
-      $xfer += $output->writeFieldBegin('column_name', TType::STRING, 1);
-      $xfer += $output->writeString($this->column_name);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->op !== null) {
-      $xfer += $output->writeFieldBegin('op', TType::I32, 2);
-      $xfer += $output->writeI32($this->op);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->value !== null) {
-      $xfer += $output->writeFieldBegin('value', TType::STRING, 3);
-      $xfer += $output->writeString($this->value);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('IndexExpression', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_IndexClause {
+class cassandra_IndexClause extends TBase {
   static $_TSPEC;
 
   public $expressions = null;
@@ -1388,15 +603,7 @@ class cassandra_IndexClause {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['expressions'])) {
-        $this->expressions = $vals['expressions'];
-      }
-      if (isset($vals['start_key'])) {
-        $this->start_key = $vals['start_key'];
-      }
-      if (isset($vals['count'])) {
-        $this->count = $vals['count'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1406,99 +613,14 @@ class cassandra_IndexClause {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::LST) {
-            $this->expressions = array();
-            $_size14 = 0;
-            $_etype17 = 0;
-            $xfer += $input->readListBegin($_etype17, $_size14);
-            for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
-            {
-              $elem19 = null;
-              $elem19 = new cassandra_IndexExpression();
-              $xfer += $elem19->read($input);
-              $this->expressions []= $elem19;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->start_key);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->count);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('IndexClause', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('IndexClause');
-    if ($this->expressions !== null) {
-      if (!is_array($this->expressions)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('expressions', TType::LST, 1);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->expressions));
-        {
-          foreach ($this->expressions as $iter20)
-          {
-            $xfer += $iter20->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->start_key !== null) {
-      $xfer += $output->writeFieldBegin('start_key', TType::STRING, 2);
-      $xfer += $output->writeString($this->start_key);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->count !== null) {
-      $xfer += $output->writeFieldBegin('count', TType::I32, 3);
-      $xfer += $output->writeI32($this->count);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('IndexClause', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_KeyRange {
+class cassandra_KeyRange extends TBase {
   static $_TSPEC;
 
   public $start_key = null;
@@ -1533,21 +655,7 @@ class cassandra_KeyRange {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['start_key'])) {
-        $this->start_key = $vals['start_key'];
-      }
-      if (isset($vals['end_key'])) {
-        $this->end_key = $vals['end_key'];
-      }
-      if (isset($vals['start_token'])) {
-        $this->start_token = $vals['start_token'];
-      }
-      if (isset($vals['end_token'])) {
-        $this->end_token = $vals['end_token'];
-      }
-      if (isset($vals['count'])) {
-        $this->count = $vals['count'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1557,100 +665,14 @@ class cassandra_KeyRange {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->start_key);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->end_key);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->start_token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->end_token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 5:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->count);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('KeyRange', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('KeyRange');
-    if ($this->start_key !== null) {
-      $xfer += $output->writeFieldBegin('start_key', TType::STRING, 1);
-      $xfer += $output->writeString($this->start_key);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->end_key !== null) {
-      $xfer += $output->writeFieldBegin('end_key', TType::STRING, 2);
-      $xfer += $output->writeString($this->end_key);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->start_token !== null) {
-      $xfer += $output->writeFieldBegin('start_token', TType::STRING, 3);
-      $xfer += $output->writeString($this->start_token);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->end_token !== null) {
-      $xfer += $output->writeFieldBegin('end_token', TType::STRING, 4);
-      $xfer += $output->writeString($this->end_token);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->count !== null) {
-      $xfer += $output->writeFieldBegin('count', TType::I32, 5);
-      $xfer += $output->writeI32($this->count);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('KeyRange', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_KeySlice {
+class cassandra_KeySlice extends TBase {
   static $_TSPEC;
 
   public $key = null;
@@ -1675,12 +697,7 @@ class cassandra_KeySlice {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['key'])) {
-        $this->key = $vals['key'];
-      }
-      if (isset($vals['columns'])) {
-        $this->columns = $vals['columns'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1690,87 +707,14 @@ class cassandra_KeySlice {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->key);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::LST) {
-            $this->columns = array();
-            $_size21 = 0;
-            $_etype24 = 0;
-            $xfer += $input->readListBegin($_etype24, $_size21);
-            for ($_i25 = 0; $_i25 < $_size21; ++$_i25)
-            {
-              $elem26 = null;
-              $elem26 = new cassandra_ColumnOrSuperColumn();
-              $xfer += $elem26->read($input);
-              $this->columns []= $elem26;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('KeySlice', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('KeySlice');
-    if ($this->key !== null) {
-      $xfer += $output->writeFieldBegin('key', TType::STRING, 1);
-      $xfer += $output->writeString($this->key);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->columns !== null) {
-      if (!is_array($this->columns)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('columns', TType::LST, 2);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->columns));
-        {
-          foreach ($this->columns as $iter27)
-          {
-            $xfer += $iter27->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('KeySlice', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_KeyCount {
+class cassandra_KeyCount extends TBase {
   static $_TSPEC;
 
   public $key = null;
@@ -1790,12 +734,7 @@ class cassandra_KeyCount {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['key'])) {
-        $this->key = $vals['key'];
-      }
-      if (isset($vals['count'])) {
-        $this->count = $vals['count'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1805,64 +744,14 @@ class cassandra_KeyCount {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->key);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->count);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('KeyCount', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('KeyCount');
-    if ($this->key !== null) {
-      $xfer += $output->writeFieldBegin('key', TType::STRING, 1);
-      $xfer += $output->writeString($this->key);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->count !== null) {
-      $xfer += $output->writeFieldBegin('count', TType::I32, 2);
-      $xfer += $output->writeI32($this->count);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('KeyCount', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_Deletion {
+class cassandra_Deletion extends TBase {
   static $_TSPEC;
 
   public $timestamp = null;
@@ -1888,15 +777,7 @@ class cassandra_Deletion {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['timestamp'])) {
-        $this->timestamp = $vals['timestamp'];
-      }
-      if (isset($vals['super_column'])) {
-        $this->super_column = $vals['super_column'];
-      }
-      if (isset($vals['predicate'])) {
-        $this->predicate = $vals['predicate'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1906,80 +787,14 @@ class cassandra_Deletion {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::I64) {
-            $xfer += $input->readI64($this->timestamp);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->super_column);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRUCT) {
-            $this->predicate = new cassandra_SlicePredicate();
-            $xfer += $this->predicate->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('Deletion', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('Deletion');
-    if ($this->timestamp !== null) {
-      $xfer += $output->writeFieldBegin('timestamp', TType::I64, 1);
-      $xfer += $output->writeI64($this->timestamp);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->super_column !== null) {
-      $xfer += $output->writeFieldBegin('super_column', TType::STRING, 2);
-      $xfer += $output->writeString($this->super_column);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->predicate !== null) {
-      if (!is_object($this->predicate)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('predicate', TType::STRUCT, 3);
-      $xfer += $this->predicate->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('Deletion', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_Mutation {
+class cassandra_Mutation extends TBase {
   static $_TSPEC;
 
   public $column_or_supercolumn = null;
@@ -2001,12 +816,7 @@ class cassandra_Mutation {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column_or_supercolumn'])) {
-        $this->column_or_supercolumn = $vals['column_or_supercolumn'];
-      }
-      if (isset($vals['deletion'])) {
-        $this->deletion = $vals['deletion'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -2016,72 +826,14 @@ class cassandra_Mutation {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRUCT) {
-            $this->column_or_supercolumn = new cassandra_ColumnOrSuperColumn();
-            $xfer += $this->column_or_supercolumn->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRUCT) {
-            $this->deletion = new cassandra_Deletion();
-            $xfer += $this->deletion->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('Mutation', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('Mutation');
-    if ($this->column_or_supercolumn !== null) {
-      if (!is_object($this->column_or_supercolumn)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('column_or_supercolumn', TType::STRUCT, 1);
-      $xfer += $this->column_or_supercolumn->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->deletion !== null) {
-      if (!is_object($this->deletion)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('deletion', TType::STRUCT, 2);
-      $xfer += $this->deletion->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('Mutation', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_TokenRange {
+class cassandra_TokenRange extends TBase {
   static $_TSPEC;
 
   public $start_token = null;
@@ -2110,15 +862,7 @@ class cassandra_TokenRange {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['start_token'])) {
-        $this->start_token = $vals['start_token'];
-      }
-      if (isset($vals['end_token'])) {
-        $this->end_token = $vals['end_token'];
-      }
-      if (isset($vals['endpoints'])) {
-        $this->endpoints = $vals['endpoints'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -2128,98 +872,14 @@ class cassandra_TokenRange {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->start_token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->end_token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::LST) {
-            $this->endpoints = array();
-            $_size28 = 0;
-            $_etype31 = 0;
-            $xfer += $input->readListBegin($_etype31, $_size28);
-            for ($_i32 = 0; $_i32 < $_size28; ++$_i32)
-            {
-              $elem33 = null;
-              $xfer += $input->readString($elem33);
-              $this->endpoints []= $elem33;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('TokenRange', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('TokenRange');
-    if ($this->start_token !== null) {
-      $xfer += $output->writeFieldBegin('start_token', TType::STRING, 1);
-      $xfer += $output->writeString($this->start_token);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->end_token !== null) {
-      $xfer += $output->writeFieldBegin('end_token', TType::STRING, 2);
-      $xfer += $output->writeString($this->end_token);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->endpoints !== null) {
-      if (!is_array($this->endpoints)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('endpoints', TType::LST, 3);
-      {
-        $output->writeListBegin(TType::STRING, count($this->endpoints));
-        {
-          foreach ($this->endpoints as $iter34)
-          {
-            $xfer += $output->writeString($iter34);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('TokenRange', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_AuthenticationRequest {
+class cassandra_AuthenticationRequest extends TBase {
   static $_TSPEC;
 
   public $credentials = null;
@@ -2242,9 +902,7 @@ class cassandra_AuthenticationRequest {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['credentials'])) {
-        $this->credentials = $vals['credentials'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -2254,78 +912,14 @@ class cassandra_AuthenticationRequest {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::MAP) {
-            $this->credentials = array();
-            $_size35 = 0;
-            $_ktype36 = 0;
-            $_vtype37 = 0;
-            $xfer += $input->readMapBegin($_ktype36, $_vtype37, $_size35);
-            for ($_i39 = 0; $_i39 < $_size35; ++$_i39)
-            {
-              $key40 = '';
-              $val41 = '';
-              $xfer += $input->readString($key40);
-              $xfer += $input->readString($val41);
-              $this->credentials[$key40] = $val41;
-            }
-            $xfer += $input->readMapEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('AuthenticationRequest', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('AuthenticationRequest');
-    if ($this->credentials !== null) {
-      if (!is_array($this->credentials)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('credentials', TType::MAP, 1);
-      {
-        $output->writeMapBegin(TType::STRING, TType::STRING, count($this->credentials));
-        {
-          foreach ($this->credentials as $kiter42 => $viter43)
-          {
-            $xfer += $output->writeString($kiter42);
-            $xfer += $output->writeString($viter43);
-          }
-        }
-        $output->writeMapEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('AuthenticationRequest', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_ColumnDef {
+class cassandra_ColumnDef extends TBase {
   static $_TSPEC;
 
   public $name = null;
@@ -2355,18 +949,7 @@ class cassandra_ColumnDef {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['name'])) {
-        $this->name = $vals['name'];
-      }
-      if (isset($vals['validation_class'])) {
-        $this->validation_class = $vals['validation_class'];
-      }
-      if (isset($vals['index_type'])) {
-        $this->index_type = $vals['index_type'];
-      }
-      if (isset($vals['index_name'])) {
-        $this->index_name = $vals['index_name'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -2376,88 +959,14 @@ class cassandra_ColumnDef {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->validation_class);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->index_type);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->index_name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('ColumnDef', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('ColumnDef');
-    if ($this->name !== null) {
-      $xfer += $output->writeFieldBegin('name', TType::STRING, 1);
-      $xfer += $output->writeString($this->name);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->validation_class !== null) {
-      $xfer += $output->writeFieldBegin('validation_class', TType::STRING, 2);
-      $xfer += $output->writeString($this->validation_class);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->index_type !== null) {
-      $xfer += $output->writeFieldBegin('index_type', TType::I32, 3);
-      $xfer += $output->writeI32($this->index_type);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->index_name !== null) {
-      $xfer += $output->writeFieldBegin('index_name', TType::STRING, 4);
-      $xfer += $output->writeString($this->index_name);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('ColumnDef', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_CfDef {
+class cassandra_CfDef extends TBase {
   static $_TSPEC;
 
   public $keyspace = null;
@@ -2572,66 +1081,7 @@ class cassandra_CfDef {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['keyspace'])) {
-        $this->keyspace = $vals['keyspace'];
-      }
-      if (isset($vals['name'])) {
-        $this->name = $vals['name'];
-      }
-      if (isset($vals['column_type'])) {
-        $this->column_type = $vals['column_type'];
-      }
-      if (isset($vals['comparator_type'])) {
-        $this->comparator_type = $vals['comparator_type'];
-      }
-      if (isset($vals['subcomparator_type'])) {
-        $this->subcomparator_type = $vals['subcomparator_type'];
-      }
-      if (isset($vals['comment'])) {
-        $this->comment = $vals['comment'];
-      }
-      if (isset($vals['row_cache_size'])) {
-        $this->row_cache_size = $vals['row_cache_size'];
-      }
-      if (isset($vals['key_cache_size'])) {
-        $this->key_cache_size = $vals['key_cache_size'];
-      }
-      if (isset($vals['read_repair_chance'])) {
-        $this->read_repair_chance = $vals['read_repair_chance'];
-      }
-      if (isset($vals['column_metadata'])) {
-        $this->column_metadata = $vals['column_metadata'];
-      }
-      if (isset($vals['gc_grace_seconds'])) {
-        $this->gc_grace_seconds = $vals['gc_grace_seconds'];
-      }
-      if (isset($vals['default_validation_class'])) {
-        $this->default_validation_class = $vals['default_validation_class'];
-      }
-      if (isset($vals['id'])) {
-        $this->id = $vals['id'];
-      }
-      if (isset($vals['min_compaction_threshold'])) {
-        $this->min_compaction_threshold = $vals['min_compaction_threshold'];
-      }
-      if (isset($vals['max_compaction_threshold'])) {
-        $this->max_compaction_threshold = $vals['max_compaction_threshold'];
-      }
-      if (isset($vals['row_cache_save_period_in_seconds'])) {
-        $this->row_cache_save_period_in_seconds = $vals['row_cache_save_period_in_seconds'];
-      }
-      if (isset($vals['key_cache_save_period_in_seconds'])) {
-        $this->key_cache_save_period_in_seconds = $vals['key_cache_save_period_in_seconds'];
-      }
-      if (isset($vals['memtable_flush_after_mins'])) {
-        $this->memtable_flush_after_mins = $vals['memtable_flush_after_mins'];
-      }
-      if (isset($vals['memtable_throughput_in_mb'])) {
-        $this->memtable_throughput_in_mb = $vals['memtable_throughput_in_mb'];
-      }
-      if (isset($vals['memtable_operations_in_millions'])) {
-        $this->memtable_operations_in_millions = $vals['memtable_operations_in_millions'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -2641,303 +1091,14 @@ class cassandra_CfDef {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->keyspace);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->column_type);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 5:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->comparator_type);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 6:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->subcomparator_type);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 8:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->comment);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 9:
-          if ($ftype == TType::DOUBLE) {
-            $xfer += $input->readDouble($this->row_cache_size);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 11:
-          if ($ftype == TType::DOUBLE) {
-            $xfer += $input->readDouble($this->key_cache_size);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 12:
-          if ($ftype == TType::DOUBLE) {
-            $xfer += $input->readDouble($this->read_repair_chance);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 13:
-          if ($ftype == TType::LST) {
-            $this->column_metadata = array();
-            $_size44 = 0;
-            $_etype47 = 0;
-            $xfer += $input->readListBegin($_etype47, $_size44);
-            for ($_i48 = 0; $_i48 < $_size44; ++$_i48)
-            {
-              $elem49 = null;
-              $elem49 = new cassandra_ColumnDef();
-              $xfer += $elem49->read($input);
-              $this->column_metadata []= $elem49;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 14:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->gc_grace_seconds);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 15:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->default_validation_class);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 16:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->id);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 17:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->min_compaction_threshold);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 18:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->max_compaction_threshold);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 19:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->row_cache_save_period_in_seconds);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 20:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->key_cache_save_period_in_seconds);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 21:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->memtable_flush_after_mins);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 22:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->memtable_throughput_in_mb);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 23:
-          if ($ftype == TType::DOUBLE) {
-            $xfer += $input->readDouble($this->memtable_operations_in_millions);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('CfDef', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CfDef');
-    if ($this->keyspace !== null) {
-      $xfer += $output->writeFieldBegin('keyspace', TType::STRING, 1);
-      $xfer += $output->writeString($this->keyspace);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->name !== null) {
-      $xfer += $output->writeFieldBegin('name', TType::STRING, 2);
-      $xfer += $output->writeString($this->name);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->column_type !== null) {
-      $xfer += $output->writeFieldBegin('column_type', TType::STRING, 3);
-      $xfer += $output->writeString($this->column_type);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->comparator_type !== null) {
-      $xfer += $output->writeFieldBegin('comparator_type', TType::STRING, 5);
-      $xfer += $output->writeString($this->comparator_type);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->subcomparator_type !== null) {
-      $xfer += $output->writeFieldBegin('subcomparator_type', TType::STRING, 6);
-      $xfer += $output->writeString($this->subcomparator_type);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->comment !== null) {
-      $xfer += $output->writeFieldBegin('comment', TType::STRING, 8);
-      $xfer += $output->writeString($this->comment);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->row_cache_size !== null) {
-      $xfer += $output->writeFieldBegin('row_cache_size', TType::DOUBLE, 9);
-      $xfer += $output->writeDouble($this->row_cache_size);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->key_cache_size !== null) {
-      $xfer += $output->writeFieldBegin('key_cache_size', TType::DOUBLE, 11);
-      $xfer += $output->writeDouble($this->key_cache_size);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->read_repair_chance !== null) {
-      $xfer += $output->writeFieldBegin('read_repair_chance', TType::DOUBLE, 12);
-      $xfer += $output->writeDouble($this->read_repair_chance);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->column_metadata !== null) {
-      if (!is_array($this->column_metadata)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('column_metadata', TType::LST, 13);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->column_metadata));
-        {
-          foreach ($this->column_metadata as $iter50)
-          {
-            $xfer += $iter50->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->gc_grace_seconds !== null) {
-      $xfer += $output->writeFieldBegin('gc_grace_seconds', TType::I32, 14);
-      $xfer += $output->writeI32($this->gc_grace_seconds);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->default_validation_class !== null) {
-      $xfer += $output->writeFieldBegin('default_validation_class', TType::STRING, 15);
-      $xfer += $output->writeString($this->default_validation_class);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->id !== null) {
-      $xfer += $output->writeFieldBegin('id', TType::I32, 16);
-      $xfer += $output->writeI32($this->id);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->min_compaction_threshold !== null) {
-      $xfer += $output->writeFieldBegin('min_compaction_threshold', TType::I32, 17);
-      $xfer += $output->writeI32($this->min_compaction_threshold);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->max_compaction_threshold !== null) {
-      $xfer += $output->writeFieldBegin('max_compaction_threshold', TType::I32, 18);
-      $xfer += $output->writeI32($this->max_compaction_threshold);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->row_cache_save_period_in_seconds !== null) {
-      $xfer += $output->writeFieldBegin('row_cache_save_period_in_seconds', TType::I32, 19);
-      $xfer += $output->writeI32($this->row_cache_save_period_in_seconds);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->key_cache_save_period_in_seconds !== null) {
-      $xfer += $output->writeFieldBegin('key_cache_save_period_in_seconds', TType::I32, 20);
-      $xfer += $output->writeI32($this->key_cache_save_period_in_seconds);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->memtable_flush_after_mins !== null) {
-      $xfer += $output->writeFieldBegin('memtable_flush_after_mins', TType::I32, 21);
-      $xfer += $output->writeI32($this->memtable_flush_after_mins);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->memtable_throughput_in_mb !== null) {
-      $xfer += $output->writeFieldBegin('memtable_throughput_in_mb', TType::I32, 22);
-      $xfer += $output->writeI32($this->memtable_throughput_in_mb);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->memtable_operations_in_millions !== null) {
-      $xfer += $output->writeFieldBegin('memtable_operations_in_millions', TType::DOUBLE, 23);
-      $xfer += $output->writeDouble($this->memtable_operations_in_millions);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('CfDef', self::$_TSPEC, $output);
   }
-
 }
 
-class cassandra_KsDef {
+class cassandra_KsDef extends TBase {
   static $_TSPEC;
 
   public $name = null;
@@ -2985,21 +1146,7 @@ class cassandra_KsDef {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['name'])) {
-        $this->name = $vals['name'];
-      }
-      if (isset($vals['strategy_class'])) {
-        $this->strategy_class = $vals['strategy_class'];
-      }
-      if (isset($vals['strategy_options'])) {
-        $this->strategy_options = $vals['strategy_options'];
-      }
-      if (isset($vals['replication_factor'])) {
-        $this->replication_factor = $vals['replication_factor'];
-      }
-      if (isset($vals['cf_defs'])) {
-        $this->cf_defs = $vals['cf_defs'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -3009,146 +1156,11 @@ class cassandra_KsDef {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->strategy_class);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::MAP) {
-            $this->strategy_options = array();
-            $_size51 = 0;
-            $_ktype52 = 0;
-            $_vtype53 = 0;
-            $xfer += $input->readMapBegin($_ktype52, $_vtype53, $_size51);
-            for ($_i55 = 0; $_i55 < $_size51; ++$_i55)
-            {
-              $key56 = '';
-              $val57 = '';
-              $xfer += $input->readString($key56);
-              $xfer += $input->readString($val57);
-              $this->strategy_options[$key56] = $val57;
-            }
-            $xfer += $input->readMapEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->replication_factor);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 5:
-          if ($ftype == TType::LST) {
-            $this->cf_defs = array();
-            $_size58 = 0;
-            $_etype61 = 0;
-            $xfer += $input->readListBegin($_etype61, $_size58);
-            for ($_i62 = 0; $_i62 < $_size58; ++$_i62)
-            {
-              $elem63 = null;
-              $elem63 = new cassandra_CfDef();
-              $xfer += $elem63->read($input);
-              $this->cf_defs []= $elem63;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('KsDef', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('KsDef');
-    if ($this->name !== null) {
-      $xfer += $output->writeFieldBegin('name', TType::STRING, 1);
-      $xfer += $output->writeString($this->name);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->strategy_class !== null) {
-      $xfer += $output->writeFieldBegin('strategy_class', TType::STRING, 2);
-      $xfer += $output->writeString($this->strategy_class);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->strategy_options !== null) {
-      if (!is_array($this->strategy_options)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('strategy_options', TType::MAP, 3);
-      {
-        $output->writeMapBegin(TType::STRING, TType::STRING, count($this->strategy_options));
-        {
-          foreach ($this->strategy_options as $kiter64 => $viter65)
-          {
-            $xfer += $output->writeString($kiter64);
-            $xfer += $output->writeString($viter65);
-          }
-        }
-        $output->writeMapEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->replication_factor !== null) {
-      $xfer += $output->writeFieldBegin('replication_factor', TType::I32, 4);
-      $xfer += $output->writeI32($this->replication_factor);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->cf_defs !== null) {
-      if (!is_array($this->cf_defs)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('cf_defs', TType::LST, 5);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->cf_defs));
-        {
-          foreach ($this->cf_defs as $iter66)
-          {
-            $xfer += $iter66->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('KsDef', self::$_TSPEC, $output);
   }
-
 }
 
 ?>
