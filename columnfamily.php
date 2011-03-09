@@ -240,8 +240,8 @@ class ColumnFamily {
                         $read_consistency_level=null) {
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
-                                                  $column_reversed, $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   $column_reversed, $column_count);
 
         $resp = $this->pool->call("get_slice",
             $key, $column_parent, $predicate,
@@ -282,8 +282,8 @@ class ColumnFamily {
                              $buffer_size=16)  {
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
-                                                  $column_reversed, $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   $column_reversed, $column_count);
 
         $ret = array();
         foreach($keys as $key) {
@@ -426,14 +426,14 @@ class ColumnFamily {
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
             $ire = new cassandra_InvalidRequestException();
-            $ire->setMessage('buffer_size cannot be less than 2');
+            $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start,
-                                                  $column_finish, $column_reversed,
-                                                  $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start,
+                                                   $column_finish, $column_reversed,
+                                                   $column_count);
 
         return new RangeColumnFamilyIterator($this, $buffer_size,
                                              $key_start, $key_finish, $row_count,
@@ -474,7 +474,7 @@ class ColumnFamily {
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
             $ire = new cassandra_InvalidRequestException();
-            $ire->setMessage('buffer_size cannot be less than 2');
+            $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 
@@ -490,9 +490,9 @@ class ColumnFamily {
         $new_clause->count = $index_clause->count;
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start,
-                                                  $column_finish, $column_reversed,
-                                                  $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start,
+                                                   $column_finish, $column_reversed,
+                                                   $column_count);
 
         return new IndexedColumnFamilyIterator($this, $new_clause, $buffer_size,
                                                $column_parent, $predicate,
@@ -658,17 +658,17 @@ class ColumnFamily {
         if ($columns !== null) {
             $packed_cols = array();
             foreach($columns as $col)
-                $packed_cols[] = $this->pack_name($col, $is_supercol_name=$this->is_super);
+                $packed_cols[] = $this->pack_name($col, $this->is_super);
             $predicate->column_names = $packed_cols;
         } else {
             if ($column_start != null and $column_start != '')
                 $column_start = $this->pack_name($column_start,
-                                                 $is_supercol_name=$this->is_super,
-                                                 $slice_end=self::SLICE_START);
+                                                 $this->is_super,
+                                                 self::SLICE_START);
             if ($column_finish != null and $column_finish != '')
                 $column_finish = $this->pack_name($column_finish,
-                                                 $is_supercol_name=$this->is_super,
-                                                  $slice_end=self::SLICE_FINISH);
+                                                  $this->is_super,
+                                                  self::SLICE_FINISH);
 
             $slice_range = new cassandra_SliceRange();
             $slice_range->count = $column_count;
