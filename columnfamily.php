@@ -240,8 +240,8 @@ class ColumnFamily {
                         $read_consistency_level=null) {
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
-                                                  $column_reversed, $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   $column_reversed, $column_count);
 
         $resp = $this->pool->call("get_slice",
             $key, $column_parent, $predicate,
@@ -282,8 +282,8 @@ class ColumnFamily {
                              $buffer_size=16)  {
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start, $column_finish,
-                                                  $column_reversed, $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                                   $column_reversed, $column_count);
 
         $ret = array();
         foreach($keys as $key) {
@@ -431,9 +431,9 @@ class ColumnFamily {
         }
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start,
-                                                  $column_finish, $column_reversed,
-                                                  $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start,
+                                                   $column_finish, $column_reversed,
+                                                   $column_count);
 
         return new RangeColumnFamilyIterator($this, $buffer_size,
                                              $key_start, $key_finish, $row_count,
@@ -490,9 +490,9 @@ class ColumnFamily {
         $new_clause->count = $index_clause->count;
 
         $column_parent = $this->create_column_parent($super_column);
-        $predicate = self::create_slice_predicate($columns, $column_start,
-                                                  $column_finish, $column_reversed,
-                                                  $column_count);
+        $predicate = $this->create_slice_predicate($columns, $column_start,
+                                                   $column_finish, $column_reversed,
+                                                   $column_count);
 
         return new IndexedColumnFamilyIterator($this, $new_clause, $buffer_size,
                                                $column_parent, $predicate,
