@@ -658,17 +658,17 @@ class ColumnFamily {
         if ($columns !== null) {
             $packed_cols = array();
             foreach($columns as $col)
-                $packed_cols[] = $this->pack_name($col, $is_supercol_name=$this->is_super);
+                $packed_cols[] = $this->pack_name($col, $this->is_super);
             $predicate->column_names = $packed_cols;
         } else {
             if ($column_start != null and $column_start != '')
                 $column_start = $this->pack_name($column_start,
-                                                 $is_supercol_name=$this->is_super,
-                                                 $slice_end=self::SLICE_START);
+                                                 $this->is_super,
+                                                 self::SLICE_START);
             if ($column_finish != null and $column_finish != '')
                 $column_finish = $this->pack_name($column_finish,
-                                                 $is_supercol_name=$this->is_super,
-                                                  $slice_end=self::SLICE_FINISH);
+                                                  $this->is_super,
+                                                  self::SLICE_FINISH);
 
             $slice_range = new cassandra_SliceRange();
             $slice_range->count = $column_count;
