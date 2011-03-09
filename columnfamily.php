@@ -426,7 +426,7 @@ class ColumnFamily {
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
             $ire = new cassandra_InvalidRequestException();
-            $ire->setMessage('buffer_size cannot be less than 2');
+            $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 
@@ -474,7 +474,7 @@ class ColumnFamily {
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
             $ire = new cassandra_InvalidRequestException();
-            $ire->setMessage('buffer_size cannot be less than 2');
+            $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 

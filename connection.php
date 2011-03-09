@@ -72,7 +72,7 @@ class ConnectionWrapper {
         $client->set_keyspace($keyspace);
 
         if ($credentials) {
-            $request = cassandra_AuthenticationRequest($credentials);
+            $request = new cassandra_AuthenticationRequest($credentials);
             $client->login($request);
         }
 
