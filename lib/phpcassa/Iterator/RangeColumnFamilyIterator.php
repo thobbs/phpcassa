@@ -1,5 +1,5 @@
 <?php
-
+namespace phpcassa\Iterator;
 
 /**
  * Iterates over a column family row-by-row, typically with only a subset
@@ -8,7 +8,7 @@
  * @package phpcassa
  * @subpackage columnfamily
  */
-class phpcassa_Iterator_RangeColumnFamilyIterator extends phpcassa_Iterator_ColumnFamilyIterator {
+class RangeColumnFamilyIterator extends ColumnFamilyIterator {
 
     private $key_start, $key_finish;
 
@@ -32,7 +32,7 @@ class phpcassa_Iterator_RangeColumnFamilyIterator extends phpcassa_Iterator_Colu
             $buff_sz = $this->buffer_size;
         $this->expected_page_size = $buff_sz;
 
-        $key_range = new cassandra_KeyRange();
+        $key_range = new \cassandra_KeyRange();
         $key_range->start_key = $this->next_start_key;
         $key_range->end_key = $this->key_finish;
         $key_range->count = $buff_sz;

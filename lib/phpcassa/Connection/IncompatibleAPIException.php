@@ -1,7 +1,8 @@
 <?php
+namespace phpcassa\Connection;
 
 /**
  * @package phpcassa
  * @subpackage connection
  */
-class phpcassa_Connection_IncompatibleAPIException extends Exception { }
+class IncompatibleAPIException extends \Exception { }

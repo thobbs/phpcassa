@@ -2,6 +2,10 @@
 require_once('simpletest/autorun.php');
 require_once('../lib/autoload.php');
 
+use phpcassa\Connection;
+use phpcassa\ColumnFamily;
+use phpcassa\Util\CassandraUtil;
+
 class TestColumnFamily extends UnitTestCase {
 
     private $pool;
@@ -10,8 +14,8 @@ class TestColumnFamily extends UnitTestCase {
     private static $KEYS = array('key1', 'key2', 'key3');
 
     public function setUp() {
-        $this->pool = new phpcassa_Connection('Keyspace1');
-        $this->cf = new phpcassa_ColumnFamily($this->pool, 'Standard1');
+        $this->pool = new Connection('Keyspace1');
+        $this->cf = new ColumnFamily($this->pool, 'Standard1');
     }
 
     public function tearDown() {
@@ -109,7 +113,7 @@ class TestColumnFamily extends UnitTestCase {
 
     public function test_insert_get_range() {
         $cl = cassandra_ConsistencyLevel::ONE;
-        $cf = new phpcassa_ColumnFamily($this->pool,
+        $cf = new ColumnFamily($this->pool,
                                'Standard1', true, true,
                                $read_consistency_level=$cl,
                                $write_consistency_level=$cl,
@@ -137,7 +141,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Buffer size larger than row count
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=1000);
         $count = 0;
@@ -150,7 +154,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Buffer size larger than row count, less than total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=150);
         $count = 0;
@@ -163,7 +167,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Odd number for batch size
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -176,7 +180,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Smallest buffer size available
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -194,7 +198,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Row count above total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -207,7 +211,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Row count above total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -221,7 +225,7 @@ class TestColumnFamily extends UnitTestCase {
 
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=200);
         $count = 0;
@@ -234,7 +238,7 @@ class TestColumnFamily extends UnitTestCase {
  
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Standard1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10000);
         $count = 0;
@@ -252,7 +256,7 @@ class TestColumnFamily extends UnitTestCase {
     public function test_batched_get_indexed_slices() {
 
         $cl = cassandra_ConsistencyLevel::ONE;
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10);
         $cf->truncate();
@@ -268,8 +272,8 @@ class TestColumnFamily extends UnitTestCase {
         foreach (range(201, 300) as $i)
             $cf->insert('key'.$i, $columns);
 
-        $expr = phpcassa_Util_CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
-        $clause = phpcassa_Util_CassandraUtil::create_index_clause(array($expr), 100);
+        $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
+        $clause = CassandraUtil::create_index_clause(array($expr), 100);
 
         # Buffer size = 10; rowcount is divisible by buffer size
         $count = 0;
@@ -281,7 +285,7 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual($count, 100);
 
         # Buffer size larger than row count
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=1000);
         $count = 0;
@@ -294,7 +298,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Buffer size larger than row count, less than total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=150);
         $count = 0;
@@ -307,7 +311,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Odd number for batch size
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -320,7 +324,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Smallest buffer size available
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -339,7 +343,7 @@ class TestColumnFamily extends UnitTestCase {
 
         # Row count above total number of rows
         $clause->count = 10000;
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
@@ -352,7 +356,7 @@ class TestColumnFamily extends UnitTestCase {
 
 
         # Row count above total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
@@ -366,7 +370,7 @@ class TestColumnFamily extends UnitTestCase {
 
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=200);
         $count = 0;
@@ -379,7 +383,7 @@ class TestColumnFamily extends UnitTestCase {
  
  
         # Row count above total number of rows, buffer_size = total number of rows
-        $cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1', true, true,
+        $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10000);
         $count = 0;
@@ -394,7 +398,7 @@ class TestColumnFamily extends UnitTestCase {
     }
 
     public function test_get_indexed_slices() {
-        $indexed_cf = new phpcassa_ColumnFamily($this->pool, 'Indexed1');
+        $indexed_cf = new ColumnFamily($this->pool, 'Indexed1');
         $indexed_cf->truncate();
 
         $columns = array('birthdate' => 1);
@@ -402,8 +406,8 @@ class TestColumnFamily extends UnitTestCase {
         foreach(range(1,3) as $i)
             $indexed_cf->insert('key'.$i, $columns);
 
-        $expr = phpcassa_Util_CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
-        $clause = phpcassa_Util_CassandraUtil::create_index_clause(array($expr), 10000);
+        $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
+        $clause = CassandraUtil::create_index_clause(array($expr), 10000);
         $result = $indexed_cf->get_indexed_slices($clause);
 
         $count = 0;
@@ -481,8 +485,8 @@ class TestSuperColumnFamily extends UnitTestCase {
     private static $KEYS = array('key1', 'key2', 'key3');
 
     public function setUp() {
-        $this->pool = new phpcassa_Connection('Keyspace1');
-        $this->cf = new phpcassa_ColumnFamily($this->pool, 'Super1');
+        $this->pool = new Connection('Keyspace1');
+        $this->cf = new ColumnFamily($this->pool, 'Super1');
     }
 
     public function tearDown() {

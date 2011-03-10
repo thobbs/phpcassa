@@ -1,6 +1,9 @@
 <?php
+namespace phpcassa;
 
-class phpcassa_Connection extends phpcassa_Connection_ConnectionPool {
+use phpcassa\Connection\ConnectionPool;
+
+class Connection extends ConnectionPool {
     // Here for backwards compatibility reasons only
     public function __construct($keyspace,
                                 $servers=NULL,

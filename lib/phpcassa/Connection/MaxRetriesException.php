@@ -1,7 +1,9 @@
 <?php
 
+namespace phpcassa\Connection;
+
 /**
  * @package phpcassa
  * @subpackage connection
  */
-class phpcassa_Connection_MaxRetriesException extends Exception { }
+class MaxRetriesException extends \Exception { }

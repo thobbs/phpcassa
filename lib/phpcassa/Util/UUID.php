@@ -1,4 +1,5 @@
 <?php
+namespace phpcassa\Util;
 /*
    DrUUID RFC4122 library for PHP5
     by J. King (http://jkingweb.ca/)
@@ -38,7 +39,7 @@ OTHER DEALINGS IN THE SOFTWARE.
  * @package phpcassa
  * @subpackage uuid
  */
-class phpcassa_Util_UUID {
+class UUID {
  const MD5  = 3;
  const SHA1 = 5;
  const clearVer = 15;  // 00001111  Clears all bits of version byte with AND
@@ -75,7 +76,7 @@ class phpcassa_Util_UUID {
     return new self(self::mintTime($node, $time));
    case 2:
     // Version 2 is not supported 
-    throw new phpcassa_Util_UUIDException("Version 2 is unsupported.");
+    throw new UUIDException("Version 2 is unsupported.");
    case 3:
     return new self(self::mintName(self::MD5, $node, $ns));
    case 4:
@@ -152,7 +153,7 @@ class phpcassa_Util_UUID {
 
  protected function __construct($uuid) {
   if (strlen($uuid) != 16)
-   throw new phpcassa_Util_UUIDException("Input must be a 128-bit integer.");
+   throw new UUIDException("Input must be a 128-bit integer.");
   $this->bytes  = $uuid;
   // Optimize the most common use
   $this->string = 
@@ -181,7 +182,7 @@ class phpcassa_Util_UUID {
   //  integer size limits.
   // Note that this will never be more accurate than to the microsecond.
   if ($time_arg == NULL) {
-   $time = phpcassa_Util_CassandraUtil::get_time() * 10 + self::interval;
+   $time = CassandraUtil::get_time() * 10 + self::interval;
   } else {
    $time = $time_arg * 10 + self::interval;
   }
@@ -228,7 +229,7 @@ class phpcassa_Util_UUID {
   /* Generates a Version 3 or Version 5 UUID.
      These are derived from a hash of a name and its namespace, in binary form. */
   if (!$node)
-   throw new phpcassa_Util_UUIDException("A name-string is required for Version 3 or 5 UUIDs.");
+   throw new UUIDException("A name-string is required for Version 3 or 5 UUIDs.");
   // if the namespace UUID isn't binary, make it so
   $ns = self::makeBin($ns, 16);
   if (!$ns)

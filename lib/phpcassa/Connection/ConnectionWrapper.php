@@ -1,9 +1,11 @@
 <?php
+namespace phpcassa\Connection;
+
 /**
  * @package phpcassa
  * @subpackage connection
  */
-class phpcassa_Connection_ConnectionWrapper {
+class ConnectionWrapper {
 
     const LOWEST_COMPATIBLE_VERSION = 17;
     const DEFAULT_PORT = 9160;
@@ -25,25 +27,25 @@ class phpcassa_Connection_ConnectionWrapper {
             $port = (int)$server[1];
         else
             $port = self::DEFAULT_PORT;
-        $socket = new TSocket($host, $port);
+        $socket = new \TSocket($host, $port);
 
         if($send_timeout) $socket->setSendTimeout($send_timeout);
         if($recv_timeout) $socket->setRecvTimeout($recv_timeout);
 
         if($framed_transport) {
-            $transport = new TFramedTransport($socket, true, true);
+            $transport = new \TFramedTransport($socket, true, true);
         } else {
-            $transport = new TBufferedTransport($socket, 1024, 1024);
+            $transport = new \TBufferedTransport($socket, 1024, 1024);
         }
 
-        $client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
+        $client = new \CassandraClient(new \TBinaryProtocolAccelerated($transport));
         $transport->open();
 
         $server_version = explode(".", $client->describe_version());
         $server_version = $server_version[0];
         if ($server_version < self::LOWEST_COMPATIBLE_VERSION) {
             $ver = self::LOWEST_COMPATIBLE_VERSION;
-            throw new phpcassa_IncompatibleAPIException("The server's API version is too ".
+            throw new IncompatibleAPIException("The server's API version is too ".
                 "low to be comptible with phpcassa (server: $server_version, ".
                 "lowest compatible version: $ver)");
         }
@@ -51,7 +53,7 @@ class phpcassa_Connection_ConnectionWrapper {
         $client->set_keyspace($keyspace);
 
         if ($credentials) {
-            $request = cassandra_AuthenticationRequest($credentials);
+            $request = \cassandra_AuthenticationRequest($credentials);
             $client->login($request);
         }
 

@@ -1,9 +1,13 @@
 <?php
+namespace phpcassa\Util;
+
+use phpcassa\ColumnFamily;
+
 /**
  * @package phpcassa
  * @subpackage columnfamily
  */
-class phpcassa_Util_CassandraUtil {
+class CassandraUtil {
 
     /**
      * Creates a UUID object from a byte representation.
@@ -12,7 +16,7 @@ class phpcassa_Util_CassandraUtil {
      * @return a UUID object
      */
     static public function import($bytes) {
-        return phpcassa_Util_UUID::import($bytes);
+        return UUID::import($bytes);
     }
 
     /**
@@ -24,7 +28,7 @@ class phpcassa_Util_CassandraUtil {
      *        since the UNIX epoch.
      */
     static public function uuid1($node=null, $time=null) {
-        $uuid = phpcassa_Util_UUID::mint(1, $node, null, $time);
+        $uuid = UUID::mint(1, $node, null, $time);
         return $uuid->bytes;
     }
 
@@ -33,7 +37,7 @@ class phpcassa_Util_CassandraUtil {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid3($node=null, $namespace=null) {
-        $uuid = phpcassa_Util_UUID::mint(3, $node, $namespace);
+        $uuid = UUID::mint(3, $node, $namespace);
         return $uuid->bytes;
     }
 
@@ -42,7 +46,7 @@ class phpcassa_Util_CassandraUtil {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid4() {
-        $uuid = phpcassa_Util_UUID::mint(4);
+        $uuid = UUID::mint(4);
         return $uuid->bytes;
     }
 
@@ -51,7 +55,7 @@ class phpcassa_Util_CassandraUtil {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid5($node, $namespace=null) {
-        $uuid = phpcassa_Util_UUID::mint(5, $node, $namespace);
+        $uuid = UUID::mint(5, $node, $namespace);
         return $uuid->bytes;
     }
 
@@ -60,10 +64,10 @@ class phpcassa_Util_CassandraUtil {
      */
     static public function get_time() {
         // By Zach Buller (zachbuller@gmail.com)
-        $time1 = microtime();
-        settype($time1, 'string'); //convert to string to keep trailing zeroes
+        $time1 = \microtime();
+        \settype($time1, 'string'); //convert to string to keep trailing zeroes
         $time2 = explode(" ", $time1);
-        $sub_secs = preg_replace('/0./', '', $time2[0], 1);
+        $sub_secs = \preg_replace('/0./', '', $time2[0], 1);
         $time3 = ($time2[1].$sub_secs)/100;
         return $time3;
     }
@@ -74,13 +78,13 @@ class phpcassa_Util_CassandraUtil {
      * @param mixed $column_name the name of the column this expression will apply to;
      *        this column may or may not be indexed
      * @param mixed $value the value that will be compared to column values using op
-     * @param classandra_IndexOperator $op the binary operator to apply to column values
+     * @param \classandra_IndexOperator $op the binary operator to apply to column values
      *        and the 'value' parameter.  Defaults to testing for equality.
-     * @return cassandra_IndexExpression
+     * @return \cassandra_IndexExpression
      */
     static public function create_index_expression($column_name, $value,
-                                                   $op=cassandra_IndexOperator::EQ) {
-        $ie = new cassandra_IndexExpression();
+                                                   $op=\cassandra_IndexOperator::EQ) {
+        $ie = new \cassandra_IndexExpression();
         $ie->column_name = $column_name;
         $ie->value = $value;
         $ie->op = $op;
@@ -88,16 +92,16 @@ class phpcassa_Util_CassandraUtil {
     }
 
     /**
-     * Constructs a cassandra_IndexClause for use with get_indexed_slices().
-     * @param cassandra_IndexExpression[] $expr_list the list of expressions to match; at
+     * Constructs a \cassandra_IndexClause for use with get_indexed_slices().
+     * @param \cassandra_IndexExpression[] $expr_list the list of expressions to match; at
      *        least one of these must be on an indexed column
      * @param string $start_key the key to begin searching from
      * @param int $count the number of results to return
-     * @return cassandra_IndexClause
+     * @return \cassandra_IndexClause
      */
     static public function create_index_clause($expr_list, $start_key='',
-                                               $count=phpcassa_ColumnFamily::DEFAULT_COLUMN_COUNT) {
-        $ic = new cassandra_IndexClause();
+                                               $count=ColumnFamily::DEFAULT_COLUMN_COUNT) {
+        $ic = new \cassandra_IndexClause();
         $ic->expressions = $expr_list;
         $ic->start_key = $start_key;
         $ic->count = $count;

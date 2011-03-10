@@ -2,6 +2,11 @@
 require_once('simpletest/autorun.php');
 require_once('../lib/autoload.php');
 
+use phpcassa\ColumnFamily;
+use phpcassa\Connection\ConnectionPool;
+use phpcassa\Util\CassandraUtil;
+use phpcassa\Util\UUID;
+
 class TestAutopacking extends UnitTestCase {
 
     private static $VALS = array('val1', 'val2', 'val3');
@@ -11,38 +16,38 @@ class TestAutopacking extends UnitTestCase {
     private $cf;
 
     public function setUp() {
-        $this->client = new phpcassa_Connection_ConnectionPool('Keyspace1');
+        $this->client = new ConnectionPool('Keyspace1');
 
-        $this->cf_long  = new phpcassa_ColumnFamily($this->client, 'StdLong');
-        $this->cf_int   = new phpcassa_ColumnFamily($this->client, 'StdInteger');
-        $this->cf_time  = new phpcassa_ColumnFamily($this->client, 'StdTimeUUID');
-        $this->cf_lex   = new phpcassa_ColumnFamily($this->client, 'StdLexicalUUID');
-        $this->cf_ascii = new phpcassa_ColumnFamily($this->client, 'StdAscii');
-        $this->cf_utf8  = new phpcassa_ColumnFamily($this->client, 'StdUTF8');
+        $this->cf_long  = new ColumnFamily($this->client, 'StdLong');
+        $this->cf_int   = new ColumnFamily($this->client, 'StdInteger');
+        $this->cf_time  = new ColumnFamily($this->client, 'StdTimeUUID');
+        $this->cf_lex   = new ColumnFamily($this->client, 'StdLexicalUUID');
+        $this->cf_ascii = new ColumnFamily($this->client, 'StdAscii');
+        $this->cf_utf8  = new ColumnFamily($this->client, 'StdUTF8');
 
-        $this->cf_suplong  = new phpcassa_ColumnFamily($this->client, 'SuperLong');
-        $this->cf_supint   = new phpcassa_ColumnFamily($this->client, 'SuperInt');
-        $this->cf_suptime  = new phpcassa_ColumnFamily($this->client, 'SuperTime');
-        $this->cf_suplex   = new phpcassa_ColumnFamily($this->client, 'SuperLex');
-        $this->cf_supascii = new phpcassa_ColumnFamily($this->client, 'SuperAscii');
-        $this->cf_suputf8  = new phpcassa_ColumnFamily($this->client, 'SuperUTF8');
+        $this->cf_suplong  = new ColumnFamily($this->client, 'SuperLong');
+        $this->cf_supint   = new ColumnFamily($this->client, 'SuperInt');
+        $this->cf_suptime  = new ColumnFamily($this->client, 'SuperTime');
+        $this->cf_suplex   = new ColumnFamily($this->client, 'SuperLex');
+        $this->cf_supascii = new ColumnFamily($this->client, 'SuperAscii');
+        $this->cf_suputf8  = new ColumnFamily($this->client, 'SuperUTF8');
 
-        $this->cf_suplong_sublong  = new phpcassa_ColumnFamily($this->client, 'SuperLongSubLong');
-        $this->cf_suplong_subint   = new phpcassa_ColumnFamily($this->client, 'SuperLongSubInt');
-        $this->cf_suplong_subtime  = new phpcassa_ColumnFamily($this->client, 'SuperLongSubTime');
-        $this->cf_suplong_sublex   = new phpcassa_ColumnFamily($this->client, 'SuperLongSubLex');
-        $this->cf_suplong_subascii = new phpcassa_ColumnFamily($this->client, 'SuperLongSubAscii');
-        $this->cf_suplong_subutf8  = new phpcassa_ColumnFamily($this->client, 'SuperLongSubUTF8');
+        $this->cf_suplong_sublong  = new ColumnFamily($this->client, 'SuperLongSubLong');
+        $this->cf_suplong_subint   = new ColumnFamily($this->client, 'SuperLongSubInt');
+        $this->cf_suplong_subtime  = new ColumnFamily($this->client, 'SuperLongSubTime');
+        $this->cf_suplong_sublex   = new ColumnFamily($this->client, 'SuperLongSubLex');
+        $this->cf_suplong_subascii = new ColumnFamily($this->client, 'SuperLongSubAscii');
+        $this->cf_suplong_subutf8  = new ColumnFamily($this->client, 'SuperLongSubUTF8');
 
-        $this->cf_valid_long  = new phpcassa_ColumnFamily($this->client, 'ValidatorLong');
-        $this->cf_valid_int   = new phpcassa_ColumnFamily($this->client, 'ValidatorInt');
-        $this->cf_valid_time  = new phpcassa_ColumnFamily($this->client, 'ValidatorTime');
-        $this->cf_valid_lex   = new phpcassa_ColumnFamily($this->client, 'ValidatorLex');
-        $this->cf_valid_ascii = new phpcassa_ColumnFamily($this->client, 'ValidatorAscii');
-        $this->cf_valid_utf8  = new phpcassa_ColumnFamily($this->client, 'ValidatorUTF8');
-        $this->cf_valid_bytes = new phpcassa_ColumnFamily($this->client, 'ValidatorBytes');
+        $this->cf_valid_long  = new ColumnFamily($this->client, 'ValidatorLong');
+        $this->cf_valid_int   = new ColumnFamily($this->client, 'ValidatorInt');
+        $this->cf_valid_time  = new ColumnFamily($this->client, 'ValidatorTime');
+        $this->cf_valid_lex   = new ColumnFamily($this->client, 'ValidatorLex');
+        $this->cf_valid_ascii = new ColumnFamily($this->client, 'ValidatorAscii');
+        $this->cf_valid_utf8  = new ColumnFamily($this->client, 'ValidatorUTF8');
+        $this->cf_valid_bytes = new ColumnFamily($this->client, 'ValidatorBytes');
 
-        $this->cf_def_valid = new phpcassa_ColumnFamily($this->client, 'DefaultValidator');
+        $this->cf_def_valid = new ColumnFamily($this->client, 'DefaultValidator');
 
         $this->cfs = array($this->cf_long, $this->cf_int, $this->cf_ascii,
                            $this->cf_time, $this->cf_lex, $this->cf_utf8,
@@ -61,13 +66,13 @@ class TestAutopacking extends UnitTestCase {
 
                            $this->cf_def_valid);
          
-        $this->TIME1 = phpcassa_Util_CassandraUtil::uuid1();
-        $this->TIME2 = phpcassa_Util_CassandraUtil::uuid1();
-        $this->TIME3 = phpcassa_Util_CassandraUtil::uuid1();
+        $this->TIME1 = CassandraUtil::uuid1();
+        $this->TIME2 = CassandraUtil::uuid1();
+        $this->TIME3 = CassandraUtil::uuid1();
 
-        $this->LEX1 = phpcassa_Util_UUID::import('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')->bytes;
-        $this->LEX2 = phpcassa_Util_UUID::import('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')->bytes;
-        $this->LEX3 = phpcassa_Util_UUID::import('cccccccccccccccccccccccccccccccc')->bytes;
+        $this->LEX1 = UUID::import('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')->bytes;
+        $this->LEX2 = UUID::import('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')->bytes;
+        $this->LEX3 = UUID::import('cccccccccccccccccccccccccccccccc')->bytes;
     }
 
     public function tearDown() {
@@ -284,7 +289,7 @@ class TestAutopacking extends UnitTestCase {
                 self::assertEqual($subres, $group['dict']);
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
                                               $column_start=$group['cols'][0],
                                               $column_finish=$group['cols'][2]);
@@ -292,7 +297,7 @@ class TestAutopacking extends UnitTestCase {
                 self::assertEqual($subres, $group['dict']);
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=$group['cols']);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
@@ -417,7 +422,7 @@ class TestAutopacking extends UnitTestCase {
                 self::assertEqual($subres, $group['dict']);
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
                                               $column_start=$group['cols'][0],
                                               $column_finish=$group['cols'][2]);
@@ -425,7 +430,7 @@ class TestAutopacking extends UnitTestCase {
                 self::assertEqual($subres, $group['dict']);
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=$group['cols']);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
@@ -510,7 +515,7 @@ class TestAutopacking extends UnitTestCase {
                                              $column_start='',
                                              $column_finish='',
                                              $column_reverse=False,
-                                             $count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                             $count=ColumnFamily::DEFAULT_ROW_COUNT,
                                              $supercolumn=$LONG);
             foreach(range(0,2) as $i)
                 self::assertEqual($result[self::$KEYS[$i]], $group['dict'][$LONG]);
@@ -530,7 +535,7 @@ class TestAutopacking extends UnitTestCase {
             }
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $row_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
                                               $column_start=$LONG,
                                               $column_finish=$LONG);
@@ -539,19 +544,19 @@ class TestAutopacking extends UnitTestCase {
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0],
                                               $key_finish='',
-                                              $row_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=array($LONG));
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict']);
 
             $result = $group['cf']->get_range($key_start=self::$KEYS[0],
                                               $key_finish='',
-                                              $row_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $columns=null,
                                               $column_start='',
                                               $column_finish='',
                                               $column_revered=False,
-                                              $column_count=phpcassa_ColumnFamily::DEFAULT_ROW_COUNT,
+                                              $column_count=ColumnFamily::DEFAULT_ROW_COUNT,
                                               $super_column=$LONG);
             foreach($result as $subres)
                 self::assertEqual($subres, $group['dict'][$LONG]);
@@ -610,7 +615,7 @@ class TestAutopacking extends UnitTestCase {
 
     public function test_uuid1_generation() {
         $micros = 1293769171436849;
-        $uuid = phpcassa_Util_CassandraUtil::import(phpcassa_Util_CassandraUtil::uuid1(null, $micros)); 
+        $uuid = CassandraUtil::import(CassandraUtil::uuid1(null, $micros));
         $t = (int)($uuid->time * 1000000);
         self::assertWithinMargin($micros, $t, 100);
     }

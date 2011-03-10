@@ -1,5 +1,7 @@
 <?php
-class phpcassa_Iterator_ColumnFamilyIterator implements Iterator {
+namespace phpcassa\Iterator;
+
+class ColumnFamilyIterator implements \Iterator {
 
     protected $column_family;
     protected $buffer_size;

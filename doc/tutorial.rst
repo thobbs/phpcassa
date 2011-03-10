@@ -12,8 +12,7 @@ should execute without raising an exception:
 
 .. code-block:: php
 
-    require_once('phpcassa/connection.php');
-    require_once('phpcassa/columnfamily.php');
+    require_once('lib/phpcassa/autoload.php');
 
 This tutorial also assumes that a Cassandra instance is running on the
 default host and port. Read the `instructions for getting started
@@ -35,18 +34,18 @@ and import the included schema to start out:
 Making a Connection
 -------------------
 The first step when working with **phpcassa** is to create a
-`Connection <api/phpcassa/connection/Connection>`_ to the running cassandra instance:
+`phpcassa\Connection <api/phpcassa/connection/Connection>`_ to the running cassandra instance:
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace');
+  $conn = new phpcassa\Connection('Keyspace');
 
 The above code will connect on the default host and port. We can also
 specify the host and port explicitly, as follows:
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace1', array(array('host' => localhost, 'port' => 9160)));
+  $conn = new phpcassa\Connection('Keyspace1', array(array('host' => localhost, 'port' => 9160)));
 
 Getting a ColumnFamily
 ----------------------
@@ -57,12 +56,12 @@ were already included in the schema file:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Standard1');
+  $column_family = new phpcassa\ColumnFamily($conn, 'Standard1');
 
 Inserting Data
 --------------
 To insert a row into a column family we can use the
-`ColumnFamily::insert() <api/phpcassa/columnfamily/ColumnFamily#insert>`_ method:
+`phpcassa\ColumnFamily::insert() <api/phpcassa/columnfamily/ColumnFamily#insert>`_ method:
 
 .. code-block:: php
 
@@ -80,8 +79,8 @@ We can also insert more than one column at a time:
 
 .. .. code-block:: php
 
-..   $column_family.batch_insert({'row1': {'name1':'val1', 'name2':'val2'},
-..   ...                       'row2': {'foo':'bar'})
+..   $column_family->batch_insert({'row1' => {'name1' => 'val1', 'name2' => 'val2'},
+..   ...                           'row2' => {'foo' => 'bar'})
 ..   1354491238721387
 
 Getting Data
@@ -90,14 +89,14 @@ There are many more ways to get data out of Cassandra than there are
 to insert data.
 
 The simplest way to get data is to use
-`ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
+`phpcassa_ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
 
 .. code-block:: php
 
   $column_family->get('row_key');
   // returns: array('colname' => 'col_val')
 
-Without any other arguments, :meth:`ColumnFamily::get()`
+Without any other arguments, :meth:`phpcassa_ColumnFamily::get()`
 returns every column in the row (up to `$column_count`, which defaults to 100).
 If you only want a few of the columns and you know them by name, you can
 specify them using a `$columns` argument:
@@ -120,7 +119,7 @@ columns with names '1' through '9', we can do the following:
 
 There are also two ways to get multiple rows at the same time.
 The first is to specify them by name using
-`ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
+`phpcassa_ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
 
 .. code-block:: php
 
@@ -128,7 +127,7 @@ The first is to specify them by name using
   // returns: array('row_key1' => array('name' => 'val'), 'row_key2' => array('name' => 'val'))
 
 The other way is to get a range of keys at once by using
-`ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_.
+`phpcassa_ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_.
 The parameter `$key_finish` is also inclusive here, too.  Assuming we've inserted
 some rows with keys 'row_key1' through 'row_key9', we can do this:
 
@@ -142,20 +141,20 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
 
   foreach($rows as $key => $columns) {
       // Do stuff with $key or $columns
-      Print_r($columns);
+      print_r($columns);
   }
 
 It's also possible to specify a set of columns or a slice for 
-`ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
+`phpcassa\ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
 and
-`ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_,
+`phpcassa\ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_,
 just like we did for
-`ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
+`phpcassa\ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
 
 Counting
 --------
 If you just want to know how many columns are in a row, you can use
-`ColumnFamily::get_count() <api/phpcassa/columnfamily/ColumnFamily#get_count>`_:
+`phpcassa\ColumnFamily::get_count() <api/phpcassa/columnfamily/ColumnFamily#get_count>`_:
 
 .. code-block:: php
 
@@ -207,7 +206,7 @@ add an extra level to the array:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Super1');
+  $column_family = new phpcassa\ColumnFamily($conn, 'Super1');
   $column_family->insert('row_key', array('supercol_name' => array('col_name' => 'col_val')));
   $column_family->get('row_key');
   // returns: array('supercol_name' => ('col_name' => 'col_val'))
@@ -334,8 +333,9 @@ Suppose we are only interested in rows where 'birthdate' is 1984. We might do
 the following:
 
 .. code-block:: php
+  use phpcassa\Util\CassandraUtil;
 
-  $column_family = new ColumnFamily($conn, 'Indexed1');
+  $column_family = new phpcassa\ColumnFamily($conn, 'Indexed1');
   $index_exp = CassandraUtil::create_index_expression('birthdate', 1984);
   $index_clause = CassandraUtil::create_index_clause(array($index_exp));
   $rows = $column_family->get_indexed_slices($index_clause);
@@ -344,7 +344,7 @@ the following:
 
   foreach($rows as $key => $columns) {
       // Do stuff with $key and $columns
-      Print_r($columns)
+      print_r($columns)
   }
 
 Although at least one 

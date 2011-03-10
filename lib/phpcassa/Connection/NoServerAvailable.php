@@ -1,6 +1,8 @@
 <?php
+namespace phpcassa\Connection;
+
 /**
  * @package phpcassa
  * @subpackage connection
  */
-class phpcassa_Connection_NoServerAvailable extends Exception { }
+class NoServerAvailable extends \Exception { }

@@ -1,4 +1,8 @@
 <?php
+namespace phpcassa\Connection;
+
+use phpcassa\Connection\ConnectionWrapper;
+
 $GLOBALS['THRIFT_ROOT'] = (__DIR__) . '/../../thrift';
 require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
@@ -6,7 +10,7 @@ require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
 
-class phpcassa_Connection_ConnectionPool {
+class ConnectionPool {
 
     const BASE_BACKOFF = 0.1;
     const MICROS = 1000000;
@@ -76,20 +80,20 @@ class phpcassa_Connection_ConnectionPool {
         {
             try {
                 $this->list_position = ($this->list_position + 1) % count($this->servers);
-                $new_conn = new phpcassa_Connection_ConnectionWrapper($this->keyspace, $this->servers[$this->list_position],
+                $new_conn = new ConnectionWrapper($this->keyspace, $this->servers[$this->list_position],
                     $this->credentials, $this->framed_transport, $this->send_timeout, $this->recv_timeout);
                 array_push($this->queue, $new_conn);
                 $this->stats['created'] += 1;
                 return;
-            } catch (TException $e) {
+            } catch (\TException $e) {
                 $h = $this->servers[$this->list_position];
                 $err = (string)$e;
                 //error_log("Error connecting to $h: $err", 0);
                 $this->stats['failed'] += 1;
             }
         }
-        throw new phpcassa_Connection_NoServerAvailable("An attempt was made to connect to every server twice, but " .
-                                                        "all attempts failed. The last error was: $err");
+        throw new NoServerAvailable("An attempt was made to connect to every server twice, but " .
+                                    "all attempts failed. The last error was: $err");
     }
 
     public function get() {
@@ -139,24 +143,24 @@ class phpcassa_Connection_ConnectionPool {
                 $resp = call_user_func_array(array($conn->client, $f), $args);
                 $this->return_connection($conn);
                 return $resp;
-            } catch (cassandra_TimedOutException $toe) {
+            } catch (\cassandra_TimedOutException $toe) {
                 $last_err = $toe;
                 $this->handle_conn_failure($conn, $f, $toe, $retry_count);
-            } catch (cassandra_UnavailableException $ue) {
+            } catch (\cassandra_UnavailableException $ue) {
                 $last_err = $ue;
                 $this->handle_conn_failure($conn, $f, $ue, $retry_count);
-            } catch (TTransportException $tte) {
+            } catch (\TTransportException $tte) {
                 $last_err = $tte;
                 $this->handle_conn_failure($conn, $f, $tte, $retry_count);
             }
         }
-        throw new phpcassa_Connection_MaxRetriesException("An attempt to execute $f failed $tries times.".
-                                                          " The last error was " . (string)$last_err);
+        throw new MaxRetriesException("An attempt to execute $f failed $tries times.".
+                                      " The last error was " . (string)$last_err);
     }
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
         $err = (string)$exc;
-        //error_log("Error performing $f on $conn->server: $err", 0);
+        error_log("Error performing $f on $conn->server: $err", 0);
         $conn->close();
         $this->stats['failed'] += 1;
         usleep(self::BASE_BACKOFF * pow(2, $retry_count) * self::MICROS);
