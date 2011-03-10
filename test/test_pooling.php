@@ -1,14 +1,12 @@
 <?php
 require_once('simpletest/autorun.php');
-require_once('../connection.php');
-require_once('../columnfamily.php');
-require_once('../uuid.php');
+require_once('../lib/autoload.php');
 
 class TestPooling extends UnitTestCase {
 
     public function test_failover_under_limit() {
         $tservers = array(array('host' => 'localhost', 'port' => 9160));
-        $pool = new Connection('Keyspace1', $tservers);
+        $pool = new phpcassa_Connection('Keyspace1', $tservers);
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 5);
         foreach (range(1, 4) as $i) {
@@ -16,7 +14,7 @@ class TestPooling extends UnitTestCase {
             $conn->client = new MockClient($conn->transport);
             $pool->return_connection($conn);
         }
-        $cf = new ColumnFamily($pool, 'Standard1');
+        $cf = new phpcassa_ColumnFamily($pool, 'Standard1');
         $cf->insert('key', array('col' => 'val'));
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 9);
@@ -25,7 +23,7 @@ class TestPooling extends UnitTestCase {
     }
 
     public function test_failover_over_limit() {
-        $pool = new ConnectionPool('Keyspace1', NULL, 4);
+        $pool = new phpcassa_Connection_ConnectionPool('Keyspace1', NULL, 4);
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 5);
         foreach (range(1, 5) as $i) {
@@ -33,11 +31,11 @@ class TestPooling extends UnitTestCase {
             $conn->client = new MockClient($conn->transport);
             $pool->return_connection($conn);
         }
-        $cf = new ColumnFamily($pool, 'Standard1');
+        $cf = new phpcassa_ColumnFamily($pool, 'Standard1');
         try {
             $cf->insert('key', array('col' => 'val'));
             self::assertTrue(false);
-        } catch (MaxRetriesException $ex) {
+        } catch (phpcassa_Connection_MaxRetriesException $ex) {
         }
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 10);
@@ -46,8 +44,8 @@ class TestPooling extends UnitTestCase {
     }
 
     public function test_recycle() {
-        $pool = new ConnectionPool('Keyspace1', NULL, 5, 1, 1, 10);
-        $cf = new ColumnFamily($pool, 'Standard1');
+        $pool = new phpcassa_Connection_ConnectionPool('Keyspace1', NULL, 5, 1, 1, 10);
+        $cf = new phpcassa_ColumnFamily($pool, 'Standard1');
         foreach (range(1, 50) as $i) {
             $cf->insert('key', array('c' => 'v'));
         }
@@ -67,8 +65,8 @@ class TestPooling extends UnitTestCase {
 
     public function test_multiple_servers() {
         $servers = array('localhost:9160', '127.0.0.1:9160', '127.0.0.1');
-        $pool = new ConnectionPool('Keyspace1', $servers);
-        $cf = new ColumnFamily($pool, 'Standard1');
+        $pool = new phpcassa_Connection_ConnectionPool('Keyspace1', $servers);
+        $cf = new phpcassa_ColumnFamily($pool, 'Standard1');
         foreach (range(1, 50) as $i) {
             $cf->insert('key', array('c' => 'v'));
         }
@@ -79,11 +77,11 @@ class TestPooling extends UnitTestCase {
 
     public function test_initial_connection_failure() {
         $servers = array('localhost', 'foobar');
-        $pool = new ConnectionPool('Keyspace1', $servers);
+        $pool = new phpcassa_Connection_ConnectionPool('Keyspace1', $servers);
         $stats = $pool->stats();
         self::assertEqual($stats['created'], 5);
         self::assertTrue($stats['failed'] == 5 || $stats['failed'] == 4);
-        $cf = new ColumnFamily($pool, 'Standard1');
+        $cf = new phpcassa_ColumnFamily($pool, 'Standard1');
         foreach (range(1, 50) as $i) {
             $cf->insert('key', array('c' => 'v'));
         }
@@ -91,9 +89,9 @@ class TestPooling extends UnitTestCase {
 
         $servers = array('barfoo', 'foobar');
         try {
-            $pool = new ConnectionPool('Keyspace1', $servers);
+            $pool = new phpcassa_Connection_ConnectionPool('Keyspace1', $servers);
             self::assertTrue(false);
-        } catch (NoServerAvailable $ex) {
+        } catch (phpcassa_Connection_NoServerAvailable $ex) {
         }
     }
 }

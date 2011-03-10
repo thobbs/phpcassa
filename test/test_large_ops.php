@@ -1,8 +1,6 @@
 <?php
 require_once('simpletest/autorun.php');
-require_once('../connection.php');
-require_once('../columnfamily.php');
-require_once('../uuid.php');
+require_once('../lib/autoload.php');
 
 class TestLargeOps extends UnitTestCase {
 
@@ -13,9 +11,9 @@ class TestLargeOps extends UnitTestCase {
     private $cf;
 
     public function setUp() {
-        $this->client = new ConnectionPool('Keyspace1');
+        $this->client = new phpcassa_Connection_ConnectionPool('Keyspace1');
 
-        $this->cf = new ColumnFamily($this->client, 'Standard1');
+        $this->cf = new phpcassa_ColumnFamily($this->client, 'Standard1');
     }
 
     public function tearDown() {

@@ -1,113 +1,4 @@
 <?php
-require_once('connection.php');
-require_once('uuid.php');
-
-/**
- * @package phpcassa
- * @subpackage columnfamily
- */
-class CassandraUtil {
-
-    /**
-     * Creates a UUID object from a byte representation.
-     * @param string $bytes the byte representation of a UUID, which is
-     *        what is returned from functions like uuid1()
-     * @return a UUID object
-     */
-    static public function import($bytes) {
-        return UUID::import($bytes);
-    }
-
-    /**
-     * Generate a v1 UUID (timestamp based)
-     * @return string a byte[] representation of a UUID 
-     * @param string $node what to use for the MAC portion of the UUID.  This will be generated
-     *        randomly if left as NULL
-     * @param int $time timestamp to use for the UUID.  This should be a number of microseconds
-     *        since the UNIX epoch.
-     */
-    static public function uuid1($node=null, $time=null) {
-        $uuid = UUID::mint(1, $node, null, $time);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Generate a v3 UUID
-     * @return string a byte[] representation of a UUID 
-     */
-    static public function uuid3($node=null, $namespace=null) {
-        $uuid = UUID::mint(3, $node, $namespace);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Generate a v4 UUID
-     * @return string a byte[] representation of a UUID 
-     */
-    static public function uuid4() {
-        $uuid = UUID::mint(4);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Generate a v5 UUID
-     * @return string a byte[] representation of a UUID 
-     */
-    static public function uuid5($node, $namespace=null) {
-        $uuid = UUID::mint(5, $node, $namespace);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Get a timestamp with microsecond precision
-     */
-    static public function get_time() {
-        // By Zach Buller (zachbuller@gmail.com)
-        $time1 = microtime();
-        settype($time1, 'string'); //convert to string to keep trailing zeroes
-        $time2 = explode(" ", $time1);
-        $sub_secs = preg_replace('/0./', '', $time2[0], 1);
-        $time3 = ($time2[1].$sub_secs)/100;
-        return $time3;
-    }
-
-    /**
-     * Constructs an IndexExpression to be used in an IndexClause, which can
-     * be used with get_indexed_slices().
-     * @param mixed $column_name the name of the column this expression will apply to;
-     *        this column may or may not be indexed
-     * @param mixed $value the value that will be compared to column values using op
-     * @param classandra_IndexOperator $op the binary operator to apply to column values
-     *        and the 'value' parameter.  Defaults to testing for equality.
-     * @return cassandra_IndexExpression
-     */
-    static public function create_index_expression($column_name, $value,
-                                                   $op=cassandra_IndexOperator::EQ) {
-        $ie = new cassandra_IndexExpression();
-        $ie->column_name = $column_name;
-        $ie->value = $value;
-        $ie->op = $op;
-        return $ie;
-    }
-
-    /**
-     * Constructs a cassandra_IndexClause for use with get_indexed_slices().
-     * @param cassandra_IndexExpression[] $expr_list the list of expressions to match; at
-     *        least one of these must be on an indexed column
-     * @param string $start_key the key to begin searching from
-     * @param int $count the number of results to return
-     * @return cassandra_IndexClause
-     */
-    static public function create_index_clause($expr_list, $start_key='',
-                                               $count=ColumnFamily::DEFAULT_COLUMN_COUNT) {
-        $ic = new cassandra_IndexClause();
-        $ic->expressions = $expr_list;
-        $ic->start_key = $start_key;
-        $ic->count = $count;
-        return $ic;
-    }
-}
-
 /**
  * Representation of a ColumnFamily in Cassandra.  This may be used for
  * standard column families or super column families. All data insertions,
@@ -116,7 +7,7 @@ class CassandraUtil {
  * @package phpcassa
  * @subpackage columnfamily
  */
-class ColumnFamily {
+class phpcassa_ColumnFamily {
 
     /** The default limit to the number of rows retrieved in queries. */
     const DEFAULT_ROW_COUNT = 100; // default max # of rows for get_range()
@@ -408,7 +299,7 @@ class ColumnFamily {
      *        server will overallocate memory and fail.  This is the size of
      *        that buffer in number of rows.
      *
-     * @return RangeColumnFamilyIterator
+     * @return phpcassa_Iterator_RangeColumnFamilyIterator
      */
     public function get_range($key_start="",
                               $key_finish="",
@@ -435,10 +326,10 @@ class ColumnFamily {
                                                    $column_finish, $column_reversed,
                                                    $column_count);
 
-        return new RangeColumnFamilyIterator($this, $buffer_size,
-                                             $key_start, $key_finish, $row_count,
-                                             $column_parent, $predicate,
-                                             $this->rcl($read_consistency_level));
+        return new phpcassa_Iterator_RangeColumnFamilyIterator($this, $buffer_size,
+                                                               $key_start, $key_finish, $row_count,
+                                                               $column_parent, $predicate,
+                                                               $this->rcl($read_consistency_level));
     }
 
    /**
@@ -494,9 +385,9 @@ class ColumnFamily {
                                                    $column_finish, $column_reversed,
                                                    $column_count);
 
-        return new IndexedColumnFamilyIterator($this, $new_clause, $buffer_size,
-                                               $column_parent, $predicate,
-                                               $this->rcl($read_consistency_level));
+        return new phpcassa_Iterator_IndexedColumnFamilyIterator($this, $new_clause, $buffer_size,
+                                                                 $column_parent, $predicate,
+                                                                 $this->rcl($read_consistency_level));
     }
 
     /**
@@ -519,7 +410,7 @@ class ColumnFamily {
                            $write_consistency_level=null) {
 
         if ($timestamp == null)
-            $timestamp = CassandraUtil::get_time();
+            $timestamp = phpcassa_Util_CassandraUtil::get_time();
 
         $cfmap = array();
         $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
@@ -543,7 +434,8 @@ class ColumnFamily {
      */
     public function batch_insert($rows, $timestamp=null, $ttl=null, $write_consistency_level=null) {
         if ($timestamp == null)
-            $timestamp = CassandraUtil::get_time();
+            $timestamp = phpcassa_Util_CassandraUtil::get_time();
+
 
         $cfmap = array();
         foreach($rows as $key => $columns)
@@ -564,8 +456,7 @@ class ColumnFamily {
      * @return int the timestamp for the operation
      */
     public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
-
-        $timestamp = CassandraUtil::get_time();
+        $timestamp = phpcassa_Util_CassandraUtil::get_time();
 
         if ($columns == null || count($columns) == 1)
         {
@@ -926,7 +817,8 @@ class ColumnFamily {
     }
 
     private function array_to_mutation($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
+        if(empty($timestamp)) $timestamp = phpcassa_Util_CassandraUtil::get_time();
+
 
         $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp, $ttl);
         $ret = null;
@@ -939,7 +831,8 @@ class ColumnFamily {
     }
     
     private function array_to_supercolumns_or_columns($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
+        if(empty($timestamp)) $timestamp = phpcassa_Util_CassandraUtil::get_time();
+
 
         $ret = null;
         foreach($array as $name => $value) {
@@ -964,7 +857,7 @@ class ColumnFamily {
     }
 
     private function array_to_columns($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
+        if(empty($timestamp)) $timestamp = phpcassa_Util_CassandraUtil::get_time();
 
         $ret = null;
         foreach($array as $name => $value) {
@@ -978,217 +871,3 @@ class ColumnFamily {
         return $ret;
     }
 }
-
-class ColumnFamilyIterator implements Iterator {
-
-    protected $column_family;
-    protected $buffer_size;
-    protected $row_count;
-    protected $read_consistency_level;
-    protected $column_parent, $predicate;
-
-    protected $current_buffer;
-    protected $next_start_key, $orig_start_key;
-    protected $is_valid;
-    protected $rows_seen;
-
-    protected function __construct($column_family,
-                                   $buffer_size,
-                                   $row_count,
-                                   $orig_start_key,
-                                   $column_parent,
-                                   $predicate,
-                                   $read_consistency_level) {
-
-        $this->column_family = $column_family;
-        $this->buffer_size = $buffer_size;
-        $this->row_count = $row_count;
-        $this->orig_start_key = $orig_start_key;
-        $this->next_start_key = $orig_start_key;
-        $this->column_parent = $column_parent;
-        $this->predicate = $predicate;
-        $this->read_consistency_level = $read_consistency_level;
-
-        if ($this->row_count != null)
-            $this->buffer_size = min($this->row_count, $buffer_size);
-    }
-
-    public function rewind() {
-        // Setup first buffer
-        $this->rows_seen = 0;
-        $this->is_valid = true;
-        $this->next_start_key = $this->orig_start_key;
-        $this->get_buffer();
-
-        # If nothing was inserted, this may happen
-        if (count($this->current_buffer) == 0) {
-            $this->is_valid = false;
-            return;
-        }
-
-        # If the very first row is a deleted row
-        if (count(current($this->current_buffer)) == 0)
-            $this->next();
-        else
-            $this->rows_seen++;
-    }
-
-    public function current() {
-        return current($this->current_buffer);
-    }
-
-    public function key() {
-        return key($this->current_buffer);
-    }
-
-    public function valid() {
-        return $this->is_valid;
-    }
-
-    public function next() {
-        $beyond_last_row = false;
-
-        # If we haven't run off the end
-        if ($this->current_buffer != null)
-        {
-            # Save this key incase we run off the end
-            $this->next_start_key = key($this->current_buffer);
-            next($this->current_buffer);
-
-            if (count(current($this->current_buffer)) == 0)
-            {
-                # this is an empty row, skip it
-                $key = key($this->current_buffer);
-                $this->next();
-            }
-            else # count > 0
-            {
-                $key = key($this->current_buffer);
-                $beyond_last_row = !isset($key);
-
-                if (!$beyond_last_row)
-                {
-                    $this->rows_seen++;
-                    if ($this->rows_seen > $this->row_count) {
-                        $this->is_valid = false;
-                        return;
-                    }
-                }
-            }
-        }
-        else
-        {
-            $beyond_last_row = true;
-        }
-
-        if($beyond_last_row && $this->current_page_size < $this->expected_page_size)
-        {
-            # The page was shorter than we expected, so we know that this
-            # was the last page in the column family
-            $this->is_valid = false;
-        }
-        else if($beyond_last_row)
-        {
-            # We've reached the end of this page, but there should be more
-            # in the CF
-            
-            # Get the next buffer (next_start_key has already been set)
-            $this->get_buffer();
-
-            # If the result set is 1, we can stop because the first item
-            # should always be skipped
-            if(count($this->current_buffer) == 1)
-                $this->is_valid = false;
-            else
-                $this->next();
-        }
-    }
-}
-
-/**
- * Iterates over a column family row-by-row, typically with only a subset
- * of each row's columns.
- *
- * @package phpcassa
- * @subpackage columnfamily
- */
-class RangeColumnFamilyIterator extends ColumnFamilyIterator {
-
-    private $key_start, $key_finish;
-
-    public function __construct($column_family, $buffer_size,
-                                $key_start, $key_finish, $row_count,
-                                $column_parent, $predicate,
-                                $read_consistency_level) {
-
-        $this->key_start = $key_start;
-        $this->key_finish = $key_finish;
-
-        parent::__construct($column_family, $buffer_size, $row_count,
-                            $key_start, $column_parent, $predicate,
-                            $read_consistency_level);
-    }
-
-    protected function get_buffer() {
-        if($this->row_count != null)
-            $buff_sz = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
-        else
-            $buff_sz = $this->buffer_size;
-        $this->expected_page_size = $buff_sz;
-
-        $key_range = new cassandra_KeyRange();
-        $key_range->start_key = $this->next_start_key;
-        $key_range->end_key = $this->key_finish;
-        $key_range->count = $buff_sz;
-
-        $resp = $this->column_family->pool->call("get_range_slices", $this->column_parent, $this->predicate,
-            $key_range, $this->read_consistency_level);
-
-        $this->current_buffer = $this->column_family->keyslices_to_array($resp);
-        $this->current_page_size = count($this->current_buffer);
-    }
-}
-
-/**
- * Iterates over a column family row-by-row, typically with only a subset
- * of each row's columns.
- *
- * @package phpcassa
- * @subpackage columnfamily
- */
-class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
-
-    private $index_clause;
-
-    public function __construct($column_family, $index_clause, $buffer_size,
-                                $column_parent, $predicate,
-                                $read_consistency_level) {
-
-        $this->index_clause = $index_clause;
-        $row_count = $index_clause->count;
-        $orig_start_key = $index_clause->start_key;
-
-        parent::__construct($column_family, $buffer_size, $row_count,
-                            $orig_start_key, $column_parent, $predicate,
-                            $read_consistency_level);
-    }
-
-    protected function get_buffer() {
-        # Figure out how many rows we need to get and record that
-        if($this->row_count != null)
-            $this->index_clause->count = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
-        else
-            $this->index_clause->count = $this->buffer_size;
-        $this->expected_page_size = $this->index_clause->count;
-
-        $this->index_clause->start_key = $this->next_start_key;
-        $resp = $this->column_family->pool->call("get_indexed_slices",
-                $this->column_parent, $this->index_clause, $this->predicate,
-                $this->read_consistency_level);
-
-        $this->current_buffer = $this->column_family->keyslices_to_array($resp);
-        $this->current_page_size = count($this->current_buffer);
-    }
-}
-
-?>

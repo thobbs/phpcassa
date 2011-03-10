@@ -1,94 +1,12 @@
 <?php
-$GLOBALS['THRIFT_ROOT'] = dirname(__FILE__) . '/thrift/';
+$GLOBALS['THRIFT_ROOT'] = (__DIR__) . '/../../thrift';
 require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
 
-/**
- * @package phpcassa
- * @subpackage connection
- */
-class NoServerAvailable extends Exception { }
-
-/**
- * @package phpcassa
- * @subpackage connection
- */
-class IncompatibleAPIException extends Exception { }
-
-class MaxRetriesException extends Exception { }
-
-/**
- * @package phpcassa
- * @subpackage connection
- */
-class ConnectionWrapper {
-
-    const LOWEST_COMPATIBLE_VERSION = 17;
-    const DEFAULT_PORT = 9160;
-    public $keyspace;
-    public $client;
-    public $op_count;
-
-    public function __construct($keyspace,
-                                $server,
-                                $credentials=null,
-                                $framed_transport=True,
-                                $send_timeout=null,
-                                $recv_timeout=null)
-    {
-        $this->server = $server;
-        $server = explode(':', $server);
-        $host = $server[0];
-        if(count($server) == 2)
-            $port = (int)$server[1];
-        else
-            $port = self::DEFAULT_PORT;
-        $socket = new TSocket($host, $port);
-
-        if($send_timeout) $socket->setSendTimeout($send_timeout);
-        if($recv_timeout) $socket->setRecvTimeout($recv_timeout);
-
-        if($framed_transport) {
-            $transport = new TFramedTransport($socket, true, true);
-        } else {
-            $transport = new TBufferedTransport($socket, 1024, 1024);
-        }
-
-        $client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
-        $transport->open();
-
-        $server_version = explode(".", $client->describe_version());
-        $server_version = $server_version[0];
-        if ($server_version < self::LOWEST_COMPATIBLE_VERSION) {
-            $ver = self::LOWEST_COMPATIBLE_VERSION;
-            throw new IncompatibleAPIException("The server's API version is too ".
-                "low to be comptible with phpcassa (server: $server_version, ".
-                "lowest compatible version: $ver)");
-        }
-
-        $client->set_keyspace($keyspace);
-
-        if ($credentials) {
-            $request = new cassandra_AuthenticationRequest($credentials);
-            $client->login($request);
-        }
-
-        $this->keyspace = $keyspace;
-        $this->client = $client;
-        $this->transport = $transport;
-        $this->op_count = 0;
-    }
-
-    public function close() {
-        $this->transport->close();
-    }
-
-}
-
-class ConnectionPool {
+class phpcassa_Connection_ConnectionPool {
 
     const BASE_BACKOFF = 0.1;
     const MICROS = 1000000;
@@ -158,7 +76,7 @@ class ConnectionPool {
         {
             try {
                 $this->list_position = ($this->list_position + 1) % count($this->servers);
-                $new_conn = new ConnectionWrapper($this->keyspace, $this->servers[$this->list_position],
+                $new_conn = new phpcassa_Connection_ConnectionWrapper($this->keyspace, $this->servers[$this->list_position],
                     $this->credentials, $this->framed_transport, $this->send_timeout, $this->recv_timeout);
                 array_push($this->queue, $new_conn);
                 $this->stats['created'] += 1;
@@ -166,12 +84,12 @@ class ConnectionPool {
             } catch (TException $e) {
                 $h = $this->servers[$this->list_position];
                 $err = (string)$e;
-                error_log("Error connecting to $h: $err", 0);
+                //error_log("Error connecting to $h: $err", 0);
                 $this->stats['failed'] += 1;
             }
         }
-        throw new NoServerAvailable("An attempt was made to connect to every server twice, but " .
-                                    "all attempts failed. The last error was: $err");
+        throw new phpcassa_Connection_NoServerAvailable("An attempt was made to connect to every server twice, but " .
+                                                        "all attempts failed. The last error was: $err");
     }
 
     public function get() {
@@ -232,13 +150,13 @@ class ConnectionPool {
                 $this->handle_conn_failure($conn, $f, $tte, $retry_count);
             }
         }
-        throw new MaxRetriesException("An attempt to execute $f failed $tries times.".
-                                      " The last error was " . (string)$last_err);
+        throw new phpcassa_Connection_MaxRetriesException("An attempt to execute $f failed $tries times.".
+                                                          " The last error was " . (string)$last_err);
     }
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
         $err = (string)$exc;
-        error_log("Error performing $f on $conn->server: $err", 0);
+        //error_log("Error performing $f on $conn->server: $err", 0);
         $conn->close();
         $this->stats['failed'] += 1;
         usleep(self::BASE_BACKOFF * pow(2, $retry_count) * self::MICROS);
@@ -246,29 +164,3 @@ class ConnectionPool {
     }
 
 }
-
-class Connection extends ConnectionPool {
-    // Here for backwards compatibility reasons only
-    public function __construct($keyspace,
-                                $servers=NULL,
-                                $max_retries=5,
-                                $send_timeout=5000,
-                                $recv_timeout=5000,
-                                $recycle=10000,
-                                $credentials=NULL,
-                                $framed_transport=true)
-    {
-        if ($servers != NULL) {
-            $new_servers = array();
-            foreach ($servers as $server) {
-                $new_servers[] = $server['host'] . ':' . (string)$server['port'];
-            }
-        } else {
-            $new_servers = NULL;
-        }
-
-        parent::__construct($keyspace, $new_servers, $max_retries, $send_timeout,
-            $recv_timeout, $recycle, $credentials, $framed_transport);
-    }
-}
-?>

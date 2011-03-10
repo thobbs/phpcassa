@@ -10,4 +10,3 @@ class AllTests extends TestSuite {
         $this->addFile('test_pooling.php');
     }
 }
-?>
