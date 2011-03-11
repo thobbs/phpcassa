@@ -50,7 +50,7 @@ class TestPooling extends UnitTestCase {
     }
 
     public function test_recycle() {
-        $pool = new ConnectionPool('Keyspace1', NULL, 5, 1, 1, 10);
+        $pool = new ConnectionPool('Keyspace1', NULL, 5, 5000, 5000, 10);
         $cf = new ColumnFamily($pool, 'Standard1');
         foreach (range(1, 50) as $i) {
             $cf->insert('key', array('c' => 'v'));
