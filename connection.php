@@ -104,6 +104,7 @@ class ConnectionPool {
     private $credentials;
     private $framed_transport;
     private $queue;
+    private $keyspace_description = NULL;
 
     public function __construct($keyspace,
                                 $servers=NULL,
@@ -186,6 +187,14 @@ class ConnectionPool {
             $connection = $this->get();
         }
         array_push($this->queue, $connection);
+    }
+
+    public function describe_keyspace() {
+        if (NULL === $this->keyspace_description) {
+            $this->keyspace_description = $this->call("describe_keyspace", $this->keyspace);
+        }
+
+        return $this->keyspace_description;
     }
 
     public function dispose() {
