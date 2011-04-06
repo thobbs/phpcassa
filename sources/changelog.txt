@@ -1,6 +1,30 @@
 Changelog
 =========
 
+Changes in 0.7.a.4
+------------------
+
+The bundled Thrift library has been updated to a post-0.6 trunk
+version.  An important bugfix was made in Thrift which greatly
+improves performance.
+
+Bugfixes
+^^^^^^^^
+- Credentials were not properly passed through Thrift, causing
+  any authorization attempts to fail.
+
+Features
+^^^^^^^^
+- Added the ConnectionPool class to connection.php. This allows
+  for better failover and loadbalancing of operations. See the
+  documentation for the ConnectionPool class when upgrading from
+  0.7.a.3 or earlier.
+
+Deprecated
+^^^^^^^^^^
+- The Connection class in connection.php has been replaced by
+  ConnectionPool and is now deprecated.
+
 Changes in 0.7.a.3
 ------------------
 

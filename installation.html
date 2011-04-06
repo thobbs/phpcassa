@@ -87,17 +87,14 @@
   <div class="section" id="installing">
 <span id="id1"></span><h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
 <p>Copying the <cite>phpcassa</cite> directory into your path should be enough to
-begin using <strong>phpcassa</strong>. You should be able to import phpcassa
-similarly to the following:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;phpcassa/connection.php&#39;</span><span class="p">);</span>
-<span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;phpcassa/columnfamily.php&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
+begin using <strong>phpcassa</strong>.  This will not automatically allow the
+C extension to be used, though.</p>
 <div class="section" id="c-extension">
 <h2>C Extension<a class="headerlink" href="#c-extension" title="Permalink to this headline">¶</a></h2>
 <p>The C extension is crucial for phpcassa&#8217;s performance.</p>
 <p>You need to configure and make to be able to use the C extension:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd </span>thrift/ext/thrift_protocol
+phpize
 ./configure
 make
 sudo make install

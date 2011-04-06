@@ -3,13 +3,8 @@
 Installing
 ==========
 Copying the `phpcassa` directory into your path should be enough to
-begin using **phpcassa**. You should be able to import phpcassa
-similarly to the following:
-
-.. code-block:: php
-
-    require_once('phpcassa/connection.php');
-    require_once('phpcassa/columnfamily.php');
+begin using **phpcassa**.  This will not automatically allow the
+C extension to be used, though.
 
 C Extension
 -----------
@@ -20,6 +15,7 @@ You need to configure and make to be able to use the C extension:
 .. code-block:: bash
 
     cd thrift/ext/thrift_protocol
+    phpize
     ./configure
     make
     sudo make install

@@ -41,29 +41,19 @@ The first step when working with **phpcassa** is to create a
 
   $conn = new Connection('Keyspace');
 
-The above code will connect the default host 'localhost' at the default
-port of 9160.
-
-We can also specify a list of hosts and port explicitly, as follows:
+The above code will connect on the default host and port. We can also
+specify the host and port explicitly, as follows:
 
 .. code-block:: php
 
-  $servers[0] = array('host' => '192.168.2.6', 'port' => 9160)
-  $servers[1] = array('host' => '192.168.2.7', 'port' => 9160)
-  $servers[3] = array('host' => '192.168.2.8', 'port' => 9160)
-  $conn = new Connection('Keyspace1', servers);
+  $conn = new Connection('Keyspace1', array(array('host' => localhost, 'port' => 9160)));
 
 Getting a ColumnFamily
 ----------------------
 A column family is a collection of rows and columns in Cassandra,
 and can be thought of as roughly the equivalent of a table in a
-relational database. 
-
-All data inserting, retrieval, and deletion is performed through
-a ColumnFamily object in phpcassa.
-
-As an example, we'll use one of the column families that were
-already included in the schema file:
+relational database. We'll use one of the column families that
+were already included in the schema file:
 
 .. code-block:: php
 
@@ -84,13 +74,15 @@ We can also insert more than one column at a time:
 
   $column_family->insert('row_key', array('name1' => 'val1', 'name2' => 'val2'));
 
-And we can insert more than one row at a time:
+.. todo: batch_insert
 
-.. code-block:: php
+.. And we can insert more than one row at a time:
 
-   $column_family->batch_insert(
-       array('row1' => array('name1' => 'val1', 'name2' => 'val2')),
-       array('row2' => array('foo' => 'bar')));
+.. .. code-block:: php
+
+..   $column_family.batch_insert({'row1': {'name1':'val1', 'name2':'val2'},
+..   ...                       'row2': {'foo':'bar'})
+..   1354491238721387
 
 Getting Data
 ------------
@@ -153,22 +145,12 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
       Print_r($columns);
   }
 
-.. note:: Cassandra must be using an OrderPreservingPartitioner for you to be
-          able to get a meaningful range of rows; the default, RandomPartitioner,
-          stores rows in the order of the MD5 hash of their keys. See
-          http://www.datastax.com/docs/0.7/operations/clustering#partitioners.
-
 It's also possible to specify a set of columns or a slice for 
 `ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
 and
 `ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_,
 just like we did for
 `ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
-
-The last way to get multiple rows at a time is to take advantage of
-secondary indexes by using
-`ColumnFamily::get_indexed_slices() <api/phpcassa/columnfamily/ColumnFamily#get_indexed_slices>`_,
-which is described in the `Indexes`_ section.
 
 Counting
 --------
@@ -317,6 +299,7 @@ can turn it off when you create the
   $column_family = new ColumnFamily($conn, 'Standard1',
                                     $autopack_names=False,
                                     $autopack_values=False);
+
 
 Indexes
 -------
