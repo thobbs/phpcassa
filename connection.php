@@ -93,6 +93,10 @@ class ConnectionPool {
     const BASE_BACKOFF = 0.1;
     const MICROS = 1000000;
     const MAX_RETRIES = 2147483647; // 2^31 - 1
+
+    const DEFAULT_MAX_RETRIES = 5;
+    const DEFAULT_RECYCLE = 10000;
+
     private static $default_servers = array('localhost:9160');
 
     public $keyspace;
@@ -108,10 +112,11 @@ class ConnectionPool {
 
     public function __construct($keyspace,
                                 $servers=NULL,
-                                $max_retries=5,
+                                $pool_size=NULL,
+                                $max_retries=self::DEFAULT_MAX_RETRIES,
                                 $send_timeout=5000,
                                 $recv_timeout=5000,
-                                $recycle=10000,
+                                $recycle=self::DEFAULT_RECYCLE,
                                 $credentials=NULL,
                                 $framed_transport=true)
     {
@@ -128,10 +133,12 @@ class ConnectionPool {
             'failed' => 0,
             'recycled' => 0);
 
-        if ($servers == NULL)
+        if (is_null($servers))
             $servers = self::$default_servers;
         $this->servers = $servers;
-        $this->pool_size = max(count($this->servers) * 2, 5);
+
+        if (is_null($this->pool_size))
+            $this->pool_size = max(count($this->servers) * 2, 5);
 
         $this->queue = array();
 
@@ -257,27 +264,34 @@ class ConnectionPool {
 }
 
 class Connection extends ConnectionPool {
+
+
     // Here for backwards compatibility reasons only
     public function __construct($keyspace,
                                 $servers=NULL,
-                                $max_retries=5,
+                                $credentials=NULL,
+                                $framed_transport=true,
                                 $send_timeout=5000,
                                 $recv_timeout=5000,
-                                $recycle=10000,
-                                $credentials=NULL,
-                                $framed_transport=true)
+                                $retry_time=10)
     {
+        trigger_error("The Connection class has been deprecated.  Use ConnectionPool instead.",
+            E_USER_NOTICE);
+
         if ($servers != NULL) {
             $new_servers = array();
             foreach ($servers as $server) {
                 $new_servers[] = $server['host'] . ':' . (string)$server['port'];
             }
+            $pool_size = count($new_servers);
         } else {
             $new_servers = NULL;
+            $pool_size = NULL;
         }
 
-        parent::__construct($keyspace, $new_servers, $max_retries, $send_timeout,
-            $recv_timeout, $recycle, $credentials, $framed_transport);
+        parent::__construct($keyspace, $new_servers, $pool_size,
+            ConnectionPool::DEFAULT_MAX_RETRIES, $send_timeout, $recv_timeout,
+            ConnectionPool::DEFAULT_RECYCLE, $credentials, $framed_transport);
     }
 }
 ?>
