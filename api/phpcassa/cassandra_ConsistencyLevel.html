@@ -23,7 +23,7 @@
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
 		<p class="notes">
-			Located in <a class="field" href="_thrift---packages---cassandra---cassandra_types.php.html">/thrift/packages/cassandra/cassandra_types.php</a> (line <span class="field">19</span>)
+			Located in <a class="field" href="_thrift---packages---cassandra---cassandra_types.php.html">/thrift/packages/cassandra/cassandra_types.php</a> (line <span class="field">21</span>)
 		</p>
 		
 				
@@ -57,12 +57,12 @@
 				</div>
 								<div class="const-title">
 					<img src="../media/images/Constant.png" alt=" " />
-					<a href="#DCQUORUM" title="details" class="const-name">DCQUORUM</a> = 					<span class="var-type"> 3</span>
+					<a href="#EACH_QUORUM" title="details" class="const-name">EACH_QUORUM</a> = 					<span class="var-type"> 4</span>
 
 				</div>
 								<div class="const-title">
 					<img src="../media/images/Constant.png" alt=" " />
-					<a href="#DCQUORUMSYNC" title="details" class="const-name">DCQUORUMSYNC</a> = 					<span class="var-type"> 4</span>
+					<a href="#LOCAL_QUORUM" title="details" class="const-name">LOCAL_QUORUM</a> = 					<span class="var-type"> 3</span>
 
 				</div>
 								<div class="const-title">
@@ -73,6 +73,16 @@
 								<div class="const-title">
 					<img src="../media/images/Constant.png" alt=" " />
 					<a href="#QUORUM" title="details" class="const-name">QUORUM</a> = 					<span class="var-type"> 2</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#THREE" title="details" class="const-name">THREE</a> = 					<span class="var-type"> 8</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#TWO" title="details" class="const-name">TWO</a> = 					<span class="var-type"> 7</span>
 
 				</div>
 							</div>
@@ -112,13 +122,13 @@
 								</div>
 		<div class="info-box-body">
 			<a name="var$__names" id="$__names"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			static <span class="var-type">mixed</span>
 			<span class="var-name">$__names</span>
-			 = <span class="var-default">array(<br />    1 =&gt; 'ONE',<br />    2 =&gt; 'QUORUM',<br />    3 =&gt; 'DCQUORUM',<br />    4 =&gt; 'DCQUORUMSYNC',<br />    5 =&gt; 'ALL',<br />    6 =&gt; 'ANY',<br />  )</span>			(line <span class="line-number">26</span>)
+			 = <span class="var-default">array(<br />    1 =&gt; 'ONE',<br />    2 =&gt; 'QUORUM',<br />    3 =&gt; 'LOCAL_QUORUM',<br />    4 =&gt; 'EACH_QUORUM',<br />    5 =&gt; 'ALL',<br />    6 =&gt; 'ANY',<br />    7 =&gt; 'TWO',<br />    8 =&gt; 'THREE',<br />  )</span>			(line <span class="line-number">30</span>)
 		</span>
 	</div>
 
@@ -132,7 +142,6 @@
 		
 
 </div>
-
 						
 		</div>
 	</div>
@@ -150,14 +159,14 @@
 												</div>
 		<div class="info-box-body">
 			<a name="constALL" id="ALL"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">ALL</span>
 			 = <span class="const-default"> 5</span>
-			(line <span class="line-number">24</span>)
+			(line <span class="line-number">26</span>)
 		</span>
 	</div>
 
@@ -166,13 +175,29 @@
 	
 </div>
 <a name="constANY" id="ANY"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">ANY</span>
 			 = <span class="const-default"> 6</span>
+			(line <span class="line-number">27</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constEACH_QUORUM" id="EACH_QUORUM"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">EACH_QUORUM</span>
+			 = <span class="const-default"> 4</span>
 			(line <span class="line-number">25</span>)
 		</span>
 	</div>
@@ -181,31 +206,15 @@
 	
 	
 </div>
-<a name="constDCQUORUM" id="DCQUORUM"><!-- --></A>
+<a name="constLOCAL_QUORUM" id="LOCAL_QUORUM"><!-- --></A>
 <div class="oddrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
-			<span class="const-name">DCQUORUM</span>
+			<span class="const-name">LOCAL_QUORUM</span>
 			 = <span class="const-default"> 3</span>
-			(line <span class="line-number">22</span>)
-		</span>
-	</div>
-
-	<!-- ========== Info from phpDoc block ========= -->
-	
-	
-</div>
-<a name="constDCQUORUMSYNC" id="DCQUORUMSYNC"><!-- --></A>
-<div class="evenrow">
-
-	<div class="const-header">
-		<img src="../media/images/Variable.png" />
-		<span class="const-title">
-			<span class="const-name">DCQUORUMSYNC</span>
-			 = <span class="const-default"> 4</span>
-			(line <span class="line-number">23</span>)
+			(line <span class="line-number">24</span>)
 		</span>
 	</div>
 
@@ -214,14 +223,14 @@
 	
 </div>
 <a name="constONE" id="ONE"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">ONE</span>
 			 = <span class="const-default"> 1</span>
-			(line <span class="line-number">20</span>)
+			(line <span class="line-number">22</span>)
 		</span>
 	</div>
 
@@ -230,14 +239,46 @@
 	
 </div>
 <a name="constQUORUM" id="QUORUM"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">QUORUM</span>
 			 = <span class="const-default"> 2</span>
-			(line <span class="line-number">21</span>)
+			(line <span class="line-number">23</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constTHREE" id="THREE"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">THREE</span>
+			 = <span class="const-default"> 8</span>
+			(line <span class="line-number">29</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constTWO" id="TWO"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">TWO</span>
+			 = <span class="const-default"> 7</span>
+			(line <span class="line-number">28</span>)
 		</span>
 	</div>
 
@@ -250,7 +291,7 @@
 	</div>
 
 	<p class="notes" id="credit">
-		Documentation generated on Tue, 19 Oct 2010 18:05:40 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 06 Apr 2011 19:03:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

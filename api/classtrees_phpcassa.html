@@ -17,49 +17,9 @@
 <ul>
 <li><a href="phpcassa/columnfamily/CassandraUtil.html">CassandraUtil</a></li></ul>
 
-<h2>Root class cassandra_AuthenticationRequest</h2>
-<ul>
-<li><a href="phpcassa/cassandra_AuthenticationRequest.html">cassandra_AuthenticationRequest</a></li></ul>
-
-<h2>Root class cassandra_CfDef</h2>
-<ul>
-<li><a href="phpcassa/cassandra_CfDef.html">cassandra_CfDef</a></li></ul>
-
-<h2>Root class cassandra_Column</h2>
-<ul>
-<li><a href="phpcassa/cassandra_Column.html">cassandra_Column</a></li></ul>
-
-<h2>Root class cassandra_ColumnDef</h2>
-<ul>
-<li><a href="phpcassa/cassandra_ColumnDef.html">cassandra_ColumnDef</a></li></ul>
-
-<h2>Root class cassandra_ColumnOrSuperColumn</h2>
-<ul>
-<li><a href="phpcassa/cassandra_ColumnOrSuperColumn.html">cassandra_ColumnOrSuperColumn</a></li></ul>
-
-<h2>Root class cassandra_ColumnParent</h2>
-<ul>
-<li><a href="phpcassa/cassandra_ColumnParent.html">cassandra_ColumnParent</a></li></ul>
-
-<h2>Root class cassandra_ColumnPath</h2>
-<ul>
-<li><a href="phpcassa/cassandra_ColumnPath.html">cassandra_ColumnPath</a></li></ul>
-
 <h2>Root class cassandra_ConsistencyLevel</h2>
 <ul>
 <li><a href="phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></li></ul>
-
-<h2>Root class cassandra_Deletion</h2>
-<ul>
-<li><a href="phpcassa/cassandra_Deletion.html">cassandra_Deletion</a></li></ul>
-
-<h2>Root class cassandra_IndexClause</h2>
-<ul>
-<li><a href="phpcassa/cassandra_IndexClause.html">cassandra_IndexClause</a></li></ul>
-
-<h2>Root class cassandra_IndexExpression</h2>
-<ul>
-<li><a href="phpcassa/cassandra_IndexExpression.html">cassandra_IndexExpression</a></li></ul>
 
 <h2>Root class cassandra_IndexOperator</h2>
 <ul>
@@ -69,53 +29,25 @@
 <ul>
 <li><a href="phpcassa/cassandra_IndexType.html">cassandra_IndexType</a></li></ul>
 
-<h2>Root class cassandra_KeyCount</h2>
-<ul>
-<li><a href="phpcassa/cassandra_KeyCount.html">cassandra_KeyCount</a></li></ul>
-
-<h2>Root class cassandra_KeyRange</h2>
-<ul>
-<li><a href="phpcassa/cassandra_KeyRange.html">cassandra_KeyRange</a></li></ul>
-
-<h2>Root class cassandra_KeySlice</h2>
-<ul>
-<li><a href="phpcassa/cassandra_KeySlice.html">cassandra_KeySlice</a></li></ul>
-
-<h2>Root class cassandra_KsDef</h2>
-<ul>
-<li><a href="phpcassa/cassandra_KsDef.html">cassandra_KsDef</a></li></ul>
-
-<h2>Root class cassandra_Mutation</h2>
-<ul>
-<li><a href="phpcassa/cassandra_Mutation.html">cassandra_Mutation</a></li></ul>
-
-<h2>Root class cassandra_SlicePredicate</h2>
-<ul>
-<li><a href="phpcassa/cassandra_SlicePredicate.html">cassandra_SlicePredicate</a></li></ul>
-
-<h2>Root class cassandra_SliceRange</h2>
-<ul>
-<li><a href="phpcassa/cassandra_SliceRange.html">cassandra_SliceRange</a></li></ul>
-
-<h2>Root class cassandra_SuperColumn</h2>
-<ul>
-<li><a href="phpcassa/cassandra_SuperColumn.html">cassandra_SuperColumn</a></li></ul>
-
-<h2>Root class cassandra_TokenRange</h2>
-<ul>
-<li><a href="phpcassa/cassandra_TokenRange.html">cassandra_TokenRange</a></li></ul>
-
 <h2>Root class ColumnFamily</h2>
 <ul>
 <li><a href="phpcassa/columnfamily/ColumnFamily.html">ColumnFamily</a></li></ul>
 
 <h2>Root class ColumnFamilyIterator</h2>
 <ul>
-<li><a href="phpcassa/columnfamily/ColumnFamilyIterator.html">ColumnFamilyIterator</a></li></ul>
+<li><a href="phpcassa/ColumnFamilyIterator.html">ColumnFamilyIterator</a> (implements )<ul>
+<li><a href="phpcassa/columnfamily/IndexedColumnFamilyIterator.html">IndexedColumnFamilyIterator</a></li><li><a href="phpcassa/columnfamily/RangeColumnFamilyIterator.html">RangeColumnFamilyIterator</a></li></ul></li>
+</ul>
 
-<h2>Root class Connection</h2>
+<h2>Root class ConnectionPool</h2>
 <ul>
-<li><a href="phpcassa/connection/Connection.html">Connection</a></li></ul>
+<li><a href="phpcassa/connection/ConnectionPool.html">ConnectionPool</a><ul>
+<li><a href="phpcassa/connection/Connection.html">Connection</a></li></ul></li>
+</ul>
+
+<h2>Root class ConnectionWrapper</h2>
+<ul>
+<li><a href="phpcassa/connection/ConnectionWrapper.html">ConnectionWrapper</a></li></ul>
 
 <h2>Root class UUID</h2>
 <ul>
@@ -123,14 +55,18 @@
 
 <h2>Root class Exception</h2>
 <ul>
-<li><a href="phpcassa/connection/NoServerAvailable.html">NoServerAvailable</a></li><li><a href="phpcassa/uuid/UUIDException.html">UUIDException</a></li></ul>
+<li><a href="phpcassa/connection/IncompatibleAPIException.html">IncompatibleAPIException</a></li><li><a href="phpcassa/connection/MaxRetriesException.html">MaxRetriesException</a></li><li><a href="phpcassa/connection/NoServerAvailable.html">NoServerAvailable</a></li><li><a href="phpcassa/uuid/UUIDException.html">UUIDException</a></li></ul>
+
+<h2>Root class TBase</h2>
+<ul>
+<li><a href="phpcassa/cassandra_AuthenticationRequest.html">cassandra_AuthenticationRequest</a></li><li><a href="phpcassa/cassandra_CfDef.html">cassandra_CfDef</a></li><li><a href="phpcassa/cassandra_Column.html">cassandra_Column</a></li><li><a href="phpcassa/cassandra_ColumnDef.html">cassandra_ColumnDef</a></li><li><a href="phpcassa/cassandra_ColumnOrSuperColumn.html">cassandra_ColumnOrSuperColumn</a></li><li><a href="phpcassa/cassandra_ColumnParent.html">cassandra_ColumnParent</a></li><li><a href="phpcassa/cassandra_ColumnPath.html">cassandra_ColumnPath</a></li><li><a href="phpcassa/cassandra_Deletion.html">cassandra_Deletion</a></li><li><a href="phpcassa/cassandra_IndexClause.html">cassandra_IndexClause</a></li><li><a href="phpcassa/cassandra_IndexExpression.html">cassandra_IndexExpression</a></li><li><a href="phpcassa/cassandra_KeyCount.html">cassandra_KeyCount</a></li><li><a href="phpcassa/cassandra_KeyRange.html">cassandra_KeyRange</a></li><li><a href="phpcassa/cassandra_KeySlice.html">cassandra_KeySlice</a></li><li><a href="phpcassa/cassandra_KsDef.html">cassandra_KsDef</a></li><li><a href="phpcassa/cassandra_Mutation.html">cassandra_Mutation</a></li><li><a href="phpcassa/cassandra_SlicePredicate.html">cassandra_SlicePredicate</a></li><li><a href="phpcassa/cassandra_SliceRange.html">cassandra_SliceRange</a></li><li><a href="phpcassa/cassandra_SuperColumn.html">cassandra_SuperColumn</a></li><li><a href="phpcassa/cassandra_TokenRange.html">cassandra_TokenRange</a></li></ul>
 
 <h2>Root class TException</h2>
 <ul>
 <li><a href="phpcassa/cassandra_AuthenticationException.html">cassandra_AuthenticationException</a></li><li><a href="phpcassa/cassandra_AuthorizationException.html">cassandra_AuthorizationException</a></li><li><a href="phpcassa/cassandra_InvalidRequestException.html">cassandra_InvalidRequestException</a></li><li><a href="phpcassa/cassandra_NotFoundException.html">cassandra_NotFoundException</a></li><li><a href="phpcassa/cassandra_TimedOutException.html">cassandra_TimedOutException</a></li><li><a href="phpcassa/cassandra_UnavailableException.html">cassandra_UnavailableException</a></li></ul>
 
 	<p class="notes" id="credit">
-		Documentation generated on Tue, 19 Oct 2010 18:05:40 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 06 Apr 2011 19:03:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</body>
 </html>

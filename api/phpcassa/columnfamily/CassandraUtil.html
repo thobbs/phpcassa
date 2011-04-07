@@ -43,37 +43,48 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-										
-				<div class="method-definition">
+												<div class="method-definition">
+					static 						<span class="method-result"><a href="../../phpcassa/cassandra_IndexClause.html">cassandra_IndexClause</a></span>
+										<a href="#create_index_clause" title="details" class="method-name">create_index_clause</a>
+											(<span class="var-type">cassandra_IndexExpression[]</span>&nbsp;<span class="var-name">$expr_list</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$start_key</span> = <span class="var-default">''</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$count</span> = <span class="var-default">ColumnFamily::DEFAULT_COLUMN_COUNT</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result"><a href="../../phpcassa/cassandra_IndexExpression.html">cassandra_IndexExpression</a></span>
+										<a href="#create_index_expression" title="details" class="method-name">create_index_expression</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$column_name</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$value</span>, [<span class="var-type">classandra_IndexOperator</span>&nbsp;<span class="var-name">$op</span> = <span class="var-default">cassandra_IndexOperator::EQ</span>])
+									</div>
+																<div class="method-definition">
 					static 						<span class="method-result">void</span>
 										<a href="#get_time" title="details" class="method-name">get_time</a>
 										()
 									</div>
-														
-				<div class="method-definition">
+																<div class="method-definition">
+					static 						<span class="method-result">a</span>
+										<a href="#import" title="details" class="method-name">import</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$bytes</span>)
+									</div>
+																<div class="method-definition">
 					static 						<span class="method-result">string</span>
 										<a href="#uuid1" title="details" class="method-name">uuid1</a>
-											([<span class="var-type"></span>&nbsp;<span class="var-name">$node</span> = <span class="var-default">null</span>])
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$node</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$time</span> = <span class="var-default">null</span>])
 									</div>
-														
-				<div class="method-definition">
+																<div class="method-definition">
 					static 						<span class="method-result">string</span>
 										<a href="#uuid3" title="details" class="method-name">uuid3</a>
-											([<span class="var-type"></span>&nbsp;<span class="var-name">$null</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">null</span>])
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$node</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">null</span>])
 									</div>
-														
-				<div class="method-definition">
+																<div class="method-definition">
 					static 						<span class="method-result">string</span>
 										<a href="#uuid4" title="details" class="method-name">uuid4</a>
 										()
 									</div>
-														
-				<div class="method-definition">
+																<div class="method-definition">
 					static 						<span class="method-result">string</span>
 										<a href="#uuid5" title="details" class="method-name">uuid5</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$node</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">null</span>])
 									</div>
-																																																							</div>
+								
+																																																																				</div>
 		</div>
 	</div>		
 
@@ -88,11 +99,83 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
-<a name="methodget_time" id="get_time"><!-- --></a>
+<a name="methodcreate_index_clause" id="create_index_clause"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method create_index_clause</span> (line <span class="line-number">101</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constructs a cassandra_IndexClause for use with get_indexed_slices().</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result"><a href="../../phpcassa/cassandra_IndexClause.html">cassandra_IndexClause</a></span>
+		<span class="method-name">
+			create_index_clause
+		</span>
+					(<span class="var-type">cassandra_IndexExpression[]</span>&nbsp;<span class="var-name">$expr_list</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$start_key</span> = <span class="var-default">''</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$count</span> = <span class="var-default">ColumnFamily::DEFAULT_COLUMN_COUNT</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">cassandra_IndexExpression[]</span>
+				<span class="var-name">$expr_list</span><span class="var-description">: the list of expressions to match; at         least one of these must be on an indexed column</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$start_key</span><span class="var-description">: the key to begin searching from</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$count</span><span class="var-description">: the number of results to return</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreate_index_expression" id="create_index_expression"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static get_time</span> (line <span class="line-number">50</span>)
+		<span class="method-title">static method create_index_expression</span> (line <span class="line-number">84</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constructs an IndexExpression to be used in an IndexClause, which can  be used with get_indexed_slices().</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result"><a href="../../phpcassa/cassandra_IndexExpression.html">cassandra_IndexExpression</a></span>
+		<span class="method-name">
+			create_index_expression
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$column_name</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$value</span>, [<span class="var-type">classandra_IndexOperator</span>&nbsp;<span class="var-name">$op</span> = <span class="var-default">cassandra_IndexOperator::EQ</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$column_name</span><span class="var-description">: the name of the column this expression will apply to;         this column may or may not be indexed</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$value</span><span class="var-description">: the value that will be compared to column values using op</span>			</li>
+					<li>
+				<span class="var-type">classandra_IndexOperator</span>
+				<span class="var-name">$op</span><span class="var-description">: the binary operator to apply to column values         and the 'value' parameter.  Defaults to testing for equality.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodget_time" id="get_time"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method get_time</span> (line <span class="line-number">64</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -102,7 +185,8 @@
 			</ul>
 	
 	<div class="method-signature">
-		static <span class="method-result">void</span>
+	    static
+		<span class="method-result">void</span>
 		<span class="method-name">
 			get_time
 		</span>
@@ -112,11 +196,42 @@
 		
 			
 	</div>
+<a name="methodimport" id="import"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method import</span> (line <span class="line-number">17</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates a UUID object from a byte representation.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> UUID object</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">a</span>
+		<span class="method-name">
+			import
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$bytes</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$bytes</span><span class="var-description">: the byte representation of a UUID, which is         what is returned from functions like uuid1()</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methoduuid1" id="uuid1"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static uuid1</span> (line <span class="line-number">15</span>)
+		<span class="method-title">static method uuid1</span> (line <span class="line-number">29</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -127,17 +242,21 @@
 			</ul>
 	
 	<div class="method-signature">
-		static <span class="method-result">string</span>
+	    static
+		<span class="method-result">string</span>
 		<span class="method-name">
 			uuid1
 		</span>
-					([<span class="var-type"></span>&nbsp;<span class="var-name">$node</span> = <span class="var-default">null</span>])
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$node</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$time</span> = <span class="var-default">null</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$node</span>			</li>
+				<span class="var-type">string</span>
+				<span class="var-name">$node</span><span class="var-description">: what to use for the MAC portion of the UUID.  This will be generated         randomly if left as NULL</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$time</span><span class="var-description">: timestamp to use for the UUID.  This should be a number of microseconds         since the UNIX epoch.</span>			</li>
 				</ul>
 		
 			
@@ -146,7 +265,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static uuid3</span> (line <span class="line-number">24</span>)
+		<span class="method-title">static method uuid3</span> (line <span class="line-number">38</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -157,17 +276,18 @@
 			</ul>
 	
 	<div class="method-signature">
-		static <span class="method-result">string</span>
+	    static
+		<span class="method-result">string</span>
 		<span class="method-name">
 			uuid3
 		</span>
-					([<span class="var-type"></span>&nbsp;<span class="var-name">$null</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">null</span>])
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$node</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">null</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$null</span>			</li>
+				<span class="var-name">$node</span>			</li>
 					<li>
 				<span class="var-type"></span>
 				<span class="var-name">$namespace</span>			</li>
@@ -179,7 +299,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static uuid4</span> (line <span class="line-number">33</span>)
+		<span class="method-title">static method uuid4</span> (line <span class="line-number">47</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -190,7 +310,8 @@
 			</ul>
 	
 	<div class="method-signature">
-		static <span class="method-result">string</span>
+	    static
+		<span class="method-result">string</span>
 		<span class="method-name">
 			uuid4
 		</span>
@@ -204,7 +325,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static uuid5</span> (line <span class="line-number">42</span>)
+		<span class="method-title">static method uuid5</span> (line <span class="line-number">56</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -215,7 +336,8 @@
 			</ul>
 	
 	<div class="method-signature">
-		static <span class="method-result">string</span>
+	    static
+		<span class="method-result">string</span>
 		<span class="method-name">
 			uuid5
 		</span>
@@ -233,13 +355,14 @@
 		
 			
 	</div>
+
 						
 		</div>
 	</div>
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Tue, 19 Oct 2010 18:05:41 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 06 Apr 2011 19:03:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
