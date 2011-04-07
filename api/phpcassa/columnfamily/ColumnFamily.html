@@ -862,6 +862,8 @@
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Mark the entire column family as deleted.</p>
+<p class="description"><p>From the user's perspective a successful call to truncate will result  complete data deletion from cfname. Internally, however, disk space  will not be immediatily released, as with all deletes in cassandra,  this one only marks the data as deleted.</p><p>The operation succeeds only if all hosts in the cluster at available  and will throw an UnavailableException if some hosts are down.</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -1015,7 +1017,7 @@
 	</div>
 
 	<p class="notes" id="credit">
-		Documentation generated on Wed, 06 Apr 2011 19:03:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 06 Apr 2011 19:12:41 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
