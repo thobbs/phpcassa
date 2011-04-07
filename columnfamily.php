@@ -600,7 +600,7 @@ class ColumnFamily {
         return $this->pool->call("batch_mutate", $mut_map, $this->wcl($write_consistency_level));
     }
 
-    /*
+    /**
      * Mark the entire column family as deleted.
      *
      * From the user's perspective a successful call to truncate will result
