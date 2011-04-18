@@ -21,7 +21,7 @@ Opening Connections
 
 or
 
-    $pool = new ConnectionPool('Keyspace1', array('localhost');
+    $pool = new ConnectionPool('Keyspace1', array('localhost'));
 
 Create a column family object
 -----------------------------
