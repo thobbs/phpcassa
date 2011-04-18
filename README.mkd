@@ -17,19 +17,17 @@ thorough documentation can be found here:
 Opening Connections
 -------------------
 
-    $conn = new Connection('Keyspace1');
+    $pool = new ConnectionPool('Keyspace1');
 
 or
 
-    $servers[0]['host'] = '127.0.0.1';
-    $servers[0]['port'] = '9160';
-    $conn = new Connection('Keyspace1', $servers);
+    $pool = new ConnectionPool('Keyspace1', array('localhost');
 
 Create a column family object
 -----------------------------
 
-    $users = new ColumnFamily($conn, 'Standard1'); // ColumnFamily
-    $super = new ColumnFamily($conn, 'Super1'); // SuperColumnFamily
+    $users = new ColumnFamily($pool, 'Standard1'); // ColumnFamily
+    $super = new ColumnFamily($pool, 'Super1'); // SuperColumnFamily
 
 Inserting
 ---------
