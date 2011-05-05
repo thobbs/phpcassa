@@ -35,18 +35,22 @@ and import the included schema to start out:
 Making a Connection
 -------------------
 The first step when working with **phpcassa** is to create a
-`Connection <api/phpcassa/connection/Connection>`_ to the running cassandra instance:
+`ConnectionPool <api/phpcassa/connection/ConnectionPool>`_ which
+will connect to the Cassandra instance(s):
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace');
+  $pool = new ConnectionPool("Keyspace");
 
 The above code will connect on the default host and port. We can also
-specify the host and port explicitly, as follows:
+specify a list of 'host:port' combinations like this:
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace1', array(array('host' => localhost, 'port' => 9160)));
+  $servers = array("192.168.2.1:9160", "192.168.2.2:9160");
+  $pool = new ConnectionPool("Keyspace1", $servers);
+
+If omitted, the port defaults to 9160.
 
 Getting a ColumnFamily
 ----------------------
@@ -57,7 +61,7 @@ were already included in the schema file:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Standard1');
+  $column_family = new ColumnFamily($pool, 'Standard1');
 
 Inserting Data
 --------------
@@ -74,15 +78,13 @@ We can also insert more than one column at a time:
 
   $column_family->insert('row_key', array('name1' => 'val1', 'name2' => 'val2'));
 
-.. todo: batch_insert
+And we can insert more than one row at a time:
 
-.. And we can insert more than one row at a time:
+.. code-block:: php
 
-.. .. code-block:: php
-
-..   $column_family.batch_insert({'row1': {'name1':'val1', 'name2':'val2'},
-..   ...                       'row2': {'foo':'bar'})
-..   1354491238721387
+  $row1 = array('name1' => 'val1', 'name2' => 'val2');
+  $row2 = array('foo' => 'bar');
+  $column_family->batch_insert(array('row1' => $row1, 'row2' => $row2);
 
 Getting Data
 ------------
@@ -152,6 +154,25 @@ and
 just like we did for
 `ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
 
+Removing Data
+-------------
+You may remove data from a column family with
+`ColumnFamily::remove() <api/phpcassa/columnfamily/ColumnFamily#remove>`_.
+
+You can remove an entire row at once:
+
+.. code-block:: php
+
+  $column_family->remove('key');
+
+Or a specific set of columns from a row:
+
+.. code-block:: php
+
+  $column_family->remove('key', array("col1", "col2");
+
+You cannot remove a slice of columns from a row.
+
 Counting
 --------
 If you just want to know how many columns are in a row, you can use
@@ -211,6 +232,7 @@ add an extra level to the array:
   $column_family->insert('row_key', array('supercol_name' => array('col_name' => 'col_val')));
   $column_family->get('row_key');
   // returns: array('supercol_name' => ('col_name' => 'col_val'))
+  $column_family->remove('row_key', NULL, 'supercolumn_name');
 
 Typed Column Names and Values
 -----------------------------

@@ -52,6 +52,7 @@
 <li><a class="reference internal" href="#getting-a-columnfamily">Getting a ColumnFamily</a></li>
 <li><a class="reference internal" href="#inserting-data">Inserting Data</a></li>
 <li><a class="reference internal" href="#getting-data">Getting Data</a></li>
+<li><a class="reference internal" href="#removing-data">Removing Data</a></li>
 <li><a class="reference internal" href="#counting">Counting</a></li>
 <li><a class="reference internal" href="#super-columns">Super Columns</a></li>
 <li><a class="reference internal" href="#typed-column-names-and-values">Typed Column Names and Values</a></li>
@@ -122,15 +123,18 @@ You can start Cassandra like so:</p>
 <div class="section" id="making-a-connection">
 <h2>Making a Connection<a class="headerlink" href="#making-a-connection" title="Permalink to this headline">¶</a></h2>
 <p>The first step when working with <strong>phpcassa</strong> is to create a
-<a class="reference external" href="api/phpcassa/connection/Connection">Connection</a> to the running cassandra instance:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$conn</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">);</span>
+<a class="reference external" href="api/phpcassa/connection/ConnectionPool">ConnectionPool</a> which
+will connect to the Cassandra instance(s):</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$pool</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ConnectionPool</span><span class="p">(</span><span class="s2">&quot;Keyspace&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The above code will connect on the default host and port. We can also
-specify the host and port explicitly, as follows:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$conn</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="s1">&#39;Keyspace1&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="nx">localhost</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="m">9160</span><span class="p">)));</span>
+specify a list of &#8216;host:port&#8217; combinations like this:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$servers</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">&quot;192.168.2.1:9160&quot;</span><span class="p">,</span> <span class="s2">&quot;192.168.2.2:9160&quot;</span><span class="p">);</span>
+<span class="nv">$pool</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ConnectionPool</span><span class="p">(</span><span class="s2">&quot;Keyspace1&quot;</span><span class="p">,</span> <span class="nv">$servers</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>If omitted, the port defaults to 9160.</p>
 </div>
 <div class="section" id="getting-a-columnfamily">
 <h2>Getting a ColumnFamily<a class="headerlink" href="#getting-a-columnfamily" title="Permalink to this headline">¶</a></h2>
@@ -138,7 +142,7 @@ specify the host and port explicitly, as follows:</p>
 and can be thought of as roughly the equivalent of a table in a
 relational database. We&#8217;ll use one of the column families that
 were already included in the schema file:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Standard1&#39;</span><span class="p">);</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$pool</span><span class="p">,</span> <span class="s1">&#39;Standard1&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -151,6 +155,12 @@ were already included in the schema file:</p>
 </div>
 <p>We can also insert more than one column at a time:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name1&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val1&#39;</span><span class="p">,</span> <span class="s1">&#39;name2&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val2&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>And we can insert more than one row at a time:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$row1</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name1&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val1&#39;</span><span class="p">,</span> <span class="s1">&#39;name2&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;val2&#39;</span><span class="p">);</span>
+<span class="nv">$row2</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bar&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">batch_insert</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;row1&#39;</span> <span class="o">=&gt;</span> <span class="nv">$row1</span><span class="p">,</span> <span class="s1">&#39;row2&#39;</span> <span class="o">=&gt;</span> <span class="nv">$row2</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -211,6 +221,20 @@ and
 just like we did for
 <a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get">ColumnFamily::get()</a></p>
 </div>
+<div class="section" id="removing-data">
+<h2>Removing Data<a class="headerlink" href="#removing-data" title="Permalink to this headline">¶</a></h2>
+<p>You may remove data from a column family with
+<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#remove">ColumnFamily::remove()</a>.</p>
+<p>You can remove an entire row at once:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Or a specific set of columns from a row:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s2">&quot;col1&quot;</span><span class="p">,</span> <span class="s2">&quot;col2&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>You cannot remove a slice of columns from a row.</p>
+</div>
 <div class="section" id="counting">
 <h2>Counting<a class="headerlink" href="#counting" title="Permalink to this headline">¶</a></h2>
 <p>If you just want to know how many columns are in a row, you can use
@@ -257,6 +281,7 @@ add an extra level to the array:</p>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;supercol_name&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;col_name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;col_val&#39;</span><span class="p">)));</span>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;supercol_name&#39; =&gt; (&#39;col_name&#39; =&gt; &#39;col_val&#39;))</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="s1">&#39;supercolumn_name&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
