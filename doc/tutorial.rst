@@ -154,6 +154,25 @@ and
 just like we did for
 `ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
 
+Removing Data
+-------------
+You may remove data from a column family with
+`ColumnFamily::remove() <api/phpcassa/columnfamily/ColumnFamily#remove>`_.
+
+You can remove an entire row at once:
+
+.. code-block:: php
+
+  $column_family->remove('key');
+
+Or a specific set of columns from a row:
+
+.. code-block:: php
+
+  $column_family->remove('key', array("col1", "col2");
+
+You cannot remove a slice of columns from a row.
+
 Counting
 --------
 If you just want to know how many columns are in a row, you can use
@@ -213,6 +232,7 @@ add an extra level to the array:
   $column_family->insert('row_key', array('supercol_name' => array('col_name' => 'col_val')));
   $column_family->get('row_key');
   // returns: array('supercol_name' => ('col_name' => 'col_val'))
+  $column_family->remove('row_key', NULL, 'supercolumn_name');
 
 Typed Column Names and Values
 -----------------------------
