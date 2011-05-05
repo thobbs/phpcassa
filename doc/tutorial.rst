@@ -35,18 +35,22 @@ and import the included schema to start out:
 Making a Connection
 -------------------
 The first step when working with **phpcassa** is to create a
-`Connection <api/phpcassa/connection/Connection>`_ to the running cassandra instance:
+`ConnectionPool <api/phpcassa/connection/ConnectionPool>`_ which
+will connect to the Cassandra instance(s):
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace');
+  $pool = new ConnectionPool("Keyspace");
 
 The above code will connect on the default host and port. We can also
-specify the host and port explicitly, as follows:
+specify a list of 'host:port' combinations like this:
 
 .. code-block:: php
 
-  $conn = new Connection('Keyspace1', array(array('host' => localhost, 'port' => 9160)));
+  $servers = array("192.168.2.1:9160", "192.168.2.2:9160");
+  $pool = new ConnectionPool("Keyspace1", $servers);
+
+If omitted, the port defaults to 9160.
 
 Getting a ColumnFamily
 ----------------------
@@ -57,7 +61,7 @@ were already included in the schema file:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Standard1');
+  $column_family = new ColumnFamily($pool, 'Standard1');
 
 Inserting Data
 --------------
