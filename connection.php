@@ -308,6 +308,9 @@ class ConnectionPool {
                 $resp = call_user_func_array(array($conn->client, $f), $args);
                 $this->return_connection($conn);
                 return $resp;
+            } catch (cassandra_NotFoundException $nfe) {
+                $this->return_connection($conn);
+                throw $nfe;
             } catch (cassandra_TimedOutException $toe) {
                 $last_err = $toe;
                 $this->handle_conn_failure($conn, $f, $toe, $retry_count);
@@ -317,6 +320,9 @@ class ConnectionPool {
             } catch (TTransportException $tte) {
                 $last_err = $tte;
                 $this->handle_conn_failure($conn, $f, $tte, $retry_count);
+            } catch (Exception $e) {
+                $this->handle_conn_failure($conn, $f, $e, $retry_count);
+                throw $e;
             }
         }
         throw new MaxRetriesException("An attempt to execute $f failed $tries times.".
