@@ -17,7 +17,7 @@ Contents
   The **phpcassa** API documentation.
 
 :doc:`troubleshooting`
-  Troubleshooting connection and other problems.
+  Troubleshooting connections and other problems.
 
 
 Help
