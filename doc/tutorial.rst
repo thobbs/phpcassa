@@ -78,15 +78,13 @@ We can also insert more than one column at a time:
 
   $column_family->insert('row_key', array('name1' => 'val1', 'name2' => 'val2'));
 
-.. todo: batch_insert
+And we can insert more than one row at a time:
 
-.. And we can insert more than one row at a time:
+.. code-block:: php
 
-.. .. code-block:: php
-
-..   $column_family.batch_insert({'row1': {'name1':'val1', 'name2':'val2'},
-..   ...                       'row2': {'foo':'bar'})
-..   1354491238721387
+  $row1 = array('name1' => 'val1', 'name2' => 'val2');
+  $row2 = array('foo' => 'bar');
+  $column_family->batch_insert(array('row1' => $row1, 'row2' => $row2);
 
 Getting Data
 ------------
