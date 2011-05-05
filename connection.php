@@ -286,6 +286,21 @@ class ConnectionPool {
      * Performs a Thrift operation using a connection from the pool.
      * The first argument should be the name of the function. The following
      * arguments should be the arguments for that Thrift function.
+     *
+     * If the connect fails with any exception other than a NotFoundException,
+     * the connection will be closed and replaced in the pool. If the
+     * Exception is suitable for retrying the operation (TimedOutException,
+     * UnavailableException, TTransportException), the operation will be
+     * retried with a new connection after an exponentially increasing
+     * backoff is performed.
+     *
+     * To avoid automatic retries, create a ConnectionPool with the
+     * $max_retries argument set to 0.
+     *
+     * In general, this method should *not* be used by users of the
+     * library. It is primarily intended for internal use, but is left
+     * exposed as an open workaround if needed.
+     *
      * @return mixed
      */
     public function call() {
