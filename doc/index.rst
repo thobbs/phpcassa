@@ -22,11 +22,16 @@ Contents
 
 Help
 ------------
-Mailing List
-  * Mail to `phpcassa@googlegroups.com <mailto:phpcassa@googlegroups.com>`_ or `view online <http://groups.google.com/group/phpcassa>`_.
+**Mailing List**
 
-IRC
-  * Use #cassandra on `irc.freenode.net <http://freenode.net>`_.  If you don't have an IRC client, you can use `freenode's web based client <http://webchat.freenode.net/?channels=#cassandra>`_.
+* Mail to `phpcassa@googlegroups.com <mailto:phpcassa@googlegroups.com>`_ or
+  `view online <http://groups.google.com/group/phpcassa>`_.
+
+**IRC**
+
+* Use the #cassandra channel on `irc.freenode.net <http://freenode.net>`_.
+  If you don't have an IRC client, you can use
+  `freenode's web based client <http://webchat.freenode.net/?channels=#cassandra>`_.
 
 Issues
 ------
