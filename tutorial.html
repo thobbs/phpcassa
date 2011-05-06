@@ -48,6 +48,7 @@
   <ul>
 <li><a class="reference internal" href="#">Tutorial</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#creating-a-keyspace-and-column-families">Creating a Keyspace and Column Families</a></li>
 <li><a class="reference internal" href="#making-a-connection">Making a Connection</a></li>
 <li><a class="reference internal" href="#getting-a-columnfamily">Getting a ColumnFamily</a></li>
 <li><a class="reference internal" href="#inserting-data">Inserting Data</a></li>
@@ -115,10 +116,36 @@ You can start Cassandra like so:</p>
 <span class="nv">$ </span>bin/cassandra -f
 </pre></div>
 </div>
-<p>and import the included schema to start out:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>bin/schematool localhost 8080 import
+</div>
+<div class="section" id="creating-a-keyspace-and-column-families">
+<h2>Creating a Keyspace and Column Families<a class="headerlink" href="#creating-a-keyspace-and-column-families" title="Permalink to this headline">¶</a></h2>
+<p>We need to create a keyspace and some column families to work with.</p>
+<p>The cassandra-cli utility is included with Cassandra; it allows you to create
+and modify the schema, explore or modify data, and examine a few things about
+your cluster.  Here&#8217;s how to create the keyspace and column family we need
+for this tutorial:</p>
+<div class="highlight-none"><div class="highlight"><pre>user@~ $ cassandra-cli
+Welcome to cassandra CLI.
+
+Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
+[default@unknown] connect localhost/9160;
+Connected to: &quot;Test Cluster&quot; on localhost/9160
+[default@unknown] create keyspace Keyspace1;
+4f9e42c4-645e-11e0-ad9e-e700f669bcfc
+Waiting for schema agreement...
+... schemas agree across the cluster
+[default@unknown] use Keyspace1;
+Authenticated to keyspace: Keyspace1
+[default@Keyspace1] create column family ColumnFamily1;
+632cf985-645e-11e0-ad9e-e700f669bcfc
+Waiting for schema agreement...
+... schemas agree across the cluster
+[default@Keyspace1] quit;
+user@~ $
 </pre></div>
 </div>
+<p>This connects to a local instance of Cassandra and creates a keyspace
+named &#8216;Keyspace1&#8217; with a column family named &#8216;ColumnFamily1&#8217;.</p>
 </div>
 <div class="section" id="making-a-connection">
 <h2>Making a Connection<a class="headerlink" href="#making-a-connection" title="Permalink to this headline">¶</a></h2>
@@ -142,7 +169,7 @@ specify a list of &#8216;host:port&#8217; combinations like this:</p>
 and can be thought of as roughly the equivalent of a table in a
 relational database. We&#8217;ll use one of the column families that
 were already included in the schema file:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$pool</span><span class="p">,</span> <span class="s1">&#39;Standard1&#39;</span><span class="p">);</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$pool</span><span class="p">,</span> <span class="s1">&#39;ColumnFamily1&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -270,10 +297,12 @@ of a slice or have particular names, you can do that as well:</p>
 </div>
 <div class="section" id="super-columns">
 <h2>Super Columns<a class="headerlink" href="#super-columns" title="Permalink to this headline">¶</a></h2>
-<p>Cassandra allows you to group columns in &#8220;super columns&#8221;. In a
-<tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt> file, this looks like this:</p>
-<div class="highlight-python"><pre>- name: Super1
-  column_type: Super</pre>
+<p>Cassandra allows you to group columns in &#8220;super columns&#8221; when using
+super column families.  You can create a super column family using
+cassandra-cli like this:</p>
+<div class="highlight-none"><div class="highlight"><pre>[default@Keyspace1] create column family Super1 with column_type=Super;
+632cf985-645e-11e0-ad9e-e700f669bcfc
+</pre></div>
 </div>
 <p>To use a super column in <strong>phpcassa</strong>, you only need to
 add an extra level to the array:</p>
@@ -354,7 +383,7 @@ for individual columns, or both.  Here&#8217;s another example <tt class="docuti
 <p>Of course, if <strong>phpcassa</strong>&#8216;s automatic behavior isn&#8217;t working for you, you
 can turn it off when you create the
 <a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily">ColumnFamily</a>:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Standard1&#39;</span><span class="p">,</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;ColumnFamily1&#39;</span><span class="p">,</span>
                                   <span class="nv">$autopack_names</span><span class="o">=</span><span class="k">False</span><span class="p">,</span>
                                   <span class="nv">$autopack_values</span><span class="o">=</span><span class="k">False</span><span class="p">);</span>
 </pre></div>
