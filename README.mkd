@@ -6,6 +6,8 @@ phpcassa is a PHP client library for [Apache Cassandra](http://cassandra.apache.
 * Port of [pycassa](http://github.com/pycassa/pycassa)
 * Support for TBinaryProtocolAccelerated (uses a C extension)
 
+phpcassa is open source under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
+
 Documentation
 -------------
 
