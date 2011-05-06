@@ -26,11 +26,38 @@ You can start Cassandra like so:
   ~/cassandra
   $ bin/cassandra -f
 
-and import the included schema to start out:
+Creating a Keyspace and Column Families
+---------------------------------------
+We need to create a keyspace and some column families to work with.
 
-.. code-block:: bash
+The cassandra-cli utility is included with Cassandra; it allows you to create
+and modify the schema, explore or modify data, and examine a few things about
+your cluster.  Here's how to create the keyspace and column family we need
+for this tutorial:
 
-  $ bin/schematool localhost 8080 import
+.. code-block:: none
+
+    user@~ $ cassandra-cli 
+    Welcome to cassandra CLI.
+
+    Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
+    [default@unknown] connect localhost/9160;
+    Connected to: "Test Cluster" on localhost/9160
+    [default@unknown] create keyspace Keyspace1;
+    4f9e42c4-645e-11e0-ad9e-e700f669bcfc
+    Waiting for schema agreement...
+    ... schemas agree across the cluster
+    [default@unknown] use Keyspace1;
+    Authenticated to keyspace: Keyspace1
+    [default@Keyspace1] create column family ColumnFamily1;
+    632cf985-645e-11e0-ad9e-e700f669bcfc
+    Waiting for schema agreement...
+    ... schemas agree across the cluster
+    [default@Keyspace1] quit;
+    user@~ $
+
+This connects to a local instance of Cassandra and creates a keyspace
+named 'Keyspace1' with a column family named 'ColumnFamily1'.
 
 Making a Connection
 -------------------
@@ -61,7 +88,7 @@ were already included in the schema file:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($pool, 'Standard1');
+  $column_family = new ColumnFamily($pool, 'ColumnFamily1');
 
 Inserting Data
 --------------
@@ -215,13 +242,14 @@ You can also do this in parallel for multiple rows using
 
 Super Columns
 -------------
-Cassandra allows you to group columns in "super columns". In a
-``cassandra.yaml`` file, this looks like this:
+Cassandra allows you to group columns in "super columns" when using
+super column families.  You can create a super column family using
+cassandra-cli like this:
 
-::
+.. code-block:: none
 
-  - name: Super1
-    column_type: Super 
+    [default@Keyspace1] create column family Super1 with column_type=Super;
+    632cf985-645e-11e0-ad9e-e700f669bcfc
 
 To use a super column in **phpcassa**, you only need to
 add an extra level to the array:
@@ -318,7 +346,7 @@ can turn it off when you create the
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Standard1',
+  $column_family = new ColumnFamily($conn, 'ColumnFamily1',
                                     $autopack_names=False,
                                     $autopack_values=False);
 
