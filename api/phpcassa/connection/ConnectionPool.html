@@ -253,12 +253,12 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">call</span> (line <span class="line-number">291</span>)
+		<span class="method-title">call</span> (line <span class="line-number">306</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Performs a Thrift operation using a connection from the pool.</p>
-<p class="description"><p>The first argument should be the name of the function. The following  arguments should be the arguments for that Thrift function.</p></p>
+<p class="description"><p>The first argument should be the name of the function. The following  arguments should be the arguments for that Thrift function.</p><p>If the connect fails with any exception other than a NotFoundException,  the connection will be closed and replaced in the pool. If the  Exception is suitable for retrying the operation (TimedOutException,  UnavailableException, TTransportException), the operation will be  retried with a new connection after an exponentially increasing  backoff is performed.</p><p>To avoid automatic retries, create a ConnectionPool with the  $max_retries argument set to 0.</p><p>In general, this method should *not* be used by users of the  library. It is primarily intended for internal use, but is left  exposed as an open workaround if needed.</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -589,7 +589,7 @@
 	</div>
 
 	<p class="notes" id="credit">
-		Documentation generated on Wed, 06 Apr 2011 19:12:42 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Thu, 05 May 2011 19:18:53 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
