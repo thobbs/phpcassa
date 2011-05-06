@@ -184,15 +184,7 @@ class ConnectionPool {
         $this->queue = array();
 
         // Randomly permute the server list
-        $n = count($servers);
-        if ($n > 1) {
-            foreach (range(0, $n - 1) as $i) {
-                $j = rand($i, $n - 1);
-                $temp = $servers[$j];
-                $servers[$j] = $servers[$i];
-                $servers[$i] = $temp;
-            }
-        }
+        shuffle($this->servers);
         $this->list_position = 0;
 
         foreach(range(0, $this->pool_size - 1) as $i)
