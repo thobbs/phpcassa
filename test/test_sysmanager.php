@@ -79,8 +79,9 @@ class TestSystemManager extends UnitTestCase {
 
         $cfdef = $this->get_cfdef($ksname, $cfname);
         self::assertEqual($cfdef->comment, 'this is a comment');
-        $cfdef->comment = 'this is a new comment';
-        $this->sys->alter_column_family($cfdef);
+
+        $attrs = array("comment" => "this is a new comment");
+        $this->sys->alter_column_family($ksname, $cfname, $attrs);
         $cfdef = $this->get_cfdef($ksname, $cfname);
         self::assertEqual($cfdef->comment, 'this is a new comment');
 

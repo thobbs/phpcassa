@@ -120,16 +120,105 @@ class SystemManager {
         $this->wait_for_agreement();
     }
 
-    /*
+    private function get_cfdef($ksname, $cfname) {
+        $ksdef = $this->client->describe_keyspace($ksname);
+        $cfdefs = $ksdef->cf_defs;
+        foreach($cfdefs as $cfdef) {
+            if ($cfdef->name == $cfname)
+                return $cfdef;
+        }
+        return;
+    }
+
+    /**
      * Modifies a column family's attributes.
      *
-     * You should build the CfDef by fetching the current
-     * one with describe_keyspace() and changing its attributes
-     * as necessary.
+     * Example usage:
+     * <code>
+     * $sys = SystemManager();
+     * $attrs = array("max_compaction_threshold" => 10);
+     * $sys->alter_column_family("Keyspace1", "ColumnFamily1", $attrs);
+     * </code>
      *
-     * @param cassandra_CfDef $cfdef the CF definition
+     * @param string $keyspace the keyspace containing the column family
+     * @param string $column_family the name of the column family
+     * @param array $attrs an array that maps attribute
+     *        names to values. Valid attribute names include:
+     *           "comparator_type",
+     *           "subcomparator_type",
+     *           "comment",
+     *           "row_cache_size",
+     *           "key_cache_size",
+     *           "read_repair_chance",
+     *           "column_metadata",
+     *           "column_metadata",
+     *           "default_validation_class",
+     *           "min_compaction_threshold",
+     *           "max_compaction_threshold",
+     *           "row_cache_save_period_in_seconds",
+     *           "key_cache_save_period_in_seconds",
+     *           "memtable_flush_after_mins",
+     *           "memtable_throughput_in_mb",
+     *           "memtable_operations_in_millions"
      */
-    public function alter_column_family($cfdef) {
+    public function alter_column_family($keyspace, $column_family, $attrs) {
+        $cfdef = $this->get_cfdef($keyspace, $column_family);
+        foreach ($attrs as $attr => $value) {
+            switch ($attr) {
+                case "comparator_type":
+                    $cfdef->comparator_type = $value;
+                    break;
+                case "subcomparator_type":
+                    $cfdef->subcomparator_type = $value;
+                    break;
+                case "comment":
+                    $cfdef->comment = $value;
+                    break;
+                case "row_cache_size":
+                    $cfdef->row_cache_size = $value;
+                    break;
+                case "key_cache_size":
+                    $cfdef->key_cache_size = $value;
+                    break;
+                case "read_repair_chance":
+                    $cfdef->read_repair_chance = $value;
+                    break;
+                case "column_metadata":
+                    $cfdef->column_metadata = $value;
+                    break;
+                case "column_metadata":
+                    $cfdef->gc_grace_seconds = $value;
+                    break;
+                case "default_validation_class":
+                    $cfdef->default_validation_class = $value;
+                    break;
+                case "min_compaction_threshold":
+                    $cfdef->min_compaction_threshold = $value;
+                    break;
+                case "max_compaction_threshold":
+                    $cfdef->max_compaction_threshold = $value;
+                    break;
+                case "row_cache_save_period_in_seconds":
+                    $cfdef->row_cache_save_period_in_seconds = $value;
+                    break;
+                case "key_cache_save_period_in_seconds":
+                    $cfdef->key_cache_save_period_in_seconds = $value;
+                    break;
+                case "memtable_flush_after_mins":
+                    $cfdef->memtable_flush_after_mins = $value;
+                    break;
+                case "memtable_throughput_in_mb":
+                    $cfdef->memtable_throughput_in_mb = $value;
+                    break;
+                case "memtable_operations_in_millions":
+                    $cfdef->memtable_operations_in_millions = $value;
+                    break;
+                default:
+                    throw new InvalidArgumentException(
+                        "$attr is not a valid column family attribute."
+                    );
+            }
+        }
         $this->client->set_keyspace($cfdef->keyspace);
         $this->client->system_update_column_family($cfdef);
         $this->wait_for_agreement();
