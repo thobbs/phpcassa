@@ -118,13 +118,19 @@ class ConnectionPool {
     public $keyspace;
     private $servers;
     private $pool_size;
-    private $max_retries;
     private $send_timeout;
     private $recv_timeout;
     private $credentials;
     private $framed_transport;
     private $queue;
     private $keyspace_description = NULL;
+
+    /**
+     * int $max_retries how many times an operation should be retried before
+     *     throwing a MaxRetriesException. Using 0 disables retries; using -1 causes
+     *     unlimited retries. The default is 5.
+     */
+    public $max_retries = self::DEFAULT_MAX_RETRIES;
 
     /**
      * int $recycle after this many operations, a connection will be automatically
