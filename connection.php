@@ -118,7 +118,6 @@ class ConnectionPool {
     public $keyspace;
     private $servers;
     private $pool_size;
-    private $recycle;
     private $max_retries;
     private $send_timeout;
     private $recv_timeout;
@@ -126,6 +125,12 @@ class ConnectionPool {
     private $framed_transport;
     private $queue;
     private $keyspace_description = NULL;
+
+    /**
+     * int $recycle after this many operations, a connection will be automatically
+     *     closed and replaced. Defaults to 10,000.
+     */
+    public $recycle = self::DEFAULT_RECYCLE;
 
     /**
      * Constructs a ConnectionPool.
