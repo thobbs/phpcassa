@@ -118,9 +118,10 @@ class ConnectionPool {
     public $keyspace;
     private $servers;
     private $pool_size;
-    private $timeout;
     private $recycle;
     private $max_retries;
+    private $send_timeout;
+    private $recv_timeout;
     private $credentials;
     private $framed_transport;
     private $queue;
