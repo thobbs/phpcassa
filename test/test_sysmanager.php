@@ -40,8 +40,8 @@ class TestSystemManager extends UnitTestCase {
         self::assertEqual($ksdef->name, $ksname);
         self::assertEqual($ksdef->replication_factor, 1);
 
-        $ksdef->strategy_options = "org.apache.cassandra.locator.OldNetworkTopologyStrategy";
-        $this->sys->alter_keyspace($ksdef);
+        $attrs = array("strategy_options" => "org.apache.cassandra.locator.OldNetworkTopologyStrategy");
+        $this->sys->alter_keyspace($ksname, $attrs);
         $ksdef = $this->sys->describe_keyspace($ksname);
         self::assertEqual($ksdef->name, $ksname);
         self::assertEqual($ksdef->replication_factor, 1);

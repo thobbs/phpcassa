@@ -61,13 +61,40 @@ class SystemManager {
     /**
      * Modifies a keyspace's properties.
      *
-     * You should build the KsDef by fetching the current
-     * one with describe_keyspace() and changing its attributes
-     * as necessary.
+     * Example usage:
+     * <code>
+     * $sys = SystemManager();
+     * $attrs = array("replication_factor" => 2);
+     * $sys->alter_keyspace("Keyspace1", $attrs);
+     * </code>
      *
-     * @param cassandra_KsDef $ksdef
+     * @param string $keyspace the keyspace to modify
+     * @param array $attrs an array that maps attribute
+     *        names to values. Valid attribute names include
+     *        "strategy_class", "strategy_options", and
+     *        "replication_factor".
+     *
      */
-    public function alter_keyspace($ksdef) {
+    public function alter_keyspace($keyspace, $attrs) {
+        $ksdef = $this->client->describe_keyspace($keyspace);
+        foreach ($attrs as $attr => $value) {
+            switch ($attr) {
+                case "strategy_class":
+                    $ksdef->strategy_class = $value;
+                    break;
+                case "strategy_options":
+                    $ksdef->strategy_options = $value;
+                    break;
+                case "replication_factor":
+                    $ksdef->replication_factor = $value;
+                    break;
+                default:
+                    throw new InvalidArgumentException(
+                        "$attr is not a valid keyspace attribute."
+                    );
+            }
+        }
+
         $this->client->system_update_keyspace($ksdef);
         $this->wait_for_agreement();
     }
