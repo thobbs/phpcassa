@@ -79,7 +79,7 @@ class ConnectionWrapper {
                 "lowest compatible version: $ver)");
         }
 
-        $client->set_keyspace($keyspace);
+        $this->set_keyspace($keyspace);
 
         if ($credentials) {
             $request = new cassandra_AuthenticationRequest(array("credentials" => $credentials));
@@ -94,6 +94,13 @@ class ConnectionWrapper {
 
     public function close() {
         $this->transport->close();
+    }
+
+    public function set_keyspace($keyspace) {
+        if ($keyspace !== NULL) {
+            $this->client->set_keyspace($keyspace);
+            $this->keyspace = $keyspace;
+        }
     }
 
 }
