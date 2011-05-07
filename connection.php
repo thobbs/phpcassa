@@ -186,9 +186,6 @@ class ConnectionPool {
         // Randomly permute the server list
         shuffle($this->servers);
         $this->list_position = 0;
-
-        foreach(range(0, $this->pool_size - 1) as $i)
-            $this->make_conn();
     }
 
     private function make_conn() {
@@ -216,10 +213,32 @@ class ConnectionPool {
     }
 
     /**
+     * Adds connections to the pool until $pool_size connections
+     * are in the pool.
+     */
+    public function fill() {
+        while (count($this->queue) < $this->pool_size)
+            $this->make_conn();
+    }
+
+    /**
      * Retrieves a connection from the pool.
+     *
+     * If the pool has fewer than $pool_size connections in
+     * it, a new connection will be created.
+     *
      * @return ConnectionWrapper a connection
      */
     public function get() {
+        $num_conns = count($this->queue);
+        if ($num_conns < $this->pool_size) {
+            try {
+                $this->make_conn();
+            } catch (NoServerAvailable $e) {
+                if ($num_conns == 0)
+                    throw $e;
+            }
+        }
         return array_shift($this->queue);
     }
 
