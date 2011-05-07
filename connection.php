@@ -67,10 +67,10 @@ class ConnectionWrapper {
             $transport = new TBufferedTransport($socket, 1024, 1024);
         }
 
-        $client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
+        $this->client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
         $transport->open();
 
-        $server_version = explode(".", $client->describe_version());
+        $server_version = explode(".", $this->client->describe_version());
         $server_version = $server_version[0];
         if ($server_version < self::LOWEST_COMPATIBLE_VERSION) {
             $ver = self::LOWEST_COMPATIBLE_VERSION;
@@ -83,11 +83,10 @@ class ConnectionWrapper {
 
         if ($credentials) {
             $request = new cassandra_AuthenticationRequest(array("credentials" => $credentials));
-            $client->login($request);
+            $this->client->login($request);
         }
 
         $this->keyspace = $keyspace;
-        $this->client = $client;
         $this->transport = $transport;
         $this->op_count = 0;
     }
