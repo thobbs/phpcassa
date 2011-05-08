@@ -70,12 +70,10 @@ class TestSystemManager extends UnitTestCase {
         $this->sys->create_keyspace($ksdef);
 
         $cfname = "CF";
-        $cfdef = new cassandra_CfDef();
-        $cfdef->keyspace = $ksname;
-        $cfdef->name = $cfname;
-        $cfdef->column_type = 'Standard';
-        $cfdef->comment = 'this is a comment';
-        $this->sys->create_column_family($cfdef);
+        $attrs = array();
+        $attrs["column_type"] = 'Standard';
+        $attrs["comment"] = 'this is a comment';
+        $this->sys->create_column_family($ksname, $cfname, $attrs);
 
         $cfdef = $this->get_cfdef($ksname, $cfname);
         self::assertEqual($cfdef->comment, 'this is a comment');

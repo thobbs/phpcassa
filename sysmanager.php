@@ -109,13 +109,43 @@ class SystemManager {
         $this->wait_for_agreement();
     }
 
-    /*
+    /**
      * Creates a column family.
      *
-     * @param cassandra_CfDef $cfdef the CF definition
+     * Example usage:
+     * <code>
+     * $sys = SystemManager();
+     * $attrs = array("column_type" => "Standard",
+     *                "comparator_type" => "org.apache.cassandra.db.marshal.AsciiType",
+     *                "memtable_throughput_in_mb" => 32);
+     * $sys->create_column_family("Keyspace1", "ColumnFamily1", $attrs);
+     * </code>
+     *
+     * @param string $keyspace the keyspace containing the column family
+     * @param string $column_family the name of the column family
+     * @param array $attrs an array that maps attribute
+     *        names to values. Valid attribute names include:
+     *           "column_type",
+     *           "comparator_type",
+     *           "subcomparator_type",
+     *           "comment",
+     *           "row_cache_size",
+     *           "key_cache_size",
+     *           "read_repair_chance",
+     *           "column_metadata",
+     *           "gc_grace_seconds",
+     *           "default_validation_class",
+     *           "min_compaction_threshold",
+     *           "max_compaction_threshold",
+     *           "row_cache_save_period_in_seconds",
+     *           "key_cache_save_period_in_seconds",
+     *           "memtable_flush_after_mins",
+     *           "memtable_throughput_in_mb",
+     *           "memtable_operations_in_millions"
      */
-    public function create_column_family($cfdef) {
-        $this->client->set_keyspace($cfdef->keyspace);
+    public function create_column_family($keyspace, $column_family, $attrs) {
+        $this->client->set_keyspace($keyspace);
+        $cfdef = $this->make_cfdef($keyspace, $column_family, $attrs);
         $this->client->system_add_column_family($cfdef);
         $this->wait_for_agreement();
     }
@@ -130,41 +160,20 @@ class SystemManager {
         return;
     }
 
-    /**
-     * Modifies a column family's attributes.
-     *
-     * Example usage:
-     * <code>
-     * $sys = SystemManager();
-     * $attrs = array("max_compaction_threshold" => 10);
-     * $sys->alter_column_family("Keyspace1", "ColumnFamily1", $attrs);
-     * </code>
-     *
-     * @param string $keyspace the keyspace containing the column family
-     * @param string $column_family the name of the column family
-     * @param array $attrs an array that maps attribute
-     *        names to values. Valid attribute names include:
-     *           "comparator_type",
-     *           "subcomparator_type",
-     *           "comment",
-     *           "row_cache_size",
-     *           "key_cache_size",
-     *           "read_repair_chance",
-     *           "column_metadata",
-     *           "column_metadata",
-     *           "default_validation_class",
-     *           "min_compaction_threshold",
-     *           "max_compaction_threshold",
-     *           "row_cache_save_period_in_seconds",
-     *           "key_cache_save_period_in_seconds",
-     *           "memtable_flush_after_mins",
-     *           "memtable_throughput_in_mb",
-     *           "memtable_operations_in_millions"
-     */
-    public function alter_column_family($keyspace, $column_family, $attrs) {
-        $cfdef = $this->get_cfdef($keyspace, $column_family);
+    private function make_cfdef($ksname, $cfname, $attrs, $orig=NULL) {
+        if ($orig !== NULL)
+            $cfdef = $orig;
+        else
+            $cfdef = new cassandra_CfDef();
+
+        $cfdef->keyspace = $ksname;
+        $cfdef->name = $cfname;
+
         foreach ($attrs as $attr => $value) {
             switch ($attr) {
+                case "column_type":
+                    $cfdef->column_type = $value;
+                    break;
                 case "comparator_type":
                     $cfdef->comparator_type = $value;
                     break;
@@ -186,7 +195,7 @@ class SystemManager {
                 case "column_metadata":
                     $cfdef->column_metadata = $value;
                     break;
-                case "column_metadata":
+                case "gc_grace_seconds":
                     $cfdef->gc_grace_seconds = $value;
                     break;
                 case "default_validation_class":
@@ -219,6 +228,43 @@ class SystemManager {
                     );
             }
         }
+        return $cfdef;
+    }
+
+    /**
+     * Modifies a column family's attributes.
+     *
+     * Example usage:
+     * <code>
+     * $sys = SystemManager();
+     * $attrs = array("max_compaction_threshold" => 10);
+     * $sys->alter_column_family("Keyspace1", "ColumnFamily1", $attrs);
+     * </code>
+     *
+     * @param string $keyspace the keyspace containing the column family
+     * @param string $column_family the name of the column family
+     * @param array $attrs an array that maps attribute
+     *        names to values. Valid attribute names include:
+     *           "comparator_type",
+     *           "subcomparator_type",
+     *           "comment",
+     *           "row_cache_size",
+     *           "key_cache_size",
+     *           "read_repair_chance",
+     *           "column_metadata",
+     *           "gc_grace_seconds",
+     *           "default_validation_class",
+     *           "min_compaction_threshold",
+     *           "max_compaction_threshold",
+     *           "row_cache_save_period_in_seconds",
+     *           "key_cache_save_period_in_seconds",
+     *           "memtable_flush_after_mins",
+     *           "memtable_throughput_in_mb",
+     *           "memtable_operations_in_millions"
+     */
+    public function alter_column_family($keyspace, $column_family, $attrs) {
+        $cfdef = $this->get_cfdef($keyspace, $column_family);
+        $cfdef = $this->make_cfdef($keyspace, $column_family, $attrs, $cfdef);
         $this->client->set_keyspace($cfdef->keyspace);
         $this->client->system_update_column_family($cfdef);
         $this->wait_for_agreement();
