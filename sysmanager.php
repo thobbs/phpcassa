@@ -51,9 +51,23 @@ class SystemManager {
     /**
      * Creates a new keyspace.
      *
-     * @param cassandra_KsDef $ksdef
+     * Example usage:
+     * <code>
+     * $sys = SystemManager();
+     * $attrs = array("replication_factor" => 1,
+     *                "strategy_name" => "org.apache.cassandra.locator.SimpleStrategy");
+     * $sys->create_keyspace("Keyspace1", $attrs);
+     * </code>
+     *
+     * @param string $keyspace the keyspace name
+     * @param array $attrs an array that maps attribute
+     *        names to values. Valid attribute names include
+     *        "strategy_class", "strategy_options", and
+     *        "replication_factor".
+     *
      */
-    public function create_keyspace($ksdef) {
+    public function create_keyspace($keyspace, $attrs) {
+        $ksdef = $this->make_ksdef($keyspace, $attrs);
         $this->client->system_add_keyspace($ksdef);
         $this->wait_for_agreement();
     }
@@ -77,6 +91,29 @@ class SystemManager {
      */
     public function alter_keyspace($keyspace, $attrs) {
         $ksdef = $this->client->describe_keyspace($keyspace);
+        $ksdef = $this->make_ksdef($keyspace, $attrs, $ksdef);
+        $this->client->system_update_keyspace($ksdef);
+        $this->wait_for_agreement();
+    }
+
+    /*
+     * Drops a keyspace.
+     *
+     * @param string $keyspace the keyspace name
+     */
+    public function drop_keyspace($keyspace) {
+        $this->client->system_drop_keyspace($keyspace);
+        $this->wait_for_agreement();
+    }
+
+    private function make_ksdef($name, $attrs, $orig=NULL) {
+        if ($orig !== NULL)
+            $ksdef = $orig;
+        else
+            $ksdef = new cassandra_KsDef();
+
+        $ksdef->name = $name;
+        $ksdef->cf_defs = array();
         foreach ($attrs as $attr => $value) {
             switch ($attr) {
                 case "strategy_class":
@@ -94,19 +131,7 @@ class SystemManager {
                     );
             }
         }
-
-        $this->client->system_update_keyspace($ksdef);
-        $this->wait_for_agreement();
-    }
-
-    /*
-     * Drops a keyspace.
-     *
-     * @param string $keyspace the keyspace name
-     */
-    public function drop_keyspace($keyspace) {
-        $this->client->system_drop_keyspace($keyspace);
-        $this->wait_for_agreement();
+        return $ksdef;
     }
 
     /**

@@ -28,19 +28,17 @@ class TestSystemManager extends UnitTestCase {
             // don't care
         }
 
-        $ksdef = new cassandra_KsDef();
-        $ksdef->name = $ksname;
-        $ksdef->strategy_class = "org.apache.cassandra.locator.SimpleStrategy";
-        $ksdef->strategy_options = NULL;
-        $ksdef->replication_factor = 1;
-        $ksdef->cf_defs = array();
-        $this->sys->create_keyspace($ksdef);
+        $attrs = array();
+        $attrs["strategy_class"] = "org.apache.cassandra.locator.SimpleStrategy";
+        $attrs["strategy_options"] = NULL;
+        $attrs["replication_factor"] = 1;
+        $this->sys->create_keyspace($ksname, $attrs);
 
         $ksdef = $this->sys->describe_keyspace($ksname);
         self::assertEqual($ksdef->name, $ksname);
         self::assertEqual($ksdef->replication_factor, 1);
 
-        $attrs = array("strategy_options" => "org.apache.cassandra.locator.OldNetworkTopologyStrategy");
+        $attrs["strategy_options"] = "org.apache.cassandra.locator.OldNetworkTopologyStrategy";
         $this->sys->alter_keyspace($ksname, $attrs);
         $ksdef = $this->sys->describe_keyspace($ksname);
         self::assertEqual($ksdef->name, $ksname);
@@ -61,13 +59,11 @@ class TestSystemManager extends UnitTestCase {
 
     public function test_cf_manipulation() {
         $ksname = "PhpcassaKeyspace";
-        $ksdef = new cassandra_KsDef();
-        $ksdef->name = $ksname;
-        $ksdef->strategy_class = "org.apache.cassandra.locator.SimpleStrategy";
-        $ksdef->strategy_options = NULL;
-        $ksdef->replication_factor = 1;
-        $ksdef->cf_defs = array();
-        $this->sys->create_keyspace($ksdef);
+        $attrs = array();
+        $attrs["strategy_class"] = "org.apache.cassandra.locator.SimpleStrategy";
+        $attrs["strategy_options"] = NULL;
+        $attrs["replication_factor"] = 1;
+        $this->sys->create_keyspace($ksname, $attrs);
 
         $cfname = "CF";
         $attrs = array();
