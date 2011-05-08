@@ -312,7 +312,7 @@ class SystemManager {
      * @return array an array of cassandra_KsDef
      */
     public function describe_keyspaces() {
-        return $this->client->describe_keyspace();
+        return $this->client->describe_keyspaces();
     }
 }
 ?>
