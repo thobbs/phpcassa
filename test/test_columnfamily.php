@@ -2,17 +2,49 @@
 require_once('simpletest/autorun.php');
 require_once('../connection.php');
 require_once('../columnfamily.php');
+require_once('../sysmanager.php');
 
 class TestColumnFamily extends UnitTestCase {
 
     private $pool;
     private $cf;
+    private $sys;
 
     private static $KEYS = array('key1', 'key2', 'key3');
+    private static $KS = "TestColumnFamily";
+
+    public function __construct() {
+        $this->sys = new SystemManager();
+
+        $ksdefs = $this->sys->describe_keyspaces();
+        $exists = False;
+        foreach ($ksdefs as $ksdef)
+            $exists = $exists || $ksdef->name == self::$KS;
+
+        if ($exists)
+            $this->sys->drop_keyspace(self::$KS);
+
+        $this->sys->create_keyspace(self::$KS, array());
+
+        $cfattrs = array("column_type" => "Standard");
+        $this->sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
+
+        $this->sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
+        $this->sys->create_index(self::$KS, 'Indexed1', 'birthdate',
+                                 DataType::LONG_TYPE);
+
+        $this->pool = new ConnectionPool(self::$KS);
+        $this->cf = new ColumnFamily($this->pool, 'Standard1');
+
+        parent::__construct();
+    }
+
+    public function __destruct() {
+        $this->sys->drop_keyspace(self::$KS);
+        $this->pool->dispose();
+    }
 
     public function setUp() {
-        $this->pool = new Connection('Keyspace1');
-        $this->cf = new ColumnFamily($this->pool, 'Standard1');
     }
 
     public function tearDown() {
@@ -130,7 +162,7 @@ class TestColumnFamily extends UnitTestCase {
         # Buffer size = 10; rowcount is divisible by buffer size
         $count = 0;
         foreach ($cf->get_range() as $key => $cols) {
-            self::assertTrue(in_array($key, $keys));
+            self::assertTrue(in_array($key, $keys), "$key was not expected");
             unset($keys[$key]);
             $count++;
         }
@@ -165,10 +197,12 @@ class TestColumnFamily extends UnitTestCase {
 
         # Odd number for batch size
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
-                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $read_consistency_level=$cl,
+                               $write_consistency_level=$cl,
                                $buffer_size=7);
         $count = 0;
-        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+        $rows = $cf->get_range($key_start='', $key_finish='', $row_count=100);
+        foreach ($rows as $key => $cols) {
             self::assertTrue(in_array($key, $keys));
             unset($keys[$key]);
             $count++;
@@ -178,10 +212,12 @@ class TestColumnFamily extends UnitTestCase {
 
         # Smallest buffer size available
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
-                               $read_consistency_level=$cl, $write_consistency_level=$cl,
+                               $read_consistency_level=$cl,
+                               $write_consistency_level=$cl,
                                $buffer_size=2);
         $count = 0;
-        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
+        $rows = $cf->get_range($key_start='', $key_finish='', $row_count=100);
+        foreach ($rows as $key => $cols) {
             self::assertTrue(in_array($key, $keys));
             unset($keys[$key]);
             $count++;
@@ -479,12 +515,38 @@ class TestSuperColumnFamily extends UnitTestCase {
 
     private $pool;
     private $cf;
+    private $sys;
 
     private static $KEYS = array('key1', 'key2', 'key3');
+    private static $KS = "TestSuperColumnFamily";
+
+    public function __construct() {
+        $this->sys = new SystemManager();
+
+        $ksdefs = $this->sys->describe_keyspaces();
+        $exists = False;
+        foreach ($ksdefs as $ksdef)
+            $exists = $exists || $ksdef->name == self::$KS;
+
+        if (!$exists) {
+            $this->sys->create_keyspace(self::$KS, array());
+
+            $cfattrs = array("column_type" => "Super");
+            $this->sys->create_column_family(self::$KS, 'Super1', $cfattrs);
+        }
+
+        $this->pool = new ConnectionPool(self::$KS);
+        $this->cf = new ColumnFamily($this->pool, 'Super1');
+
+        parent::__construct();
+    }
+
+    public function __destruct() {
+        $this->sys->drop_keyspace(self::$KS);
+        $this->pool->dispose();
+    }
 
     public function setUp() {
-        $this->pool = new Connection('Keyspace1');
-        $this->cf = new ColumnFamily($this->pool, 'Super1');
     }
 
     public function tearDown() {
