@@ -218,6 +218,7 @@ class SystemManager {
             $cfdef = $orig;
         else
             $cfdef = new cassandra_CfDef();
+            $cfdef->column_type = "Standard";
 
         $cfdef->keyspace = $ksname;
         $cfdef->name = $cfname;
