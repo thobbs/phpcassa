@@ -2,6 +2,26 @@
 
 require_once 'connection.php';
 
+class IndexType {
+    const KEYS = cassandra_IndexType::Keys;
+}
+
+class DataType {
+    const BYTES_TYPE = "BytesType";
+    const LONG_TYPE = "LongType";
+    const INTEGER_TYPE = "IntegerType";
+    const ASCII_TYPE = "AsciiType";
+    const UTF8_TYPE = "UTF8Type";
+    const TIME_UUID_TYPE = "TimeUUIDType";
+    const LEXICAL_UUID_TYPE = "LexicalUUIDType";
+}
+
+class StrategyClass {
+    const SIMPLE_STRATEGY = "SimpleStrategy";
+    const NETWORK_TOPOLOGY_STRATEGY = "NetworkTopologyStrategy";
+    const OLD_NETWORK_TOPOLOGY_STRATEGY = "OldNetworkTopologyStrategy";
+}
+
 /**
  * Helps with getting information about the schema, making
  * schema changes, and getting information about the state
