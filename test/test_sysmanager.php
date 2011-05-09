@@ -83,9 +83,9 @@ class TestSystemManager extends UnitTestCase {
             "name_index", IndexType::KEYS);
 
         $this->sys->create_index($ksname, $cfname, "name2", DataType::ASCII_TYPE,
-            "name_index");
+            "name_index2");
 
-        $this->sys->create_index($ksname, $cfname, "name", DataType::ASCII_TYPE);
+        $this->sys->create_index($ksname, $cfname, "name3", DataType::ASCII_TYPE);
 
         $this->sys->drop_column_family($ksname, $cfname);
 
