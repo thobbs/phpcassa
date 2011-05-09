@@ -79,6 +79,14 @@ class TestSystemManager extends UnitTestCase {
         $cfdef = $this->get_cfdef($ksname, $cfname);
         self::assertEqual($cfdef->comment, 'this is a new comment');
 
+        $this->sys->create_index($ksname, $cfname, "name", DataType::ASCII_TYPE,
+            "name_index", IndexType::KEYS);
+
+        $this->sys->create_index($ksname, $cfname, "name2", DataType::ASCII_TYPE,
+            "name_index");
+
+        $this->sys->create_index($ksname, $cfname, "name", DataType::ASCII_TYPE);
+
         $this->sys->drop_column_family($ksname, $cfname);
 
         $this->sys->drop_keyspace($ksname);

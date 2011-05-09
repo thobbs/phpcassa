@@ -3,7 +3,7 @@
 require_once 'connection.php';
 
 class IndexType {
-    const KEYS = cassandra_IndexType::Keys;
+    const KEYS = cassandra_IndexType::KEYS;
 }
 
 class DataType {
@@ -324,6 +324,54 @@ class SystemManager {
     public function drop_column_family($keyspace, $column_family) {
         $this->client->set_keyspace($keyspace);
         $this->client->system_drop_column_family($column_family);
+        $this->wait_for_agreement();
+    }
+
+    /**
+     * Adds an index to a column family.
+     *
+     * Example usage:
+     *
+     * <code>
+     * $sys = new SystemManager();
+     * $sys->create_index("Keyspace1", "Users", "name", DataType::UTF8_TYPE);
+     * </code>
+     *
+     * @param string $keyspace the name of the keyspace containing the column family
+     * @param string $column_family the name of the column family
+     * @param string $column the name of the column to put the index on
+     * @param DataType $data_type the data type of the values being indexed
+     * @param string $index_name an optional name for the index
+     * @param IndexType $index_type the type of index. Defaults to
+     *        IndexType::KEYS_INDEX, which is currently the only option.
+     */
+    public function create_index($keyspace, $column_family, $column,
+        $data_type, $index_name=NULL, $index_type=IndexType::KEYS)
+    {
+        $this->client->set_keyspace($keyspace);
+        $cfdef = $this->get_cfdef($keyspace, $column_family);
+
+        if (strpos($data_type, ".") === false) {
+            $data_type = "org.apache.cassandra.db.marshal.$data_type";
+        }
+        $col_def = new cassandra_ColumnDef();
+        $col_def->name = $column;
+        $col_def->validation_class = $data_type;
+        $col_def->index_type = $index_type;
+        $col_def->index_name = $index_name;
+
+        $col_meta = $cfdef->column_metadata;
+        for ($i = 0; $i < count($col_meta); $i++) {
+            $col = $col_meta[$i];
+            if ($col->name == $column) {
+                unset($col_meta[$i]);
+                break;
+            }
+        }
+
+        $col_meta[] = $col_def;
+        $cfdef->column_metadata = $col_meta;
+        $this->client->system_update_column_family($cfdef);
         $this->wait_for_agreement();
     }
 
