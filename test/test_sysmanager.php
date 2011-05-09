@@ -29,7 +29,7 @@ class TestSystemManager extends UnitTestCase {
         }
 
         $attrs = array();
-        $attrs["strategy_class"] = "org.apache.cassandra.locator.SimpleStrategy";
+        $attrs["strategy_class"] = StrategyClass::SIMPLE_STRATEGY;
         $attrs["strategy_options"] = NULL;
         $attrs["replication_factor"] = 1;
         $this->sys->create_keyspace($ksname, $attrs);
@@ -38,7 +38,7 @@ class TestSystemManager extends UnitTestCase {
         self::assertEqual($ksdef->name, $ksname);
         self::assertEqual($ksdef->replication_factor, 1);
 
-        $attrs["strategy_options"] = "org.apache.cassandra.locator.OldNetworkTopologyStrategy";
+        $attrs["strategy_options"] = StrategyClass::OLD_NETWORK_TOPOLOGY_STRATEGY;
         $this->sys->alter_keyspace($ksname, $attrs);
         $ksdef = $this->sys->describe_keyspace($ksname);
         self::assertEqual($ksdef->name, $ksname);
@@ -60,7 +60,7 @@ class TestSystemManager extends UnitTestCase {
     public function test_cf_manipulation() {
         $ksname = "PhpcassaKeyspace";
         $attrs = array();
-        $attrs["strategy_class"] = "org.apache.cassandra.locator.SimpleStrategy";
+        $attrs["strategy_class"] = StrategyClass::SIMPLE_STRATEGY;
         $attrs["strategy_options"] = NULL;
         $attrs["replication_factor"] = 1;
         $this->sys->create_keyspace($ksname, $attrs);
