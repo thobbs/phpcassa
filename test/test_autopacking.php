@@ -2,19 +2,129 @@
 require_once('simpletest/autorun.php');
 require_once('../connection.php');
 require_once('../columnfamily.php');
+require_once('../sysmanager.php');
 require_once('../uuid.php');
 
 class TestAutopacking extends UnitTestCase {
 
     private static $VALS = array('val1', 'val2', 'val3');
     private static $KEYS = array('key1', 'key2', 'key3');
+    private static $KS = "TestAutopacking";
 
     private $client;
     private $cf;
 
-    public function setUp() {
-        $this->client = new ConnectionPool('Keyspace1');
+    public function __construct() {
+        $this->sys = new SystemManager();
 
+        $ksdefs = $this->sys->describe_keyspaces();
+        $exists = False;
+        foreach ($ksdefs as $ksdef)
+            $exists = $exists || $ksdef->name == self::$KS;
+
+        if ($exists)
+            $this->sys->drop_keyspace(self::$KS);
+
+        $this->sys->create_keyspace(self::$KS, array());
+
+
+
+        $cfattrs = array("comparator_type" => DataType::LONG_TYPE);
+        $this->sys->create_column_family(self::$KS, 'StdLong', $cfattrs);
+
+        $cfattrs = array("comparator_type" => DataType::INTEGER_TYPE);
+        $this->sys->create_column_family(self::$KS, 'StdInteger', $cfattrs);
+
+        $cfattrs = array("comparator_type" => DataType::TIME_UUID_TYPE);
+        $this->sys->create_column_family(self::$KS, 'StdTimeUUID', $cfattrs);
+
+        $cfattrs = array("comparator_type" => DataType::LEXICAL_UUID_TYPE);
+        $this->sys->create_column_family(self::$KS, 'StdLexicalUUID', $cfattrs);
+
+        $cfattrs = array("comparator_type" => DataType::ASCII_TYPE);
+        $this->sys->create_column_family(self::$KS, 'StdAscii', $cfattrs);
+
+        $cfattrs = array("comparator_type" => DataType::UTF8_TYPE);
+        $this->sys->create_column_family(self::$KS, 'StdUTF8', $cfattrs);
+
+
+
+        $cfattrs = array("column_type" => "Super");
+
+        $cfattrs["comparator_type"] = DataType::LONG_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLong', $cfattrs);
+
+        $cfattrs["comparator_type"] = DataType::INTEGER_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperInt', $cfattrs);
+
+        $cfattrs["comparator_type"] = DataType::TIME_UUID_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperTime', $cfattrs);
+
+        $cfattrs["comparator_type"] = DataType::LEXICAL_UUID_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLex', $cfattrs);
+
+        $cfattrs["comparator_type"] = DataType::ASCII_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperAscii', $cfattrs);
+
+        $cfattrs["comparator_type"] = DataType::UTF8_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperUTF8', $cfattrs);
+
+        
+
+        $cfattrs = array("column_type" => "Super", "comparator_type" => DataType::LONG_TYPE);
+
+        $cfattrs["subcomparator_type"] = DataType::LONG_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLongSubLong', $cfattrs);
+
+        $cfattrs["subcomparator_type"] = DataType::INTEGER_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLongSubInt', $cfattrs);
+
+        $cfattrs["subcomparator_type"] = DataType::TIME_UUID_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLongSubTime', $cfattrs);
+
+        $cfattrs["subcomparator_type"] = DataType::LEXICAL_UUID_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLongSubLex', $cfattrs);
+
+        $cfattrs["subcomparator_type"] = DataType::ASCII_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLongSubAscii', $cfattrs);
+
+        $cfattrs["subcomparator_type"] = DataType::UTF8_TYPE;
+        $this->sys->create_column_family(self::$KS, 'SuperLongSubUTF8', $cfattrs);
+
+
+
+        $cfattrs = array("column_type" => "Standard");
+
+        $cfattrs["default_validation_class"] = DataType::LONG_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorLong', $cfattrs);
+
+        $cfattrs["default_validation_class"] = DataType::INTEGER_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorInt', $cfattrs);
+
+        $cfattrs["default_validation_class"] = DataType::TIME_UUID_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorTime', $cfattrs);
+
+        $cfattrs["default_validation_class"] = DataType::LEXICAL_UUID_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorLex', $cfattrs);
+
+        $cfattrs["default_validation_class"] = DataType::ASCII_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorAscii', $cfattrs);
+
+        $cfattrs["default_validation_class"] = DataType::UTF8_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorUTF8', $cfattrs);
+
+        $cfattrs["default_validation_class"] = DataType::BYTES_TYPE;
+        $this->sys->create_column_family(self::$KS, 'ValidatorBytes', $cfattrs);
+
+
+
+        $cfattrs["default_validation_class"] = DataType::LONG_TYPE;
+        $this->sys->create_column_family(self::$KS, 'DefaultValidator', $cfattrs);
+        // Quick way to create a TimeUUIDType validator to subcol
+        $this->sys->create_index(self::$KS, 'DefaultValidator', 'subcol',
+            DataType::TIME_UUID_TYPE, NULL, NULL);
+         
+        $this->client = new ConnectionPool(self::$KS);
         $this->cf_long  = new ColumnFamily($this->client, 'StdLong');
         $this->cf_int   = new ColumnFamily($this->client, 'StdInteger');
         $this->cf_time  = new ColumnFamily($this->client, 'StdTimeUUID');
@@ -62,7 +172,7 @@ class TestAutopacking extends UnitTestCase {
                            $this->cf_valid_bytes,
 
                            $this->cf_def_valid);
-         
+
         $this->TIME1 = CassandraUtil::uuid1();
         $this->TIME2 = CassandraUtil::uuid1();
         $this->TIME3 = CassandraUtil::uuid1();
@@ -70,6 +180,12 @@ class TestAutopacking extends UnitTestCase {
         $this->LEX1 = UUID::import('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')->bytes;
         $this->LEX2 = UUID::import('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')->bytes;
         $this->LEX3 = UUID::import('cccccccccccccccccccccccccccccccc')->bytes;
+
+
+        parent::__construct();
+    }
+
+    public function setUp() {
     }
 
     public function tearDown() {
@@ -77,8 +193,6 @@ class TestAutopacking extends UnitTestCase {
             foreach(self::$KEYS as $key)
                 $cf->remove($key);
         }
-        if ($this->client)
-            $this->client->close();
     }
 
     public function test_basic_ints() {
