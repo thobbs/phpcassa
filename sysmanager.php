@@ -85,6 +85,9 @@ class SystemManager {
      *        "strategy_class", "strategy_options", and
      *        "replication_factor".
      *
+     *        By default, SimpleStrategy will be used with a replication
+     *        factor of 1 and no strategy options.
+     *
      */
     public function create_keyspace($keyspace, $attrs) {
         $ksdef = $this->make_ksdef($keyspace, $attrs);
@@ -131,12 +134,17 @@ class SystemManager {
             $ksdef = $orig;
         else
             $ksdef = new cassandra_KsDef();
+            $ksdef->strategy_class = 'SimpleStrategy';
+            $ksdef->strategy_options = NULL;
+            $ksdef->replication_factor = 1;
+            $ksdef->cf_defs = array();
 
         $ksdef->name = $name;
-        $ksdef->cf_defs = array();
         foreach ($attrs as $attr => $value) {
             switch ($attr) {
                 case "strategy_class":
+                    if (strpos($value, ".") === false)
+                        $value = "org.apache.cassandra.locator.$value";
                     $ksdef->strategy_class = $value;
                     break;
                 case "strategy_options":
