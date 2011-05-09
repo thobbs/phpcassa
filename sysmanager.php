@@ -55,7 +55,7 @@ class SystemManager {
      * <code>
      * $sys = SystemManager();
      * $attrs = array("replication_factor" => 1,
-     *                "strategy_name" => "org.apache.cassandra.locator.SimpleStrategy");
+     *                "strategy_class" => "org.apache.cassandra.locator.SimpleStrategy");
      * $sys->create_keyspace("Keyspace1", $attrs);
      * </code>
      *
