@@ -337,6 +337,31 @@ class SystemManager {
     }
 
     /**
+     * Mark the entire column family as deleted.
+     *
+     * From the user's perspective a successful call to truncate will result
+     * complete data deletion from cfname. Internally, however, disk space
+     * will not be immediatily released, as with all deletes in cassandra,
+     * this one only marks the data as deleted.
+     *
+     * The operation succeeds only if all hosts in the cluster at available
+     * and will throw an UnavailableException if some hosts are down.
+     *
+     * Example usage:
+     * <code>
+     * $sys = SystemManager();
+     * $sys->truncate_column_family("Keyspace1", "ColumnFamily1");
+     * </code>
+     *
+     * @param string $keyspace the keyspace the CF is in
+     * @param string $column_family the column family name
+     */
+    public function truncate_column_family($keyspace, $column_family) {
+        $this->client->set_keyspace($keyspace);
+        $this->client->truncate($column_family);
+    }
+
+    /**
      * Adds an index to a column family.
      *
      * Example usage:
