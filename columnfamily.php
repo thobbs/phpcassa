@@ -144,6 +144,10 @@ class ColumnFamily {
     /** @var cassandra_ConsistencyLevel the default write consistency level */
     public $write_consistency_level;
 
+    /** @var bool If true, column values in data fetching operations will be
+     * replaced by an array of the form array(column_value, column_timestamp). */
+    public $include_timestamp = false;
+
     /**
      * Constructs a ColumnFamily.
      *
@@ -901,12 +905,26 @@ class ColumnFamily {
 
     private function supercolumns_or_columns_to_array($array_of_c_or_sc) {
         $ret = null;
-        foreach($array_of_c_or_sc as $c_or_sc) {
-            if($c_or_sc->column) { // normal columns
-                $name = $this->unpack_name($c_or_sc->column->name, false);
-                $value = $this->unpack_value($c_or_sc->column->value, $c_or_sc->column->name);
-                $ret[$name] = $value;
-            } else if($c_or_sc->super_column) { // super columns
+        if(count($array_of_c_or_sc) == 0) {
+            return $ret;
+        }
+        $first = $array_of_c_or_sc[0];
+        if($first->column) { // normal columns
+            if ($this->include_timestamp) {
+                foreach($array_of_c_or_sc as $c_or_sc) {
+                    $name = $this->unpack_name($c_or_sc->column->name, false);
+                    $value = $this->unpack_value($c_or_sc->column->value, $c_or_sc->column->name);
+                    $ret[$name] = array($value, $c_or_sc->column->timestamp);
+                }
+            } else {
+                foreach($array_of_c_or_sc as $c_or_sc) {
+                    $name = $this->unpack_name($c_or_sc->column->name, false);
+                    $value = $this->unpack_value($c_or_sc->column->value, $c_or_sc->column->name);
+                    $ret[$name] = $value;
+                }
+            }
+        } else if($first->super_column) { // super columns
+            foreach($array_of_c_or_sc as $c_or_sc) {
                 $name = $this->unpack_name($c_or_sc->super_column->name, true);
                 $columns = $c_or_sc->super_column->columns;
                 $ret[$name] = $this->columns_to_array($columns);
@@ -917,10 +935,18 @@ class ColumnFamily {
 
     private function columns_to_array($array_of_c) {
         $ret = null;
-        foreach($array_of_c as $c) {
-            $name  = $this->unpack_name($c->name, false);
-            $value = $this->unpack_value($c->value, $c->name);
-            $ret[$name] = $value;
+        if ($this->include_timestamp) {
+            foreach($array_of_c as $c) {
+                $name  = $this->unpack_name($c->name, false);
+                $value = $this->unpack_value($c->value, $c->name);
+                $ret[$name] = array($value, $c->timestamp);
+            }
+        } else {
+            foreach($array_of_c as $c) {
+                $name  = $this->unpack_name($c->name, false);
+                $value = $this->unpack_value($c->value, $c->name);
+                $ret[$name] = $value;
+            }
         }
         return $ret;
     }
