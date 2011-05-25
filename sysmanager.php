@@ -129,6 +129,12 @@ class SystemManager {
         $this->wait_for_agreement();
     }
 
+
+    private static function endswith($haystack, $needle) {
+        $start  = strlen($needle) * -1; //negative
+        return (substr($haystack, $start) === $needle);
+    }
+
     private function make_ksdef($name, $attrs, $orig=NULL) {
         if ($orig !== NULL)
             $ksdef = $orig;
@@ -158,6 +164,12 @@ class SystemManager {
                         "$attr is not a valid keyspace attribute."
                     );
             }
+        }
+        if (self::endswith($ksdef->strategy_class, 'SimpleStrategy')) {
+            if ($ksdef->strategy_options === NULL)
+                $ksdef->strategy_options = array();
+            if (!array_key_exists('replication_fator', $ksdef->strategy_options))
+                $ksdef->strategy_options['replication_factor'] = (string)$ksdef->replication_factor;
         }
         return $ksdef;
     }
