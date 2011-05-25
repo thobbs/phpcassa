@@ -8,6 +8,6 @@ include_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/cassandra_types.php';
 
 $GLOBALS['cassandra_CONSTANTS'] = array();
 
-$GLOBALS['cassandra_CONSTANTS']['VERSION'] = "19.4.0";
+$GLOBALS['cassandra_CONSTANTS']['VERSION'] = "19.10.0";
 
 ?>

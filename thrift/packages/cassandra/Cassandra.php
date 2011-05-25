@@ -19,7 +19,9 @@ interface CassandraIf {
   public function get_range_slices($column_parent, $predicate, $range, $consistency_level);
   public function get_indexed_slices($column_parent, $index_clause, $column_predicate, $consistency_level);
   public function insert($key, $column_parent, $column, $consistency_level);
+  public function add($key, $column_parent, $column, $consistency_level);
   public function remove($key, $column_path, $timestamp, $consistency_level);
+  public function remove_counter($key, $path, $consistency_level);
   public function batch_mutate($mutation_map, $consistency_level);
   public function truncate($cfname);
   public function describe_schema_versions();
@@ -37,6 +39,7 @@ interface CassandraIf {
   public function system_drop_keyspace($keyspace);
   public function system_update_keyspace($ks_def);
   public function system_update_column_family($cf_def);
+  public function execute_cql_query($query, $compression);
 }
 
 class CassandraClient implements CassandraIf {
@@ -658,6 +661,66 @@ class CassandraClient implements CassandraIf {
     return;
   }
 
+  public function add($key, $column_parent, $column, $consistency_level)
+  {
+    $this->send_add($key, $column_parent, $column, $consistency_level);
+    $this->recv_add();
+  }
+
+  public function send_add($key, $column_parent, $column, $consistency_level)
+  {
+    $args = new cassandra_Cassandra_add_args();
+    $args->key = $key;
+    $args->column_parent = $column_parent;
+    $args->column = $column;
+    $args->consistency_level = $consistency_level;
+    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'add', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('add', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_add()
+  {
+    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, 'cassandra_Cassandra_add_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new cassandra_Cassandra_add_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->ue !== null) {
+      throw $result->ue;
+    }
+    if ($result->te !== null) {
+      throw $result->te;
+    }
+    return;
+  }
+
   public function remove($key, $column_path, $timestamp, $consistency_level)
   {
     $this->send_remove($key, $column_path, $timestamp, $consistency_level);
@@ -703,6 +766,65 @@ class CassandraClient implements CassandraIf {
         throw $x;
       }
       $result = new cassandra_Cassandra_remove_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->ue !== null) {
+      throw $result->ue;
+    }
+    if ($result->te !== null) {
+      throw $result->te;
+    }
+    return;
+  }
+
+  public function remove_counter($key, $path, $consistency_level)
+  {
+    $this->send_remove_counter($key, $path, $consistency_level);
+    $this->recv_remove_counter();
+  }
+
+  public function send_remove_counter($key, $path, $consistency_level)
+  {
+    $args = new cassandra_Cassandra_remove_counter_args();
+    $args->key = $key;
+    $args->path = $path;
+    $args->consistency_level = $consistency_level;
+    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'remove_counter', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('remove_counter', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_remove_counter()
+  {
+    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, 'cassandra_Cassandra_remove_counter_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new cassandra_Cassandra_remove_counter_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
@@ -1298,6 +1420,9 @@ class CassandraClient implements CassandraIf {
     if ($result->success !== null) {
       return $result->success;
     }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
     throw new Exception("describe_splits failed: unknown result");
   }
 
@@ -1351,6 +1476,9 @@ class CassandraClient implements CassandraIf {
     }
     if ($result->ire !== null) {
       throw $result->ire;
+    }
+    if ($result->sde !== null) {
+      throw $result->sde;
     }
     throw new Exception("system_add_column_family failed: unknown result");
   }
@@ -1406,6 +1534,9 @@ class CassandraClient implements CassandraIf {
     if ($result->ire !== null) {
       throw $result->ire;
     }
+    if ($result->sde !== null) {
+      throw $result->sde;
+    }
     throw new Exception("system_drop_column_family failed: unknown result");
   }
 
@@ -1459,6 +1590,9 @@ class CassandraClient implements CassandraIf {
     }
     if ($result->ire !== null) {
       throw $result->ire;
+    }
+    if ($result->sde !== null) {
+      throw $result->sde;
     }
     throw new Exception("system_add_keyspace failed: unknown result");
   }
@@ -1514,6 +1648,9 @@ class CassandraClient implements CassandraIf {
     if ($result->ire !== null) {
       throw $result->ire;
     }
+    if ($result->sde !== null) {
+      throw $result->sde;
+    }
     throw new Exception("system_drop_keyspace failed: unknown result");
   }
 
@@ -1567,6 +1704,9 @@ class CassandraClient implements CassandraIf {
     }
     if ($result->ire !== null) {
       throw $result->ire;
+    }
+    if ($result->sde !== null) {
+      throw $result->sde;
     }
     throw new Exception("system_update_keyspace failed: unknown result");
   }
@@ -1622,7 +1762,74 @@ class CassandraClient implements CassandraIf {
     if ($result->ire !== null) {
       throw $result->ire;
     }
+    if ($result->sde !== null) {
+      throw $result->sde;
+    }
     throw new Exception("system_update_column_family failed: unknown result");
+  }
+
+  public function execute_cql_query($query, $compression)
+  {
+    $this->send_execute_cql_query($query, $compression);
+    return $this->recv_execute_cql_query();
+  }
+
+  public function send_execute_cql_query($query, $compression)
+  {
+    $args = new cassandra_Cassandra_execute_cql_query_args();
+    $args->query = $query;
+    $args->compression = $compression;
+    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'execute_cql_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('execute_cql_query', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_execute_cql_query()
+  {
+    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, 'cassandra_Cassandra_execute_cql_query_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new cassandra_Cassandra_execute_cql_query_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    if ($result->ire !== null) {
+      throw $result->ire;
+    }
+    if ($result->ue !== null) {
+      throw $result->ue;
+    }
+    if ($result->te !== null) {
+      throw $result->te;
+    }
+    if ($result->sde !== null) {
+      throw $result->sde;
+    }
+    throw new Exception("execute_cql_query failed: unknown result");
   }
 
 }
@@ -2600,6 +2807,100 @@ class cassandra_Cassandra_insert_result extends TBase {
   }
 }
 
+class cassandra_Cassandra_add_args extends TBase {
+  static $_TSPEC;
+
+  public $key = null;
+  public $column_parent = null;
+  public $column = null;
+  public $consistency_level =   1;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'key',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'column_parent',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_ColumnParent',
+          ),
+        3 => array(
+          'var' => 'column',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_CounterColumn',
+          ),
+        4 => array(
+          'var' => 'consistency_level',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'Cassandra_add_args';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('Cassandra_add_args', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('Cassandra_add_args', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_Cassandra_add_result extends TBase {
+  static $_TSPEC;
+
+  public $ire = null;
+  public $ue = null;
+  public $te = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'ue',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_UnavailableException',
+          ),
+        3 => array(
+          'var' => 'te',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_TimedOutException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'Cassandra_add_result';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('Cassandra_add_result', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('Cassandra_add_result', self::$_TSPEC, $output);
+  }
+}
+
 class cassandra_Cassandra_remove_args extends TBase {
   static $_TSPEC;
 
@@ -2690,6 +2991,94 @@ class cassandra_Cassandra_remove_result extends TBase {
   }
   public function write($output) {
     return $this->_write('Cassandra_remove_result', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_Cassandra_remove_counter_args extends TBase {
+  static $_TSPEC;
+
+  public $key = null;
+  public $path = null;
+  public $consistency_level =   1;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'key',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'path',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_ColumnPath',
+          ),
+        3 => array(
+          'var' => 'consistency_level',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'Cassandra_remove_counter_args';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('Cassandra_remove_counter_args', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('Cassandra_remove_counter_args', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_Cassandra_remove_counter_result extends TBase {
+  static $_TSPEC;
+
+  public $ire = null;
+  public $ue = null;
+  public $te = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'ue',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_UnavailableException',
+          ),
+        3 => array(
+          'var' => 'te',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_TimedOutException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'Cassandra_remove_counter_result';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('Cassandra_remove_counter_result', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('Cassandra_remove_counter_result', self::$_TSPEC, $output);
   }
 }
 
@@ -3435,6 +3824,7 @@ class cassandra_Cassandra_describe_splits_result extends TBase {
   static $_TSPEC;
 
   public $success = null;
+  public $ire = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3446,6 +3836,11 @@ class cassandra_Cassandra_describe_splits_result extends TBase {
           'elem' => array(
             'type' => TType::STRING,
             ),
+          ),
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_InvalidRequestException',
           ),
         );
     }
@@ -3505,6 +3900,7 @@ class cassandra_Cassandra_system_add_column_family_result extends TBase {
 
   public $success = null;
   public $ire = null;
+  public $sde = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3517,6 +3913,11 @@ class cassandra_Cassandra_system_add_column_family_result extends TBase {
           'var' => 'ire',
           'type' => TType::STRUCT,
           'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
           ),
         );
     }
@@ -3575,6 +3976,7 @@ class cassandra_Cassandra_system_drop_column_family_result extends TBase {
 
   public $success = null;
   public $ire = null;
+  public $sde = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3587,6 +3989,11 @@ class cassandra_Cassandra_system_drop_column_family_result extends TBase {
           'var' => 'ire',
           'type' => TType::STRUCT,
           'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
           ),
         );
     }
@@ -3646,6 +4053,7 @@ class cassandra_Cassandra_system_add_keyspace_result extends TBase {
 
   public $success = null;
   public $ire = null;
+  public $sde = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3658,6 +4066,11 @@ class cassandra_Cassandra_system_add_keyspace_result extends TBase {
           'var' => 'ire',
           'type' => TType::STRUCT,
           'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
           ),
         );
     }
@@ -3716,6 +4129,7 @@ class cassandra_Cassandra_system_drop_keyspace_result extends TBase {
 
   public $success = null;
   public $ire = null;
+  public $sde = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3728,6 +4142,11 @@ class cassandra_Cassandra_system_drop_keyspace_result extends TBase {
           'var' => 'ire',
           'type' => TType::STRUCT,
           'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
           ),
         );
     }
@@ -3787,6 +4206,7 @@ class cassandra_Cassandra_system_update_keyspace_result extends TBase {
 
   public $success = null;
   public $ire = null;
+  public $sde = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3799,6 +4219,11 @@ class cassandra_Cassandra_system_update_keyspace_result extends TBase {
           'var' => 'ire',
           'type' => TType::STRUCT,
           'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
           ),
         );
     }
@@ -3858,6 +4283,7 @@ class cassandra_Cassandra_system_update_column_family_result extends TBase {
 
   public $success = null;
   public $ire = null;
+  public $sde = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3870,6 +4296,11 @@ class cassandra_Cassandra_system_update_column_family_result extends TBase {
           'var' => 'ire',
           'type' => TType::STRUCT,
           'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
           ),
         );
     }
@@ -3888,6 +4319,100 @@ class cassandra_Cassandra_system_update_column_family_result extends TBase {
   }
   public function write($output) {
     return $this->_write('Cassandra_system_update_column_family_result', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_Cassandra_execute_cql_query_args extends TBase {
+  static $_TSPEC;
+
+  public $query = null;
+  public $compression = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'query',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'compression',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'Cassandra_execute_cql_query_args';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('Cassandra_execute_cql_query_args', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('Cassandra_execute_cql_query_args', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_Cassandra_execute_cql_query_result extends TBase {
+  static $_TSPEC;
+
+  public $success = null;
+  public $ire = null;
+  public $ue = null;
+  public $te = null;
+  public $sde = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_CqlResult',
+          ),
+        1 => array(
+          'var' => 'ire',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_InvalidRequestException',
+          ),
+        2 => array(
+          'var' => 'ue',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_UnavailableException',
+          ),
+        3 => array(
+          'var' => 'te',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_TimedOutException',
+          ),
+        4 => array(
+          'var' => 'sde',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_SchemaDisagreementException',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'Cassandra_execute_cql_query_result';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('Cassandra_execute_cql_query_result', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('Cassandra_execute_cql_query_result', self::$_TSPEC, $output);
   }
 }
 
