@@ -532,6 +532,36 @@ class ColumnFamily {
     }
 
     /**
+     * Increment or decrement a counter.
+     *
+     * `value` should be an integer, either positive or negative, to be added
+     * to a counter column. By default, `value` is 1.
+     *
+     * This method is not idempotent. Retrying a failed add may result
+     * in a double count. You should consider using a separate
+     * ConnectionPool with retries disabled for column families
+     * with counters.
+     *
+     * Only available in Cassandra 0.8.0 and later.
+     *
+     * @param string $key the row to insert or update the columns in
+     * @param mixed $column the column name of the counter
+     * @param int $value the amount to adjust the counter by
+     * @param mixed $super_column the super column to use if this is a
+     *        super column family
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     */
+    public function add($key, $column, $value=1, $super_column=null,
+                        $write_consistency_level=null) {
+        
+        $column_parent = $this->create_column_parent($super_column);
+        $column = $this->pack_name($column);
+        $this->pool->call("add", $key, $cp, new CounterColumn($column, $value),
+                          $this->wcl($write_consistency_level));
+    }
+
+    /**
      * Insert or update columns in multiple rows. Note that this operation is only atomic
      * per row.
      *
