@@ -14,27 +14,32 @@ class TestColumnFamily extends UnitTestCase {
     private static $KS = "TestColumnFamily";
 
     public function __construct() {
-        $this->sys = new SystemManager();
+        try {
+            $this->sys = new SystemManager();
 
-        $ksdefs = $this->sys->describe_keyspaces();
-        $exists = False;
-        foreach ($ksdefs as $ksdef)
-            $exists = $exists || $ksdef->name == self::$KS;
+            $ksdefs = $this->sys->describe_keyspaces();
+            $exists = False;
+            foreach ($ksdefs as $ksdef)
+                $exists = $exists || $ksdef->name == self::$KS;
 
-        if ($exists)
-            $this->sys->drop_keyspace(self::$KS);
+            if ($exists)
+                $this->sys->drop_keyspace(self::$KS);
 
-        $this->sys->create_keyspace(self::$KS, array());
+            $this->sys->create_keyspace(self::$KS, array());
 
-        $cfattrs = array("column_type" => "Standard");
-        $this->sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
+            $cfattrs = array("column_type" => "Standard");
+            $this->sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
 
-        $this->sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
-        $this->sys->create_index(self::$KS, 'Indexed1', 'birthdate',
-                                 DataType::LONG_TYPE);
+            $this->sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
+            $this->sys->create_index(self::$KS, 'Indexed1', 'birthdate',
+                                     DataType::LONG_TYPE);
 
-        $this->pool = new ConnectionPool(self::$KS);
-        $this->cf = new ColumnFamily($this->pool, 'Standard1');
+            $this->pool = new ConnectionPool(self::$KS);
+            $this->cf = new ColumnFamily($this->pool, 'Standard1');
+        } catch (Exception $e) {
+            print($e);
+            throw $e;
+        }
 
         parent::__construct();
     }
