@@ -635,6 +635,31 @@ class ColumnFamily {
     }
 
     /**
+     * Remove a counter at the specified location.
+     *
+     * Note that counters have limited support for deletes: if you remove a
+     * counter, you must wait to issue any following update until the delete
+     * has reached all the nodes and all of them have been fully compacted.
+     *
+     * Available in Cassandra 0.8.0 and later.
+     *
+     * @param string $key the row to insert or update the columns in
+     * @param mixed $column the column name of the counter
+     * @param mixed $super_column the super column to use if this is a
+     *        super column family
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     */
+    public function remove_counter($key, $column, $super_column=null,
+                                   $write_consistency_level=null) {
+        $cp = new cassandra_ColumnPath();
+        $cp->column_family = $this->column_family;
+        $cp->super_column = $this->pack_name($super_column, true);
+        $cp->column = $this->pack_name($column);
+        $this->pool->call("remove_counter", $key, $cp, $this->wcl($write_consistency_level));
+    }
+
+    /**
      * Mark the entire column family as deleted.
      *
      * From the user's perspective a successful call to truncate will result
