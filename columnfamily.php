@@ -555,10 +555,11 @@ class ColumnFamily {
     public function add($key, $column, $value=1, $super_column=null,
                         $write_consistency_level=null) {
         
-        $column_parent = $this->create_column_parent($super_column);
-        $column = $this->pack_name($column);
-        $this->pool->call("add", $key, $cp, new CounterColumn($column, $value),
-                          $this->wcl($write_consistency_level));
+        $cp = $this->create_column_parent($super_column);
+        $counter = new cassandra_CounterColumn();
+        $counter->name = $this->pack_name($column);
+        $counter->value = $value;
+        $this->pool->call("add", $key, $cp, $counter, $this->wcl($write_consistency_level));
     }
 
     /**
@@ -984,6 +985,17 @@ class ColumnFamily {
                 $columns = $c_or_sc->super_column->columns;
                 $ret[$name] = $this->columns_to_array($columns);
             }
+        } else if ($first->counter_column) {
+            foreach($array_of_c_or_sc as $c_or_sc) {
+                $name = $this->unpack_name($c_or_sc->counter_column->name, false);
+                $ret[$name] = $c_or_sc->counter_column->value;
+            }
+        } else { // counter_super_column
+            foreach($array_of_c_or_sc as $c_or_sc) {
+                $name = $this->unpack_name($c_or_sc->counter_super_column->name, true);
+                $columns = $c_or_sc->counter_super_column->columns;
+                $ret[$name] = $this->counter_columns_to_array($columns);
+            }
         }
         return $ret;
     }
@@ -1002,6 +1014,15 @@ class ColumnFamily {
                 $value = $this->unpack_value($c->value, $c->name);
                 $ret[$name] = $value;
             }
+        }
+        return $ret;
+    }
+
+    private function counter_columns_to_array($array_of_c) {
+        $ret = array();
+        foreach($array_of_c as $c) {
+            $name = $this->unpack_name($c->name, false);
+            $ret[$name] = $c->value;
         }
         return $ret;
     }
