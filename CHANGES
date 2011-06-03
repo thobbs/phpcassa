@@ -1,6 +1,60 @@
 Changelog
 =========
 
+Changes in 0.8.a.1
+------------------
+This release adds support for Cassandra 0.8. This release is
+backwards compatible with Cassandra 0.7, and supports a cluster
+with a mixture of nodes running 0.7 and 0.8.
+
+Features
+^^^^^^^^
+- Added ColumnFamily.add() and remove_counter() to work with 0.8
+  counters.
+
+- Support for the 0.8 column family attribute key_validation_class.
+  Keys may now be automatically packed and upacked, similar to column
+  names and values.
+
+- Addition of sysmanager.php and the SystemManager class. This class
+  makes it much easier to dynamically create, alter, and drop keyspaces,
+  column families, and secondary indexes.
+
+- New ConnectionPools are no longer automatically filled upon creation.
+  The method ConnectionPool.fill() was added as an alternative way to
+  supply this functionality.
+
+Bugfixes
+^^^^^^^^
+- Handle NotFoundException and other Exceptions cleanly in ConnectionPool.
+  Previously, these could result in a slow drain of connections from the
+  pool.
+
+- The default ColumnFamily buffer_size has been lowered from 8096 to 1024.
+
+Deprecated
+^^^^^^^^^^
+- The ColumnFamily constructor arguments $autopack_names and $autopack_values
+  are deprecated. Use set_autopack_names() and
+  set_autopack_values() after creating the ColumnFamily instead.
+
+- The ColumnFamily constructor argument $buffer_size has been deprecated.
+  The public attribute $buffer_size should be set instead.
+
+- The ColumnFamily constructor arguments $read_consistency_level
+  and $write_consistency_level have been deprecated.
+  The public attributes of the same names should be set instead. Both
+  attributes still default to ConsistencyLevel ONE.
+
+- The ConnectionPool constructor argument $framed_transport is deprecated;
+  framed transport will be assumed in later versions.
+
+- The ConnectionPool constructor argument $max_retries is deprecated;
+  adjust the public attribue of the same name instead.
+
+- The ConnectionPool constructor argument $recycle is deprecated;
+  adjust the public attribue of the same name instead.
+
 Changes in 0.7.a.4
 ------------------
 
