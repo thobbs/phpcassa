@@ -125,7 +125,7 @@ class ColumnFamily {
     /** The maximum number that can be returned by get_count(). */
     const MAX_COUNT = 2147483647; # 2^31 - 1
 
-    const DEFAULT_BUFFER_SIZE = 8096;
+    const DEFAULT_BUFFER_SIZE = 1024;
 
     public $client;
     private $column_family;
@@ -134,6 +134,7 @@ class ColumnFamily {
     private $col_name_type;
     private $supercol_name_type;
     private $col_type_dict;
+
 
     public $autopack_names;
     public $autopack_values;
@@ -147,6 +148,14 @@ class ColumnFamily {
     /** @var bool If true, column values in data fetching operations will be
      * replaced by an array of the form array(column_value, column_timestamp). */
     public $include_timestamp = false;
+
+    /** 
+     * @var int When calling `get_range`, the intermediate results need
+     *       to be buffered if we are fetching many rows, otherwise the Cassandra
+     *       server will overallocate memory and fail.  This is the size of
+     *       that buffer in number of rows. The default is 1024.
+     */
+    public $buffer_size = 1024;
 
     /**
      * Constructs a ColumnFamily.
