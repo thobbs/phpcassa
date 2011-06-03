@@ -135,11 +135,8 @@ class ColumnFamily {
     private $supercol_name_type;
     private $col_type_dict;
 
-    /** @var bool whether or not column names are automatically packed/unpacked */
     public $autopack_names;
-    /** @var bool whether or not column values are automatically packed/unpacked */
     public $autopack_values;
-    /** @var bool whether or not row keys are automatically packed/unpacked */
     public $autopack_keys;
 
     /** @var cassandra_ConsistencyLevel the default read consistency level */
@@ -211,6 +208,9 @@ class ColumnFamily {
         $this->set_autopack_keys(true);
     }
 
+    /**
+     * @param bool $pack_names whether or not column names are automatically packed/unpacked
+     */
     public function set_autopack_names($pack_names) {
         if ($pack_names) {
             if ($this->autopack_names)
@@ -227,6 +227,9 @@ class ColumnFamily {
         }
     }
 
+    /**
+     * @param bool $pack_values whether or not column values are automatically packed/unpacked
+     */
     public function set_autopack_values($pack_values) {
         if ($pack_values) {
             $this->autopack_values = true;
@@ -240,6 +243,11 @@ class ColumnFamily {
         }
     }
 
+    /**
+     * @param bool $pack_keys whether or not keys are automatically packed/unpacked
+     *
+     * Available since Cassandra 0.8.0.
+     */
     public function set_autopack_keys($pack_keys) {
         if ($pack_keys) {
             $this->autopack_keys = true;
