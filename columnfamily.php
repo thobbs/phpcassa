@@ -139,6 +139,9 @@ class ColumnFamily {
     public $autopack_names;
     /** @var bool whether or not column values are automatically packed/unpacked */
     public $autopack_values;
+    /** @var bool whether or not row keys are automatically packed/unpacked */
+    public $autopack_keys;
+
     /** @var cassandra_ConsistencyLevel the default read consistency level */
     public $read_consistency_level;
     /** @var cassandra_ConsistencyLevel the default write consistency level */
@@ -178,16 +181,9 @@ class ColumnFamily {
 
         $this->pool = $pool;
         $this->column_family = $column_family;
-        $this->autopack_names = $autopack_names;
-        $this->autopack_values = $autopack_values;
         $this->read_consistency_level = $read_consistency_level;
         $this->write_consistency_level = $write_consistency_level;
         $this->buffer_size = $buffer_size;
-
-        $this->cf_data_type = 'BytesType';
-        $this->col_name_type = 'BytesType';
-        $this->supercol_name_type = 'BytesType';
-        $this->col_type_dict = array();
 
         $ks = $this->pool->describe_keyspace();
 
@@ -200,22 +196,60 @@ class ColumnFamily {
         }
         if ($cf_def == null)
             throw new cassandra_NotFoundException();
+        else
+            $this->cfdef = $cf_def;
 
-        $this->is_super = $cf_def->column_type == 'Super';       
-        if ($this->autopack_names) {
+        $this->cf_data_type = 'BytesType';
+        $this->col_name_type = 'BytesType';
+        $this->supercol_name_type = 'BytesType';
+        $this->key_type = 'BytesType';
+        $this->col_type_dict = array();
+
+        $this->is_super = $this->cfdef->column_type === 'Super';       
+        $this->set_autopack_names($autopack_names);
+        $this->set_autopack_values($autopack_values);
+        $this->set_autopack_keys(true);
+    }
+
+    public function set_autopack_names($pack_names) {
+        if ($pack_names) {
+            if ($this->autopack_names)
+                return;
+            $this->autopack_names = true;
             if (!$this->is_super) {
-                $this->col_name_type = self::extract_type_name($cfdef->comparator_type);
+                $this->col_name_type = self::extract_type_name($this->cfdef->comparator_type);
             } else {
-                $this->col_name_type = self::extract_type_name($cfdef->subcomparator_type);
-                $this->supercol_name_type = self::extract_type_name($cfdef->comparator_type);
+                $this->col_name_type = self::extract_type_name($this->cfdef->subcomparator_type);
+                $this->supercol_name_type = self::extract_type_name($this->cfdef->comparator_type);
             }
+        } else {
+            $this->autopack_names = false;
         }
-        if ($this->autopack_values) {
-            $this->cf_data_type = self::extract_type_name($cfdef->default_validation_class);
-            foreach($cfdef->column_metadata as $coldef) {
+    }
+
+    public function set_autopack_values($pack_values) {
+        if ($pack_values) {
+            $this->autopack_values = true;
+            $this->cf_data_type = self::extract_type_name($this->cfdef->default_validation_class);
+            foreach($this->cfdef->column_metadata as $coldef) {
                 $this->col_type_dict[$coldef->name] =
                         self::extract_type_name($coldef->validation_class);
             }
+        } else {
+            $this->autopack_values = false;
+        }
+    }
+
+    public function set_autopack_keys($pack_keys) {
+        if ($pack_keys) {
+            $this->autopack_keys = true;
+            if (property_exists(cassandra_CfDef "key_validation_class")) {
+                $this->key_type = self::extract_type_name($this->cfdef->key_validation_class);
+            } else {
+                $this->key_type = 'BytesType';
+            }
+        } else {
+            $this->autopack_keys = false;
         }
     }
 
