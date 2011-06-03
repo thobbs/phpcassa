@@ -288,6 +288,21 @@ class SystemManager {
                 case "memtable_operations_in_millions":
                     $cfdef->memtable_operations_in_millions = $value;
                     break;
+                case "replicate_on_write":
+                    $cfdef->replicate_on_write = $value;
+                    break;
+                case "merge_shards_chance":
+                    $cfdef->merge_shards_chance = $value;
+                    break;
+                case "key_validation_class":
+                    $cfdef->key_validation_class = $value;
+                    break;
+                case "row_cache_provider":
+                    $cfdef->row_cache_provider = $value;
+                    break;
+                case "key_alias":
+                    $cfdef->key_alias = $value;
+                    break;
                 default:
                     throw new InvalidArgumentException(
                         "$attr is not a valid column family attribute."
