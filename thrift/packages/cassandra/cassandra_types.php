@@ -73,6 +73,37 @@ final class cassandra_IndexType {
   );
 }
 
+$GLOBALS['cassandra_E_Compression'] = array(
+  'GZIP' => 1,
+  'NONE' => 2,
+);
+
+final class cassandra_Compression {
+  const GZIP = 1;
+  const NONE = 2;
+  static public $__names = array(
+    1 => 'GZIP',
+    2 => 'NONE',
+  );
+}
+
+$GLOBALS['cassandra_E_CqlResultType'] = array(
+  'ROWS' => 1,
+  'VOID' => 2,
+  'INT' => 3,
+);
+
+final class cassandra_CqlResultType {
+  const ROWS = 1;
+  const VOID = 2;
+  const INT = 3;
+  static public $__names = array(
+    1 => 'ROWS',
+    2 => 'VOID',
+    3 => 'INT',
+  );
+}
+
 class cassandra_Column extends TBase {
   static $_TSPEC;
 
@@ -162,11 +193,92 @@ class cassandra_SuperColumn extends TBase {
   }
 }
 
+class cassandra_CounterColumn extends TBase {
+  static $_TSPEC;
+
+  public $name = null;
+  public $value = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'name',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'value',
+          'type' => TType::I64,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'CounterColumn';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('CounterColumn', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('CounterColumn', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_CounterSuperColumn extends TBase {
+  static $_TSPEC;
+
+  public $name = null;
+  public $columns = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'name',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'columns',
+          'type' => TType::LST,
+          'etype' => TType::STRUCT,
+          'elem' => array(
+            'type' => TType::STRUCT,
+            'class' => 'cassandra_CounterColumn',
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'CounterSuperColumn';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('CounterSuperColumn', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('CounterSuperColumn', self::$_TSPEC, $output);
+  }
+}
+
 class cassandra_ColumnOrSuperColumn extends TBase {
   static $_TSPEC;
 
   public $column = null;
   public $super_column = null;
+  public $counter_column = null;
+  public $counter_super_column = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -180,6 +292,16 @@ class cassandra_ColumnOrSuperColumn extends TBase {
           'var' => 'super_column',
           'type' => TType::STRUCT,
           'class' => 'cassandra_SuperColumn',
+          ),
+        3 => array(
+          'var' => 'counter_column',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_CounterColumn',
+          ),
+        4 => array(
+          'var' => 'counter_super_column',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_CounterSuperColumn',
           ),
         );
     }
@@ -366,6 +488,30 @@ class cassandra_AuthorizationException extends TException {
   }
   public function write($output) {
     return $this->_write('AuthorizationException', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_SchemaDisagreementException extends TException {
+  static $_TSPEC;
+
+
+  public function __construct() {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        );
+    }
+  }
+
+  public function getName() {
+    return 'SchemaDisagreementException';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('SchemaDisagreementException', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('SchemaDisagreementException', self::$_TSPEC, $output);
   }
 }
 
@@ -995,6 +1141,11 @@ class cassandra_CfDef extends TBase {
   public $memtable_flush_after_mins = null;
   public $memtable_throughput_in_mb = null;
   public $memtable_operations_in_millions = null;
+  public $replicate_on_write = null;
+  public $merge_shards_chance = null;
+  public $key_validation_class = null;
+  public $row_cache_provider = "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider";
+  public $key_alias = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1084,6 +1235,26 @@ class cassandra_CfDef extends TBase {
           'var' => 'memtable_operations_in_millions',
           'type' => TType::DOUBLE,
           ),
+        24 => array(
+          'var' => 'replicate_on_write',
+          'type' => TType::BOOL,
+          ),
+        25 => array(
+          'var' => 'merge_shards_chance',
+          'type' => TType::DOUBLE,
+          ),
+        26 => array(
+          'var' => 'key_validation_class',
+          'type' => TType::STRING,
+          ),
+        27 => array(
+          'var' => 'row_cache_provider',
+          'type' => TType::STRING,
+          ),
+        28 => array(
+          'var' => 'key_alias',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -1166,6 +1337,95 @@ class cassandra_KsDef extends TBase {
   }
   public function write($output) {
     return $this->_write('KsDef', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_CqlRow extends TBase {
+  static $_TSPEC;
+
+  public $key = null;
+  public $columns = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'key',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'columns',
+          'type' => TType::LST,
+          'etype' => TType::STRUCT,
+          'elem' => array(
+            'type' => TType::STRUCT,
+            'class' => 'cassandra_Column',
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'CqlRow';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('CqlRow', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('CqlRow', self::$_TSPEC, $output);
+  }
+}
+
+class cassandra_CqlResult extends TBase {
+  static $_TSPEC;
+
+  public $type = null;
+  public $rows = null;
+  public $num = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
+        2 => array(
+          'var' => 'rows',
+          'type' => TType::LST,
+          'etype' => TType::STRUCT,
+          'elem' => array(
+            'type' => TType::STRUCT,
+            'class' => 'cassandra_CqlRow',
+            ),
+          ),
+        3 => array(
+          'var' => 'num',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'CqlResult';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('CqlResult', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('CqlResult', self::$_TSPEC, $output);
   }
 }
 

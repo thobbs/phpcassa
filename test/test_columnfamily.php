@@ -14,27 +14,32 @@ class TestColumnFamily extends UnitTestCase {
     private static $KS = "TestColumnFamily";
 
     public function __construct() {
-        $this->sys = new SystemManager();
+        try {
+            $this->sys = new SystemManager();
 
-        $ksdefs = $this->sys->describe_keyspaces();
-        $exists = False;
-        foreach ($ksdefs as $ksdef)
-            $exists = $exists || $ksdef->name == self::$KS;
+            $ksdefs = $this->sys->describe_keyspaces();
+            $exists = False;
+            foreach ($ksdefs as $ksdef)
+                $exists = $exists || $ksdef->name == self::$KS;
 
-        if ($exists)
-            $this->sys->drop_keyspace(self::$KS);
+            if ($exists)
+                $this->sys->drop_keyspace(self::$KS);
 
-        $this->sys->create_keyspace(self::$KS, array());
+            $this->sys->create_keyspace(self::$KS, array());
 
-        $cfattrs = array("column_type" => "Standard");
-        $this->sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
+            $cfattrs = array("column_type" => "Standard");
+            $this->sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
 
-        $this->sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
-        $this->sys->create_index(self::$KS, 'Indexed1', 'birthdate',
-                                 DataType::LONG_TYPE);
+            $this->sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
+            $this->sys->create_index(self::$KS, 'Indexed1', 'birthdate',
+                                     DataType::LONG_TYPE);
 
-        $this->pool = new ConnectionPool(self::$KS);
-        $this->cf = new ColumnFamily($this->pool, 'Standard1');
+            $this->pool = new ConnectionPool(self::$KS);
+            $this->cf = new ColumnFamily($this->pool, 'Standard1');
+        } catch (Exception $e) {
+            print($e);
+            throw $e;
+        }
 
         parent::__construct();
     }
@@ -607,4 +612,154 @@ class TestSuperColumnFamily extends UnitTestCase {
         self::assertEqual($this->cf->get($key), array('2' => array('sub4' => 'val4')));
     }
 }
+
+class TestCounterColumnFamily extends UnitTestCase {
+
+    private $pool;
+    private $cf;
+    private $sys;
+
+    private static $KS = "TestCounterColumnFamily";
+
+    public function __construct() {
+        try {
+            $this->sys = new SystemManager();
+
+            $ksdefs = $this->sys->describe_keyspaces();
+            $exists = False;
+            foreach ($ksdefs as $ksdef)
+                $exists = $exists || $ksdef->name == self::$KS;
+
+            if (!$exists) {
+                $this->sys->create_keyspace(self::$KS, array());
+
+                $cfattrs = array("default_validation_class" => "CounterColumnType");
+                $this->sys->create_column_family(self::$KS, 'Counter1', $cfattrs);
+            }
+
+            $this->pool = new ConnectionPool(self::$KS);
+            $this->cf = new ColumnFamily($this->pool, 'Counter1');
+        } catch (Exception $e) {
+            print($e);
+            throw $e;
+        }
+
+        parent::__construct();
+    }
+
+    public function __destruct() {
+        $this->sys->drop_keyspace(self::$KS);
+        $this->pool->dispose();
+    }
+
+    public function test_add() {
+        $key = "test_add";
+        $this->cf->add($key, "col");
+        $result = $this->cf->get($key, array("col"));
+        self::assertEqual($result, array("col" => 1));
+
+        $this->cf->add($key, "col", 2);
+        $result = $this->cf->get($key, array("col"));
+        self::assertEqual($result, array("col" => 3));
+
+        $this->cf->add($key, "col2", 5);
+        $result = $this->cf->get($key);
+        self::assertEqual($result, array("col" => 3, "col2" => 5));
+    }
+
+    public function test_remove_counter() {
+        $key = "test_remove_counter";
+        $this->cf->add($key, "col");
+        $result = $this->cf->get($key, array("col"));
+        self::assertEqual($result, array("col" => 1));
+
+        $this->cf->remove_counter($key, "col");
+        try {
+            $result = $this->cf->get($key, array("col"));
+            assert(false);
+        } catch (cassandra_NotFoundException $e) { }
+    }
+
+}
+
+class TestSuperCounterColumnFamily extends UnitTestCase {
+
+    private $pool;
+    private $cf;
+    private $sys;
+
+    private static $KS = "TestSuperCounterColumnFamily";
+
+    public function __construct() {
+        try {
+            $this->sys = new SystemManager();
+
+            $ksdefs = $this->sys->describe_keyspaces();
+            $exists = False;
+            foreach ($ksdefs as $ksdef)
+                $exists = $exists || $ksdef->name == self::$KS;
+
+            if (!$exists) {
+                $this->sys->create_keyspace(self::$KS, array());
+
+                $cfattrs = array();
+                $cfattrs["column_type"] = "Super";
+                $cfattrs["default_validation_class"] = "CounterColumnType";
+                $this->sys->create_column_family(self::$KS, 'SuperCounter1', $cfattrs);
+            }
+
+            $this->pool = new ConnectionPool(self::$KS);
+            $this->cf = new ColumnFamily($this->pool, 'SuperCounter1');
+        } catch (Exception $e) {
+            print($e);
+            throw $e;
+        }
+
+        parent::__construct();
+    }
+
+    public function __destruct() {
+        $this->sys->drop_keyspace(self::$KS);
+        $this->pool->dispose();
+    }
+
+    public function test_add() {
+        $key = "test_add";
+        $this->cf->add($key, "col", 1, "supercol");
+        $result = $this->cf->get($key, array("supercol"));
+        self::assertEqual($result, array("supercol" => array("col" => 1)));
+
+        $this->cf->add($key, "col", 2, "supercol");
+        $result = $this->cf->get($key, array("supercol"));
+        self::assertEqual($result, array("supercol" => array("col" => 3)));
+
+        $this->cf->add($key, "col2", 5, "supercol");
+        $result = $this->cf->get($key);
+        self::assertEqual($result, array("supercol" => array("col" => 3, "col2" => 5)));
+        $result = $this->cf->get($key, null, "", "", False, 10, "supercol");
+        self::assertEqual($result, array("col" => 3, "col2" => 5));
+    }
+
+    public function test_remove_counter() {
+        $key = "test_remove_counter";
+        $this->cf->add($key, "col1", 1, "supercol");
+        $this->cf->add($key, "col2", 1, "supercol");
+        $result = $this->cf->get($key, array("supercol"));
+        self::assertEqual($result, array("supercol" => array("col1" => 1,
+                                                             "col2" => 1)));
+
+        $this->cf->remove_counter($key, "col1", "supercol");
+        $result = $this->cf->get($key, array("supercol"));
+        self::assertEqual($result, array("supercol" => array("col2" => 1)));
+
+        $this->cf->remove_counter($key, null, "supercol");
+        try {
+            $result = $this->cf->get($key, array("supercol"));
+            assert(false);
+        } catch (cassandra_NotFoundException $e) { }
+    }
+
+}
+
+
 ?>

@@ -125,7 +125,7 @@ class ColumnFamily {
     /** The maximum number that can be returned by get_count(). */
     const MAX_COUNT = 2147483647; # 2^31 - 1
 
-    const DEFAULT_BUFFER_SIZE = 8096;
+    const DEFAULT_BUFFER_SIZE = 1024;
 
     public $client;
     private $column_family;
@@ -135,10 +135,11 @@ class ColumnFamily {
     private $supercol_name_type;
     private $col_type_dict;
 
-    /** @var bool whether or not column names are automatically packed/unpacked */
+
     public $autopack_names;
-    /** @var bool whether or not column values are automatically packed/unpacked */
     public $autopack_values;
+    public $autopack_keys;
+
     /** @var cassandra_ConsistencyLevel the default read consistency level */
     public $read_consistency_level;
     /** @var cassandra_ConsistencyLevel the default write consistency level */
@@ -147,6 +148,14 @@ class ColumnFamily {
     /** @var bool If true, column values in data fetching operations will be
      * replaced by an array of the form array(column_value, column_timestamp). */
     public $include_timestamp = false;
+
+    /** 
+     * @var int When calling `get_range`, the intermediate results need
+     *       to be buffered if we are fetching many rows, otherwise the Cassandra
+     *       server will overallocate memory and fail.  This is the size of
+     *       that buffer in number of rows. The default is 1024.
+     */
+    public $buffer_size = 1024;
 
     /**
      * Constructs a ColumnFamily.
@@ -178,16 +187,9 @@ class ColumnFamily {
 
         $this->pool = $pool;
         $this->column_family = $column_family;
-        $this->autopack_names = $autopack_names;
-        $this->autopack_values = $autopack_values;
         $this->read_consistency_level = $read_consistency_level;
         $this->write_consistency_level = $write_consistency_level;
         $this->buffer_size = $buffer_size;
-
-        $this->cf_data_type = 'BytesType';
-        $this->col_name_type = 'BytesType';
-        $this->supercol_name_type = 'BytesType';
-        $this->col_type_dict = array();
 
         $ks = $this->pool->describe_keyspace();
 
@@ -200,22 +202,71 @@ class ColumnFamily {
         }
         if ($cf_def == null)
             throw new cassandra_NotFoundException();
+        else
+            $this->cfdef = $cf_def;
 
-        $this->is_super = $cf_def->column_type == 'Super';       
-        if ($this->autopack_names) {
+        $this->cf_data_type = 'BytesType';
+        $this->col_name_type = 'BytesType';
+        $this->supercol_name_type = 'BytesType';
+        $this->key_type = 'BytesType';
+        $this->col_type_dict = array();
+
+        $this->is_super = $this->cfdef->column_type === 'Super';       
+        $this->set_autopack_names($autopack_names);
+        $this->set_autopack_values($autopack_values);
+        $this->set_autopack_keys(true);
+    }
+
+    /**
+     * @param bool $pack_names whether or not column names are automatically packed/unpacked
+     */
+    public function set_autopack_names($pack_names) {
+        if ($pack_names) {
+            if ($this->autopack_names)
+                return;
+            $this->autopack_names = true;
             if (!$this->is_super) {
-                $this->col_name_type = self::extract_type_name($cfdef->comparator_type);
+                $this->col_name_type = self::extract_type_name($this->cfdef->comparator_type);
             } else {
-                $this->col_name_type = self::extract_type_name($cfdef->subcomparator_type);
-                $this->supercol_name_type = self::extract_type_name($cfdef->comparator_type);
+                $this->col_name_type = self::extract_type_name($this->cfdef->subcomparator_type);
+                $this->supercol_name_type = self::extract_type_name($this->cfdef->comparator_type);
             }
+        } else {
+            $this->autopack_names = false;
         }
-        if ($this->autopack_values) {
-            $this->cf_data_type = self::extract_type_name($cfdef->default_validation_class);
-            foreach($cfdef->column_metadata as $coldef) {
+    }
+
+    /**
+     * @param bool $pack_values whether or not column values are automatically packed/unpacked
+     */
+    public function set_autopack_values($pack_values) {
+        if ($pack_values) {
+            $this->autopack_values = true;
+            $this->cf_data_type = self::extract_type_name($this->cfdef->default_validation_class);
+            foreach($this->cfdef->column_metadata as $coldef) {
                 $this->col_type_dict[$coldef->name] =
                         self::extract_type_name($coldef->validation_class);
             }
+        } else {
+            $this->autopack_values = false;
+        }
+    }
+
+    /**
+     * @param bool $pack_keys whether or not keys are automatically packed/unpacked
+     *
+     * Available since Cassandra 0.8.0.
+     */
+    public function set_autopack_keys($pack_keys) {
+        if ($pack_keys) {
+            $this->autopack_keys = true;
+            if (property_exists('cassandra_CfDef', "key_validation_class")) {
+                $this->key_type = self::extract_type_name($this->cfdef->key_validation_class);
+            } else {
+                $this->key_type = 'BytesType';
+            }
+        } else {
+            $this->autopack_keys = false;
         }
     }
 
@@ -248,7 +299,9 @@ class ColumnFamily {
                                                    $column_reversed, $column_count);
 
         $resp = $this->pool->call("get_slice",
-            $key, $column_parent, $predicate,
+            $this->pack_key($key),
+            $column_parent,
+            $predicate,
             $this->rcl($read_consistency_level));
 
         if (count($resp) == 0)
@@ -294,11 +347,15 @@ class ColumnFamily {
             $ret[$key] = null;
         }
 
+        $cl = $this->rcl($read_consistency_level);
+
         $resp = array();
         if(count($keys) <= $buffer_size) {
             $resp = $this->pool->call("multiget_slice",
-                $keys, $column_parent, $predicate,
-                $this->rcl($read_consistency_level));
+                array_map(array($this, "pack_key"), $keys),
+                $column_parent,
+                $predicate,
+                $cl);
         } else {
             $subset_keys = array();
             $i = 0;
@@ -307,8 +364,10 @@ class ColumnFamily {
                 $subset_keys[] = $key;
                 if ($i == $buffer_size) {
                     $sub_resp = $this->pool->call("multiget_slice",
-                        $subset_keys, $column_parent, $predicate,
-                        $this->rcl($read_consistency_level));
+                        array_map(array($this, "pack_key"), $subset_keys),
+                        $column_parent,
+                        $predicate,
+                        $cl);
                     $subset_keys = array();
                     $i = 0;
                     $resp = array_merge($resp, $sub_resp);
@@ -316,8 +375,10 @@ class ColumnFamily {
             }
             if (count($subset_keys) != 0) {
                 $sub_resp = $this->pool->call("multiget_slice",
-                    $subset_keys, $column_parent, $predicate,
-                    $this->rcl($read_consistency_level));
+                    array_map(array($this, "pack_key"), $subset_keys),
+                    $column_parent,
+                    $predicate,
+                    $cl);
                 $resp = array_merge($resp, $sub_resp);
             }
         }
@@ -325,8 +386,9 @@ class ColumnFamily {
         $non_empty_keys = array();
         foreach($resp as $key => $val) {
             if (count($val) > 0) {
-                $non_empty_keys[] = $key;
-                $ret[$key] = $this->supercolumns_or_columns_to_array($val);
+                $unpacked_key = $this->unpack_key($key);
+                $non_empty_keys[] = $unpacked_key;
+                $ret[$unpacked_key] = $this->supercolumns_or_columns_to_array($val);
             }
         }
 
@@ -361,7 +423,8 @@ class ColumnFamily {
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    false, self::MAX_COUNT);
 
-        return $this->pool->call("get_count", $key, $column_parent, $predicate,
+        $packed_key = $this->pack_key($key);
+        return $this->pool->call("get_count", $packed_key, $column_parent, $predicate,
             $this->rcl($read_consistency_level));
     }
 
@@ -389,8 +452,15 @@ class ColumnFamily {
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    false, self::MAX_COUNT);
 
-        return $this->pool->call("multiget_count", $keys, $column_parent, $predicate,
+        $packed_keys = array_map(array($this, "pack_key"), $keys);
+        $results = $this->pool->call("multiget_count", $packed_keys, $column_parent, $predicate,
             $this->rcl($read_consistency_level));
+        $ret = array();
+        foreach ($results as $key => $count) {
+            $unpacked_key = $this->unpack_key($key);
+            $ret[$key] = $count;
+        }
+        return $ret;
     }
 
     /**
@@ -439,9 +509,11 @@ class ColumnFamily {
                                                    $column_finish, $column_reversed,
                                                    $column_count);
 
+        $packed_key_start = $this->pack_key($key_start);
+        $packed_key_finish = $this->pack_key($key_finish);
         return new RangeColumnFamilyIterator($this, $buffer_size,
-                                             $key_start, $key_finish, $row_count,
-                                             $column_parent, $predicate,
+                                             $packed_key_start, $packed_key_finish,
+                                             $row_count, $column_parent, $predicate,
                                              $this->rcl($read_consistency_level));
     }
 
@@ -490,7 +562,7 @@ class ColumnFamily {
             $new_expr->op = $expr->op;
             $new_clause->expressions[] = $new_expr;
         }
-        $new_clause->start_key = $index_clause->start_key;
+        $new_clause->start_key = $this->pack_key($index_clause->start_key);
         $new_clause->count = $index_clause->count;
 
         $column_parent = $this->create_column_parent($super_column);
@@ -526,9 +598,42 @@ class ColumnFamily {
             $timestamp = CassandraUtil::get_time();
 
         $cfmap = array();
-        $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
+        $packed_key = $this->pack_key($key);
+        $cfmap[$packed_key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
+    }
+
+    /**
+     * Increment or decrement a counter.
+     *
+     * `value` should be an integer, either positive or negative, to be added
+     * to a counter column. By default, `value` is 1.
+     *
+     * This method is not idempotent. Retrying a failed add may result
+     * in a double count. You should consider using a separate
+     * ConnectionPool with retries disabled for column families
+     * with counters.
+     *
+     * Only available in Cassandra 0.8.0 and later.
+     *
+     * @param string $key the row to insert or update the columns in
+     * @param mixed $column the column name of the counter
+     * @param int $value the amount to adjust the counter by
+     * @param mixed $super_column the super column to use if this is a
+     *        super column family
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     */
+    public function add($key, $column, $value=1, $super_column=null,
+                        $write_consistency_level=null) {
+        
+        $cp = $this->create_column_parent($super_column);
+        $packed_key = $this->pack_key($key);
+        $counter = new cassandra_CounterColumn();
+        $counter->name = $this->pack_name($column);
+        $counter->value = $value;
+        $this->pool->call("add", $packed_key, $cp, $counter, $this->wcl($write_consistency_level));
     }
 
     /**
@@ -550,8 +655,10 @@ class ColumnFamily {
             $timestamp = CassandraUtil::get_time();
 
         $cfmap = array();
-        foreach($rows as $key => $columns)
-            $cfmap[$key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
+        foreach($rows as $key => $columns) {
+            $packed_key = $this->pack_key($key);
+            $cfmap[$packed_key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
+        }
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
     }
@@ -570,6 +677,7 @@ class ColumnFamily {
     public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
 
         $timestamp = CassandraUtil::get_time();
+        $packed_key = $this->pack_key($key);
 
         if ($columns == null || count($columns) == 1)
         {
@@ -582,7 +690,7 @@ class ColumnFamily {
                 else
                     $cp->column = $this->pack_name($columns[0], false);
             }
-            return $this->pool->call("remove", $key, $cp, $timestamp,
+            return $this->pool->call("remove", $packed_key, $cp, $timestamp,
                 $this->wcl($write_consistency_level));
         }
 
@@ -599,9 +707,35 @@ class ColumnFamily {
         $mutation = new cassandra_Mutation();
         $mutation->deletion = $deletion;
 
-        $mut_map = array($key => array($this->column_family => array($mutation))); 
+        $mut_map = array($packed_key => array($this->column_family => array($mutation))); 
 
         return $this->pool->call("batch_mutate", $mut_map, $this->wcl($write_consistency_level));
+    }
+
+    /**
+     * Remove a counter at the specified location.
+     *
+     * Note that counters have limited support for deletes: if you remove a
+     * counter, you must wait to issue any following update until the delete
+     * has reached all the nodes and all of them have been fully compacted.
+     *
+     * Available in Cassandra 0.8.0 and later.
+     *
+     * @param string $key the row to insert or update the columns in
+     * @param mixed $column the column name of the counter
+     * @param mixed $super_column the super column to use if this is a
+     *        super column family
+     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     */
+    public function remove_counter($key, $column, $super_column=null,
+                                   $write_consistency_level=null) {
+        $cp = new cassandra_ColumnPath();
+        $packed_key = $this->pack_key($key);
+        $cp->column_family = $this->column_family;
+        $cp->super_column = $this->pack_name($super_column, true);
+        $cp->column = $this->pack_name($column);
+        $this->pool->call("remove_counter", $packed_key, $cp, $this->wcl($write_consistency_level));
     }
 
     /**
@@ -705,14 +839,6 @@ class ColumnFamily {
         else
             $d_type = $this->col_name_type;
 
-        if ($d_type == 'TimeUUIDType') {
-            if ($slice_end) {
-
-            } else {
-
-            }
-        }
-
         return $this->pack($value, $d_type);
     }
 
@@ -728,6 +854,18 @@ class ColumnFamily {
             $d_type = $this->col_name_type;
 
         return $this->unpack($b, $d_type);
+    }
+
+    public function pack_key($key) {
+        if (!$this->autopack_keys)
+            return $key;
+        return $this->pack($key, $this->key_type);
+    }
+
+    public function unpack_key($b) {
+        if (!$this->autopack_keys)
+            return $b;
+        return $this->unpack($b, $this->key_type);
     }
 
     private function get_data_type_for_col($col_name) {
@@ -896,7 +1034,7 @@ class ColumnFamily {
     public function keyslices_to_array($keyslices) {
         $ret = null;
         foreach($keyslices as $keyslice) {
-            $key = $keyslice->key;
+            $key = $this->unpack_key($keyslice->key);
             $columns = $keyslice->columns;
             $ret[$key] = $this->supercolumns_or_columns_to_array($columns);
         }
@@ -929,6 +1067,17 @@ class ColumnFamily {
                 $columns = $c_or_sc->super_column->columns;
                 $ret[$name] = $this->columns_to_array($columns);
             }
+        } else if ($first->counter_column) {
+            foreach($array_of_c_or_sc as $c_or_sc) {
+                $name = $this->unpack_name($c_or_sc->counter_column->name, false);
+                $ret[$name] = $c_or_sc->counter_column->value;
+            }
+        } else { // counter_super_column
+            foreach($array_of_c_or_sc as $c_or_sc) {
+                $name = $this->unpack_name($c_or_sc->counter_super_column->name, true);
+                $columns = $c_or_sc->counter_super_column->columns;
+                $ret[$name] = $this->counter_columns_to_array($columns);
+            }
         }
         return $ret;
     }
@@ -947,6 +1096,15 @@ class ColumnFamily {
                 $value = $this->unpack_value($c->value, $c->name);
                 $ret[$name] = $value;
             }
+        }
+        return $ret;
+    }
+
+    private function counter_columns_to_array($array_of_c) {
+        $ret = array();
+        foreach($array_of_c as $c) {
+            $name = $this->unpack_name($c->name, false);
+            $ret[$name] = $c->value;
         }
         return $ret;
     }
@@ -1163,7 +1321,7 @@ class RangeColumnFamilyIterator extends ColumnFamilyIterator {
         $this->expected_page_size = $buff_sz;
 
         $key_range = new cassandra_KeyRange();
-        $key_range->start_key = $this->next_start_key;
+        $key_range->start_key = $this->column_family->pack_key($this->next_start_key);
         $key_range->end_key = $this->key_finish;
         $key_range->count = $buff_sz;
 
@@ -1207,7 +1365,7 @@ class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
             $this->index_clause->count = $this->buffer_size;
         $this->expected_page_size = $this->index_clause->count;
 
-        $this->index_clause->start_key = $this->next_start_key;
+        $this->index_clause->start_key = $this->column_family->pack_key($this->next_start_key);
         $resp = $this->column_family->pool->call("get_indexed_slices",
                 $this->column_parent, $this->index_clause, $this->predicate,
                 $this->read_consistency_level);
