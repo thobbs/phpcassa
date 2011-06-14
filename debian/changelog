@@ -1,0 +1,5 @@
+phpcassa (0.7.a.4) unstable; urgency=low
+
+  * Initial packaging.
+
+ -- paul cannon <paul@datastax.com>  Tue, 14 Jun 2011 18:29:02 -0500

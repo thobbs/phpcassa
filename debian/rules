@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ 
+
+override_dh_auto_build:
+	cd thrift/ext/thrift_protocol && phpize
+	dh_auto_build -pphp5-phpcassa -Dthrift/ext/thrift_protocol
+	$(MAKE) -C doc html
+
+override_dh_auto_install:
+	dh_auto_install -pphp5-phpcassa -Dthrift/ext/thrift_protocol
+
+override_dh_install:
+	dh_install
+	rm debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/jquery.js
+	ln -s /usr/share/javascript/jquery/jquery.js debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/
+
+override_dh_installchangelogs:
+	dh_installchangelogs CHANGES
+
+override_dh_compress:
+	dh_compress -X phpcassa-doc/manual
+
+override_dh_clean:
+	dh_clean
+	$(RM) -r doc/_build
