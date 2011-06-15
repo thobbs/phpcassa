@@ -1,5 +1,25 @@
 #!/usr/bin/make -f
 
+THRIFTDIR=thrift/ext/thrift_protocol
+
+THRIFT_DETRITUS =   \
+    config.h        \
+    config.guess    \
+    config.h.in     \
+    config.nice     \
+    config.sub      \
+    configure       \
+    configure.in    \
+    install-sh      \
+    ltmain.sh       \
+    missing         \
+    mkinstalldirs   \
+    run-tests.php   \
+    Makefile.global \
+    acinclude.m4    \
+    aclocal.m4      \
+    build
+
 %:
 	dh $@ 
 
@@ -27,6 +47,8 @@ override_dh_installchangelogs:
 override_dh_compress:
 	dh_compress -X phpcassa-doc/manual
 
-override_dh_clean:
-	dh_clean
+override_dh_auto_clean:
+	dh_auto_clean
+	[ -e $(THRIFTDIR)/Makefile ] && $(MAKE) -C $(THRIFTDIR) distclean || true
+	cd $(THRIFTDIR) && $(RM) -r $(THRIFT_DETRITUS)
 	$(RM) -r doc/_build
