@@ -3,18 +3,23 @@
 %:
 	dh $@ 
 
+override_dh_auto_configure:
+	cd $(THRIFTDIR) && phpize
+	dh_auto_configure -pphp5-phpcassa -D$(THRIFTDIR)
+
 override_dh_auto_build:
-	cd thrift/ext/thrift_protocol && phpize
-	dh_auto_build -pphp5-phpcassa -Dthrift/ext/thrift_protocol
 	$(MAKE) -C doc html
+	dh_auto_build -pphp5-phpcassa -D$(THRIFTDIR)
 
 override_dh_auto_install:
-	dh_auto_install -pphp5-phpcassa -Dthrift/ext/thrift_protocol
+	INSTALL_ROOT=$(CURDIR)/debian/php5-phpcassa \
+	    dh_auto_install -pphp5-phpcassa -D$(THRIFTDIR)
 
 override_dh_install:
 	dh_install
 	rm debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/jquery.js
-	ln -s /usr/share/javascript/jquery/jquery.js debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/
+	ln -s /usr/share/javascript/jquery/jquery.js \
+	    debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/
 
 override_dh_installchangelogs:
 	dh_installchangelogs CHANGES
