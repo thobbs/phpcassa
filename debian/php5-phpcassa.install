@@ -1,0 +1,5 @@
+*.php                             /usr/share/php/phpcassa
+thrift/*.php                      /usr/share/php/phpcassa/thrift
+thrift/protocol/*.php             /usr/share/php/phpcassa/thrift/protocol
+thrift/transport/*.php            /usr/share/php/phpcassa/thrift/transport
+thrift/packages/cassandra/*.php   /usr/share/php/phpcassa/thrift/packages/cassandra
