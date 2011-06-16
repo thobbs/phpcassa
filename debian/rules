@@ -1,0 +1,56 @@
+#!/usr/bin/make -f
+
+THRIFTDIR=thrift/ext/thrift_protocol
+
+THRIFT_DETRITUS =   \
+    config.h        \
+    config.guess    \
+    config.h.in     \
+    config.nice     \
+    config.sub      \
+    configure       \
+    configure.in    \
+    install-sh      \
+    ltmain.sh       \
+    missing         \
+    mkinstalldirs   \
+    run-tests.php   \
+    Makefile.global \
+    acinclude.m4    \
+    aclocal.m4      \
+    build
+
+%:
+	dh $@ 
+
+override_dh_auto_configure:
+	cd $(THRIFTDIR) && phpize
+	dh_auto_configure -plibphpcassa-php5 -D$(THRIFTDIR)
+
+override_dh_auto_build:
+	$(MAKE) -C doc html
+	dh_auto_build -plibphpcassa-php5 -D$(THRIFTDIR)
+
+override_dh_auto_install:
+	INSTALL_ROOT=$(CURDIR)/debian/libphpcassa-php5 \
+	    dh_auto_install -plibphpcassa-php5 -D$(THRIFTDIR)
+	echo "php:Depends=phpapi-$$(/usr/bin/php-config5 --phpapi)" \
+	    >> debian/libphpcassa-php5.substvars
+
+override_dh_install:
+	dh_install
+	rm debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/jquery.js
+	ln -s /usr/share/javascript/jquery/jquery.js \
+	    debian/phpcassa-doc/usr/share/doc/phpcassa-doc/manual/static/
+
+override_dh_installchangelogs:
+	dh_installchangelogs CHANGES
+
+override_dh_compress:
+	dh_compress -X phpcassa-doc/manual
+
+override_dh_auto_clean:
+	dh_auto_clean
+	[ -e $(THRIFTDIR)/Makefile ] && $(MAKE) -C $(THRIFTDIR) distclean || true
+	cd $(THRIFTDIR) && $(RM) -r $(THRIFT_DETRITUS)
+	$(RM) -r doc/_build
