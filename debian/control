@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7.0.50~), python-sphinx, php5-dev
 Standards-Version: 3.9.1
 Homepage: https://github.com/thepaul/phpcassa
 
-Package: php5-phpcassa
+Package: libphpcassa-php5
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, php5
 Description: PHP client library for Apache Cassandra
@@ -19,7 +19,7 @@ Package: phpcassa-doc
 Architecture: all
 Section: doc
 Depends: libjs-jquery, ${misc:Depends}
-Suggests: php5-phpcassa
+Suggests: libphpcassa-php5
 Description: Documentation for phpcassa
  phpcassa allows interactions with and queries to an Apache Cassandra cluster
  from the PHP language.

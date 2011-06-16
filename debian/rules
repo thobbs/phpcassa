@@ -25,15 +25,15 @@ THRIFT_DETRITUS =   \
 
 override_dh_auto_configure:
 	cd $(THRIFTDIR) && phpize
-	dh_auto_configure -pphp5-phpcassa -D$(THRIFTDIR)
+	dh_auto_configure -plibphpcassa-php5 -D$(THRIFTDIR)
 
 override_dh_auto_build:
 	$(MAKE) -C doc html
-	dh_auto_build -pphp5-phpcassa -D$(THRIFTDIR)
+	dh_auto_build -plibphpcassa-php5 -D$(THRIFTDIR)
 
 override_dh_auto_install:
-	INSTALL_ROOT=$(CURDIR)/debian/php5-phpcassa \
-	    dh_auto_install -pphp5-phpcassa -D$(THRIFTDIR)
+	INSTALL_ROOT=$(CURDIR)/debian/libphpcassa-php5 \
+	    dh_auto_install -plibphpcassa-php5 -D$(THRIFTDIR)
 
 override_dh_install:
 	dh_install
