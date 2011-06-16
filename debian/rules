@@ -34,6 +34,8 @@ override_dh_auto_build:
 override_dh_auto_install:
 	INSTALL_ROOT=$(CURDIR)/debian/libphpcassa-php5 \
 	    dh_auto_install -plibphpcassa-php5 -D$(THRIFTDIR)
+	echo "php:Depends=phpapi-$$(/usr/bin/php-config5 --phpapi)" \
+	    >> debian/libphpcassa-php5.substvars
 
 override_dh_install:
 	dh_install

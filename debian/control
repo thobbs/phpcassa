@@ -8,7 +8,7 @@ Homepage: https://github.com/thobbs/phpcassa
 
 Package: libphpcassa-php5
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, php5
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${php:Depends}, php5
 Description: PHP client library for Apache Cassandra
  phpcassa allows interactions with and queries to an Apache Cassandra cluster
  from the PHP language.
