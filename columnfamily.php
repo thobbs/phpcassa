@@ -370,7 +370,7 @@ class ColumnFamily {
                         $cl);
                     $subset_keys = array();
                     $i = 0;
-                    $resp = array_merge($resp, $sub_resp);
+                    $resp = $resp + $sub_resp;
                 }
             }
             if (count($subset_keys) != 0) {
@@ -379,7 +379,7 @@ class ColumnFamily {
                     $column_parent,
                     $predicate,
                     $cl);
-                $resp = array_merge($resp, $sub_resp);
+                $resp = $resp + $sub_resp;
             }
         }
 

@@ -82,6 +82,19 @@ class TestColumnFamily extends UnitTestCase {
         self::assertEqual($rows[self::$KEYS[0]], $columns1);
         self::assertEqual($rows[self::$KEYS[1]], $columns2);
         self::assertFalse(in_array(self::$KEYS[2], $rows));
+
+        $keys = array();
+        for ($i = 0; $i < 100; $i++)
+            $keys[] = "key" + (string)$i;
+        foreach ($keys as $key) {
+            $this->cf->insert($key, $columns1);
+        }
+        $rows = $this->cf->multiget($keys);
+        self::assertEqual(count($rows), 100);
+
+        foreach ($keys as $key) {
+            $this->cf->remove($key);
+        }
     }
 
     public function test_batch_insert() {
