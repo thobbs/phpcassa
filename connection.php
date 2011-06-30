@@ -198,6 +198,8 @@ class ConnectionPool {
 
         if (is_null($pool_size))
             $this->pool_size = max(count($this->servers) * 2, 5);
+        else
+            $this->pool_size = $pool_size;
 
         $this->queue = array();
 
