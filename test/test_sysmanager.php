@@ -38,7 +38,7 @@ class TestSystemManager extends UnitTestCase {
         self::assertEqual($ksdef->name, $ksname);
         self::assertEqual($ksdef->replication_factor, 1);
 
-        $attrs["strategy_options"] = StrategyClass::OLD_NETWORK_TOPOLOGY_STRATEGY;
+        $attrs["strategy_class"] = StrategyClass::OLD_NETWORK_TOPOLOGY_STRATEGY;
         $this->sys->alter_keyspace($ksname, $attrs);
         $ksdef = $this->sys->describe_keyspace($ksname);
         self::assertEqual($ksdef->name, $ksname);
@@ -86,6 +86,16 @@ class TestSystemManager extends UnitTestCase {
             "name_index2");
 
         $this->sys->create_index($ksname, $cfname, "name3", DataType::ASCII_TYPE);
+
+        $this->sys->drop_index($ksname, $cfname, "name");
+        $this->sys->drop_index($ksname, $cfname, "name2");
+        $this->sys->drop_index($ksname, $cfname, "name3");
+        $cfdef = $this->get_cfdef($ksname, $cfname);
+        $col_meta = $cfdef->column_metadata;
+        for ($i = 0; $i < count($col_meta); $i++) {
+            $col = $col_meta[$i];
+            self::assertEqual($col->index_type, NULL);
+        }
 
         $this->sys->drop_column_family($ksname, $cfname);
 
