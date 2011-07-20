@@ -99,7 +99,7 @@ class CassandraUtil {
      * @return cassandra_IndexClause
      */
     static public function create_index_clause($expr_list, $start_key='',
-                                               $count=ColumnFamily::DEFAULT_COLUMN_COUNT) {
+                                               $count=ColumnFamily::DEFAULT_ROW_COUNT) {
         $ic = new cassandra_IndexClause();
         $ic->expressions = $expr_list;
         $ic->start_key = $start_key;
