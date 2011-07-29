@@ -275,7 +275,7 @@ class TException extends Exception {
       $vspec = $spec['val'];
     }
     $xfer += $output->writeMapBegin($ktype, $vtype, count($var));
-    foreach ($var as $key => $val) {
+    if($var) foreach ($var as $key => $val) {
       if (isset($kwrite)) {
         $xfer += $output->$kwrite($key);
       } else {
@@ -331,7 +331,7 @@ class TException extends Exception {
     } else {
       $xfer += $output->writeListBegin($etype, count($var));
     }
-    foreach ($var as $key => $val) {
+    if($var) foreach ($var as $key => $val) {
       $elem = $set ? $key : $val;
       if (isset($ewrite)) {
         $xfer += $output->$ewrite($elem);
@@ -363,7 +363,7 @@ class TException extends Exception {
   protected function _write($class, $spec, $output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin($class);
-    foreach ($spec as $fid => $fspec) {
+    if($spec) foreach ($spec as $fid => $fspec) {
       $var = $fspec['var'];
       if ($this->$var !== null) {
         $ftype = $fspec['type'];
@@ -613,7 +613,7 @@ abstract class TBase {
       $vspec = $spec['val'];
     }
     $xfer += $output->writeMapBegin($ktype, $vtype, count($var));
-    foreach ($var as $key => $val) {
+    if($var) foreach ($var as $key => $val) {
       if (isset($kwrite)) {
         $xfer += $output->$kwrite($key);
       } else {
@@ -669,7 +669,7 @@ abstract class TBase {
     } else {
       $xfer += $output->writeListBegin($etype, count($var));
     }
-    foreach ($var as $key => $val) {
+    if($var) foreach ($var as $key => $val) {
       $elem = $set ? $key : $val;
       if (isset($ewrite)) {
         $xfer += $output->$ewrite($elem);
@@ -701,7 +701,7 @@ abstract class TBase {
   protected function _write($class, $spec, $output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin($class);
-    foreach ($spec as $fid => $fspec) {
+    if($spec) foreach ($spec as $fid => $fspec) {
       $var = $fspec['var'];
       if ($this->$var !== null) {
         $ftype = $fspec['type'];
