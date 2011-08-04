@@ -203,12 +203,13 @@ class ConnectionPool {
 
         $this->queue = array();
 
-        // Randomly permute the server list
-        shuffle($this->servers);
         $this->list_position = 0;
     }
 
     private function make_conn() {
+        // Randomly permute the server list
+        shuffle($this->servers);
+
         // Keep trying to make a new connection, stopping after we've
         // tried every server twice
         $err = "";
