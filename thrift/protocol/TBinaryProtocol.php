@@ -137,6 +137,28 @@ class TBinaryProtocol extends TProtocol {
     return 4;
   }
 
+  /**
+   * Auto-generate timestamp.
+   */
+  public function writeTS() {
+    $sMicrotime = microtime();
+
+    list($usec, $sec) = explode(" ", $sMicrotime);
+
+    $iHi = (int)((float)$sec / 4294.967296);
+
+    $fRemain = (float)(((float)$sec - (float)$iHi * 4294.967296 + (float)$usec) * 100.0);
+    $iMed = (int)($fRemain / 6.5536);
+
+    $fRemain = (float)($fRemain - (float)$iMed * 6.5536);
+    $iLow = (int)($fRemain * 10000.0 + 0.5);
+
+    $data = (pack("N", $iHi) . pack("n", $iMed) . pack("n", $iLow));
+
+    $this->trans_->write($data, 8);
+    return 8;
+  }
+
   public function writeI64($value) {
     // If we are on a 32bit architecture we have to explicitly deal with
     // 64-bit twos-complement arithmetic since PHP wants to treat all ints
@@ -304,6 +326,10 @@ class TBinaryProtocol extends TProtocol {
       $value = 0 - (($value - 1) ^ 0xffffffff);
     }
     return 4;
+  }
+
+  public function readTS(&$value) {
+    return $this->readI64($value);
   }
 
   public function readI64(&$value) {
