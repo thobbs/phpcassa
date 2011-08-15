@@ -461,14 +461,14 @@ class ColumnFamily {
         $results = $this->pool->call("multiget_count", $packed_keys, $column_parent, $predicate,
             $this->rcl($read_consistency_level));
 			
-		$non_empty_keys = array();
+        $non_empty_keys = array();
         foreach ($results as $key => $count) {
             $unpacked_key = $this->unpack_key($key);
-			$non_empty_keys[$unpacked_key] = 1;
+            $non_empty_keys[$unpacked_key] = 1;
             $ret[$unpacked_key] = $count;
         }
 		
-		foreach($keys as $key) {
+        foreach($keys as $key) {
             if (!isset($non_empty_keys[$key]))
                 unset($ret[$key]);
         }
