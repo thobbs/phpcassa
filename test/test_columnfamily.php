@@ -32,7 +32,7 @@ class TestColumnFamily extends UnitTestCase {
 
             $this->sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
             $this->sys->create_index(self::$KS, 'Indexed1', 'birthdate',
-                                     DataType::LONG_TYPE);
+                                     DataType::LONG_TYPE, 'birthday_index');
 
             $this->pool = new ConnectionPool(self::$KS);
             $this->cf = new ColumnFamily($this->pool, 'Standard1');
@@ -89,8 +89,15 @@ class TestColumnFamily extends UnitTestCase {
         foreach ($keys as $key) {
             $this->cf->insert($key, $columns1);
         }
+        shuffle($keys);
         $rows = $this->cf->multiget($keys);
         self::assertEqual(count($rows), 100);
+
+        $i = 0;
+        foreach ($rows as $key => $cols) {
+            self::assertEqual($key, $keys[$i]);
+            $i++;
+        }
 
         foreach ($keys as $key) {
             $this->cf->remove($key);
@@ -156,6 +163,28 @@ class TestColumnFamily extends UnitTestCase {
         $result = $this->cf->multiget_count(self::$KEYS, $columns=array('1'));
         self::assertEqual(count($result), 3);
         self::assertEqual($result[self::$KEYS[0]], 1);
+
+        // Test that multiget_count preserves the key order
+        $columns = array('1' => 'val1', '2' => 'val2');
+        $keys = array();
+        for ($i = 0; $i < 100; $i++)
+            $keys[] = "key" + (string)$i;
+        foreach ($keys as $key) {
+            $this->cf->insert($key, $columns);
+        }
+        shuffle($keys);
+        $rows = $this->cf->multiget_count($keys);
+        self::assertEqual(count($rows), 100);
+
+        $i = 0;
+        foreach ($rows as $key => $count) {
+            self::assertEqual($key, $keys[$i]);
+            $i++;
+        }
+
+        foreach ($keys as $key) {
+            $this->cf->remove($key);
+        }
     }
 
     public function test_insert_get_range() {
