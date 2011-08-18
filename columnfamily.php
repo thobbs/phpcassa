@@ -448,11 +448,11 @@ class ColumnFamily {
                                    $super_column=null,
                                    $read_consistency_level=null) {
 
-		$ret = array();
+        $ret = array();
         foreach($keys as $key) {
             $ret[$key] = null;
         }
-								   
+
         $column_parent = $this->create_column_parent($super_column);
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    false, self::MAX_COUNT);
@@ -460,19 +460,19 @@ class ColumnFamily {
         $packed_keys = array_map(array($this, "pack_key"), $keys);
         $results = $this->pool->call("multiget_count", $packed_keys, $column_parent, $predicate,
             $this->rcl($read_consistency_level));
-			
+
         $non_empty_keys = array();
         foreach ($results as $key => $count) {
             $unpacked_key = $this->unpack_key($key);
             $non_empty_keys[$unpacked_key] = 1;
             $ret[$unpacked_key] = $count;
         }
-		
+
         foreach($keys as $key) {
             if (!isset($non_empty_keys[$key]))
                 unset($ret[$key]);
         }
-		
+
         return $ret;
     }
 
