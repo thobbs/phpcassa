@@ -42,6 +42,7 @@ class TType {
   const LST    = 15;    // N.B. cannot use LIST keyword in PHP!
   const UTF8   = 16;
   const UTF16  = 17;
+  const TS     = 30;     // Timestamp(Not supported by official)
 }
 
 /**
@@ -89,7 +90,8 @@ class TException extends Exception {
                           TType::I32    => 'I32',
                           TType::I64    => 'I64',
                           TType::DOUBLE => 'Double',
-                          TType::STRING => 'String');
+                          TType::STRING => 'String',
+                          TType::TS     => 'TS');
 
   private function _readMap(&$var, $spec, $input) {
     $xfer = 0;
@@ -274,7 +276,10 @@ class TException extends Exception {
     } else {
       $vspec = $spec['val'];
     }
-    $xfer += $output->writeMapBegin($ktype, $vtype, count($var));
+    if($vtype == TType::TS)     // Let server treat type 'TS' as 'I64'
+      $xfer += $output->writeMapBegin($ktype, TTYPE::I64, count($var));
+    else
+      $xfer += $output->writeMapBegin($ktype, $vtype, count($var));
     foreach ($var as $key => $val) {
       if (isset($kwrite)) {
         $xfer += $output->$kwrite($key);
@@ -327,11 +332,17 @@ class TException extends Exception {
       $espec = $spec['elem'];
     }
     if ($set) {
-      $xfer += $output->writeSetBegin($etype, count($var));
+      if($etype == TType::TS)     // Let server treat type 'TS' as 'I64'
+        $xfer += $output->writeSetBegin(TType::I64, count($var));
+      else
+        $xfer += $output->writeSetBegin($etype, count($var));
     } else {
-      $xfer += $output->writeListBegin($etype, count($var));
+      if($etype == TType::TS)     // Let server treat type 'TS' as 'I64'
+        $xfer += $output->writeListBegin(TType::I64, count($var));
+      else
+        $xfer += $output->writeListBegin($etype, count($var));
     }
-    foreach ($var as $key => $val) {
+    if($var) foreach ($var as $key => $val) {
       $elem = $set ? $key : $val;
       if (isset($ewrite)) {
         $xfer += $output->$ewrite($elem);
@@ -363,11 +374,14 @@ class TException extends Exception {
   protected function _write($class, $spec, $output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin($class);
-    foreach ($spec as $fid => $fspec) {
+    if($spec) foreach ($spec as $fid => $fspec) {
       $var = $fspec['var'];
       if ($this->$var !== null) {
         $ftype = $fspec['type'];
-        $xfer += $output->writeFieldBegin($var, $ftype, $fid);
+        if($ftype == TType::TS)     // Let server treat type 'TS' as 'I64'
+          $xfer += $output->writeFieldBegin($var, TType::I64, $fid);
+        else
+          $xfer += $output->writeFieldBegin($var, $ftype, $fid);
         if (isset(TBase::$tmethod[$ftype])) {
           $func = 'write'.TBase::$tmethod[$ftype];
           $xfer += $output->$func($this->$var);
@@ -412,7 +426,8 @@ abstract class TBase {
                           TType::I32    => 'I32',
                           TType::I64    => 'I64',
                           TType::DOUBLE => 'Double',
-                          TType::STRING => 'String');
+                          TType::STRING => 'String',
+                          TType::TS     => 'TS');
 
   abstract function read($input);
 
@@ -612,7 +627,10 @@ abstract class TBase {
     } else {
       $vspec = $spec['val'];
     }
-    $xfer += $output->writeMapBegin($ktype, $vtype, count($var));
+    if($vtype == TType::TS)     // Let server treat type 'TS' as 'I64'
+      $xfer += $output->writeMapBegin($ktype, TType::I64, count($var));
+    else
+      $xfer += $output->writeMapBegin($ktype, $vtype, count($var));
     foreach ($var as $key => $val) {
       if (isset($kwrite)) {
         $xfer += $output->$kwrite($key);
@@ -665,11 +683,17 @@ abstract class TBase {
       $espec = $spec['elem'];
     }
     if ($set) {
-      $xfer += $output->writeSetBegin($etype, count($var));
+      if($etype == TType::TS)     // Let server treat type 'TS' as 'I64'
+        $xfer += $output->writeSetBegin(TType::I64, count($var));
+      else
+        $xfer += $output->writeSetBegin($etype, count($var));
     } else {
-      $xfer += $output->writeListBegin($etype, count($var));
+      if($etype == TType::TS)     // Let server treat type 'TS' as 'I64'
+        $xfer += $output->writeListBegin(TType::I64, count($var));
+      else
+        $xfer += $output->writeListBegin($etype, count($var));
     }
-    foreach ($var as $key => $val) {
+    if($var) foreach ($var as $key => $val) {
       $elem = $set ? $key : $val;
       if (isset($ewrite)) {
         $xfer += $output->$ewrite($elem);
@@ -701,11 +725,14 @@ abstract class TBase {
   protected function _write($class, $spec, $output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin($class);
-    foreach ($spec as $fid => $fspec) {
+    if($spec) foreach ($spec as $fid => $fspec) {
       $var = $fspec['var'];
       if ($this->$var !== null) {
         $ftype = $fspec['type'];
-        $xfer += $output->writeFieldBegin($var, $ftype, $fid);
+        if($ftype == TType::TS)     // Let server treat type 'TS' as 'I64'
+          $xfer += $output->writeFieldBegin($var, TType::I64, $fid);
+        else
+          $xfer += $output->writeFieldBegin($var, $ftype, $fid);
         if (isset(TBase::$tmethod[$ftype])) {
           $func = 'write'.TBase::$tmethod[$ftype];
           $xfer += $output->$func($this->$var);

@@ -125,7 +125,7 @@ class cassandra_Column extends TBase {
           ),
         3 => array(
           'var' => 'timestamp',
-          'type' => TType::I64,
+          'type' => ((PHP_INT_SIZE==4)?TType::TS:TType::I64),
           ),
         4 => array(
           'var' => 'ttl',
@@ -915,7 +915,7 @@ class cassandra_Deletion extends TBase {
       self::$_TSPEC = array(
         1 => array(
           'var' => 'timestamp',
-          'type' => TType::I64,
+          'type' => ((PHP_INT_SIZE==4)?TType::TS:TType::I64),
           ),
         2 => array(
           'var' => 'super_column',

@@ -2923,7 +2923,7 @@ class cassandra_Cassandra_remove_args extends TBase {
           ),
         3 => array(
           'var' => 'timestamp',
-          'type' => TType::I64,
+          'type' => ((PHP_INT_SIZE==4)?TType::TS:TType::I64),
           ),
         4 => array(
           'var' => 'consistency_level',

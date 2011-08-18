@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <sys/param.h>
 #include <stdexcept>
+#include <sys/time.h>     // Use function 'gettimeofday'
 
 #ifndef bswap_64
 #define	bswap_64(x)     (((uint64_t)(x) << 56) | \
@@ -66,7 +67,8 @@ enum TType {
   T_SET        = 14,
   T_LIST       = 15,
   T_UTF8       = 16,
-  T_UTF16      = 17
+  T_UTF16      = 17,
+  T_TS         = 30     // Timestamp(Not supported by official)
 };
 
 const int32_t VERSION_MASK = 0xffff0000;
@@ -177,6 +179,33 @@ public:
       buffer_used += len;
       buffer_ptr += len;
     }
+  }
+
+  // Auto-generate timestamp
+  void writeTS() {
+    struct timeval tv;
+    int32_t hi, med, lo, sec;
+    double remain, usec;
+
+
+    gettimeofday(&tv, NULL);
+    // printf("ts=%d.%d\n", tv.tv_sec, tv.tv_usec);
+    sec = (int32_t)tv.tv_sec;
+    usec = (double)tv.tv_usec / 1000000.0;
+
+    hi = (int32_t)((double)sec / 4294.967296);
+    
+    remain = (double)(((double)sec - (double)hi * 4294.967296 + (double)usec) * 100.0);
+    med = (int32_t)(remain / 6.5536);
+    
+    remain = (double)(remain - (double)med * 6.5536);
+    lo = (int32_t)(remain * 10000.0 + 0.5);
+
+
+    writeI32(hi);
+    writeI16(med);
+    writeI16(lo);
+    // printf("ts=%8X%4X%4X\n", hi, med, lo);
   }
 
   void writeI64(int64_t i) {
@@ -477,6 +506,11 @@ void binary_deserialize(int8_t thrift_typeID, PHPInputTransport& transport, zval
       transport.readBytes(&c, 8);
       RETURN_LONG((int64_t)ntohll(c));
     }
+    case T_TS: {    // Read timestamp(Impossible value)
+      uint64_t c;
+      transport.readBytes(&c, 8);
+      RETURN_LONG((int64_t)ntohll(c));
+    }
     case T_DOUBLE: {
       union {
         uint64_t c;
@@ -610,6 +644,7 @@ void skip_element(long thrift_typeID, PHPInputTransport& transport) {
       return;
     case T_U64:
     case T_I64:
+    case T_TS:    // Skip timestamp(Impossible value)
     case T_DOUBLE:
       transport.skip(8);
       return;
@@ -760,6 +795,9 @@ void binary_serialize(int8_t thrift_typeID, PHPOutputTransport& transport, zval*
       if (Z_TYPE_PP(value) != IS_LONG) convert_to_long(*value);
       transport.writeI64(Z_LVAL_PP(value));
       return;
+    case T_TS:      // Ignore parameter 'value'
+      transport.writeTS();
+      return;
     case T_DOUBLE: {
       union {
         int64_t c;
@@ -791,7 +829,10 @@ void binary_serialize(int8_t thrift_typeID, PHPOutputTransport& transport, zval*
       zend_hash_find(fieldspec, "vtype", 6, (void**)&val_ptr);
       if (Z_TYPE_PP(val_ptr) != IS_LONG) convert_to_long(*val_ptr);
       uint8_t valtype = Z_LVAL_PP(val_ptr);
-      transport.writeI8(valtype);
+      if(valtype == T_TS)     // Let server treat type 'TS' as 'I64'
+        transport.writeI8(T_I64);
+      else
+        transport.writeI8(valtype);
 
       zend_hash_find(fieldspec, "val", 4, (void**)&val_ptr);
       HashTable* valspec = Z_ARRVAL_PP(val_ptr);
@@ -814,7 +855,10 @@ void binary_serialize(int8_t thrift_typeID, PHPOutputTransport& transport, zval*
       zend_hash_find(fieldspec, "etype", 6, (void**)&val_ptr);
       if (Z_TYPE_PP(val_ptr) != IS_LONG) convert_to_long(*val_ptr);
       uint8_t valtype = Z_LVAL_PP(val_ptr);
-      transport.writeI8(valtype);
+      if(valtype == T_TS)     // Let server treat type 'TS' as 'I64'
+        transport.writeI8(T_I64);
+      else
+        transport.writeI8(valtype);
 
       zend_hash_find(fieldspec, "elem", 5, (void**)&val_ptr);
       HashTable* valspec = Z_ARRVAL_PP(val_ptr);
@@ -877,7 +921,10 @@ void binary_serialize_spec(zval* zthis, PHPOutputTransport& transport, HashTable
 
     zval* prop = zend_read_property(ce, zthis, varname, strlen(varname), false TSRMLS_CC);
     if (Z_TYPE_P(prop) != IS_NULL) {
-      transport.writeI8(ttype);
+      if(ttype == T_TS)     // Let server treat type 'TS' as 'I64'
+        transport.writeI8(T_I64);
+      else
+        transport.writeI8(ttype);
       transport.writeI16(fieldno);
       binary_serialize(ttype, transport, &prop, fieldspec);
     }
