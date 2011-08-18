@@ -387,13 +387,13 @@ class ColumnFamily {
         foreach($resp as $key => $val) {
             if (count($val) > 0) {
                 $unpacked_key = $this->unpack_key($key);
-                $non_empty_keys[] = $unpacked_key;
+                $non_empty_keys[$unpacked_key] = 1;
                 $ret[$unpacked_key] = $this->supercolumns_or_columns_to_array($val);
             }
         }
 
         foreach($keys as $key) {
-            if (!in_array($key, $non_empty_keys))
+            if (!isset($non_empty_keys[$key]))
                 unset($ret[$key]);
         }
         return $ret;
@@ -448,6 +448,11 @@ class ColumnFamily {
                                    $super_column=null,
                                    $read_consistency_level=null) {
 
+		$ret = array();
+        foreach($keys as $key) {
+            $ret[$key] = null;
+        }
+								   
         $column_parent = $this->create_column_parent($super_column);
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    false, self::MAX_COUNT);
@@ -455,11 +460,19 @@ class ColumnFamily {
         $packed_keys = array_map(array($this, "pack_key"), $keys);
         $results = $this->pool->call("multiget_count", $packed_keys, $column_parent, $predicate,
             $this->rcl($read_consistency_level));
-        $ret = array();
+			
+        $non_empty_keys = array();
         foreach ($results as $key => $count) {
             $unpacked_key = $this->unpack_key($key);
-            $ret[$key] = $count;
+            $non_empty_keys[$unpacked_key] = 1;
+            $ret[$unpacked_key] = $count;
         }
+		
+        foreach($keys as $key) {
+            if (!isset($non_empty_keys[$key]))
+                unset($ret[$key]);
+        }
+		
         return $ret;
     }
 
@@ -756,9 +769,9 @@ class ColumnFamily {
 
     /********************* Helper functions *************************/
 
-    private static $TYPES = array('BytesType', 'LongType', 'IntegerType',
-                                  'UTF8Type', 'AsciiType', 'LexicalUUIDType',
-                                  'TimeUUIDType');
+    private static $TYPES = array('BytesType' => 1, 'LongType' => 1, 'IntegerType' => 1,
+                                  'UTF8Type' => 1, 'AsciiType' => 1, 'LexicalUUIDType' => 1,
+                                  'TimeUUIDType' => 1);
 
     private static function extract_type_name($type_string) {
         if ($type_string == null or $type_string == '')
@@ -769,7 +782,7 @@ class ColumnFamily {
             return 'BytesType';
         
         $type = substr($type_string, $index + 1);
-        if (!in_array($type, self::$TYPES))
+        if (!isset(self::$TYPES[$type]))
             return 'BytesType';
 
         return $type;
@@ -869,10 +882,10 @@ class ColumnFamily {
     }
 
     private function get_data_type_for_col($col_name) {
-        if (!in_array($col_name, array_keys($this->col_type_dict)))
-            return $this->cf_data_type;
-        else
-            return $this->col_type_dict[$col_name];
+		if (isset($this->col_type_dict[$col_name]))
+			return $this->col_type_dict[$col_name];
+		else 
+			return $this->cf_data_type;            
     }
 
     private function pack_value($value, $col_name) {
