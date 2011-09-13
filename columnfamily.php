@@ -999,11 +999,6 @@ class ColumnFamily {
             return self::pack_long($value);
         else if ($data_type == 'IntegerType')
             return pack('N', $value); // Unsigned 32bit big-endian
-        else if ($data_type == 'UTF8Type') {
-            if (mb_detect_encoding($value, "UTF-8") != "UTF-8")
-                $value = utf8_encode($value);
-            return $value;
-        }
         else
             return $value;
     }
@@ -1015,8 +1010,6 @@ class ColumnFamily {
             $res = unpack('N', $value);
             return $res[1];
         }
-        else if ($data_type == 'UTF8Type')
-            return utf8_decode($value);
         else
             return $value;
     }
