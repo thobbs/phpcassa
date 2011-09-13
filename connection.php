@@ -224,7 +224,7 @@ class ConnectionPool {
             } catch (TException $e) {
                 $h = $this->servers[$this->list_position];
                 $err = (string)$e;
-                error_log("Error connecting to $h: $err", 0);
+                $this->error_log("Error connecting to $h: $err", 0);
                 $this->stats['failed'] += 1;
             }
         }
@@ -377,11 +377,22 @@ class ConnectionPool {
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
         $err = (string)$exc;
-        error_log("Error performing $f on $conn->server: $err", 0);
+        $this->error_log("Error performing $f on $conn->server: $err", 0);
         $conn->close();
         $this->stats['failed'] += 1;
         usleep(self::BASE_BACKOFF * pow(2, $retry_count) * self::MICROS);
         $this->make_conn();
+    }
+
+    /**
+     *
+     * Extracing error log function call so that writing to the error log
+     * can be  over written.
+     * @param string $errorMsg
+     * @param int $messageType
+     */
+    protected function error_log($errorMsg, $messageType=0) {
+        error_log($errorMsg, $messageType);
     }
 
 }
