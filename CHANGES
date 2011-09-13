@@ -1,6 +1,33 @@
 Changelog
 =========
 
+Changes in 0.8.a.2
+------------------
+This release upgrades the bundled version of Thrift
+to 0.7.0, which fixes several issues with 32bit
+environments.
+
+Features
+^^^^^^^^
+- Add drop_index() to SystemManager
+- Order multiget_count() results by the order of the input
+  keys
+- Allow for overriding the ConnectionPool error_log mechanism
+  for custom error handling
+
+Bugfixes
+^^^^^^^^
+- Handle multiget() requests with responses that are
+  larger than $buffer_size correctly
+- Don't ignore the $pool_size parameter in the ConnectionPool
+  constructor
+- Pass data intended for UTF8Type values unaltered to Thrift.
+  This fixes issues with corruption of some utf8 data, but the
+  user is now responsible for ensuring the data is encoded
+  correctly.
+- Fix corruption of timestamps in 32bit environments by
+  upgrading to Thrift 0.7.0
+
 Changes in 0.8.a.1
 ------------------
 This release adds support for Cassandra 0.8. This release is
