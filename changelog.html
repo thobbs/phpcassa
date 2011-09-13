@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &mdash; phpcassa v0.7.a.4 documentation</title>
+    <title>Changelog &mdash; phpcassa v0.8.a.2 documentation</title>
     <link rel="stylesheet" href="static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.7.a.4',
+        VERSION:     '0.8.a.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="static/jquery.js"></script>
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
-    <link rel="top" title="phpcassa v0.7.a.4 documentation" href="index.html" />
+    <link rel="top" title="phpcassa v0.8.a.2 documentation" href="index.html" />
     <link rel="prev" title="Troubleshooting" href="troubleshooting.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="troubleshooting.html" title="Troubleshooting"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">phpcassa v0.7.a.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">phpcassa v0.8.a.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -43,22 +43,33 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#changes-in-0-7-a-4">Changes in 0.7.a.4</a><ul>
-<li><a class="reference internal" href="#bugfixes">Bugfixes</a></li>
+<li><a class="reference internal" href="#changes-in-0-8-a-2">Changes in 0.8.a.2</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#bugfixes">Bugfixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#changes-in-0-8-a-1">Changes in 0.8.a.1</a><ul>
+<li><a class="reference internal" href="#id1">Features</a></li>
+<li><a class="reference internal" href="#id2">Bugfixes</a></li>
 <li><a class="reference internal" href="#deprecated">Deprecated</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#changes-in-0-7-a-4">Changes in 0.7.a.4</a><ul>
+<li><a class="reference internal" href="#id3">Bugfixes</a></li>
+<li><a class="reference internal" href="#id4">Features</a></li>
+<li><a class="reference internal" href="#id5">Deprecated</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#changes-in-0-7-a-3">Changes in 0.7.a.3</a><ul>
-<li><a class="reference internal" href="#id1">Bugfixes</a></li>
-<li><a class="reference internal" href="#id2">Features</a></li>
-<li><a class="reference internal" href="#id3">Deprecated</a></li>
+<li><a class="reference internal" href="#id6">Bugfixes</a></li>
+<li><a class="reference internal" href="#id7">Features</a></li>
+<li><a class="reference internal" href="#id8">Deprecated</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#changes-in-0-7-a-2">Changes in 0.7.a.2</a><ul>
-<li><a class="reference internal" href="#id4">Bugfixes</a></li>
-<li><a class="reference internal" href="#id5">Features</a></li>
-<li><a class="reference internal" href="#id6">Deprecated</a></li>
+<li><a class="reference internal" href="#id9">Bugfixes</a></li>
+<li><a class="reference internal" href="#id10">Features</a></li>
+<li><a class="reference internal" href="#id11">Deprecated</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#changes-in-0-7-a1">Changes in 0.7.a1</a></li>
@@ -97,20 +108,102 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-0-8-a-2">
+<h2>Changes in 0.8.a.2<a class="headerlink" href="#changes-in-0-8-a-2" title="Permalink to this headline">¶</a></h2>
+<p>This release upgrades the bundled version of Thrift
+to 0.7.0, which fixes several issues with 32bit
+environments.</p>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Add drop_index() to SystemManager</li>
+<li>Order multiget_count() results by the order of the input
+keys</li>
+<li>Allow for overriding the ConnectionPool error_log mechanism
+for custom error handling</li>
+</ul>
+</div>
+<div class="section" id="bugfixes">
+<h3>Bugfixes<a class="headerlink" href="#bugfixes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Handle multiget() requests with responses that are
+larger than $buffer_size correctly</li>
+<li>Don&#8217;t ignore the $pool_size parameter in the ConnectionPool
+constructor</li>
+<li>Pass data intended for UTF8Type values unaltered to Thrift.
+This fixes issues with corruption of some utf8 data, but the
+user is now responsible for ensuring the data is encoded
+correctly.</li>
+<li>Fix corruption of timestamps in 32bit environments by
+upgrading to Thrift 0.7.0</li>
+</ul>
+</div>
+</div>
+<div class="section" id="changes-in-0-8-a-1">
+<h2>Changes in 0.8.a.1<a class="headerlink" href="#changes-in-0-8-a-1" title="Permalink to this headline">¶</a></h2>
+<p>This release adds support for Cassandra 0.8. This release is
+backwards compatible with Cassandra 0.7, and supports a cluster
+with a mixture of nodes running 0.7 and 0.8.</p>
+<div class="section" id="id1">
+<h3>Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added ColumnFamily.add() and remove_counter() to work with 0.8
+counters.</li>
+<li>Support for the 0.8 column family attribute key_validation_class.
+Keys may now be automatically packed and upacked, similar to column
+names and values.</li>
+<li>Addition of sysmanager.php and the SystemManager class. This class
+makes it much easier to dynamically create, alter, and drop keyspaces,
+column families, and secondary indexes.</li>
+<li>New ConnectionPools are no longer automatically filled upon creation.
+The method ConnectionPool.fill() was added as an alternative way to
+supply this functionality.</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>Bugfixes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Handle NotFoundException and other Exceptions cleanly in ConnectionPool.
+Previously, these could result in a slow drain of connections from the
+pool.</li>
+<li>The default ColumnFamily buffer_size has been lowered from 8096 to 1024.</li>
+</ul>
+</div>
+<div class="section" id="deprecated">
+<h3>Deprecated<a class="headerlink" href="#deprecated" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The ColumnFamily constructor arguments $autopack_names and $autopack_values
+are deprecated. Use set_autopack_names() and
+set_autopack_values() after creating the ColumnFamily instead.</li>
+<li>The ColumnFamily constructor argument $buffer_size has been deprecated.
+The public attribute $buffer_size should be set instead.</li>
+<li>The ColumnFamily constructor arguments $read_consistency_level
+and $write_consistency_level have been deprecated.
+The public attributes of the same names should be set instead. Both
+attributes still default to ConsistencyLevel ONE.</li>
+<li>The ConnectionPool constructor argument $framed_transport is deprecated;
+framed transport will be assumed in later versions.</li>
+<li>The ConnectionPool constructor argument $max_retries is deprecated;
+adjust the public attribue of the same name instead.</li>
+<li>The ConnectionPool constructor argument $recycle is deprecated;
+adjust the public attribue of the same name instead.</li>
+</ul>
+</div>
+</div>
 <div class="section" id="changes-in-0-7-a-4">
 <h2>Changes in 0.7.a.4<a class="headerlink" href="#changes-in-0-7-a-4" title="Permalink to this headline">¶</a></h2>
 <p>The bundled Thrift library has been updated to a post-0.6 trunk
 version.  An important bugfix was made in Thrift which greatly
 improves performance.</p>
-<div class="section" id="bugfixes">
-<h3>Bugfixes<a class="headerlink" href="#bugfixes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Bugfixes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Credentials were not properly passed through Thrift, causing
 any authorization attempts to fail.</li>
 </ul>
 </div>
-<div class="section" id="features">
-<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Features<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added the ConnectionPool class to connection.php. This allows
 for better failover and loadbalancing of operations. See the
@@ -118,8 +211,8 @@ documentation for the ConnectionPool class when upgrading from
 0.7.a.3 or earlier.</li>
 </ul>
 </div>
-<div class="section" id="deprecated">
-<h3>Deprecated<a class="headerlink" href="#deprecated" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Deprecated<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The Connection class in connection.php has been replaced by
 ConnectionPool and is now deprecated.</li>
@@ -128,45 +221,45 @@ ConnectionPool and is now deprecated.</li>
 </div>
 <div class="section" id="changes-in-0-7-a-3">
 <h2>Changes in 0.7.a.3<a class="headerlink" href="#changes-in-0-7-a-3" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>Bugfixes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Bugfixes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Typo in throwing IncompatibleAPIException</li>
 <li>remove() on super column families did not pack names correctly</li>
 <li>CassandraUtil::uuid3() param name should be $node not $null</li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h3>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>Features<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Use remove() Thrift API call instead of batch_mutate() when possible</li>
 <li>Allow a microsecond timestamp to be passed in for v1 UUID creation</li>
 <li>Log connection errors with error_log()</li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h3>Deprecated<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Deprecated<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>None</p>
 </div>
 </div>
 <div class="section" id="changes-in-0-7-a-2">
 <h2>Changes in 0.7.a.2<a class="headerlink" href="#changes-in-0-7-a-2" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id4">
-<h3>Bugfixes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>Bugfixes<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix server revival bug</li>
 <li>Remove print statement from Connection on connection failure</li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h3>Features<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id10">
+<h3>Features<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Add an import() method for UUIDs to CassandraUtil to convert binary UUID
 representations back into UUID objects</li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h3>Deprecated<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>Deprecated<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <p>None</p>
 </div>
 </div>
@@ -191,7 +284,7 @@ representations back into UUID objects</li>
         <li class="right" >
           <a href="troubleshooting.html" title="Troubleshooting"
              >previous</a> |</li>
-        <li><a href="index.html">phpcassa v0.7.a.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">phpcassa v0.8.a.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
