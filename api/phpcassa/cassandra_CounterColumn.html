@@ -3,13 +3,13 @@
   <html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 			<!-- template designed by Marco Von Ballmoos -->
-			<title>Docs For Class cassandra_IndexClause</title>
+			<title>Docs For Class cassandra_CounterColumn</title>
 			<link rel="stylesheet" href="../media/stylesheet.css" />
 			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
 		</head>
 		<body>
 			<div class="page-body">			
-<h2 class="class-name">Class cassandra_IndexClause</h2>
+<h2 class="class-name">Class cassandra_CounterColumn</h2>
 
 <a name="sec-description"></a>
 <div class="info-box">
@@ -23,13 +23,13 @@
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
 		<p class="notes">
-			Located in <a class="field" href="_thrift---packages---cassandra---cassandra_types.php.html">/thrift/packages/cassandra/cassandra_types.php</a> (line <span class="field">728</span>)
+			Located in <a class="field" href="_thrift---packages---cassandra---cassandra_types.php.html">/thrift/packages/cassandra/cassandra_types.php</a> (line <span class="field">196</span>)
 		</p>
 		
 				
 		<pre>TBase
    |
-   --cassandra_IndexClause</pre>
+   --cassandra_CounterColumn</pre>
 	
 			</div>
 </div>
@@ -48,21 +48,17 @@
 								</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																				<div class="var-title">
+																												<div class="var-title">
 					static <span class="var-type">mixed</span>
 					<a href="#$_TSPEC" title="details" class="var-name">$_TSPEC</a>
 				</div>
 																				<div class="var-title">
 					<span class="var-type">mixed</span>
-					<a href="#$count" title="details" class="var-name">$count</a>
+					<a href="#$name" title="details" class="var-name">$name</a>
 				</div>
 																<div class="var-title">
 					<span class="var-type">mixed</span>
-					<a href="#$expressions" title="details" class="var-name">$expressions</a>
-				</div>
-																<div class="var-title">
-					<span class="var-type">mixed</span>
-					<a href="#$start_key" title="details" class="var-name">$start_key</a>
+					<a href="#$value" title="details" class="var-name">$value</a>
 				</div>
 																			</div>
 		</div>
@@ -82,7 +78,7 @@
 			<div class="method-summary">
 																																				
 												<div class="method-definition">
-											<span class="method-result">cassandra_IndexClause</span>
+											<span class="method-result">cassandra_CounterColumn</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
 											([<span class="var-type"></span>&nbsp;<span class="var-name">$vals</span> = <span class="var-default">null</span>])
 									</div>
@@ -119,13 +115,13 @@
 					</div>
 		<div class="info-box-body">
 			<a name="var$_TSPEC" id="$_TSPEC"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			static <span class="var-type">mixed</span>
 			<span class="var-name">$_TSPEC</span>
-						(line <span class="line-number">729</span>)
+						(line <span class="line-number">197</span>)
 		</span>
 	</div>
 
@@ -136,35 +132,14 @@
 		
 
 </div>
-<a name="var$count" id="$count"><!-- --></A>
-<div class="evenrow">
-
-	<div class="var-header">
-		<span class="var-title">
-			<span class="var-type">mixed</span>
-			<span class="var-name">$count</span>
-			 = <span class="var-default"> 100</span>			(line <span class="line-number">733</span>)
-		</span>
-	</div>
-
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	
-		
-		
-
-</div>
-<a name="var$expressions" id="$expressions"><!-- --></A>
+<a name="var$name" id="$name"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
-			<span class="var-name">$expressions</span>
-			 = <span class="var-default"> null</span>			(line <span class="line-number">731</span>)
+			<span class="var-name">$name</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">199</span>)
 		</span>
 	</div>
 
@@ -178,14 +153,14 @@
 		
 
 </div>
-<a name="var$start_key" id="$start_key"><!-- --></A>
+<a name="var$value" id="$value"><!-- --></A>
 <div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
-			<span class="var-name">$start_key</span>
-			 = <span class="var-default"> null</span>			(line <span class="line-number">732</span>)
+			<span class="var-name">$value</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">200</span>)
 		</span>
 	</div>
 
@@ -219,7 +194,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">735</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">202</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -228,7 +203,7 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">cassandra_IndexClause</span>
+		<span class="method-result">cassandra_CounterColumn</span>
 		<span class="method-name">
 			__construct
 		</span>
@@ -247,7 +222,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getName</span> (line <span class="line-number">762</span>)
+		<span class="method-title">getName</span> (line <span class="line-number">220</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -270,7 +245,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">read</span> (line <span class="line-number">766</span>)
+		<span class="method-title">read</span> (line <span class="line-number">224</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -298,7 +273,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">write</span> (line <span class="line-number">770</span>)
+		<span class="method-title">write</span> (line <span class="line-number">228</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->

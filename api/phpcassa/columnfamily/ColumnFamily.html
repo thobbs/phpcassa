@@ -53,7 +53,7 @@
 			<div class="const-summary">
 								<div class="const-title">
 					<img src="../../media/images/Constant.png" alt=" " />
-					<a href="#DEFAULT_BUFFER_SIZE" title="details" class="const-name">DEFAULT_BUFFER_SIZE</a> = 					<span class="var-type"> 8096</span>
+					<a href="#DEFAULT_BUFFER_SIZE" title="details" class="const-name">DEFAULT_BUFFER_SIZE</a> = 					<span class="var-type"> 1024</span>
 
 				</div>
 								<div class="const-title">
@@ -104,17 +104,29 @@
 					</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																																								<div class="var-title">
-					<span class="var-type">bool</span>
+																																																																																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$autopack_keys" title="details" class="var-name">$autopack_keys</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
 					<a href="#$autopack_names" title="details" class="var-name">$autopack_names</a>
 				</div>
 																<div class="var-title">
-					<span class="var-type">bool</span>
+					<span class="var-type">mixed</span>
 					<a href="#$autopack_values" title="details" class="var-name">$autopack_values</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">int</span>
+					<a href="#$buffer_size" title="details" class="var-name">$buffer_size</a>
 				</div>
 																<div class="var-title">
 					<span class="var-type">mixed</span>
 					<a href="#$client" title="details" class="var-name">$client</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$include_timestamp" title="details" class="var-name">$include_timestamp</a>
 				</div>
 																<div class="var-title">
 					<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>
@@ -142,11 +154,16 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																																				
+																																																																																																																																																												
 												<div class="method-definition">
 											<span class="method-result">ColumnFamily</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$pool</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$column_family</span>, [<span class="var-type">bool</span>&nbsp;<span class="var-name">$autopack_names</span> = <span class="var-default">true</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$autopack_values</span> = <span class="var-default">true</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$read_consistency_level</span> = <span class="var-default">cassandra_ConsistencyLevel::ONE</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$write_consistency_level</span> = <span class="var-default">cassandra_ConsistencyLevel::ONE</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$buffer_size</span> = <span class="var-default">self::DEFAULT_BUFFER_SIZE</span>], <span class="var-type"><a href="../../phpcassa/connection/Connection.html">Connection</a></span>&nbsp;<span class="var-name">$connection</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#add" title="details" class="method-name">add</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$column</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">1</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$super_column</span> = <span class="var-default">null</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$write_consistency_level</span> = <span class="var-default">null</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">int</span>
@@ -194,14 +211,44 @@
 											(<span class="var-type">string[]</span>&nbsp;<span class="var-name">$keys</span>, [<span class="var-type">mixed[]</span>&nbsp;<span class="var-name">$columns</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$column_start</span> = <span class="var-default">''</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$column_finish</span> = <span class="var-default">''</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$super_column</span> = <span class="var-default">null</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$read_consistency_level</span> = <span class="var-default">null</span>])
 									</div>
 																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#pack_key" title="details" class="method-name">pack_key</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$key</span>)
+									</div>
+																<div class="method-definition">
 											<span class="method-result">int</span>
 										<a href="#remove" title="details" class="method-name">remove</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$key</span>, [<span class="var-type">mixed[]</span>&nbsp;<span class="var-name">$columns</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$super_column</span> = <span class="var-default">null</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$write_consistency_level</span> = <span class="var-default">null</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
+										<a href="#remove_counter" title="details" class="method-name">remove_counter</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$column</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$super_column</span> = <span class="var-default">null</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$write_consistency_level</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#set_autopack_keys" title="details" class="method-name">set_autopack_keys</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$pack_keys</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#set_autopack_names" title="details" class="method-name">set_autopack_names</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$pack_names</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#set_autopack_values" title="details" class="method-name">set_autopack_values</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$pack_values</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
 										<a href="#truncate" title="details" class="method-name">truncate</a>
 										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#unpack_key" title="details" class="method-name">unpack_key</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$b</span>)
 									</div>
 								</div>
 		</div>
@@ -222,12 +269,33 @@
 							
 					</div>
 		<div class="info-box-body">
-			<a name="var$autopack_names" id="$autopack_names"><!-- --></A>
+			<a name="var$autopack_keys" id="$autopack_keys"><!-- --></A>
 <div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
-			<span class="var-type">bool</span>
+			<span class="var-type">mixed</span>
+			<span class="var-name">$autopack_keys</span>
+						(line <span class="line-number">141</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$autopack_names" id="$autopack_names"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
 			<span class="var-name">$autopack_names</span>
 						(line <span class="line-number">139</span>)
 		</span>
@@ -235,7 +303,6 @@
 
 	<!-- ========== Info from phpDoc block ========= -->
 	<ul class="tags">
-				<li><span class="field">var:</span> whether or not column names are automatically packed/unpacked</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -245,19 +312,40 @@
 
 </div>
 <a name="var$autopack_values" id="$autopack_values"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
-			<span class="var-type">bool</span>
+			<span class="var-type">mixed</span>
 			<span class="var-name">$autopack_values</span>
-						(line <span class="line-number">141</span>)
+						(line <span class="line-number">140</span>)
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 	<ul class="tags">
-				<li><span class="field">var:</span> whether or not column values are automatically packed/unpacked</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$buffer_size" id="$buffer_size"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">int</span>
+			<span class="var-name">$buffer_size</span>
+			 = <span class="var-default"> 1024</span>			(line <span class="line-number">158</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">var:</span> When calling `get_range`, the intermediate results need        to be buffered if we are fetching many rows, otherwise the Cassandra        server will overallocate memory and fail.  This is the size of        that buffer in number of rows. The default is 1024.</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -287,14 +375,36 @@
 		
 
 </div>
-<a name="var$read_consistency_level" id="$read_consistency_level"><!-- --></A>
+<a name="var$include_timestamp" id="$include_timestamp"><!-- --></A>
 <div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$include_timestamp</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">150</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">var:</span> If true, column values in data fetching operations will be  replaced by an array of the form array(column_value, column_timestamp).</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$read_consistency_level" id="$read_consistency_level"><!-- --></A>
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>
 			<span class="var-name">$read_consistency_level</span>
-						(line <span class="line-number">143</span>)
+						(line <span class="line-number">144</span>)
 		</span>
 	</div>
 
@@ -310,13 +420,13 @@
 
 </div>
 <a name="var$write_consistency_level" id="$write_consistency_level"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>
 			<span class="var-name">$write_consistency_level</span>
-						(line <span class="line-number">145</span>)
+						(line <span class="line-number">146</span>)
 		</span>
 	</div>
 
@@ -350,10 +460,10 @@
 			<A NAME='method_detail'></A>
 
 <a name="method__construct" id="__construct"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">167</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">180</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -399,11 +509,53 @@
 		
 			
 	</div>
+<a name="methodadd" id="add"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">add</span> (line <span class="line-number">641</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Increment or decrement a counter.</p>
+<p class="description"><p>`value` should be an integer, either positive or negative, to be added  to a counter column. By default, `value` is 1.</p><p>This method is not idempotent. Retrying a failed add may result  in a double count. You should consider using a separate  ConnectionPool with retries disabled for column families  with counters.</p><p>Only available in Cassandra 0.8.0 and later.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			add
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$column</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">1</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$super_column</span> = <span class="var-default">null</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$write_consistency_level</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$key</span><span class="var-description">: the row to insert or update the columns in</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$column</span><span class="var-description">: the column name of the counter</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$value</span><span class="var-description">: the amount to adjust the counter by</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$super_column</span><span class="var-description">: the super column to use if this is a         super column family</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>
+				<span class="var-name">$write_consistency_level</span><span class="var-description">: affects the guaranteed         number of nodes that must respond before the operation returns</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methodbatch_insert" id="batch_insert"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">batch_insert</span> (line <span class="line-number">544</span>)
+		<span class="method-title">batch_insert</span> (line <span class="line-number">666</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -442,7 +594,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get</span> (line <span class="line-number">233</span>)
+		<span class="method-title">get</span> (line <span class="line-number">288</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -493,7 +645,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_count</span> (line <span class="line-number">349</span>)
+		<span class="method-title">get_count</span> (line <span class="line-number">415</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -537,7 +689,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_indexed_slices</span> (line <span class="line-number">463</span>)
+		<span class="method-title">get_indexed_slices</span> (line <span class="line-number">552</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -591,7 +743,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_range</span> (line <span class="line-number">413</span>)
+		<span class="method-title">get_range</span> (line <span class="line-number">500</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -650,7 +802,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">insert</span> (line <span class="line-number">515</span>)
+		<span class="method-title">insert</span> (line <span class="line-number">604</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -692,7 +844,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">keyslices_to_array</span> (line <span class="line-number">892</span>)
+		<span class="method-title">keyslices_to_array</span> (line <span class="line-number">1017</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -720,7 +872,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">multiget</span> (line <span class="line-number">274</span>)
+		<span class="method-title">multiget</span> (line <span class="line-number">331</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -774,7 +926,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">multiget_count</span> (line <span class="line-number">377</span>)
+		<span class="method-title">multiget_count</span> (line <span class="line-number">444</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -815,11 +967,39 @@
 		
 			
 	</div>
-<a name="methodremove" id="remove"><!-- --></a>
+<a name="methodpack_key" id="pack_key"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">remove</span> (line <span class="line-number">566</span>)
+		<span class="method-title">pack_key</span> (line <span class="line-number">872</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			pack_key
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$key</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$key</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodremove" id="remove"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">remove</span> (line <span class="line-number">690</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -854,11 +1034,134 @@
 		
 			
 	</div>
-<a name="methodtruncate" id="truncate"><!-- --></a>
+<a name="methodremove_counter" id="remove_counter"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">remove_counter</span> (line <span class="line-number">744</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remove a counter at the specified location.</p>
+<p class="description"><p>Note that counters have limited support for deletes: if you remove a  counter, you must wait to issue any following update until the delete  has reached all the nodes and all of them have been fully compacted.</p><p>Available in Cassandra 0.8.0 and later.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			remove_counter
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$column</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$super_column</span> = <span class="var-default">null</span>], [<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>&nbsp;<span class="var-name">$write_consistency_level</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$key</span><span class="var-description">: the row to insert or update the columns in</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$column</span><span class="var-description">: the column name of the counter</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$super_column</span><span class="var-description">: the super column to use if this is a         super column family</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../phpcassa/cassandra_ConsistencyLevel.html">cassandra_ConsistencyLevel</a></span>
+				<span class="var-name">$write_consistency_level</span><span class="var-description">: affects the guaranteed         number of nodes that must respond before the operation returns</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodset_autopack_keys" id="set_autopack_keys"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">truncate</span> (line <span class="line-number">614</span>)
+		<span class="method-title">set_autopack_keys</span> (line <span class="line-number">260</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			set_autopack_keys
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$pack_keys</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$pack_keys</span><span class="var-description">: <p>whether or not keys are automatically packed/unpacked</p><p>Available since Cassandra 0.8.0.</p></span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodset_autopack_names" id="set_autopack_names"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">set_autopack_names</span> (line <span class="line-number">223</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			set_autopack_names
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$pack_names</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$pack_names</span><span class="var-description">: whether or not column names are automatically packed/unpacked</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodset_autopack_values" id="set_autopack_values"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">set_autopack_values</span> (line <span class="line-number">242</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			set_autopack_values
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$pack_values</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$pack_values</span><span class="var-description">: whether or not column values are automatically packed/unpacked</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtruncate" id="truncate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">truncate</span> (line <span class="line-number">765</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -876,6 +1179,34 @@
 				()
 			</div>
 	
+		
+			
+	</div>
+<a name="methodunpack_key" id="unpack_key"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">unpack_key</span> (line <span class="line-number">878</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			unpack_key
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$b</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$b</span>			</li>
+				</ul>
 		
 			
 	</div>
@@ -904,7 +1235,7 @@
 		<img src="../../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">DEFAULT_BUFFER_SIZE</span>
-			 = <span class="const-default"> 8096</span>
+			 = <span class="const-default"> 1024</span>
 			(line <span class="line-number">128</span>)
 		</span>
 	</div>
@@ -972,7 +1303,7 @@
 		<span class="const-title">
 			<span class="const-name">NON_SLICE</span>
 			 = <span class="const-default"> 0</span>
-			(line <span class="line-number">690</span>)
+			(line <span class="line-number">841</span>)
 		</span>
 	</div>
 
@@ -988,7 +1319,7 @@
 		<span class="const-title">
 			<span class="const-name">SLICE_FINISH</span>
 			 = <span class="const-default"> 2</span>
-			(line <span class="line-number">692</span>)
+			(line <span class="line-number">843</span>)
 		</span>
 	</div>
 
@@ -1004,7 +1335,7 @@
 		<span class="const-title">
 			<span class="const-name">SLICE_START</span>
 			 = <span class="const-default"> 1</span>
-			(line <span class="line-number">691</span>)
+			(line <span class="line-number">842</span>)
 		</span>
 	</div>
 
@@ -1017,7 +1348,7 @@
 	</div>
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 05 May 2011 19:18:53 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Mon, 12 Sep 2011 20:48:25 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
