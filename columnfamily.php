@@ -900,21 +900,6 @@ class ColumnFamily {
         return $this->unpack($value, $this->get_data_type_for_col($col_name));
     }
 
-    private static function unpack_str($str, $len) {
-        $tmp_arr = unpack("c".$len."chars", $str);
-        $out_str = "";
-        foreach($tmp_arr as $v)
-            if($v > 0) { $out_str .= chr($v); }
-        return $out_str;
-    }
-   
-    private static function pack_str($str, $len) {       
-        $out_str = "";
-        for($i=0; $i<$len; $i++)
-            $out_str .= pack("c", ord(substr($str, $i, 1)));
-        return $out_str;
-    }
-
     private static function pack_long($value) {
         // If we are on a 32bit architecture we have to explicitly deal with
         // 64-bit twos-complement arithmetic since PHP wants to treat all ints
@@ -1014,15 +999,11 @@ class ColumnFamily {
             return self::pack_long($value);
         else if ($data_type == 'IntegerType')
             return pack('N', $value); // Unsigned 32bit big-endian
-        else if ($data_type == 'AsciiType')
-            return self::pack_str($value, strlen($value));
         else if ($data_type == 'UTF8Type') {
             if (mb_detect_encoding($value, "UTF-8") != "UTF-8")
                 $value = utf8_encode($value);
-            return self::pack_str($value, strlen($value));
+            return $value;
         }
-        else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType')
-            return self::pack_str($value, 16);
         else
             return $value;
     }
@@ -1034,12 +1015,8 @@ class ColumnFamily {
             $res = unpack('N', $value);
             return $res[1];
         }
-        else if ($data_type == 'AsciiType')
-            return self::unpack_str($value, strlen($value));
         else if ($data_type == 'UTF8Type')
-            return utf8_decode(self::unpack_str($value, strlen($value)));
-        else if ($data_type == 'TimeUUIDType' or $data_type == 'LexicalUUIDType')
-            return $value;
+            return utf8_decode($value);
         else
             return $value;
     }
