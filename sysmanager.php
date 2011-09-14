@@ -136,14 +136,15 @@ class SystemManager {
     }
 
     private function make_ksdef($name, $attrs, $orig=NULL) {
-        if ($orig !== NULL)
+        if ($orig !== NULL) {
             $ksdef = $orig;
-        else
+        } else {
             $ksdef = new cassandra_KsDef();
             $ksdef->strategy_class = 'SimpleStrategy';
             $ksdef->strategy_options = NULL;
             $ksdef->replication_factor = 1;
             $ksdef->cf_defs = array();
+        }
 
         $ksdef->name = $name;
         foreach ($attrs as $attr => $value) {
@@ -226,11 +227,12 @@ class SystemManager {
     }
 
     private function make_cfdef($ksname, $cfname, $attrs, $orig=NULL) {
-        if ($orig !== NULL)
+        if ($orig !== NULL) {
             $cfdef = $orig;
-        else
+        } else {
             $cfdef = new cassandra_CfDef();
             $cfdef->column_type = "Standard";
+        }
 
         $cfdef->keyspace = $ksname;
         $cfdef->name = $cfname;
