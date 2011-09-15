@@ -223,13 +223,15 @@ class ConnectionPool {
                 return;
             } catch (TException $e) {
                 $h = $this->servers[$this->list_position];
-                $err = (string)$e;
-                $this->error_log("Error connecting to $h: $err", 0);
+                $err = $e;
+                $msg = $e->getMessage();
+                $class = get_class($e);
+                $this->error_log("Error connecting to $h: $class: $msg", 0);
                 $this->stats['failed'] += 1;
             }
         }
         throw new NoServerAvailable("An attempt was made to connect to every server twice, but " .
-                                    "all attempts failed. The last error was: $err");
+            "all attempts failed. The last error was: " . get_class($err) .":". $err->getMessage());
     }
 
     /**
@@ -372,7 +374,7 @@ class ConnectionPool {
             }
         }
         throw new MaxRetriesException("An attempt to execute $f failed $tries times.".
-                                      " The last error was " . (string)$last_err);
+            " The last error was " . get_class($last_err) . ":" . $last_err->getMessage());
     }
 
     private function handle_conn_failure($conn, $f, $exc, $retry_count) {
