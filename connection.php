@@ -1,5 +1,5 @@
 <?php
-$GLOBALS['THRIFT_ROOT'] = dirname(__FILE__) . '/thrift/';
+$GLOBALS['THRIFT_ROOT'] = (isset($GLOBALS['THRIFT_ROOT'])) ? $GLOBALS['THRIFT_ROOT'] : dirname(__FILE__) . '/thrift/';
 require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
