@@ -195,6 +195,18 @@ class TestAutopacking extends UnitTestCase {
         }
     }
 
+    public function test_false_colnames() {
+        $this->cf_int->insert(self::$KEYS[0], array(0 => "foo"));
+        self::assertEqual($this->cf_int->get(self::$KEYS[0]), array(0 => "foo"));
+        $this->cf_int->remove(self::$KEYS[0]);
+        try {
+            $this->cf_int->insert(self::$KEYS[0], array(null => "foo"));
+            self::assertTrue(false); // shouldn't get here
+        } catch (UnexpectedValueException $exc) {
+            self::assertTrue(true);
+        }
+    }
+
     public function test_basic_ints() {
         $int_col = array(3 => self::$VALS[0]);
         $this->cf_int->insert(self::$KEYS[0], $int_col);

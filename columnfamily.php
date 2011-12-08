@@ -607,7 +607,7 @@ class ColumnFamily {
                            $ttl=null,
                            $write_consistency_level=null) {
 
-        if ($timestamp == null)
+        if ($timestamp === null)
             $timestamp = CassandraUtil::get_time();
 
         $cfmap = array();
@@ -664,7 +664,7 @@ class ColumnFamily {
      * @return int the timestamp for the operation
      */
     public function batch_insert($rows, $timestamp=null, $ttl=null, $write_consistency_level=null) {
-        if ($timestamp == null)
+        if ($timestamp === null)
             $timestamp = CassandraUtil::get_time();
 
         $cfmap = array();
@@ -692,26 +692,38 @@ class ColumnFamily {
         $timestamp = CassandraUtil::get_time();
         $packed_key = $this->pack_key($key);
 
-        if ($columns == null || count($columns) == 1)
+        if ($columns === null || count($columns) == 1)
         {
             $cp = new cassandra_ColumnPath();
             $cp->column_family = $this->column_family;
-            $cp->super_column = $this->pack_name($super_column, true);
-            if ($columns != null) {
-                if ($this->is_super && $super_column == null)
+
+            if ($super_column !== null) {
+                $cp->super_column = $this->pack_name($super_column, true);
+            } else {
+                $cp->super_column = null;
+            }
+
+            if ($columns !== null) {
+                if ($this->is_super && $super_column === null)
                     $cp->super_column = $this->pack_name($columns[0], true);
                 else
                     $cp->column = $this->pack_name($columns[0], false);
             }
+
             return $this->pool->call("remove", $packed_key, $cp, $timestamp,
                 $this->wcl($write_consistency_level));
         }
 
         $deletion = new cassandra_Deletion();
         $deletion->timestamp = $timestamp;
-        $deletion->super_column = $this->pack_name($super_column, true);
 
-        if ($columns != null) {
+        if ($super_column !== null) {
+            $deletion->super_column = $this->pack_name($super_column, true);
+        } else {
+            $deletion->super_column = null;
+        }
+
+        if ($columns !== null) {
             $predicate = $this->create_slice_predicate($columns, '', '', false,
                                                        self::DEFAULT_COLUMN_COUNT);
             $deletion->predicate = $predicate;
@@ -746,8 +758,19 @@ class ColumnFamily {
         $cp = new cassandra_ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
-        $cp->super_column = $this->pack_name($super_column, true);
-        $cp->column = $this->pack_name($column);
+
+        if ($super_column !== null) {
+            $cp->super_column = $this->pack_name($super_column, true);
+        } else {
+            $cp->super_column = null;
+        }
+
+        if ($column !== null) {
+            $cp->column = $this->pack_name($column);
+        } else {
+            $cp->column = null;
+        }
+
         $this->pool->call("remove_counter", $packed_key, $cp, $this->wcl($write_consistency_level));
     }
 
@@ -789,14 +812,14 @@ class ColumnFamily {
     }
 
     private function rcl($read_consistency_level) {
-        if ($read_consistency_level == null)
+        if ($read_consistency_level === null)
             return $this->read_consistency_level;
         else
             return $read_consistency_level;
     }
 
     private function wcl($write_consistency_level) {
-        if ($write_consistency_level == null)
+        if ($write_consistency_level === null)
             return $this->write_consistency_level;
         else
             return $write_consistency_level;
@@ -812,11 +835,11 @@ class ColumnFamily {
                 $packed_cols[] = $this->pack_name($col, $this->is_super);
             $predicate->column_names = $packed_cols;
         } else {
-            if ($column_start != null and $column_start != '')
+            if ($column_start !== null and $column_start != '')
                 $column_start = $this->pack_name($column_start,
                                                  $this->is_super,
                                                  self::SLICE_START);
-            if ($column_finish != null and $column_finish != '')
+            if ($column_finish !== null and $column_finish != '')
                 $column_finish = $this->pack_name($column_finish,
                                                   $this->is_super,
                                                   self::SLICE_FINISH);
@@ -834,7 +857,11 @@ class ColumnFamily {
     private function create_column_parent($super_column=null) {
         $column_parent = new cassandra_ColumnParent();
         $column_parent->column_family = $this->column_family;
-        $column_parent->super_column = $this->pack_name($super_column, true);
+        if ($super_column !== null) {
+            $column_parent->super_column = $this->pack_name($super_column, true);
+        } else {
+            $column_parent->super_column = null;
+        }
         return $column_parent;
     }
 
@@ -845,8 +872,9 @@ class ColumnFamily {
     private function pack_name($value, $is_supercol_name=false, $slice_end=self::NON_SLICE) {
         if (!$this->autopack_names)
             return $value;
-        if ($value == null)
-            return;
+        if ($slice_end === self::NON_SLICE && ($value === null || $value === "")) {
+            throw new UnexpectedValueException("Column names may not be null");
+        }
         if ($is_supercol_name)
             $d_type = $this->supercol_name_type;
         else
@@ -858,7 +886,7 @@ class ColumnFamily {
     private function unpack_name($b, $is_supercol_name=false) {
         if (!$this->autopack_names)
             return $b;
-        if ($b == null)
+        if ($b === null)
             return;
 
         if ($is_supercol_name)
@@ -1176,7 +1204,7 @@ class ColumnFamilyIterator implements Iterator {
         $this->predicate = $predicate;
         $this->read_consistency_level = $read_consistency_level;
 
-        if ($this->row_count != null)
+        if ($this->row_count !== null)
             $this->buffer_size = min($this->row_count, $buffer_size);
     }
 
