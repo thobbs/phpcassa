@@ -1249,25 +1249,32 @@ class ColumnFamilyIterator implements Iterator {
             # Save this key incase we run off the end
             $this->next_start_key = key($this->current_buffer);
             next($this->current_buffer);
-
+            
             if (count(current($this->current_buffer)) == 0)
             {
                 # this is an empty row, skip it
-                $key = key($this->current_buffer);
-                $this->next();
+                while (count(current($this->current_buffer)) == 0) {
+	            	$this->next_start_key = key($this->current_buffer);
+	            	next($this->current_buffer);
+            		$key = key($this->current_buffer);
+            		if ( !isset($key) ) {
+            			$beyond_last_row = true;
+            			break;
+            		}
+            	}
             }
-            else # count > 0
-            {
-                $key = key($this->current_buffer);
-                $beyond_last_row = !isset($key);
+            else {
+            
+	            $key = key($this->current_buffer);
+	            $beyond_last_row = !isset($key);
+            }
 
-                if (!$beyond_last_row)
-                {
-                    $this->rows_seen++;
-                    if ($this->rows_seen > $this->row_count) {
-                        $this->is_valid = false;
-                        return;
-                    }
+            if (!$beyond_last_row)
+            {
+                $this->rows_seen++;
+                if ($this->rows_seen > $this->row_count) {
+                    $this->is_valid = false;
+                    return;
                 }
             }
         }
