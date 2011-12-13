@@ -1253,7 +1253,7 @@ class ColumnFamilyIterator implements Iterator {
             if (count(current($this->current_buffer)) == 0)
             {
                 # this is an empty row, skip it
-                while (count(current($this->current_buffer)) == 0) {
+                do {
 	            	$this->next_start_key = key($this->current_buffer);
 	            	next($this->current_buffer);
             		$key = key($this->current_buffer);
@@ -1261,10 +1261,10 @@ class ColumnFamilyIterator implements Iterator {
             			$beyond_last_row = true;
             			break;
             		}
-            	}
+            	} while (count(current($this->current_buffer)) == 0);
             }
-            else {
-            
+            else
+            {
 	            $key = key($this->current_buffer);
 	            $beyond_last_row = !isset($key);
             }
