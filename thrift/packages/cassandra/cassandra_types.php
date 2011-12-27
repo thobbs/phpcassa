@@ -64,12 +64,15 @@ final class cassandra_IndexOperator {
 
 $GLOBALS['cassandra_E_IndexType'] = array(
   'KEYS' => 0,
+  'CUSTOM' => 1,
 );
 
 final class cassandra_IndexType {
   const KEYS = 0;
+  const CUSTOM = 1;
   static public $__names = array(
     0 => 'KEYS',
+    1 => 'CUSTOM',
   );
 }
 
@@ -350,13 +353,13 @@ class cassandra_NotFoundException extends TException {
 class cassandra_InvalidRequestException extends TException {
   static $_TSPEC;
 
-  public $message = null;
+  public $why = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'message',
+          'var' => 'why',
           'type' => TType::STRING,
           ),
         );
@@ -430,13 +433,13 @@ class cassandra_TimedOutException extends TException {
 class cassandra_AuthenticationException extends TException {
   static $_TSPEC;
 
-  public $message = null;
+  public $why = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'message',
+          'var' => 'why',
           'type' => TType::STRING,
           ),
         );
@@ -462,13 +465,13 @@ class cassandra_AuthenticationException extends TException {
 class cassandra_AuthorizationException extends TException {
   static $_TSPEC;
 
-  public $message = null;
+  public $why = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'message',
+          'var' => 'why',
           'type' => TType::STRING,
           ),
         );
@@ -985,12 +988,56 @@ class cassandra_Mutation extends TBase {
   }
 }
 
+class cassandra_EndpointDetails extends TBase {
+  static $_TSPEC;
+
+  public $host = null;
+  public $datacenter = null;
+  public $rack = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'host',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'datacenter',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'rack',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'EndpointDetails';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('EndpointDetails', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('EndpointDetails', self::$_TSPEC, $output);
+  }
+}
+
 class cassandra_TokenRange extends TBase {
   static $_TSPEC;
 
   public $start_token = null;
   public $end_token = null;
   public $endpoints = null;
+  public $rpc_endpoints = null;
+  public $endpoint_details = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1009,6 +1056,23 @@ class cassandra_TokenRange extends TBase {
           'etype' => TType::STRING,
           'elem' => array(
             'type' => TType::STRING,
+            ),
+          ),
+        4 => array(
+          'var' => 'rpc_endpoints',
+          'type' => TType::LST,
+          'etype' => TType::STRING,
+          'elem' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        5 => array(
+          'var' => 'endpoint_details',
+          'type' => TType::LST,
+          'etype' => TType::STRUCT,
+          'elem' => array(
+            'type' => TType::STRUCT,
+            'class' => 'cassandra_EndpointDetails',
             ),
           ),
         );
@@ -1078,6 +1142,7 @@ class cassandra_ColumnDef extends TBase {
   public $validation_class = null;
   public $index_type = null;
   public $index_name = null;
+  public $index_options = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1097,6 +1162,18 @@ class cassandra_ColumnDef extends TBase {
         4 => array(
           'var' => 'index_name',
           'type' => TType::STRING,
+          ),
+        5 => array(
+          'var' => 'index_options',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
           ),
         );
     }
@@ -1138,14 +1215,15 @@ class cassandra_CfDef extends TBase {
   public $max_compaction_threshold = null;
   public $row_cache_save_period_in_seconds = null;
   public $key_cache_save_period_in_seconds = null;
-  public $memtable_flush_after_mins = null;
-  public $memtable_throughput_in_mb = null;
-  public $memtable_operations_in_millions = null;
   public $replicate_on_write = null;
   public $merge_shards_chance = null;
   public $key_validation_class = null;
-  public $row_cache_provider = "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider";
+  public $row_cache_provider = null;
   public $key_alias = null;
+  public $compaction_strategy = null;
+  public $compaction_strategy_options = null;
+  public $row_cache_keys_to_save = null;
+  public $compression_options = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1223,18 +1301,6 @@ class cassandra_CfDef extends TBase {
           'var' => 'key_cache_save_period_in_seconds',
           'type' => TType::I32,
           ),
-        21 => array(
-          'var' => 'memtable_flush_after_mins',
-          'type' => TType::I32,
-          ),
-        22 => array(
-          'var' => 'memtable_throughput_in_mb',
-          'type' => TType::I32,
-          ),
-        23 => array(
-          'var' => 'memtable_operations_in_millions',
-          'type' => TType::DOUBLE,
-          ),
         24 => array(
           'var' => 'replicate_on_write',
           'type' => TType::BOOL,
@@ -1254,6 +1320,38 @@ class cassandra_CfDef extends TBase {
         28 => array(
           'var' => 'key_alias',
           'type' => TType::STRING,
+          ),
+        29 => array(
+          'var' => 'compaction_strategy',
+          'type' => TType::STRING,
+          ),
+        30 => array(
+          'var' => 'compaction_strategy_options',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        31 => array(
+          'var' => 'row_cache_keys_to_save',
+          'type' => TType::I32,
+          ),
+        32 => array(
+          'var' => 'compression_options',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
           ),
         );
     }
@@ -1283,6 +1381,7 @@ class cassandra_KsDef extends TBase {
   public $strategy_options = null;
   public $replication_factor = null;
   public $cf_defs = null;
+  public $durable_writes = true;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1319,6 +1418,10 @@ class cassandra_KsDef extends TBase {
             'type' => TType::STRUCT,
             'class' => 'cassandra_CfDef',
             ),
+          ),
+        6 => array(
+          'var' => 'durable_writes',
+          'type' => TType::BOOL,
           ),
         );
     }
@@ -1382,12 +1485,76 @@ class cassandra_CqlRow extends TBase {
   }
 }
 
+class cassandra_CqlMetadata extends TBase {
+  static $_TSPEC;
+
+  public $name_types = null;
+  public $value_types = null;
+  public $default_name_type = null;
+  public $default_value_type = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'name_types',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        2 => array(
+          'var' => 'value_types',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        3 => array(
+          'var' => 'default_name_type',
+          'type' => TType::STRING,
+          ),
+        4 => array(
+          'var' => 'default_value_type',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      parent::__construct(self::$_TSPEC, $vals);
+    }
+  }
+
+  public function getName() {
+    return 'CqlMetadata';
+  }
+
+  public function read($input)
+  {
+    return $this->_read('CqlMetadata', self::$_TSPEC, $input);
+  }
+  public function write($output) {
+    return $this->_write('CqlMetadata', self::$_TSPEC, $output);
+  }
+}
+
 class cassandra_CqlResult extends TBase {
   static $_TSPEC;
 
   public $type = null;
   public $rows = null;
   public $num = null;
+  public $schema = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1408,6 +1575,11 @@ class cassandra_CqlResult extends TBase {
         3 => array(
           'var' => 'num',
           'type' => TType::I32,
+          ),
+        4 => array(
+          'var' => 'schema',
+          'type' => TType::STRUCT,
+          'class' => 'cassandra_CqlMetadata',
           ),
         );
     }
