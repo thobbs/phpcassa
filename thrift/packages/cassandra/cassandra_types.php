@@ -353,13 +353,13 @@ class cassandra_NotFoundException extends TException {
 class cassandra_InvalidRequestException extends TException {
   static $_TSPEC;
 
-  public $why = null;
+  public $message = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => TType::STRING,
           ),
         );
@@ -433,13 +433,13 @@ class cassandra_TimedOutException extends TException {
 class cassandra_AuthenticationException extends TException {
   static $_TSPEC;
 
-  public $why = null;
+  public $message = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => TType::STRING,
           ),
         );
@@ -465,13 +465,13 @@ class cassandra_AuthenticationException extends TException {
 class cassandra_AuthorizationException extends TException {
   static $_TSPEC;
 
-  public $why = null;
+  public $message = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => TType::STRING,
           ),
         );
