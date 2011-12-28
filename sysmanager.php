@@ -2,6 +2,11 @@
 
 require_once 'connection.php';
 
+class IndexType {
+    const KEYS = cassandra_IndexType::KEYS;
+    const CUSTOM = cassandra_IndexType::CUSTOM;
+}
+
 class DataType {
     const BYTES_TYPE = "BytesType";
     const LONG_TYPE = "LongType";
