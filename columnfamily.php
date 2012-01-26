@@ -1022,22 +1022,53 @@ class ColumnFamily {
         return $value;
     }
 
+    private static function pack_int($x) {
+        $out = array();
+        if ($x >= 0) {
+            while ($x >= 256) {
+                $out[] = pack('C', 0xff & $x);
+                $x >>= 8;
+            }
+            $out[] = pack('C', 0xff & $x);
+            if ($x > 127) {
+                $out[] = chr('00');
+            }
+        } else {
+            $x = -1 - $x;
+            while ($x >= 256) {
+                $out[] = pack('C', 0xff & ~$x);
+                $x >>= 8;
+            }
+            if ($x <= 127)
+                $out[] = pack('C', 0xff & ~$x);
+            else
+                $out[] = pack('n', 0xffff & ~$x);
+        }
+
+        return strrev(implode($out));
+    }
+
+    private static function unpack_int($x) {
+        $val = hexdec(bin2hex($x));
+        if ((ord($x[0]) & 128) != 0)
+            $val = $val - (1 << (strlen($x) * 8));
+        return $val;
+    }
+
     private function pack($value, $data_type) {
         if ($data_type == 'LongType')
             return self::pack_long($value);
         else if ($data_type == 'IntegerType')
-            return pack('N', $value); // Unsigned 32bit big-endian
+            return self::pack_int($value);
         else
             return $value;
     }
-            
+
     private function unpack($value, $data_type) {
         if ($data_type == 'LongType')
             return self::unpack_long($value);
-        else if ($data_type == 'IntegerType') {
-            $res = unpack('N', $value);
-            return $res[1];
-        }
+        else if ($data_type == 'IntegerType')
+            return self::unpack_int($value);
         else
             return $value;
     }
