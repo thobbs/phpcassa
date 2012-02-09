@@ -4,6 +4,7 @@ require_once 'connection.php';
 
 class IndexType {
     const KEYS = cassandra_IndexType::KEYS;
+    const CUSTOM = cassandra_IndexType::CUSTOM;
 }
 
 class DataType {
@@ -160,6 +161,9 @@ class SystemManager {
                 case "replication_factor":
                     $ksdef->replication_factor = $value;
                     break;
+                case "durable_writes":
+                    $ksdef->durable_writes = $value;
+                    break;				
                 default:
                     throw new InvalidArgumentException(
                         "$attr is not a valid keyspace attribute."
@@ -281,14 +285,17 @@ class SystemManager {
                 case "key_cache_save_period_in_seconds":
                     $cfdef->key_cache_save_period_in_seconds = $value;
                     break;
-                case "memtable_flush_after_mins":
-                    $cfdef->memtable_flush_after_mins = $value;
+                case "compaction_strategy":
+                    $cfdef->compaction_strategy = $value;
                     break;
-                case "memtable_throughput_in_mb":
-                    $cfdef->memtable_throughput_in_mb = $value;
+                case "compaction_strategy_options":
+                    $cfdef->compaction_strategy_options = $value;
                     break;
-                case "memtable_operations_in_millions":
-                    $cfdef->memtable_operations_in_millions = $value;
+                case "row_cache_keys_to_save":
+                    $cfdef->row_cache_keys_to_save = $value;
+                    break;
+                case "compression_options":
+                    $cfdef->compression_options = $value;
                     break;
                 case "replicate_on_write":
                     $cfdef->replicate_on_write = $value;
