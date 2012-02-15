@@ -15,7 +15,7 @@ class CassandraUtil {
      * @return a UUID object
      */
     static public function import($bytes) {
-        return UUID::import($bytes);
+        return CassandraUUID::import($bytes);
     }
 
     /**
@@ -27,7 +27,7 @@ class CassandraUtil {
      *        since the UNIX epoch.
      */
     static public function uuid1($node=null, $time=null) {
-        $uuid = UUID::mint(1, $node, null, $time);
+        $uuid = CassandraUUID::mint(1, $node, null, $time);
         return $uuid->bytes;
     }
 
@@ -36,7 +36,7 @@ class CassandraUtil {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid3($node=null, $namespace=null) {
-        $uuid = UUID::mint(3, $node, $namespace);
+        $uuid = CassandraUUID::mint(3, $node, $namespace);
         return $uuid->bytes;
     }
 
@@ -45,7 +45,7 @@ class CassandraUtil {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid4() {
-        $uuid = UUID::mint(4);
+        $uuid = CassandraUUID::mint(4);
         return $uuid->bytes;
     }
 
@@ -54,7 +54,7 @@ class CassandraUtil {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid5($node, $namespace=null) {
-        $uuid = UUID::mint(5, $node, $namespace);
+        $uuid = CassandraUUID::mint(5, $node, $namespace);
         return $uuid->bytes;
     }
 
