@@ -1,112 +1,9 @@
 <?php
-require_once('connection.php');
-require_once('uuid.php');
+namespace phpcassa;
 
-/**
- * @package phpcassa
- * @subpackage columnfamily
- */
-class CassandraUtil {
-
-    /**
-     * Creates a UUID object from a byte representation.
-     * @param string $bytes the byte representation of a UUID, which is
-     *        what is returned from functions like uuid1()
-     * @return a UUID object
-     */
-    static public function import($bytes) {
-        return UUID::import($bytes);
-    }
-
-    /**
-     * Generate a v1 UUID (timestamp based)
-     * @return string a byte[] representation of a UUID 
-     * @param string $node what to use for the MAC portion of the UUID.  This will be generated
-     *        randomly if left as NULL
-     * @param int $time timestamp to use for the UUID.  This should be a number of microseconds
-     *        since the UNIX epoch.
-     */
-    static public function uuid1($node=null, $time=null) {
-        $uuid = UUID::mint(1, $node, null, $time);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Generate a v3 UUID
-     * @return string a byte[] representation of a UUID 
-     */
-    static public function uuid3($node=null, $namespace=null) {
-        $uuid = UUID::mint(3, $node, $namespace);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Generate a v4 UUID
-     * @return string a byte[] representation of a UUID 
-     */
-    static public function uuid4() {
-        $uuid = UUID::mint(4);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Generate a v5 UUID
-     * @return string a byte[] representation of a UUID 
-     */
-    static public function uuid5($node, $namespace=null) {
-        $uuid = UUID::mint(5, $node, $namespace);
-        return $uuid->bytes;
-    }
-
-    /**
-     * Get a timestamp with microsecond precision
-     */
-    static public function get_time() {
-        // By Zach Buller (zachbuller@gmail.com)
-        $time1 = microtime();
-        settype($time1, 'string'); //convert to string to keep trailing zeroes
-        $time2 = explode(" ", $time1);
-        $sub_secs = preg_replace('/0./', '', $time2[0], 1);
-        $time3 = ($time2[1].$sub_secs)/100;
-        return $time3;
-    }
-
-    /**
-     * Constructs an IndexExpression to be used in an IndexClause, which can
-     * be used with get_indexed_slices().
-     * @param mixed $column_name the name of the column this expression will apply to;
-     *        this column may or may not be indexed
-     * @param mixed $value the value that will be compared to column values using op
-     * @param classandra_IndexOperator $op the binary operator to apply to column values
-     *        and the 'value' parameter.  Defaults to testing for equality.
-     * @return cassandra_IndexExpression
-     */
-    static public function create_index_expression($column_name, $value,
-                                                   $op=cassandra_IndexOperator::EQ) {
-        $ie = new cassandra_IndexExpression();
-        $ie->column_name = $column_name;
-        $ie->value = $value;
-        $ie->op = $op;
-        return $ie;
-    }
-
-    /**
-     * Constructs a cassandra_IndexClause for use with get_indexed_slices().
-     * @param cassandra_IndexExpression[] $expr_list the list of expressions to match; at
-     *        least one of these must be on an indexed column
-     * @param string $start_key the key to begin searching from
-     * @param int $count the number of results to return
-     * @return cassandra_IndexClause
-     */
-    static public function create_index_clause($expr_list, $start_key='',
-                                               $count=ColumnFamily::DEFAULT_ROW_COUNT) {
-        $ic = new cassandra_IndexClause();
-        $ic->expressions = $expr_list;
-        $ic->start_key = $start_key;
-        $ic->count = $count;
-        return $ic;
-    }
-}
+use phpcassa\Iterator\IndexedColumnFamilyIterator;
+use phpcassa\Iterator\RangeColumnFamilyIterator;
+use phpcassa\Util\CassandraUtil;
 
 /**
  * Representation of a ColumnFamily in Cassandra.  This may be used for
@@ -140,9 +37,9 @@ class ColumnFamily {
     public $autopack_values;
     public $autopack_keys;
 
-    /** @var cassandra_ConsistencyLevel the default read consistency level */
+    /** @var \cassandra_ConsistencyLevel the default read consistency level */
     public $read_consistency_level;
-    /** @var cassandra_ConsistencyLevel the default write consistency level */
+    /** @var \cassandra_ConsistencyLevel the default write consistency level */
     public $write_consistency_level;
 
     /** @var bool If true, column values in data fetching operations will be
@@ -168,9 +65,9 @@ class ColumnFamily {
      * @param bool $autopack_values whether or not to automatically convert column values
      *        to and from their binary representation in Cassandra
      *        based on their validator type
-     * @param cassandra_ConsistencyLevel $read_consistency_level the default consistency
+     * @param \cassandra_ConsistencyLevel $read_consistency_level the default consistency
      *        level for read operations on this column family
-     * @param cassandra_ConsistencyLevel $write_consistency_level the default consistency
+     * @param \cassandra_ConsistencyLevel $write_consistency_level the default consistency
      *        level for write operations on this column family
      * @param int $buffer_size When calling `get_range`, the intermediate results need
      *        to be buffered if we are fetching many rows, otherwise the Cassandra
@@ -181,8 +78,8 @@ class ColumnFamily {
                                 $column_family,
                                 $autopack_names=true,
                                 $autopack_values=true,
-                                $read_consistency_level=cassandra_ConsistencyLevel::ONE,
-                                $write_consistency_level=cassandra_ConsistencyLevel::ONE,
+                                $read_consistency_level=\cassandra_ConsistencyLevel::ONE,
+                                $write_consistency_level=\cassandra_ConsistencyLevel::ONE,
                                 $buffer_size=self::DEFAULT_BUFFER_SIZE) {
 
         $this->pool = $pool;
@@ -201,7 +98,7 @@ class ColumnFamily {
             }
         }
         if ($cf_def == null)
-            throw new cassandra_NotFoundException();
+            throw new \cassandra_NotFoundException();
         else
             $this->cfdef = $cf_def;
 
@@ -280,7 +177,7 @@ class ColumnFamily {
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
      * @param mixed $super_column return only columns in this super column
-     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(column_name => column_value)
@@ -305,7 +202,7 @@ class ColumnFamily {
             $this->rcl($read_consistency_level));
 
         if (count($resp) == 0)
-            throw new cassandra_NotFoundException();
+            throw new \cassandra_NotFoundException();
 
         return $this->supercolumns_or_columns_to_array($resp);
     }
@@ -320,7 +217,7 @@ class ColumnFamily {
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
      * @param mixed $super_column return only columns in this super column
-     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
      *        rows are large, having a high buffer size gives poor performance; if your
@@ -407,7 +304,7 @@ class ColumnFamily {
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
      * @param mixed $super_column count only columns in this super column
-     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int
@@ -436,7 +333,7 @@ class ColumnFamily {
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
      * @param mixed $super_column count only columns in this super column
-     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(row_key => row_count)
@@ -488,7 +385,7 @@ class ColumnFamily {
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
      * @param mixed $super_column return only columns in this super column
-     * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need
      *        to be buffered if we are fetching many rows, otherwise the Cassandra
@@ -533,7 +430,7 @@ class ColumnFamily {
    /**
     * Fetch a set of rows from this column family based on an index clause.
     *
-    * @param cassandra_IndexClause $index_clause limits the keys that are returned based
+    * @param \cassandra_IndexClause $index_clause limits the keys that are returned based
     *        on expressions that compare the value of a column to a given value.  At least
     *        one of the expressions in the IndexClause must be on an indexed column. You
     *        can use the CassandraUtil::create_index_expression() and
@@ -544,7 +441,7 @@ class ColumnFamily {
     * @param bool $column_reversed fetch the columns in reverse order
     * @param int $column_count limit the number of columns returned to this amount
     * @param mixed $super_column return only columns in this super column
-    * @param cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+    * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
     * number of nodes that must respond before the operation returns
     *
     * @return mixed array(row_key => array(column_name => column_value))
@@ -562,14 +459,14 @@ class ColumnFamily {
         if ($buffer_size == null)
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
-            $ire = new cassandra_InvalidRequestException();
+            $ire = new \cassandra_InvalidRequestException();
             $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 
-        $new_clause = new cassandra_IndexClause();
+        $new_clause = new \cassandra_IndexClause();
         foreach($index_clause->expressions as $expr) {
-            $new_expr = new cassandra_IndexExpression();
+            $new_expr = new \cassandra_IndexExpression();
             $new_expr->value = $this->pack_value($expr->value, $expr->column_name);
             $new_expr->column_name = $this->pack_name($expr->column_name);
             $new_expr->op = $expr->op;
@@ -596,7 +493,7 @@ class ColumnFamily {
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
-     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -635,15 +532,15 @@ class ColumnFamily {
      * @param int $value the amount to adjust the counter by
      * @param mixed $super_column the super column to use if this is a
      *        super column family
-     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
     public function add($key, $column, $value=1, $super_column=null,
                         $write_consistency_level=null) {
-        
+
         $cp = $this->create_column_parent($super_column);
         $packed_key = $this->pack_key($key);
-        $counter = new cassandra_CounterColumn();
+        $counter = new \cassandra_CounterColumn();
         $counter->name = $this->pack_name($column);
         $counter->value = $value;
         $this->pool->call("add", $packed_key, $cp, $counter, $this->wcl($write_consistency_level));
@@ -658,7 +555,7 @@ class ColumnFamily {
      * @param int $timestamp the timestamp to use for these insertions. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
-     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -682,7 +579,7 @@ class ColumnFamily {
      * @param string $key the row to remove columns from
      * @param mixed[] $columns the columns to remove. If null, the entire row will be removed.
      * @param mixed $super_column only remove this super column
-     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -694,7 +591,7 @@ class ColumnFamily {
 
         if ($columns === null || count($columns) == 1)
         {
-            $cp = new cassandra_ColumnPath();
+            $cp = new \cassandra_ColumnPath();
             $cp->column_family = $this->column_family;
 
             if ($super_column !== null) {
@@ -714,7 +611,7 @@ class ColumnFamily {
                 $this->wcl($write_consistency_level));
         }
 
-        $deletion = new cassandra_Deletion();
+        $deletion = new \cassandra_Deletion();
         $deletion->timestamp = $timestamp;
 
         if ($super_column !== null) {
@@ -729,7 +626,7 @@ class ColumnFamily {
             $deletion->predicate = $predicate;
         }
 
-        $mutation = new cassandra_Mutation();
+        $mutation = new \cassandra_Mutation();
         $mutation->deletion = $deletion;
 
         $mut_map = array($packed_key => array($this->column_family => array($mutation))); 
@@ -750,12 +647,12 @@ class ColumnFamily {
      * @param mixed $column the column name of the counter
      * @param mixed $super_column the super column to use if this is a
      *        super column family
-     * @param cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
     public function remove_counter($key, $column, $super_column=null,
                                    $write_consistency_level=null) {
-        $cp = new cassandra_ColumnPath();
+        $cp = new \cassandra_ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
 
@@ -803,7 +700,7 @@ class ColumnFamily {
         $index = strrpos($type_string, '.');
         if ($index == false)
             return 'BytesType';
-        
+
         $type = substr($type_string, $index + 1);
         if (!isset(self::$TYPES[$type]))
             return 'BytesType';
@@ -828,7 +725,7 @@ class ColumnFamily {
     private function create_slice_predicate($columns, $column_start, $column_finish,
                                                    $column_reversed, $column_count) {
 
-        $predicate = new cassandra_SlicePredicate();
+        $predicate = new \cassandra_SlicePredicate();
         if ($columns !== null) {
             $packed_cols = array();
             foreach($columns as $col)
@@ -844,7 +741,7 @@ class ColumnFamily {
                                                   $this->is_super,
                                                   self::SLICE_FINISH);
 
-            $slice_range = new cassandra_SliceRange();
+            $slice_range = new \cassandra_SliceRange();
             $slice_range->count = $column_count;
             $slice_range->reversed = $column_reversed;
             $slice_range->start  = $column_start;
@@ -855,7 +752,7 @@ class ColumnFamily {
     }
 
     private function create_column_parent($super_column=null) {
-        $column_parent = new cassandra_ColumnParent();
+        $column_parent = new \cassandra_ColumnParent();
         $column_parent->column_family = $this->column_family;
         if ($super_column !== null) {
             $column_parent->super_column = $this->pack_name($super_column, true);
@@ -873,7 +770,7 @@ class ColumnFamily {
         if (!$this->autopack_names)
             return $value;
         if ($slice_end === self::NON_SLICE && ($value === null || $value === "")) {
-            throw new UnexpectedValueException("Column names may not be null");
+            throw new \UnexpectedValueException("Column names may not be null");
         }
         if ($is_supercol_name)
             $d_type = $this->supercol_name_type;
@@ -1157,27 +1054,27 @@ class ColumnFamily {
         $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp, $ttl);
         $ret = null;
         foreach($c_or_sc as $row) {
-            $mutation = new cassandra_Mutation();
+            $mutation = new \cassandra_Mutation();
             $mutation->column_or_supercolumn = $row;
             $ret[] = $mutation;
         }
         return $ret;
     }
-    
+
     private function array_to_supercolumns_or_columns($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
 
         $ret = null;
         foreach($array as $name => $value) {
-            $c_or_sc = new cassandra_ColumnOrSuperColumn();
+            $c_or_sc = new \cassandra_ColumnOrSuperColumn();
             if(is_array($value)) {
-                $c_or_sc->super_column = new cassandra_SuperColumn();
+                $c_or_sc->super_column = new \cassandra_SuperColumn();
                 $c_or_sc->super_column->name = $this->pack_name($name, true);
                 $c_or_sc->super_column->columns = $this->array_to_columns($value, $timestamp, $ttl);
                 $c_or_sc->super_column->timestamp = $timestamp;
             } else {
-                $c_or_sc = new cassandra_ColumnOrSuperColumn();
-                $c_or_sc->column = new cassandra_Column();
+                $c_or_sc = new \cassandra_ColumnOrSuperColumn();
+                $c_or_sc->column = new \cassandra_Column();
                 $c_or_sc->column->name = $this->pack_name($name, false);
                 $c_or_sc->column->value = $this->pack_value($value, $name);
                 $c_or_sc->column->timestamp = $timestamp;
@@ -1194,7 +1091,7 @@ class ColumnFamily {
 
         $ret = null;
         foreach($array as $name => $value) {
-            $column = new cassandra_Column();
+            $column = new \cassandra_Column();
             $column->name = $this->pack_name($name, false);
             $column->value = $this->pack_value($value, $name);
             $column->timestamp = $timestamp;
@@ -1205,223 +1102,3 @@ class ColumnFamily {
     }
 }
 
-class ColumnFamilyIterator implements Iterator {
-
-    protected $column_family;
-    protected $buffer_size;
-    protected $row_count;
-    protected $read_consistency_level;
-    protected $column_parent, $predicate;
-
-    protected $current_buffer;
-    protected $next_start_key, $orig_start_key;
-    protected $is_valid;
-    protected $rows_seen;
-
-    protected function __construct($column_family,
-                                   $buffer_size,
-                                   $row_count,
-                                   $orig_start_key,
-                                   $column_parent,
-                                   $predicate,
-                                   $read_consistency_level) {
-
-        $this->column_family = $column_family;
-        $this->buffer_size = $buffer_size;
-        $this->row_count = $row_count;
-        $this->orig_start_key = $orig_start_key;
-        $this->next_start_key = $orig_start_key;
-        $this->column_parent = $column_parent;
-        $this->predicate = $predicate;
-        $this->read_consistency_level = $read_consistency_level;
-
-        if ($this->row_count !== null)
-            $this->buffer_size = min($this->row_count, $buffer_size);
-    }
-
-    public function rewind() {
-        // Setup first buffer
-        $this->rows_seen = 0;
-        $this->is_valid = true;
-        $this->next_start_key = $this->orig_start_key;
-        $this->get_buffer();
-
-        # If nothing was inserted, this may happen
-        if (count($this->current_buffer) == 0) {
-            $this->is_valid = false;
-            return;
-        }
-
-        # If the very first row is a deleted row
-        if (count(current($this->current_buffer)) == 0)
-            $this->next();
-        else
-            $this->rows_seen++;
-    }
-
-    public function current() {
-        return current($this->current_buffer);
-    }
-
-    public function key() {
-        return key($this->current_buffer);
-    }
-
-    public function valid() {
-        return $this->is_valid;
-    }
-
-    public function next() {
-        $beyond_last_row = false;
-
-        # If we haven't run off the end
-        if ($this->current_buffer != null)
-        {
-            # Save this key incase we run off the end
-            $this->next_start_key = key($this->current_buffer);
-            next($this->current_buffer);
-            
-            if (count(current($this->current_buffer)) == 0)
-            {
-                # this is an empty row, skip it
-                do {
-	            	$this->next_start_key = key($this->current_buffer);
-	            	next($this->current_buffer);
-            		$key = key($this->current_buffer);
-            		if ( !isset($key) ) {
-            			$beyond_last_row = true;
-            			break;
-            		}
-            	} while (count(current($this->current_buffer)) == 0);
-            }
-            else
-            {
-	            $key = key($this->current_buffer);
-	            $beyond_last_row = !isset($key);
-            }
-
-            if (!$beyond_last_row)
-            {
-                $this->rows_seen++;
-                if ($this->rows_seen > $this->row_count) {
-                    $this->is_valid = false;
-                    return;
-                }
-            }
-        }
-        else
-        {
-            $beyond_last_row = true;
-        }
-
-        if($beyond_last_row && $this->current_page_size < $this->expected_page_size)
-        {
-            # The page was shorter than we expected, so we know that this
-            # was the last page in the column family
-            $this->is_valid = false;
-        }
-        else if($beyond_last_row)
-        {
-            # We've reached the end of this page, but there should be more
-            # in the CF
-            
-            # Get the next buffer (next_start_key has already been set)
-            $this->get_buffer();
-
-            # If the result set is 1, we can stop because the first item
-            # should always be skipped
-            if(count($this->current_buffer) == 1)
-                $this->is_valid = false;
-            else
-                $this->next();
-        }
-    }
-}
-
-/**
- * Iterates over a column family row-by-row, typically with only a subset
- * of each row's columns.
- *
- * @package phpcassa
- * @subpackage columnfamily
- */
-class RangeColumnFamilyIterator extends ColumnFamilyIterator {
-
-    private $key_start, $key_finish;
-
-    public function __construct($column_family, $buffer_size,
-                                $key_start, $key_finish, $row_count,
-                                $column_parent, $predicate,
-                                $read_consistency_level) {
-
-        $this->key_start = $key_start;
-        $this->key_finish = $key_finish;
-
-        parent::__construct($column_family, $buffer_size, $row_count,
-                            $key_start, $column_parent, $predicate,
-                            $read_consistency_level);
-    }
-
-    protected function get_buffer() {
-        if($this->row_count != null)
-            $buff_sz = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
-        else
-            $buff_sz = $this->buffer_size;
-        $this->expected_page_size = $buff_sz;
-
-        $key_range = new cassandra_KeyRange();
-        $key_range->start_key = $this->column_family->pack_key($this->next_start_key);
-        $key_range->end_key = $this->key_finish;
-        $key_range->count = $buff_sz;
-
-        $resp = $this->column_family->pool->call("get_range_slices", $this->column_parent, $this->predicate,
-            $key_range, $this->read_consistency_level);
-
-        $this->current_buffer = $this->column_family->keyslices_to_array($resp);
-        $this->current_page_size = count($this->current_buffer);
-    }
-}
-
-/**
- * Iterates over a column family row-by-row, typically with only a subset
- * of each row's columns.
- *
- * @package phpcassa
- * @subpackage columnfamily
- */
-class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
-
-    private $index_clause;
-
-    public function __construct($column_family, $index_clause, $buffer_size,
-                                $column_parent, $predicate,
-                                $read_consistency_level) {
-
-        $this->index_clause = $index_clause;
-        $row_count = $index_clause->count;
-        $orig_start_key = $index_clause->start_key;
-
-        parent::__construct($column_family, $buffer_size, $row_count,
-                            $orig_start_key, $column_parent, $predicate,
-                            $read_consistency_level);
-    }
-
-    protected function get_buffer() {
-        # Figure out how many rows we need to get and record that
-        if($this->row_count != null)
-            $this->index_clause->count = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
-        else
-            $this->index_clause->count = $this->buffer_size;
-        $this->expected_page_size = $this->index_clause->count;
-
-        $this->index_clause->start_key = $this->column_family->pack_key($this->next_start_key);
-        $resp = $this->column_family->pool->call("get_indexed_slices",
-                $this->column_parent, $this->index_clause, $this->predicate,
-                $this->read_consistency_level);
-
-        $this->current_buffer = $this->column_family->keyslices_to_array($resp);
-        $this->current_page_size = count($this->current_buffer);
-    }
-}
-
-?>

@@ -1,4 +1,5 @@
 <?php
+namespace phpcassa\Util;
 /*
    DrUUID RFC4122 library for PHP5
     by J. King (http://jkingweb.ca/)
@@ -78,7 +79,7 @@ class UUID {
     return new self(self::mintTime($node, $time));
    case 2:
     // Version 2 is not supported 
-    throw new UUIDException("Version 2 is unsupported.");
+    throw new phpcassa_Util_UUIDException("Version 2 is unsupported.");
    case 3:
     return new self(self::mintName(self::MD5, $node, $ns));
    case 4:
@@ -86,7 +87,7 @@ class UUID {
    case 5:
     return new self(self::mintName(self::SHA1, $node, $ns));
    default:
-    throw new UUIDException("Selected version is invalid or unsupported.");
+    throw new phpcassa_Util_UUIDException("Selected version is invalid or unsupported.");
   }
  }
 
@@ -313,11 +314,4 @@ class UUID {
      Randomness is returned as a string of bytes. */
   return base64_decode(self::$randomSource->GetRandom($bytes,0)); // straight binary mysteriously doesn't work, hence the base64
  }
-}
-
-/**
- * @package phpcassa
- * @subpackage uuid
- */
-class UUIDException extends Exception {
 }

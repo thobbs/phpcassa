@@ -1,27 +1,8 @@
 <?php
+namespace phpcassa;
 
-require_once 'connection.php';
-
-class IndexType {
-    const KEYS = cassandra_IndexType::KEYS;
-    const CUSTOM = cassandra_IndexType::CUSTOM;
-}
-
-class DataType {
-    const BYTES_TYPE = "BytesType";
-    const LONG_TYPE = "LongType";
-    const INTEGER_TYPE = "IntegerType";
-    const ASCII_TYPE = "AsciiType";
-    const UTF8_TYPE = "UTF8Type";
-    const TIME_UUID_TYPE = "TimeUUIDType";
-    const LEXICAL_UUID_TYPE = "LexicalUUIDType";
-}
-
-class StrategyClass {
-    const SIMPLE_STRATEGY = "SimpleStrategy";
-    const NETWORK_TOPOLOGY_STRATEGY = "NetworkTopologyStrategy";
-    const OLD_NETWORK_TOPOLOGY_STRATEGY = "OldNetworkTopologyStrategy";
-}
+use phpcassa\Schema\IndexType;
+use phpcassa\Connection\ConnectionWrapper;
 
 /**
  * Helps with getting information about the schema, making
@@ -140,7 +121,7 @@ class SystemManager {
         if ($orig !== NULL) {
             $ksdef = $orig;
         } else {
-            $ksdef = new cassandra_KsDef();
+            $ksdef = new \cassandra_KsDef();
             $ksdef->strategy_class = 'SimpleStrategy';
             $ksdef->strategy_options = NULL;
             $ksdef->replication_factor = 1;
@@ -165,7 +146,7 @@ class SystemManager {
                     $ksdef->durable_writes = $value;
                     break;				
                 default:
-                    throw new InvalidArgumentException(
+                    throw new \InvalidArgumentException(
                         "$attr is not a valid keyspace attribute."
                     );
             }
@@ -234,7 +215,7 @@ class SystemManager {
         if ($orig !== NULL) {
             $cfdef = $orig;
         } else {
-            $cfdef = new cassandra_CfDef();
+            $cfdef = new \cassandra_CfDef();
             $cfdef->column_type = "Standard";
         }
 
@@ -313,7 +294,7 @@ class SystemManager {
                     $cfdef->key_alias = $value;
                     break;
                 default:
-                    throw new InvalidArgumentException(
+                    throw new \InvalidArgumentException(
                         "$attr is not a valid column family attribute."
                     );
             }
@@ -404,19 +385,19 @@ class SystemManager {
      *
      * <code>
      * $sys = new SystemManager();
-     * $sys->create_index("Keyspace1", "Users", "name", DataType::UTF8_TYPE);
+     * $sys->create_index("Keyspace1", "Users", "name", \DataType::UTF8_TYPE);
      * </code>
      *
      * @param string $keyspace the name of the keyspace containing the column family
      * @param string $column_family the name of the column family
      * @param string $column the name of the column to put the index on
-     * @param DataType $data_type the data type of the values being indexed
+     * @param \DataType $data_type the data type of the values being indexed
      * @param string $index_name an optional name for the index
-     * @param IndexType $index_type the type of index. Defaults to
-     *        IndexType::KEYS_INDEX, which is currently the only option.
+     * @param \IndexType $index_type the type of index. Defaults to
+     *        \IndexType::KEYS_INDEX, which is currently the only option.
      */
     public function create_index($keyspace, $column_family, $column,
-        $data_type, $index_name=NULL, $index_type=IndexType::KEYS)
+        $data_type, $index_name=NULL, $index_type=\IndexType::KEYS)
     {
         $this->client->set_keyspace($keyspace);
         $cfdef = $this->get_cfdef($keyspace, $column_family);
@@ -424,7 +405,7 @@ class SystemManager {
         if (strpos($data_type, ".") === false) {
             $data_type = "org.apache.cassandra.db.marshal.$data_type";
         }
-        $col_def = new cassandra_ColumnDef();
+        $col_def = new \cassandra_ColumnDef();
         $col_def->name = $column;
         $col_def->validation_class = $data_type;
         $col_def->index_type = $index_type;
@@ -483,7 +464,7 @@ class SystemManager {
     }
 
     /**
-     * Describes the Cassandra cluster. 
+     * Describes the Cassandra cluster.
      *
      * @return array the node to token mapping
      */
@@ -546,7 +527,7 @@ class SystemManager {
      *
      * @param string $keyspace the keyspace name
      *
-     * @return cassandra_KsDef
+     * @return \cassandra_KsDef
      */
     public function describe_keyspace($keyspace) {
         return $this->client->describe_keyspace($keyspace);
@@ -555,10 +536,10 @@ class SystemManager {
     /**
      * Like describe_keyspace(), but for all keyspaces.
      *
-     * @return array an array of cassandra_KsDef
+     * @return array an array of \cassandra_KsDef
      */
     public function describe_keyspaces() {
         return $this->client->describe_keyspaces();
     }
 }
-?>
+
