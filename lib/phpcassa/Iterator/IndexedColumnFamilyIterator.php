@@ -5,8 +5,7 @@ namespace phpcassa\Iterator;
  * Iterates over a column family row-by-row, typically with only a subset
  * of each row's columns.
  *
- * @package phpcassa
- * @subpackage columnfamily
+ * @package phpcassa\Iterator
  */
 class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
 

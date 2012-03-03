@@ -39,8 +39,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 use phpcassa\Util\Clock;
 
 /**
- * @package phpcassa
- * @subpackage uuid
+ * @package phpcassa\Util
  */
 class UUID {
  const MD5  = 3;

@@ -11,7 +11,6 @@ use phpcassa\Util\Clock;
  * deletions, or retrievals will go through a ColumnFamily.
  *
  * @package phpcassa
- * @subpackage columnfamily
  */
 class ColumnFamily {
 
@@ -24,7 +23,6 @@ class ColumnFamily {
 
     const DEFAULT_BUFFER_SIZE = 1024;
 
-    public $client;
     private $column_family;
     private $is_super;
     private $cf_data_type;
@@ -46,7 +44,7 @@ class ColumnFamily {
      * replaced by an array of the form array(column_value, column_timestamp). */
     public $include_timestamp = false;
 
-    /** 
+    /**
      * @var int When calling `get_range`, the intermediate results need
      *       to be buffered if we are fetching many rows, otherwise the Cassandra
      *       server will overallocate memory and fail.  This is the size of
@@ -57,7 +55,8 @@ class ColumnFamily {
     /**
      * Constructs a ColumnFamily.
      *
-     * @param Connection $connection the connection to use for this ColumnFamily
+     * @param phpcassa\Connection\ConnectionPool $pool the pool to use when
+     *        querying Cassandra
      * @param string $column_family the name of the column family in Cassandra
      * @param bool $autopack_names whether or not to automatically convert column names 
      *        to and from their binary representation in Cassandra
@@ -108,7 +107,7 @@ class ColumnFamily {
         $this->key_type = 'BytesType';
         $this->col_type_dict = array();
 
-        $this->is_super = $this->cfdef->column_type === 'Super';       
+        $this->is_super = $this->cfdef->column_type === 'Super';
         $this->set_autopack_names($autopack_names);
         $this->set_autopack_values($autopack_values);
         $this->set_autopack_keys(true);
@@ -392,7 +391,7 @@ class ColumnFamily {
      *        server will overallocate memory and fail.  This is the size of
      *        that buffer in number of rows.
      *
-     * @return RangeColumnFamilyIterator
+     * @return phpcassa\Iterator\RangeColumnFamilyIterator
      */
     public function get_range($key_start="",
                               $key_finish="",
@@ -433,8 +432,8 @@ class ColumnFamily {
     * @param \cassandra_IndexClause $index_clause limits the keys that are returned based
     *        on expressions that compare the value of a column to a given value.  At least
     *        one of the expressions in the IndexClause must be on an indexed column. You
-    *        can use the CassandraUtil::create_index_expression() and
-    *        CassandraUtil::create_index_clause() methods to help build this.
+    *        can use the phpcassa\Util\CassandraUtil::create_index_expression() and
+    *        phpcassa\Util\CassandraUtil::create_index_clause() methods to help build this.
     * @param mixed[] $columns limit the columns or super columns fetched to this list
     * @param mixed $column_start only fetch columns with name >= this
     * @param mixed $column_finish only fetch columns with name <= this
@@ -444,7 +443,7 @@ class ColumnFamily {
     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
     * number of nodes that must respond before the operation returns
     *
-    * @return mixed array(row_key => array(column_name => column_value))
+    * @return phpcassa\Iterator\IndexedColumnFamilyIterator
     */
     public function get_indexed_slices($index_clause,
                                        $columns=null,

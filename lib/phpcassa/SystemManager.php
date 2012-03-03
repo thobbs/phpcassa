@@ -10,7 +10,6 @@ use phpcassa\Connection\ConnectionWrapper;
  * and configuration of the cluster.
  *
  * @package phpcassa
- * @subpackage sysmanager
  */
 class SystemManager {
 

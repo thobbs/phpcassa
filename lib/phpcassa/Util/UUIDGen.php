@@ -4,8 +4,7 @@ namespace phpcassa\Util;
 use phpcassa\Util\UUID;
 
 /**
- * @package phpcassa
- * @subpackage columnfamily
+ * @package phpcassa\Util
  */
 class UUIDGen {
 

@@ -1,6 +1,9 @@
 <?php
 namespace phpcassa\Iterator;
 
+/**
+ * @package phpcassa/Iterator
+ */
 class ColumnFamilyIterator implements \Iterator {
 
     protected $column_family;

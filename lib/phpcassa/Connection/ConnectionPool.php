@@ -15,8 +15,8 @@ require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
 /**
  * A pool of connections to a set of servers in a cluster.
  * Each ConnectionPool is keyspace specific.
- * @package phpcassa
- * @subpackage connection
+ *
+ * @package phpcassa\Connection
  */
 class ConnectionPool {
 

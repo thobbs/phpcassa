@@ -2,8 +2,7 @@
 namespace phpcassa\Util;
 
 /**
- * @package phpcassa
- * @subpackage columnfamily
+ * @package phpcassa\Util
  */
 class Clock {
 

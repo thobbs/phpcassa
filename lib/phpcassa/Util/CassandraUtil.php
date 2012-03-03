@@ -4,8 +4,7 @@ namespace phpcassa\Util;
 use phpcassa\ColumnFamily;
 
 /**
- * @package phpcassa
- * @subpackage columnfamily
+ * @package phpcassa\Util
  */
 class CassandraUtil {
 

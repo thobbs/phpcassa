@@ -4,8 +4,7 @@ namespace phpcassa\Connection;
 use phpcassa\Connection\IncompatibleAPIException;
 
 /**
- * @package phpcassa
- * @subpackage connection
+ * @package phpcassa\Connection
  */
 class ConnectionWrapper {
 

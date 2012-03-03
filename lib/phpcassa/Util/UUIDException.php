@@ -2,8 +2,7 @@
 namespace phpcassa\Util;
 
 /**
- * @package phpcassa
- * @subpackage uuid
+ * @package phpcassa\Util
  */
 class UUIDException extends \Exception {
 }

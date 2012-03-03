@@ -1,6 +1,9 @@
 <?php
 namespace phpcassa\Schema;
 
+/**
+ * @package phpcassa\Schema
+ */
 class StrategyClass {
     const SIMPLE_STRATEGY = "SimpleStrategy";
     const NETWORK_TOPOLOGY_STRATEGY = "NetworkTopologyStrategy";
