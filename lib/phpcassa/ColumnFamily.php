@@ -1,8 +1,12 @@
 <?php
 namespace phpcassa;
 
+use phpcassa\Schema\DataType;
+use phpcassa\Schema\DataType\BytesType;
+
 use phpcassa\Iterator\IndexedColumnFamilyIterator;
 use phpcassa\Iterator\RangeColumnFamilyIterator;
+
 use phpcassa\Util\Clock;
 
 /**
@@ -101,10 +105,10 @@ class ColumnFamily {
         else
             $this->cfdef = $cf_def;
 
-        $this->cf_data_type = 'BytesType';
-        $this->col_name_type = 'BytesType';
-        $this->supercol_name_type = 'BytesType';
-        $this->key_type = 'BytesType';
+        $this->cf_data_type = new BytesType();
+        $this->col_name_type = new BytesType();
+        $this->supercol_name_type = new BytesType();
+        $this->key_type = new BytesType();
         $this->col_type_dict = array();
 
         $this->is_super = $this->cfdef->column_type === 'Super';
@@ -122,10 +126,10 @@ class ColumnFamily {
                 return;
             $this->autopack_names = true;
             if (!$this->is_super) {
-                $this->col_name_type = self::extract_type_name($this->cfdef->comparator_type);
+                $this->col_name_type = DataType::get_type_for($this->cfdef->comparator_type);
             } else {
-                $this->col_name_type = self::extract_type_name($this->cfdef->subcomparator_type);
-                $this->supercol_name_type = self::extract_type_name($this->cfdef->comparator_type);
+                $this->col_name_type = DataType::get_type_for($this->cfdef->subcomparator_type);
+                $this->supercol_name_type = DataType::get_type_for($this->cfdef->comparator_type);
             }
         } else {
             $this->autopack_names = false;
@@ -138,10 +142,10 @@ class ColumnFamily {
     public function set_autopack_values($pack_values) {
         if ($pack_values) {
             $this->autopack_values = true;
-            $this->cf_data_type = self::extract_type_name($this->cfdef->default_validation_class);
+            $this->cf_data_type = DataType::get_type_for($this->cfdef->default_validation_class);
             foreach($this->cfdef->column_metadata as $coldef) {
                 $this->col_type_dict[$coldef->name] =
-                        self::extract_type_name($coldef->validation_class);
+                        DataType::get_type_for($coldef->validation_class);
             }
         } else {
             $this->autopack_values = false;
@@ -157,7 +161,7 @@ class ColumnFamily {
         if ($pack_keys) {
             $this->autopack_keys = true;
             if (property_exists('cassandra_CfDef', "key_validation_class")) {
-                $this->key_type = self::extract_type_name($this->cfdef->key_validation_class);
+                $this->key_type = DataType::get_type_for($this->cfdef->key_validation_class);
             } else {
                 $this->key_type = 'BytesType';
             }
@@ -686,25 +690,6 @@ class ColumnFamily {
 
     /********************* Helper functions *************************/
 
-    private static $TYPES = array('BytesType' => 1, 'LongType' => 1, 'IntegerType' => 1,
-                                  'UTF8Type' => 1, 'AsciiType' => 1, 'LexicalUUIDType' => 1,
-                                  'TimeUUIDType' => 1);
-
-    private static function extract_type_name($type_string) {
-        if ($type_string == null or $type_string == '')
-            return 'BytesType';
-
-        $index = strrpos($type_string, '.');
-        if ($index == false)
-            return 'BytesType';
-
-        $type = substr($type_string, $index + 1);
-        if (!isset(self::$TYPES[$type]))
-            return 'BytesType';
-
-        return $type;
-    }
-
     private function rcl($read_consistency_level) {
         if ($read_consistency_level === null)
             return $this->read_consistency_level;
@@ -770,11 +755,9 @@ class ColumnFamily {
             throw new \UnexpectedValueException("Column names may not be null");
         }
         if ($is_supercol_name)
-            $d_type = $this->supercol_name_type;
+            return $this->supercol_name_type->pack($value);
         else
-            $d_type = $this->col_name_type;
-
-        return $this->pack($value, $d_type);
+            return $this->col_name_type->pack($value);
     }
 
     private function unpack_name($b, $is_supercol_name=false) {
@@ -784,169 +767,52 @@ class ColumnFamily {
             return;
 
         if ($is_supercol_name)
-            $d_type = $this->supercol_name_type;
+            return $this->supercol_name_type->unpack($b);
         else
-            $d_type = $this->col_name_type;
-
-        return $this->unpack($b, $d_type);
+            return $this->col_name_type->unpack($b);
     }
 
     public function pack_key($key) {
         if (!$this->autopack_keys)
             return $key;
-        return $this->pack($key, $this->key_type);
+        return $this->key_type->pack($key);
     }
 
     public function unpack_key($b) {
         if (!$this->autopack_keys)
             return $b;
-        return $this->unpack($b, $this->key_type);
+        return $this->key_type->unpack($b);
     }
 
     private function get_data_type_for_col($col_name) {
 		if (isset($this->col_type_dict[$col_name]))
 			return $this->col_type_dict[$col_name];
 		else 
-			return $this->cf_data_type;            
+			return $this->cf_data_type;
     }
 
     private function pack_value($value, $col_name) {
         if (!$this->autopack_values)
             return $value;
-        return $this->pack($value, $this->get_data_type_for_col($col_name));
+
+        if (isset($this->col_type_dict[$col_name])) {
+            $dtype = $this->col_type_dict[$col_name];
+            return $dtype->pack($value);
+        } else {
+            return $this->cf_data_type->pack($value);
+        }
     }
 
     private function unpack_value($value, $col_name) {
         if (!$this->autopack_values)
             return $value;
-        return $this->unpack($value, $this->get_data_type_for_col($col_name));
-    }
 
-    private static function pack_long($value) {
-        // If we are on a 32bit architecture we have to explicitly deal with
-        // 64-bit twos-complement arithmetic since PHP wants to treat all ints
-        // as signed and any int over 2^31 - 1 as a float
-        if (PHP_INT_SIZE == 4) {
-            $neg = $value < 0;
-
-            if ($neg) {
-              $value *= -1;
-            }
-
-            $hi = (int)($value / 4294967296);
-            $lo = (int)$value;
-
-            if ($neg) {
-                $hi = ~$hi;
-                $lo = ~$lo;
-                if (($lo & (int)0xffffffff) == (int)0xffffffff) {
-                    $lo = 0;
-                    $hi++;
-                } else {
-                    $lo++;
-                }
-            }
-            $data = pack('N2', $hi, $lo);
+        if (isset($this->col_type_dict[$col_name])) {
+            $dtype = $this->col_type_dict[$col_name];
+            return $dtype->unpack($value);
         } else {
-            $hi = $value >> 32;
-            $lo = $value & 0xFFFFFFFF;
-            $data = pack('N2', $hi, $lo);
+            return $this->cf_data_type->unpack($value);
         }
-        return $data;
-    }
-
-    private static function unpack_long($data) {
-        $arr = unpack('N2', $data);
-
-        // If we are on a 32bit architecture we have to explicitly deal with
-        // 64-bit twos-complement arithmetic since PHP wants to treat all ints
-        // as signed and any int over 2^31 - 1 as a float
-        if (PHP_INT_SIZE == 4) {
-
-            $hi = $arr[1];
-            $lo = $arr[2];
-            $isNeg = $hi  < 0;
-
-            // Check for a negative
-            if ($isNeg) {
-                $hi = ~$hi & (int)0xffffffff;
-                $lo = ~$lo & (int)0xffffffff;
-
-                if ($lo == (int)0xffffffff) {
-                    $hi++;
-                    $lo = 0;
-                } else {
-                    $lo++;
-                }
-            }
-
-            // Force 32bit words in excess of 2G to pe positive - we deal wigh sign
-            // explicitly below
-
-            if ($hi & (int)0x80000000) {
-                $hi &= (int)0x7fffffff;
-                $hi += 0x80000000;
-            }
-
-            if ($lo & (int)0x80000000) {
-                $lo &= (int)0x7fffffff;
-                $lo += 0x80000000;
-            }
-
-            $value = $hi * 4294967296 + $lo;
-
-            if ($isNeg)
-                $value = 0 - $value;
-
-        } else {
-            // Upcast negatives in LSB bit
-            if ($arr[2] & 0x80000000)
-                $arr[2] = $arr[2] & 0xffffffff;
-
-            // Check for a negative
-            if ($arr[1] & 0x80000000) {
-                $arr[1] = $arr[1] & 0xffffffff;
-                $arr[1] = $arr[1] ^ 0xffffffff;
-                $arr[2] = $arr[2] ^ 0xffffffff;
-                $value = 0 - $arr[1]*4294967296 - $arr[2] - 1;
-            } else {
-                $value = $arr[1]*4294967296 + $arr[2];
-            }
-        }
-        return $value;
-    }
-
-    private static function pack_int($x) {
-        $out = array();
-        if ($x >= 0) {
-            while ($x >= 256) {
-                $out[] = pack('C', 0xff & $x);
-                $x >>= 8;
-            }
-            $out[] = pack('C', 0xff & $x);
-            if ($x > 127) {
-                $out[] = chr('00');
-            }
-        } else {
-            $x = -1 - $x;
-            while ($x >= 256) {
-                $out[] = pack('C', 0xff & ~$x);
-                $x >>= 8;
-            }
-            if ($x <= 127)
-                $out[] = pack('C', 0xff & ~$x);
-            else
-                $out[] = pack('n', 0xffff & ~$x);
-        }
-
-        return strrev(implode($out));
-    }
-
-    private static function unpack_int($x) {
-        $val = hexdec(bin2hex($x));
-        if ((ord($x[0]) & 128) != 0)
-            $val = $val - (1 << (strlen($x) * 8));
-        return $val;
     }
 
     private function pack($value, $data_type) {
