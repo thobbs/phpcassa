@@ -1,7 +1,7 @@
 <?php
-namespace phpcassa\Util;
+namespace phpcassa\UUID;
 
-use phpcassa\Util\UUID;
+use phpcassa\UUID;
 
 /**
  * @package phpcassa\Util
