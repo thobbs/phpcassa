@@ -36,7 +36,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-require_once('columnfamily.php');
+use phpcassa\Util\Clock;
 
 /**
  * @package phpcassa
@@ -185,7 +185,7 @@ class UUID {
   //  integer size limits.
   // Note that this will never be more accurate than to the microsecond.
   if ($time_arg == NULL) {
-   $time = CassandraUtil::get_time() * 10 + self::interval;
+   $time = Clock::get_time() * 10 + self::interval;
   } else {
    $time = $time_arg * 10 + self::interval;
   }

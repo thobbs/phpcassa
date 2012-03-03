@@ -2,6 +2,8 @@
 namespace phpcassa\Connection;
 
 use phpcassa\Connection\ConnectionWrapper;
+use phpcassa\Connection\MaxRetriesException;
+use phpcassa\Connection\NoServerAvailable;
 
 $GLOBALS['THRIFT_ROOT'] = (__DIR__) . '/../../thrift';
 require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';

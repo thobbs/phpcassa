@@ -1,48 +1,54 @@
 <?php
-require_once('simpletest/autorun.php');
-require_once('../connection.php');
-require_once('../columnfamily.php');
-require_once('../uuid.php');
-require_once('../sysmanager.php');
 
-class TestLargeOps extends UnitTestCase {
+use phpcassa\SystemManager;
+use phpcassa\ColumnFamily;
+use phpcassa\Connection\ConnectionPool;
+
+class LargeOpsTest extends PHPUnit_Framework_TestCase {
 
     private static $VALS = array('val1', 'val2', 'val3');
     private static $KEYS = array('key1', 'key2', 'key3');
     private static $KS = "TestLargeOps";
+    private static $CF = "Standard1";
 
-    private $client;
+    private $pool;
     private $cf;
 
-    public function __construct() {
+    public static function setUpBeforeClass() {
         try {
-            $this->sys = new SystemManager();
+            $sys = new SystemManager();
 
-            $ksdefs = $this->sys->describe_keyspaces();
+            $ksdefs = $sys->describe_keyspaces();
             $exists = False;
             foreach ($ksdefs as $ksdef)
                 $exists = $exists || $ksdef->name == self::$KS;
 
             if ($exists)
-                $this->sys->drop_keyspace(self::$KS);
+                $sys->drop_keyspace(self::$KS);
 
-            $this->sys->create_keyspace(self::$KS, array());
+            $sys->create_keyspace(self::$KS, array());
 
             $cfattrs = array("column_type" => "Standard");
-            $this->sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
+            $sys->create_column_family(self::$KS, self::$CF, $cfattrs);
 
-            $this->pool = new ConnectionPool(self::$KS);
-            $this->cf = new ColumnFamily($this->pool, 'Standard1');
         } catch (Exception $e) {
             print($e);
             throw $e;
         }
-
-        parent::__construct();
     }
 
-    public function __destruct() {
-        $this->sys->drop_keyspace(self::$KS);
+    public static function tearDownAfterClass() {
+        $sys = new SystemManager();
+        $sys->drop_keyspace(self::$KS);
+        $sys->close();
+    }
+
+    public function setUp() {
+        $this->pool = new ConnectionPool(self::$KS);
+        $this->cf = new ColumnFamily($this->pool, self::$CF);
+    }
+
+    public function tearDown() {
         $this->pool->dispose();
     }
 
@@ -58,7 +64,7 @@ class TestLargeOps extends UnitTestCase {
 
         foreach(range(0, 99) as $i) {
             $res = $this->cf->get("key$i");
-            self::assertEqual($res[$str], $str);
+            $this->assertEquals($res[$str], $str);
         }
     }
 }

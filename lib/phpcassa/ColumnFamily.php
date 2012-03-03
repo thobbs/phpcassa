@@ -3,7 +3,7 @@ namespace phpcassa;
 
 use phpcassa\Iterator\IndexedColumnFamilyIterator;
 use phpcassa\Iterator\RangeColumnFamilyIterator;
-use phpcassa\Util\CassandraUtil;
+use phpcassa\Util\Clock;
 
 /**
  * Representation of a ColumnFamily in Cassandra.  This may be used for
@@ -505,7 +505,7 @@ class ColumnFamily {
                            $write_consistency_level=null) {
 
         if ($timestamp === null)
-            $timestamp = CassandraUtil::get_time();
+            $timestamp = Clock::get_time();
 
         $cfmap = array();
         $packed_key = $this->pack_key($key);
@@ -562,7 +562,7 @@ class ColumnFamily {
      */
     public function batch_insert($rows, $timestamp=null, $ttl=null, $write_consistency_level=null) {
         if ($timestamp === null)
-            $timestamp = CassandraUtil::get_time();
+            $timestamp = Clock::get_time();
 
         $cfmap = array();
         foreach($rows as $key => $columns) {
@@ -586,7 +586,7 @@ class ColumnFamily {
      */
     public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
 
-        $timestamp = CassandraUtil::get_time();
+        $timestamp = Clock::get_time();
         $packed_key = $this->pack_key($key);
 
         if ($columns === null || count($columns) == 1)
@@ -1049,7 +1049,7 @@ class ColumnFamily {
     }
 
     private function array_to_mutation($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
+        if(empty($timestamp)) $timestamp = Clock::get_time();
 
         $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp, $ttl);
         $ret = null;
@@ -1062,7 +1062,7 @@ class ColumnFamily {
     }
 
     private function array_to_supercolumns_or_columns($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
+        if(empty($timestamp)) $timestamp = Clock::get_time();
 
         $ret = null;
         foreach($array as $name => $value) {
@@ -1087,7 +1087,7 @@ class ColumnFamily {
     }
 
     private function array_to_columns($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = CassandraUtil::get_time();
+        if(empty($timestamp)) $timestamp = Clock::get_time();
 
         $ret = null;
         foreach($array as $name => $value) {

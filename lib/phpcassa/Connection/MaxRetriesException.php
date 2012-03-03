@@ -5,4 +5,4 @@ namespace phpcassa\Connection;
  * @package phpcassa
  * @subpackage connection
  */
-class IncompatibleAPIException extends \Exception { }
+class MaxRetriesException extends \Exception { }

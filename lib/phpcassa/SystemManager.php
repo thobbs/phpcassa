@@ -385,19 +385,19 @@ class SystemManager {
      *
      * <code>
      * $sys = new SystemManager();
-     * $sys->create_index("Keyspace1", "Users", "name", \DataType::UTF8_TYPE);
+     * $sys->create_index("Keyspace1", "Users", "name", DataType::UTF8_TYPE);
      * </code>
      *
      * @param string $keyspace the name of the keyspace containing the column family
      * @param string $column_family the name of the column family
      * @param string $column the name of the column to put the index on
-     * @param \DataType $data_type the data type of the values being indexed
+     * @param DataType $data_type the data type of the values being indexed
      * @param string $index_name an optional name for the index
-     * @param \IndexType $index_type the type of index. Defaults to
-     *        \IndexType::KEYS_INDEX, which is currently the only option.
+     * @param IndexType $index_type the type of index. Defaults to
+     *        IndexType::KEYS_INDEX, which is currently the only option.
      */
     public function create_index($keyspace, $column_family, $column,
-        $data_type, $index_name=NULL, $index_type=\IndexType::KEYS)
+        $data_type, $index_name=NULL, $index_type=IndexType::KEYS)
     {
         $this->client->set_keyspace($keyspace);
         $cfdef = $this->get_cfdef($keyspace, $column_family);
