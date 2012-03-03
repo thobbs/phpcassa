@@ -4,7 +4,9 @@ use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
-use phpcassa\Util\CassandraUtil;
+
+use phpcassa\Index\IndexExpression;
+use phpcassa\Index\IndexClause;
 
 class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
 
@@ -356,8 +358,8 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
             $cf->insert('key'.$i, $columns);
 
 
-        $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
-        $clause = CassandraUtil::create_index_clause(array($expr), 100);
+        $expr = new IndexExpression($column_name='birthdate', $value=1);
+        $clause = new IndexClause(array($expr), 100);
 
         # Buffer size = 10; rowcount is divisible by buffer size
         $count = 0;
@@ -490,8 +492,8 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         foreach(range(1,3) as $i)
             $indexed_cf->insert('key'.$i, $columns);
 
-        $expr = CassandraUtil::create_index_expression($column_name='birthdate', $value=1);
-        $clause = CassandraUtil::create_index_clause(array($expr), 10000);
+        $expr = new IndexExpression($column_name='birthdate', $value=1);
+        $clause = new IndexClause(array($expr), 10000);
         $result = $indexed_cf->get_indexed_slices($clause);
 
         $count = 0;

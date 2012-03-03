@@ -429,11 +429,9 @@ class ColumnFamily {
    /**
     * Fetch a set of rows from this column family based on an index clause.
     *
-    * @param \cassandra_IndexClause $index_clause limits the keys that are returned based
+    * @param phpcassa\Index\IndexClause $index_clause limits the keys that are returned based
     *        on expressions that compare the value of a column to a given value.  At least
-    *        one of the expressions in the IndexClause must be on an indexed column. You
-    *        can use the phpcassa\Util\CassandraUtil::create_index_expression() and
-    *        phpcassa\Util\CassandraUtil::create_index_clause() methods to help build this.
+    *        one of the expressions in the IndexClause must be on an indexed column.
     * @param mixed[] $columns limit the columns or super columns fetched to this list
     * @param mixed $column_start only fetch columns with name >= this
     * @param mixed $column_finish only fetch columns with name <= this

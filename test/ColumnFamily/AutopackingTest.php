@@ -4,8 +4,9 @@ use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
-use phpcassa\Util\UUIDGen;
-use phpcassa\Util\UUID;
+
+use phpcassa\UUID;
+use phpcassa\UUID\UUIDGen;
 
 class AutopackingTest extends PHPUnit_Framework_TestCase {
 
