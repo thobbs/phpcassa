@@ -3,6 +3,7 @@ namespace phpcassa;
 
 use phpcassa\Schema\DataType;
 use phpcassa\Schema\DataType\BytesType;
+use phpcassa\Schema\DataType\CompositeType;
 
 use phpcassa\Iterator\IndexedColumnFamilyIterator;
 use phpcassa\Iterator\RangeColumnFamilyIterator;
@@ -121,6 +122,7 @@ class ColumnFamily {
      * @param bool $pack_names whether or not column names are automatically packed/unpacked
      */
     public function set_autopack_names($pack_names) {
+        $this->have_composites = false;
         if ($pack_names) {
             if ($this->autopack_names)
                 return;
@@ -131,6 +133,7 @@ class ColumnFamily {
                 $this->col_name_type = DataType::get_type_for($this->cfdef->subcomparator_type);
                 $this->supercol_name_type = DataType::get_type_for($this->cfdef->comparator_type);
             }
+            $this->have_composites = $this->col_name_type instanceof CompositeType;
         } else {
             $this->autopack_names = false;
         }
@@ -207,7 +210,7 @@ class ColumnFamily {
         if (count($resp) == 0)
             throw new \cassandra_NotFoundException();
 
-        return $this->supercolumns_or_columns_to_array($resp);
+        return $this->coscs_to_array($resp);
     }
 
     /**
@@ -288,7 +291,7 @@ class ColumnFamily {
             if (count($val) > 0) {
                 $unpacked_key = $this->unpack_key($key);
                 $non_empty_keys[$unpacked_key] = 1;
-                $ret[$unpacked_key] = $this->supercolumns_or_columns_to_array($val);
+                $ret[$unpacked_key] = $this->coscs_to_array($val);
             }
         }
 
@@ -510,7 +513,8 @@ class ColumnFamily {
 
         $cfmap = array();
         $packed_key = $this->pack_key($key);
-        $cfmap[$packed_key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
+        $cfmap[$packed_key][$this->column_family] =
+                $this->array_to_mutation($columns, $timestamp, $ttl);
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
     }
@@ -568,7 +572,8 @@ class ColumnFamily {
         $cfmap = array();
         foreach($rows as $key => $columns) {
             $packed_key = $this->pack_key($key);
-            $cfmap[$packed_key][$this->column_family] = $this->array_to_mutation($columns, $timestamp, $ttl);
+            $cfmap[$packed_key][$this->column_family] =
+                    $this->array_to_mutation($columns, $timestamp, $ttl);
         }
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
@@ -795,6 +800,8 @@ class ColumnFamily {
         if (!$this->autopack_values)
             return $value;
 
+        if ($this->have_composites)
+            $col_name = serialize($col_name);
         if (isset($this->col_type_dict[$col_name])) {
             $dtype = $this->col_type_dict[$col_name];
             return $dtype->pack($value);
@@ -815,35 +822,17 @@ class ColumnFamily {
         }
     }
 
-    private function pack($value, $data_type) {
-        if ($data_type == 'LongType')
-            return self::pack_long($value);
-        else if ($data_type == 'IntegerType')
-            return self::pack_int($value);
-        else
-            return $value;
-    }
-
-    private function unpack($value, $data_type) {
-        if ($data_type == 'LongType')
-            return self::unpack_long($value);
-        else if ($data_type == 'IntegerType')
-            return self::unpack_int($value);
-        else
-            return $value;
-    }
-
     public function keyslices_to_array($keyslices) {
-        $ret = null;
+        $ret = array();
         foreach($keyslices as $keyslice) {
             $key = $this->unpack_key($keyslice->key);
             $columns = $keyslice->columns;
-            $ret[$key] = $this->supercolumns_or_columns_to_array($columns);
+            $ret[$key] = $this->coscs_to_array($columns);
         }
         return $ret;
     }
 
-    private function supercolumns_or_columns_to_array($array_of_c_or_sc) {
+    private function coscs_to_array($array_of_c_or_sc) {
         $ret = null;
         if(count($array_of_c_or_sc) == 0) {
             return $ret;
@@ -885,7 +874,7 @@ class ColumnFamily {
     }
 
     private function columns_to_array($array_of_c) {
-        $ret = null;
+        $ret = array();
         if ($this->include_timestamp) {
             foreach($array_of_c as $c) {
                 $name  = $this->unpack_name($c->name, false);
@@ -914,8 +903,8 @@ class ColumnFamily {
     private function array_to_mutation($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = Clock::get_time();
 
-        $c_or_sc = $this->array_to_supercolumns_or_columns($array, $timestamp, $ttl);
-        $ret = null;
+        $c_or_sc = $this->array_to_coscs($array, $timestamp, $ttl);
+        $ret = array();
         foreach($c_or_sc as $row) {
             $mutation = new \cassandra_Mutation();
             $mutation->column_or_supercolumn = $row;
@@ -924,19 +913,30 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function array_to_supercolumns_or_columns($array, $timestamp=null, $ttl=null) {
+    private function array_to_coscs($data, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = Clock::get_time();
 
-        $ret = null;
-        foreach($array as $name => $value) {
+        $have_supers = (!empty($data) && is_array(reset($data)));
+        if ($have_supers) {
+            $have_composites = $this->supercol_name_type instanceof CompositeType;
+        } else {
+            $have_composites = $this->col_name_type instanceof CompositeType;
+        }
+
+        $ret = array();
+        foreach ($data as $name => $value) {
+            if ($have_composites) {
+                $name = unserialize($name);
+            }
+
             $c_or_sc = new \cassandra_ColumnOrSuperColumn();
-            if(is_array($value)) {
+            if($have_supers === true) {
                 $c_or_sc->super_column = new \cassandra_SuperColumn();
                 $c_or_sc->super_column->name = $this->pack_name($name, true);
-                $c_or_sc->super_column->columns = $this->array_to_columns($value, $timestamp, $ttl);
+                $c_or_sc->super_column->columns =
+                    $this->array_to_columns($value, $timestamp, $ttl);
                 $c_or_sc->super_column->timestamp = $timestamp;
             } else {
-                $c_or_sc = new \cassandra_ColumnOrSuperColumn();
                 $c_or_sc->column = new \cassandra_Column();
                 $c_or_sc->column->name = $this->pack_name($name, false);
                 $c_or_sc->column->value = $this->pack_value($value, $name);
@@ -952,8 +952,13 @@ class ColumnFamily {
     private function array_to_columns($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = Clock::get_time();
 
-        $ret = null;
+        $have_composites = $this->col_name_type instanceof CompositeType;
+
+        $ret = array();
         foreach($array as $name => $value) {
+            if ($have_composites)
+                $name = unserialize($name);
+
             $column = new \cassandra_Column();
             $column->name = $this->pack_name($name, false);
             $column->value = $this->pack_value($value, $name);

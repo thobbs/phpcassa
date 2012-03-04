@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa\Schema;
 
+use phpcassa\Schema\DataType\CompositeType;
+
 /**
  * @package phpcassa\Schema
  */
@@ -45,10 +47,34 @@ class DataType
         return $type;
     }
 
+    /** Given a typestr like "Reversed(AsciiType)", returns "AsciiType". */
+    private static function get_inner_type($typestr) {
+        $paren_index = strpos($typestr, '(');
+        $end = strlen($typestr) - $paren_index;
+        return substr($typestr, $paren_index + 1, $end - 2);
+    }
+
+    private static function get_inner_types($typestr) {
+        $inner = self::get_inner_type($typestr);
+        $inner_typestrs = explode(',', $inner);
+        $inner_types = array();
+
+        foreach ($inner_typestrs as $inner_type) {
+            $inner_types[] = self::get_type_for(trim($inner_type));
+        }
+        return $inner_types;
+    }
+
     public static function get_type_for($typestr) {
-        $type_name = self::extract_type_name($typestr);
-        $type_class = self::$class_map[$type_name];
-        return new $type_class;
+        if (strpos($typestr, 'CompositeType') !== false) {
+            return new CompositeType(self::get_inner_types($typestr));
+        } else if (strpos($typestr, 'ReversedType') !== false) {
+            return self::get_type_for(self::get_inner_type($typestr));
+        } else {
+            $type_name = self::extract_type_name($typestr);
+            $type_class = self::$class_map[$type_name];
+            return new $type_class;
+        }
     }
 }
 

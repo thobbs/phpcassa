@@ -8,6 +8,14 @@ use phpcassa\SystemManager;
 use phpcassa\UUID;
 use phpcassa\UUID\UUIDGen;
 
+use phpcassa\UUID\DataType\LongType;
+use phpcassa\UUID\DataType\IntegerType;
+use phpcassa\UUID\DataType\BytesType;
+use phpcassa\UUID\DataType\AsciiType;
+use phpcassa\UUID\DataType\UTF8Type;
+use phpcassa\UUID\DataType\LexicalUUIDType;
+use phpcassa\UUID\DataType\TimeUUIDType;
+
 class AutopackingTest extends PHPUnit_Framework_TestCase {
 
     private static $VALS = array('val1', 'val2', 'val3');
@@ -49,6 +57,8 @@ class AutopackingTest extends PHPUnit_Framework_TestCase {
         $cfattrs = array("comparator_type" => DataType::UTF8_TYPE);
         $sys->create_column_family(self::$KS, 'StdUTF8', $cfattrs);
 
+        $cfattrs = array("comparator_type" => 'CompositeType(LongType, AsciiType)');
+        $sys->create_column_family(self::$KS, 'StdComposite', $cfattrs);
 
 
         $cfattrs = array("column_type" => "Super");
@@ -139,6 +149,7 @@ class AutopackingTest extends PHPUnit_Framework_TestCase {
         $this->cf_lex   = new ColumnFamily($this->client, 'StdLexicalUUID');
         $this->cf_ascii = new ColumnFamily($this->client, 'StdAscii');
         $this->cf_utf8  = new ColumnFamily($this->client, 'StdUTF8');
+        $this->cf_composite  = new ColumnFamily($this->client, 'StdComposite');
 
         $this->cf_suplong  = new ColumnFamily($this->client, 'SuperLong');
         $this->cf_supint   = new ColumnFamily($this->client, 'SuperInt');
@@ -166,6 +177,7 @@ class AutopackingTest extends PHPUnit_Framework_TestCase {
 
         $this->cfs = array($this->cf_long, $this->cf_int, $this->cf_ascii,
                            $this->cf_time, $this->cf_lex, $this->cf_utf8,
+                           $this->cf_composite,
 
                            $this->cf_suplong, $this->cf_supint, $this->cf_suptime,
                            $this->cf_suplex, $this->cf_supascii, $this->cf_suputf8,
@@ -296,10 +308,28 @@ class AutopackingTest extends PHPUnit_Framework_TestCase {
     }
 
     static function make_group($cf, $cols) {
-        $dict = array($cols[0] => self::$VALS[0],
-                      $cols[1] => self::$VALS[1],
-                      $cols[2] => self::$VALS[2]);
-        return array('cf' => $cf, 'cols' => $cols, 'dict' => $dict);
+        if (is_array($cols[0])) {
+            $dict = array();
+            $serialized_cols = array();
+            for ($i = 0; $i < count($cols); $i++) {
+                $name = $cols[$i];
+                $name = serialize($name);
+                $dict[$name] = self::$VALS[$i];
+                $serialized_cols[] = $name;
+            }
+        } else {
+            $dict = array($cols[0] => self::$VALS[0],
+                          $cols[1] => self::$VALS[1],
+                          $cols[2] => self::$VALS[2]);
+            $serialized_cols = $cols;
+        }
+
+        return array(
+            'cf' => $cf,
+            'cols' => $cols,
+            'serialized_cols' => $serialized_cols,
+            'dict' => $dict
+        );
     }
 
     public function test_standard_column_family() {
@@ -325,107 +355,113 @@ class AutopackingTest extends PHPUnit_Framework_TestCase {
         $utf8_cols = array("a&#1047;", "b&#1048;", "c&#1049;"); 
         $type_groups[] = self::make_group($this->cf_utf8, $utf8_cols);
 
+        $composite_cols = array(array(1, 'a'), array(2, 'b'), array(3, 'c'));
+        $type_groups[] = self::make_group($this->cf_composite, $composite_cols);
+
 
         foreach($type_groups as $group) {
+            $cf = $group['cf'];
+            $dict = $group['dict'];
+            $cols = $group['cols'];
+            $serialized_cols = $group['serialized_cols'];
 
-            $group['cf']->insert(self::$KEYS[0], $group['dict']);
-            $this->assertEquals($group['cf']->get(self::$KEYS[0]), $group['dict']);
+            $cf->insert(self::$KEYS[0], $dict);
+            $actual = $cf->get(self::$KEYS[0]);
+            $this->assertEquals($dict, $cf->get(self::$KEYS[0]));
 
             # Check each column individually
             foreach(range(0,2) as $i)
-                $this->assertEquals($group['cf']->get(self::$KEYS[0], $columns=array($group['cols'][$i])),
-                                  array($group['cols'][$i] => self::$VALS[$i]));
+                $this->assertEquals(array($serialized_cols[$i] => self::$VALS[$i]),
+                    $cf->get(self::$KEYS[0], $columns=array($cols[$i])));
 
             # Check with list of all columns
-            $this->assertEquals($group['cf']->get(self::$KEYS[0], $columns=$group['cols']),
-                              $group['dict']);
+            $this->assertEquals($dict, $cf->get(self::$KEYS[0], $columns=$cols));
 
             # Same thing but with start and end
-            $this->assertEquals($group['cf']->get(self::$KEYS[0], $columns=null,
-                                                $column_start=$group['cols'][0],
-                                                $column_finish=$group['cols'][2]),
-                              $group['dict']);
+            $this->assertEquals($dict,
+                $cf->get(self::$KEYS[0], $columns=null,
+                                         $column_start=$cols[0],
+                                         $column_finish=$cols[2]));
 
             # Start and end are the same
-            $this->assertEquals($group['cf']->get(self::$KEYS[0], $columns=null,
-                                                $column_start=$group['cols'][0],
-                                                $column_finish=$group['cols'][0]),
+            $this->assertEquals(array($serialized_cols[0] => self::$VALS[0]),
+                $cf->get(self::$KEYS[0], $columns=null,
+                                         $column_start=$cols[0],
+                                         $column_finish=$cols[0]));
 
-                              array($group['cols'][0] => self::$VALS[0]));
 
 
             ### remove() tests ###
 
-            $group['cf']->remove(self::$KEYS[0], $columns=array($group['cols'][0]));
-            $this->assertEquals($group['cf']->get_count(self::$KEYS[0]), 2);
+            $cf->remove(self::$KEYS[0], $columns=array($cols[0]));
+            $this->assertEquals(2, $cf->get_count(self::$KEYS[0]));
 
-            $group['cf']->remove(self::$KEYS[0], $columns=array($group['cols'][1], $group['cols'][2]));
-            $this->assertEquals($group['cf']->get_count(self::$KEYS[0]), 0);
+            $cf->remove(self::$KEYS[0], $columns=array($cols[1], $cols[2]));
+            $this->assertEquals(0, $cf->get_count(self::$KEYS[0]));
 
             # Insert more than one row
-            $group['cf']->insert(self::$KEYS[0], $group['dict']);
-            $group['cf']->insert(self::$KEYS[1], $group['dict']);
-            $group['cf']->insert(self::$KEYS[2], $group['dict']);
+            $cf->insert(self::$KEYS[0], $dict);
+            $cf->insert(self::$KEYS[1], $dict);
+            $cf->insert(self::$KEYS[2], $dict);
 
 
             ### multiget() tests ###
 
-            $result = $group['cf']->multiget(self::$KEYS);
-            foreach(range(0,2) as $i)            
-                $this->assertEquals($result[self::$KEYS[0]], $group['dict']);
+            $result = $cf->multiget(self::$KEYS);
+            foreach(range(0,2) as $i)
+                $this->assertEquals($dict, $result[self::$KEYS[0]]);
 
-            $result = $group['cf']->multiget(array(self::$KEYS[2]));
-            $this->assertEquals($result[self::$KEYS[2]], $group['dict']);
+            $result = $cf->multiget(array(self::$KEYS[2]));
+            $this->assertEquals($dict, $result[self::$KEYS[2]]);
 
             # Check each column individually
             foreach(range(0,2) as $i) {
-                $result = $group['cf']->multiget(self::$KEYS, $columns=array($group['cols'][$i]));
+                $result = $cf->multiget(self::$KEYS, $columns=array($cols[$i]));
                 foreach(range(0,2) as $j)
-                    $this->assertEquals($result[self::$KEYS[$j]],
-                                      array($group['cols'][$i] => self::$VALS[$i]));
-
+                    $this->assertEquals(array($serialized_cols[$i] => self::$VALS[$i]),
+                                        $result[self::$KEYS[$j]]);
             }
 
             # Check that if we list all columns, we get the full dict
-            $result = $group['cf']->multiget(self::$KEYS, $columns=$group['cols']);
+            $result = $cf->multiget(self::$KEYS, $columns=$cols);
             foreach(range(0,2) as $i)
-                $this->assertEquals($result[self::$KEYS[$j]], $group['dict']);
+                $this->assertEquals($dict, $result[self::$KEYS[$j]]);
 
             # The same thing with a start and end instead
-            $result = $group['cf']->multiget(self::$KEYS, $columns=null,
-                                             $column_start=$group['cols'][0],
-                                             $column_finish=$group['cols'][2]);
+            $result = $cf->multiget(self::$KEYS, $columns=null,
+                                    $column_start=$cols[0],
+                                    $column_finish=$cols[2]);
             foreach(range(0,2) as $i)
-                $this->assertEquals($result[self::$KEYS[$j]], $group['dict']);
+                $this->assertEquals($dict, $result[self::$KEYS[$j]]);
 
             # A start and end that are the same
-            $result = $group['cf']->multiget(self::$KEYS, $columns=null,
-                                             $column_start=$group['cols'][0],
-                                             $column_finish=$group['cols'][0]);
+            $result = $cf->multiget(self::$KEYS, $columns=null,
+                                    $column_start=$cols[0],
+                                    $column_finish=$cols[0]);
             foreach(range(0,2) as $i)
-                $this->assertEquals($result[self::$KEYS[$j]],
-                                  array($group['cols'][0] => self::$VALS[0]));
+                $this->assertEquals(array($serialized_cols[0] => self::$VALS[0]),
+                                    $result[self::$KEYS[$j]]);
 
 
             ### get_range() tests ###
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0]);
+            $result = $cf->get_range($key_start=self::$KEYS[0]);
             foreach($result as $subres)
-                $this->assertEquals($subres, $group['dict']);
+                $this->assertEquals($dict, $subres);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                              $columns=null,
-                                              $column_start=$group['cols'][0],
-                                              $column_finish=$group['cols'][2]);
+            $result = $cf->get_range($key_start=self::$KEYS[0], $key_finish='',
+                                     $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                     $columns=null,
+                                     $column_start=$cols[0],
+                                     $column_finish=$cols[2]);
             foreach($result as $subres)
-                $this->assertEquals($subres, $group['dict']);
+                $this->assertEquals($dict, $subres);
 
-            $result = $group['cf']->get_range($key_start=self::$KEYS[0], $key_finish='',
-                                              $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                              $columns=$group['cols']);
+            $result = $cf->get_range($key_start=self::$KEYS[0], $key_finish='',
+                                     $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
+                                     $columns=$cols);
             foreach($result as $subres)
-                $this->assertEquals($subres, $group['dict']);
+                $this->assertEquals($dict, $subres);
         }
     }
 
