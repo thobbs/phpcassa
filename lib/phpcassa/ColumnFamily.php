@@ -916,8 +916,7 @@ class ColumnFamily {
     private function array_to_coscs($data, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = Clock::get_time();
 
-        $have_supers = (!empty($data) && is_array(reset($data)));
-        if ($have_supers) {
+        if ($this->is_super) {
             $have_composites = $this->supercol_name_type instanceof CompositeType;
         } else {
             $have_composites = $this->col_name_type instanceof CompositeType;
@@ -930,7 +929,7 @@ class ColumnFamily {
             }
 
             $c_or_sc = new \cassandra_ColumnOrSuperColumn();
-            if($have_supers === true) {
+            if($this->is_super) {
                 $c_or_sc->super_column = new \cassandra_SuperColumn();
                 $c_or_sc->super_column->name = $this->pack_name($name, true);
                 $c_or_sc->super_column->columns =
