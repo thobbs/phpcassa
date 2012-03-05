@@ -122,7 +122,6 @@ class ColumnFamily {
      * @param bool $pack_names whether or not column names are automatically packed/unpacked
      */
     public function set_autopack_names($pack_names) {
-        $this->have_composites = false;
         if ($pack_names) {
             if ($this->autopack_names)
                 return;
@@ -133,7 +132,6 @@ class ColumnFamily {
                 $this->col_name_type = DataType::get_type_for($this->cfdef->subcomparator_type);
                 $this->supercol_name_type = DataType::get_type_for($this->cfdef->comparator_type);
             }
-            $this->have_composites = $this->col_name_type instanceof CompositeType;
         } else {
             $this->autopack_names = false;
         }
@@ -753,16 +751,19 @@ class ColumnFamily {
     const SLICE_START = 1;
     const SLICE_FINISH = 2;
 
-    private function pack_name($value, $is_supercol_name=false, $slice_end=self::NON_SLICE) {
+    private function pack_name($value,
+                               $is_supercol_name=false,
+                               $slice_end=self::NON_SLICE,
+                               $is_data=false) {
         if (!$this->autopack_names)
             return $value;
         if ($slice_end === self::NON_SLICE && ($value === null || $value === "")) {
             throw new \UnexpectedValueException("Column names may not be null");
         }
         if ($is_supercol_name)
-            return $this->supercol_name_type->pack($value);
+            return $this->supercol_name_type->pack($value, true, $slice_end, $is_data);
         else
-            return $this->col_name_type->pack($value);
+            return $this->col_name_type->pack($value, true, $slice_end, $is_data);
     }
 
     private function unpack_name($b, $is_supercol_name=false) {
@@ -772,21 +773,21 @@ class ColumnFamily {
             return;
 
         if ($is_supercol_name)
-            return $this->supercol_name_type->unpack($b);
+            return $this->supercol_name_type->unpack($b, true);
         else
-            return $this->col_name_type->unpack($b);
+            return $this->col_name_type->unpack($b, true);
     }
 
     public function pack_key($key) {
         if (!$this->autopack_keys)
             return $key;
-        return $this->key_type->pack($key);
+        return $this->key_type->pack($key, false);
     }
 
     public function unpack_key($b) {
         if (!$this->autopack_keys)
             return $b;
-        return $this->key_type->unpack($b);
+        return $this->key_type->unpack($b, true);
     }
 
     private function get_data_type_for_col($col_name) {
@@ -800,13 +801,11 @@ class ColumnFamily {
         if (!$this->autopack_values)
             return $value;
 
-        if ($this->have_composites)
-            $col_name = serialize($col_name);
         if (isset($this->col_type_dict[$col_name])) {
             $dtype = $this->col_type_dict[$col_name];
-            return $dtype->pack($value);
+            return $dtype->pack($value, false);
         } else {
-            return $this->cf_data_type->pack($value);
+            return $this->cf_data_type->pack($value, false);
         }
     }
 
@@ -816,9 +815,9 @@ class ColumnFamily {
 
         if (isset($this->col_type_dict[$col_name])) {
             $dtype = $this->col_type_dict[$col_name];
-            return $dtype->unpack($value);
+            return $dtype->unpack($value, false);
         } else {
-            return $this->cf_data_type->unpack($value);
+            return $this->cf_data_type->unpack($value, false);
         }
     }
 
@@ -916,28 +915,20 @@ class ColumnFamily {
     private function array_to_coscs($data, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = Clock::get_time();
 
-        if ($this->is_super) {
-            $have_composites = $this->supercol_name_type instanceof CompositeType;
-        } else {
-            $have_composites = $this->col_name_type instanceof CompositeType;
-        }
-
         $ret = array();
         foreach ($data as $name => $value) {
-            if ($have_composites) {
-                $name = unserialize($name);
-            }
-
             $c_or_sc = new \cassandra_ColumnOrSuperColumn();
             if($this->is_super) {
                 $c_or_sc->super_column = new \cassandra_SuperColumn();
-                $c_or_sc->super_column->name = $this->pack_name($name, true);
+                $c_or_sc->super_column->name = $this->pack_name(
+                    $name, true, self::NON_SLICE, true);
                 $c_or_sc->super_column->columns =
                     $this->array_to_columns($value, $timestamp, $ttl);
                 $c_or_sc->super_column->timestamp = $timestamp;
             } else {
                 $c_or_sc->column = new \cassandra_Column();
-                $c_or_sc->column->name = $this->pack_name($name, false);
+                $c_or_sc->column->name = $this->pack_name(
+                    $name, false, self::NON_SLICE, true);
                 $c_or_sc->column->value = $this->pack_value($value, $name);
                 $c_or_sc->column->timestamp = $timestamp;
                 $c_or_sc->column->ttl = $ttl;
@@ -951,15 +942,11 @@ class ColumnFamily {
     private function array_to_columns($array, $timestamp=null, $ttl=null) {
         if(empty($timestamp)) $timestamp = Clock::get_time();
 
-        $have_composites = $this->col_name_type instanceof CompositeType;
-
         $ret = array();
         foreach($array as $name => $value) {
-            if ($have_composites)
-                $name = unserialize($name);
-
             $column = new \cassandra_Column();
-            $column->name = $this->pack_name($name, false);
+            $column->name = $this->pack_name(
+                $name, false, self::NON_SLICE, true);
             $column->value = $this->pack_value($value, $name);
             $column->timestamp = $timestamp;
             $column->ttl = $ttl;

@@ -169,7 +169,6 @@ class AutopackStandardTest extends PHPUnit_Framework_TestCase {
             $serialized_cols = $group['serialized_cols'];
 
             $cf->insert(self::$KEYS[0], $dict);
-            $actual = $cf->get(self::$KEYS[0]);
             $this->assertEquals($dict, $cf->get(self::$KEYS[0]));
 
             # Check each column individually

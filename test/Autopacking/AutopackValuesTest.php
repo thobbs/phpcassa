@@ -143,9 +143,9 @@ class AutopackValuesTest extends PHPUnit_Framework_TestCase {
 
     public function test_composite() {
         $this->cf_valid_composite = new ColumnFamily($this->client, 'ValidatorComposite');
-        $this->cf_valid_composite->insert(self::$KEYS[0], array('subcol' => array(1, 'a')));
-        $this->assertEquals(
-            array('subcol' => serialize(array(1, 'a'))),
+        $cols = array('subcol' => array(1, 'a'));
+        $this->cf_valid_composite->insert(self::$KEYS[0], $cols);
+        $this->assertEquals($cols,
             $this->cf_valid_composite->get(self::$KEYS[0]));
     }
 

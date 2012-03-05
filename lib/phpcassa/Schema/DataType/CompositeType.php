@@ -10,7 +10,10 @@ class CompositeType extends CassandraType
         $this->inner_types = $inner_types;
     }
 
-    public function pack($value, $slice_end=null) {
+    public function pack($value, $is_name=true, $slice_end=null, $is_data=false) {
+        if ($is_name && $is_data)
+            $value = unserialize($value);
+
         $res = "";
         for ($i = 0; $i < count($value); $i++) {
             $eoc = 0x00;
@@ -43,7 +46,7 @@ class CompositeType extends CassandraType
         return $res;
     }
 
-    public function unpack($data) {
+    public function unpack($data, $is_name=true) {
         $component_idx = 0;
         $components = array();
         while (empty($data) !== true) {
@@ -59,7 +62,11 @@ class CompositeType extends CassandraType
             $component_idx++;
         }
 
-        return serialize($components);
+        if ($is_name) {
+            return serialize($components);
+        } else {
+            return $components;
+        }
     }
 
     public function __toString() {
