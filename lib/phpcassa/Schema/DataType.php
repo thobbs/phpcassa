@@ -28,7 +28,8 @@ class DataType
             'IntegerType'     => 'phpcassa\Schema\DataType\IntegerType',
             'TimeUUIDType'    => 'phpcassa\Schema\DataType\TimeUUIDType',
             'LexicalUUIDType' => 'phpcassa\Schema\DataType\LexicalUUIDType',
-            'UUIDType'        => 'phpcassa\Schema\DataType\UUIDType'
+            'UUIDType'        => 'phpcassa\Schema\DataType\UUIDType',
+            'BooleanType'     => 'phpcassa\Schema\DataType\BooleanType'
         );
     }
 
