@@ -8,6 +8,8 @@ use phpcassa\Schema\DataType\CompositeType;
 use phpcassa\Iterator\IndexedColumnFamilyIterator;
 use phpcassa\Iterator\RangeColumnFamilyIterator;
 
+use phpcassa\Batch\CfMutator;
+
 use phpcassa\Util\Clock;
 
 /**
@@ -28,8 +30,8 @@ class ColumnFamily {
 
     const DEFAULT_BUFFER_SIZE = 1024;
 
-    private $column_family;
-    private $is_super;
+    public $column_family;
+    public $is_super;
     private $cf_data_type;
     private $col_name_type;
     private $supercol_name_type;
@@ -113,9 +115,18 @@ class ColumnFamily {
         $this->col_type_dict = array();
 
         $this->is_super = $this->cfdef->column_type === 'Super';
+        $this->has_counters = self::endswith(
+            $this->cfdef->default_validation_class,
+            "CounterColumnType");
+
         $this->set_autopack_names($autopack_names);
         $this->set_autopack_values($autopack_values);
         $this->set_autopack_keys(true);
+    }
+
+    private static function endswith($str, $suffix) {
+        $suffix_len = strlen($suffix);
+        return substr_compare($str, $suffix, strlen($str)-$suffix_len, $suffix_len) === 0;
     }
 
     /**
@@ -577,6 +588,10 @@ class ColumnFamily {
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
     }
 
+    public function batch($write_consistency_level=null) {
+        return new CfMutator($this, $write_consistency_level);
+    }
+
     /**
      * Remove columns from a row.
      *
@@ -751,10 +766,10 @@ class ColumnFamily {
     const SLICE_START = 1;
     const SLICE_FINISH = 2;
 
-    private function pack_name($value,
-                               $is_supercol_name=false,
-                               $slice_end=self::NON_SLICE,
-                               $is_data=false) {
+    public function pack_name($value,
+                              $is_supercol_name=false,
+                              $slice_end=self::NON_SLICE,
+                              $is_data=false) {
         if (!$this->autopack_names)
             return $value;
         if ($slice_end === self::NON_SLICE && ($value === null || $value === "")) {
@@ -899,8 +914,9 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function array_to_mutation($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = Clock::get_time();
+    public function array_to_mutation($array, $timestamp=null, $ttl=null) {
+        if($timestamp === null)
+            $timestamp = Clock::get_time();
 
         $c_or_sc = $this->array_to_coscs($array, $timestamp, $ttl);
         $ret = array();
@@ -913,25 +929,36 @@ class ColumnFamily {
     }
 
     private function array_to_coscs($data, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = Clock::get_time();
+        if($timestamp === null)
+            $timestamp = Clock::get_time();
 
         $ret = array();
         foreach ($data as $name => $value) {
             $c_or_sc = new \cassandra_ColumnOrSuperColumn();
             if($this->is_super) {
-                $c_or_sc->super_column = new \cassandra_SuperColumn();
-                $c_or_sc->super_column->name = $this->pack_name(
-                    $name, true, self::NON_SLICE, true);
-                $c_or_sc->super_column->columns =
-                    $this->array_to_columns($value, $timestamp, $ttl);
-                $c_or_sc->super_column->timestamp = $timestamp;
+                if($this->has_counters) {
+                    $sub = new \cassandra_CounterSuperColumn();
+                    $c_or_sc->counter_super_column = $sub;
+                } else {
+                    $sub = new \cassandra_SuperColumn();
+                    $c_or_sc->super_column = $sub;
+                }
+                $sub->name = $this->pack_name($name, true, self::NON_SLICE, true);
+                $sub->columns = $this->array_to_columns($value, $timestamp, $ttl);
+                $sub->timestamp = $timestamp;
             } else {
-                $c_or_sc->column = new \cassandra_Column();
-                $c_or_sc->column->name = $this->pack_name(
+                if($this->has_counters) {
+                    $sub = new \cassandra_CounterColumn();
+                    $c_or_sc->counter_column = $sub;
+                } else {
+                    $sub = new \cassandra_Column();
+                    $c_or_sc->column = $sub;
+                    $sub->timestamp = $timestamp;
+                    $sub->ttl = $ttl;
+                }
+                $sub->name = $this->pack_name(
                     $name, false, self::NON_SLICE, true);
-                $c_or_sc->column->value = $this->pack_value($value, $name);
-                $c_or_sc->column->timestamp = $timestamp;
-                $c_or_sc->column->ttl = $ttl;
+                $sub->value = $this->pack_value($value, $name);
             }
             $ret[] = $c_or_sc;
         }
@@ -940,16 +967,21 @@ class ColumnFamily {
     }
 
     private function array_to_columns($array, $timestamp=null, $ttl=null) {
-        if(empty($timestamp)) $timestamp = Clock::get_time();
+        if($timestamp === null)
+            $timestamp = Clock::get_time();
 
         $ret = array();
         foreach($array as $name => $value) {
-            $column = new \cassandra_Column();
+            if($this->has_counters) {
+                $column = new \cassandra_CounterColumn();
+            } else {
+                $column = new \cassandra_Column();
+                $column->timestamp = $timestamp;
+                $column->ttl = $ttl;
+            }
             $column->name = $this->pack_name(
                 $name, false, self::NON_SLICE, true);
             $column->value = $this->pack_value($value, $name);
-            $column->timestamp = $timestamp;
-            $column->ttl = $ttl;
             $ret[] = $column;
         }
         return $ret;
