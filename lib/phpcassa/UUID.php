@@ -43,37 +43,84 @@ use phpcassa\Util\Clock;
  * @package phpcassa\Util
  */
 class UUID {
- const MD5  = 3;
- const SHA1 = 5;
- const clearVer = 15;  // 00001111  Clears all bits of version byte with AND
- const clearVar = 63;  // 00111111  Clears all relevant bits of variant byte with AND
- const varRes   = 224; // 11100000  Variant reserved for future use
- const varMS    = 192; // 11000000  Microsft GUID variant
- const varRFC   = 128; // 10000000  The RFC 4122 variant (this variant)
- const varNCS   = 0;   // 00000000  The NCS compatibility variant
- const version1 = 16;  // 00010000
- const version3 = 48;  // 00110000
- const version4 = 64;  // 01000000
- const version5 = 80;  // 01010000
- const interval = 0x01b21dd213814000; // Time (in 100ns steps) between the start of the UTC and Unix epochs
- const nsDNS  = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
- const nsURL  = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
- const nsOID  = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
- const nsX500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
- protected static $randomFunc = 'randomTwister';
- protected static $randomSource = NULL;
- //instance properties
- protected $bytes;
- protected $hex;
- protected $string;
- protected $urn;
- protected $version;
- protected $variant;
- protected $node;
- protected $time;
- 
- public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL) {
-  /* Create a new UUID based on provided data. */
+    const MD5  = 3;
+    const SHA1 = 5;
+    const clearVer = 15;  // 00001111  Clears all bits of version byte with AND
+    const clearVar = 63;  // 00111111  Clears all relevant bits of variant byte with AND
+    const varRes   = 224; // 11100000  Variant reserved for future use
+    const varMS    = 192; // 11000000  Microsft GUID variant
+    const varRFC   = 128; // 10000000  The RFC 4122 variant (this variant)
+    const varNCS   = 0;   // 00000000  The NCS compatibility variant
+    const version1 = 16;  // 00010000
+    const version3 = 48;  // 00110000
+    const version4 = 64;  // 01000000
+    const version5 = 80;  // 01010000
+    const interval = 0x01b21dd213814000; // Time (in 100ns steps) between the start of the UTC and Unix epochs
+    const nsDNS  = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+    const nsURL  = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+    const nsOID  = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
+    const nsX500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
+    protected static $randomFunc = 'randomTwister';
+    protected static $randomSource = NULL;
+
+    //instance properties
+    protected $bytes;
+    protected $hex;
+    protected $string;
+    protected $urn;
+    protected $version;
+    protected $variant;
+    protected $node;
+    protected $time;
+
+    /**
+     * Generate a v1 UUID (timestamp based)
+     * @return string a byte[] representation of a UUID
+     * @param string $node what to use for the MAC portion of the UUID.  This will be generated
+     *        randomly if left as NULL
+     * @param int $time timestamp to use for the UUID.  This should be a number of microseconds
+     *        since the UNIX epoch.
+     */
+    public static function uuid1($node=null, $time=null) {
+        return UUID::mint(1, $node, null, $time);
+    }
+
+    /**
+     * Generate a v3 UUID
+     * @return string a byte[] representation of a UUID 
+     */
+    static public function uuid3($node=null, $namespace=null) {
+        return UUID::mint(3, $node, $namespace);
+    }
+
+    /**
+     * Generate a v4 UUID
+     * @return string a byte[] representation of a UUID 
+     */
+    static public function uuid4() {
+        return UUID::mint(4);
+    }
+
+    /**
+     * Generate a v5 UUID
+     * @return string a byte[] representation of a UUID 
+     */
+    static public function uuid5($node, $namespace=null) {
+        return UUID::mint(5, $node, $namespace);
+    }
+
+    /**
+     * Import an existing UUID.
+     */
+    public static function import($uuid) {
+        return new self(self::makeBin($uuid, 16));
+    }
+
+ /**
+  * Create a new UUID based on provided data.
+  * @param int $ver the UUID version to generate.
+  */
+ protected static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL) {
   switch((int) $ver) {
    case 1:
     return new self(self::mintTime($node, $time));
@@ -91,15 +138,12 @@ class UUID {
   }
  }
 
- public static function import($uuid) {
-  /* Import an existing UUID. */
-  return new self(self::makeBin($uuid, 16));
- }   
-
+ /**
+  * Compare the binary representations of two UUIDs.
+  * The comparison will return true if they are bit-exact,
+  * or if neither is valid.
+  */
  public static function compare($a, $b) {
-  /* Compares the binary representations of two UUIDs.
-     The comparison will return true if they are bit-exact,
-      or if neither is valid. */
   if (self::makeBin($a, 16)==self::makeBin($b, 16))
    return TRUE;
   else

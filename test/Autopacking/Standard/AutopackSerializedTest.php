@@ -8,7 +8,6 @@ use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
 use phpcassa\UUID;
-use phpcassa\UUID\UUIDGen;
 
 class AutopackStandardSerializedTest extends StandardBase {
 
@@ -80,7 +79,7 @@ class AutopackStandardSerializedTest extends StandardBase {
 
     public function test_uuid1_generation() {
         $micros = 1293769171436849;
-        $uuid = UUIDGen::import(UUIDGen::uuid1(null, $micros)); 
+        $uuid = UUID::import(UUID::uuid1(null, $micros));
         $t = (int)($uuid->time * 1000000);
         $this->assertEquals($micros, $t, '', 100);
     }

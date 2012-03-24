@@ -7,7 +7,6 @@ use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
 use phpcassa\UUID;
-use phpcassa\UUID\UUIDGen;
 
 class AutopackSerializedSupersTest extends SuperBase {
 
