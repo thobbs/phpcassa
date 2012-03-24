@@ -13,7 +13,7 @@ class IndexClause extends \cassandra_IndexClause {
      *
      * @param phpcassa\Index\IndexExpression[] $expr_list the list of expressions
      *        to match; at least one of these must be on an indexed column
-     * @param string $start_key the key to begin searching from
+     * @param mixed $start_key the key to begin searching from
      * @param int $count the number of results to return
      */
     public function __construct($expr_list, $start_key='',
