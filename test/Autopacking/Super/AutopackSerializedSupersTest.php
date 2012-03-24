@@ -9,7 +9,7 @@ use phpcassa\SystemManager;
 use phpcassa\UUID;
 use phpcassa\UUID\UUIDGen;
 
-class AutopackSuperColumnsTest extends SuperBase {
+class AutopackSerializedSupersTest extends SuperBase {
 
     protected $SERIALIZED = true;
 
