@@ -11,6 +11,8 @@ class DataType
     const BYTES_TYPE = "BytesType";
     const LONG_TYPE = "LongType";
     const INTEGER_TYPE = "IntegerType";
+    const FLOAT_TYPE = "FloatType";
+    const DOUBLE_TYPE = "DoubleType";
     const ASCII_TYPE = "AsciiType";
     const UTF8_TYPE = "UTF8Type";
     const TIME_UUID_TYPE = "TimeUUIDType";
@@ -26,6 +28,8 @@ class DataType
             'UTF8Type'        => 'phpcassa\Schema\DataType\UTF8Type',
             'LongType'        => 'phpcassa\Schema\DataType\LongType',
             'IntegerType'     => 'phpcassa\Schema\DataType\IntegerType',
+            'FloatType'       => 'phpcassa\Schema\DataType\FloatType',
+            'DoubleType'      => 'phpcassa\Schema\DataType\DoubleType',
             'TimeUUIDType'    => 'phpcassa\Schema\DataType\TimeUUIDType',
             'LexicalUUIDType' => 'phpcassa\Schema\DataType\LexicalUUIDType',
             'UUIDType'        => 'phpcassa\Schema\DataType\UUIDType',
