@@ -27,8 +27,7 @@ class UUIDGen {
      *        since the UNIX epoch.
      */
     static public function uuid1($node=null, $time=null) {
-        $uuid = UUID::mint(1, $node, null, $time);
-        return $uuid->bytes;
+        return UUID::mint(1, $node, null, $time);
     }
 
     /**
@@ -36,8 +35,7 @@ class UUIDGen {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid3($node=null, $namespace=null) {
-        $uuid = UUID::mint(3, $node, $namespace);
-        return $uuid->bytes;
+        return UUID::mint(3, $node, $namespace);
     }
 
     /**
@@ -45,8 +43,7 @@ class UUIDGen {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid4() {
-        $uuid = UUID::mint(4);
-        return $uuid->bytes;
+        return UUID::mint(4);
     }
 
     /**
@@ -54,7 +51,6 @@ class UUIDGen {
      * @return string a byte[] representation of a UUID 
      */
     static public function uuid5($node, $namespace=null) {
-        $uuid = UUID::mint(5, $node, $namespace);
-        return $uuid->bytes;
+        return UUID::mint(5, $node, $namespace);
     }
 }
