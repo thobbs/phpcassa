@@ -184,86 +184,9 @@ class SystemManager {
         $cfdef->keyspace = $ksname;
         $cfdef->name = $cfname;
 
-        foreach ($attrs as $attr => $value) {
+        foreach ($attrs as $attr => $value)
             $cfdef->$attr = $value;
-            /*
-            switch ($attr) {
-                case "column_type":
-                    $cfdef->column_type = $value;
-                    break;
-                case "comparator_type":
-                    $cfdef->comparator_type = $value;
-                    break;
-                case "subcomparator_type":
-                    $cfdef->subcomparator_type = $value;
-                    break;
-                case "comment":
-                    $cfdef->comment = $value;
-                    break;
-                case "row_cache_size":
-                    $cfdef->row_cache_size = $value;
-                    break;
-                case "key_cache_size":
-                    $cfdef->key_cache_size = $value;
-                    break;
-                case "read_repair_chance":
-                    $cfdef->read_repair_chance = $value;
-                    break;
-                case "column_metadata":
-                    $cfdef->column_metadata = $value;
-                    break;
-                case "gc_grace_seconds":
-                    $cfdef->gc_grace_seconds = $value;
-                    break;
-                case "default_validation_class":
-                    $cfdef->default_validation_class = $value;
-                    break;
-                case "min_compaction_threshold":
-                    $cfdef->min_compaction_threshold = $value;
-                    break;
-                case "max_compaction_threshold":
-                    $cfdef->max_compaction_threshold = $value;
-                    break;
-                case "row_cache_save_period_in_seconds":
-                    $cfdef->row_cache_save_period_in_seconds = $value;
-                    break;
-                case "key_cache_save_period_in_seconds":
-                    $cfdef->key_cache_save_period_in_seconds = $value;
-                    break;
-                case "compaction_strategy":
-                    $cfdef->compaction_strategy = $value;
-                    break;
-                case "compaction_strategy_options":
-                    $cfdef->compaction_strategy_options = $value;
-                    break;
-                case "row_cache_keys_to_save":
-                    $cfdef->row_cache_keys_to_save = $value;
-                    break;
-                case "compression_options":
-                    $cfdef->compression_options = $value;
-                    break;
-                case "replicate_on_write":
-                    $cfdef->replicate_on_write = $value;
-                    break;
-                case "merge_shards_chance":
-                    $cfdef->merge_shards_chance = $value;
-                    break;
-                case "key_validation_class":
-                    $cfdef->key_validation_class = $value;
-                    break;
-                case "row_cache_provider":
-                    $cfdef->row_cache_provider = $value;
-                    break;
-                case "key_alias":
-                    $cfdef->key_alias = $value;
-                    break;
-                default:
-                    throw new \InvalidArgumentException(
-                        "$attr is not a valid column family attribute."
-                    );
-            }
-             */
-        }
+
         return $cfdef;
     }
 
