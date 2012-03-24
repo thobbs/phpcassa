@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\UUID;
+
 /**
  * @package phpcassa\Schema\DataType
  */
