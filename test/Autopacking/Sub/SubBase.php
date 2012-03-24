@@ -5,25 +5,16 @@ use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
-use phpcassa\UUID;
-use phpcassa\UUID\UUIDGen;
+abstract class SubBase extends PHPUnit_Framework_TestCase {
 
-use phpcassa\UUID\DataType\LongType;
-use phpcassa\UUID\DataType\IntegerType;
-use phpcassa\UUID\DataType\BytesType;
-use phpcassa\UUID\DataType\AsciiType;
-use phpcassa\UUID\DataType\UTF8Type;
-use phpcassa\UUID\DataType\LexicalUUIDType;
-use phpcassa\UUID\DataType\TimeUUIDType;
+    protected $SERIALIZED = false;
 
-class AutopackSubColumnsTest extends PHPUnit_Framework_TestCase {
+    protected static $VALS = array('val1', 'val2', 'val3');
+    protected static $KEYS = array('key1', 'key2', 'key3');
+    protected static $KS = "TestAutopacking";
 
-    private static $VALS = array('val1', 'val2', 'val3');
-    private static $KEYS = array('key1', 'key2', 'key3');
-    private static $KS = "TestAutopacking";
-
-    private $client;
-    private $cf;
+    protected $client;
+    protected $cf;
 
     public static function setUpBeforeClass() {
         $sys = new SystemManager();
@@ -37,30 +28,6 @@ class AutopackSubColumnsTest extends PHPUnit_Framework_TestCase {
             $sys->drop_keyspace(self::$KS);
 
         $sys->create_keyspace(self::$KS, array());
-
-
-        $cfattrs = array("column_type" => "Super", "comparator_type" => DataType::LONG_TYPE);
-
-        $cfattrs["subcomparator_type"] = DataType::LONG_TYPE;
-        $sys->create_column_family(self::$KS, 'SuperLongSubLong', $cfattrs);
-
-        $cfattrs["subcomparator_type"] = DataType::INTEGER_TYPE;
-        $sys->create_column_family(self::$KS, 'SuperLongSubInt', $cfattrs);
-
-        $cfattrs["subcomparator_type"] = DataType::TIME_UUID_TYPE;
-        $sys->create_column_family(self::$KS, 'SuperLongSubTime', $cfattrs);
-
-        $cfattrs["subcomparator_type"] = DataType::LEXICAL_UUID_TYPE;
-        $sys->create_column_family(self::$KS, 'SuperLongSubLex', $cfattrs);
-
-        $cfattrs["subcomparator_type"] = DataType::ASCII_TYPE;
-        $sys->create_column_family(self::$KS, 'SuperLongSubAscii', $cfattrs);
-
-        $cfattrs["subcomparator_type"] = DataType::UTF8_TYPE;
-        $sys->create_column_family(self::$KS, 'SuperLongSubUTF8', $cfattrs);
-
-        $cfattrs["subcomparator_type"] = "CompositeType(LongType, AsciiType)";
-        $sys->create_column_family(self::$KS, 'SuperLongSubComposite', $cfattrs);
     }
 
     public static function tearDownAfterClass() {
@@ -69,29 +36,7 @@ class AutopackSubColumnsTest extends PHPUnit_Framework_TestCase {
         $sys->close();
     }
 
-    public function setUp() {
-        $this->client = new ConnectionPool(self::$KS);
-
-        $this->cf_suplong_sublong      = new ColumnFamily($this->client, 'SuperLongSubLong');
-        $this->cf_suplong_subint       = new ColumnFamily($this->client, 'SuperLongSubInt');
-        $this->cf_suplong_subtime      = new ColumnFamily($this->client, 'SuperLongSubTime');
-        $this->cf_suplong_sublex       = new ColumnFamily($this->client, 'SuperLongSubLex');
-        $this->cf_suplong_subascii     = new ColumnFamily($this->client, 'SuperLongSubAscii');
-        $this->cf_suplong_subutf8      = new ColumnFamily($this->client, 'SuperLongSubUTF8');
-        $this->cf_suplong_subcomposite = new ColumnFamily($this->client, 'SuperLongSubComposite');
-
-        $this->cfs = array($this->cf_suplong_sublong, $this->cf_suplong_subint,
-                           $this->cf_suplong_subtime, $this->cf_suplong_sublex,
-                           $this->cf_suplong_subascii, $this->cf_suplong_subutf8);
-
-        $this->TIME1 = UUIDGen::uuid1();
-        $this->TIME2 = UUIDGen::uuid1();
-        $this->TIME3 = UUIDGen::uuid1();
-
-        $this->LEX1 = UUID::import('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')->bytes;
-        $this->LEX2 = UUID::import('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')->bytes;
-        $this->LEX3 = UUID::import('cccccccccccccccccccccccccccccccc')->bytes;
-    }
+    public function setUp() { }
 
     public function tearDown() {
         foreach($this->cfs as $cf) {
@@ -100,8 +45,8 @@ class AutopackSubColumnsTest extends PHPUnit_Framework_TestCase {
         }
     }
 
-    private function make_sub_group($cf, $cols) {
-        if (is_array($cols[0])) {
+    protected function make_sub_group($cf, $cols) {
+        if ($this->SERIALIZED) {
             $subs = array();
             $serialized_cols = array();
             for ($i = 0; $i < count($cols); $i++) {
@@ -124,31 +69,7 @@ class AutopackSubColumnsTest extends PHPUnit_Framework_TestCase {
 
     public function test_super_column_family_subs() {
         $LONG = 222222222222;
-
-        $type_groups = array();
-
-        $long_cols = array(111111111111,
-                           222222222222,
-                           333333333333);
-        $type_groups[] = self::make_sub_group($this->cf_suplong_sublong, $long_cols);
-
-        $int_cols = array(1, 2, 3);
-        $type_groups[] = self::make_sub_group($this->cf_suplong_subint, $int_cols);
-
-        $time_cols = array($this->TIME1, $this->TIME2, $this->TIME3);
-        $type_groups[] = self::make_sub_group($this->cf_suplong_subtime, $time_cols);
-
-        $lex_cols = array($this->LEX1, $this->LEX2, $this->LEX3);
-        $type_groups[] = self::make_sub_group($this->cf_suplong_sublex, $lex_cols);
-
-        $ascii_cols = array('aaaa', 'bbbb', 'cccc');
-        $type_groups[] = self::make_sub_group($this->cf_suplong_subascii, $ascii_cols);
-
-        $utf8_cols = array("a&#1047;", "b&#1048;", "c&#1049;"); 
-        $type_groups[] = self::make_sub_group($this->cf_suplong_subutf8, $utf8_cols);
-
-        $composite_cols = array(array(1, 'a'), array(2, 'b'), array(3, 'c'));
-        $type_groups[] = self::make_sub_group($this->cf_suplong_subcomposite, $composite_cols);
+        $type_groups = $this->make_type_groups();
 
         foreach($type_groups as $group) {
             $cf = $group['cf'];
