@@ -1,6 +1,7 @@
 <?
 namespace phpcassa\Batch;
 
+use phpcassa\ConsistencyLevel;
 use phpcassa\Util\Clock;
 
 class Mutator
@@ -10,7 +11,7 @@ class Mutator
     private $cl;
 
     public function __construct($pool,
-            $write_consistency_level=cassandra_ConsistencyLevel::ONE) {
+            $write_consistency_level=ConsistencyLevel::ONE) {
         $this->pool = $pool;
         $this->buffer = array();
         $this->cl =  $write_consistency_level;

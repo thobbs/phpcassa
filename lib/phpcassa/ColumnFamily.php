@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa;
 
+use phpcassa\ConsistencyLevel;
+
 use phpcassa\Schema\DataType;
 use phpcassa\Schema\DataType\BytesType;
 use phpcassa\Schema\DataType\CompositeType;
@@ -42,9 +44,9 @@ class ColumnFamily {
     public $autopack_values;
     public $autopack_keys;
 
-    /** @var \cassandra_ConsistencyLevel the default read consistency level */
+    /** @var ConsistencyLevel the default read consistency level */
     public $read_consistency_level;
-    /** @var \cassandra_ConsistencyLevel the default write consistency level */
+    /** @var ConsistencyLevel the default write consistency level */
     public $write_consistency_level;
 
     /** @var bool If true, column values in data fetching operations will be
@@ -71,9 +73,9 @@ class ColumnFamily {
      * @param bool $autopack_values whether or not to automatically convert column values
      *        to and from their binary representation in Cassandra
      *        based on their validator type
-     * @param \cassandra_ConsistencyLevel $read_consistency_level the default consistency
+     * @param ConsistencyLevel $read_consistency_level the default consistency
      *        level for read operations on this column family
-     * @param \cassandra_ConsistencyLevel $write_consistency_level the default consistency
+     * @param ConsistencyLevel $write_consistency_level the default consistency
      *        level for write operations on this column family
      * @param int $buffer_size When calling `get_range`, the intermediate results need
      *        to be buffered if we are fetching many rows, otherwise the Cassandra
@@ -84,8 +86,8 @@ class ColumnFamily {
                                 $column_family,
                                 $autopack_names=true,
                                 $autopack_values=true,
-                                $read_consistency_level=\cassandra_ConsistencyLevel::ONE,
-                                $write_consistency_level=\cassandra_ConsistencyLevel::ONE,
+                                $read_consistency_level=ConsistencyLevel::ONE,
+                                $write_consistency_level=ConsistencyLevel::ONE,
                                 $buffer_size=self::DEFAULT_BUFFER_SIZE) {
 
         $this->pool = $pool;
@@ -192,7 +194,7 @@ class ColumnFamily {
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
      * @param mixed $super_column return only columns in this super column
-     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(column_name => column_value)
@@ -232,7 +234,7 @@ class ColumnFamily {
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
      * @param mixed $super_column return only columns in this super column
-     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
      *        rows are large, having a high buffer size gives poor performance; if your
@@ -319,7 +321,7 @@ class ColumnFamily {
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
      * @param mixed $super_column count only columns in this super column
-     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int
@@ -348,7 +350,7 @@ class ColumnFamily {
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
      * @param mixed $super_column count only columns in this super column
-     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(row_key => row_count)
@@ -400,7 +402,7 @@ class ColumnFamily {
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
      * @param mixed $super_column return only columns in this super column
-     * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need
      *        to be buffered if we are fetching many rows, otherwise the Cassandra
@@ -454,7 +456,7 @@ class ColumnFamily {
     * @param bool $column_reversed fetch the columns in reverse order
     * @param int $column_count limit the number of columns returned to this amount
     * @param mixed $super_column return only columns in this super column
-    * @param \cassandra_ConsistencyLevel $read_consistency_level affects the guaranteed
+    * @param ConsistencyLevel $read_consistency_level affects the guaranteed
     * number of nodes that must respond before the operation returns
     *
     * @return phpcassa\Iterator\IndexedColumnFamilyIterator
@@ -506,7 +508,7 @@ class ColumnFamily {
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
-     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -546,7 +548,7 @@ class ColumnFamily {
      * @param int $value the amount to adjust the counter by
      * @param mixed $super_column the super column to use if this is a
      *        super column family
-     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
     public function add($key, $column, $value=1, $super_column=null,
@@ -569,7 +571,7 @@ class ColumnFamily {
      * @param int $timestamp the timestamp to use for these insertions. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
-     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -598,7 +600,7 @@ class ColumnFamily {
      * @param string $key the row to remove columns from
      * @param mixed[] $columns the columns to remove. If null, the entire row will be removed.
      * @param mixed $super_column only remove this super column
-     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -666,7 +668,7 @@ class ColumnFamily {
      * @param mixed $column the column name of the counter
      * @param mixed $super_column the super column to use if this is a
      *        super column family
-     * @param \cassandra_ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
     public function remove_counter($key, $column, $super_column=null,

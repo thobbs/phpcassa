@@ -1,5 +1,6 @@
 <?php
 
+use phpcassa\ConsistencyLevel;
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
@@ -193,7 +194,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_insert_get_range() {
-        $cl = cassandra_ConsistencyLevel::ONE;
+        $cl = ConsistencyLevel::ONE;
         $cf = new ColumnFamily($this->pool,
                                'Standard1', true, true,
                                $read_consistency_level=$cl,
@@ -340,7 +341,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
 
     public function test_batched_get_indexed_slices() {
 
-        $cl = cassandra_ConsistencyLevel::ONE;
+        $cl = ConsistencyLevel::ONE;
         $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10);
