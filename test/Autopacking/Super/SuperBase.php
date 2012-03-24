@@ -1,60 +1,9 @@
 <?php
+require_once(__DIR__.'/../AutopackBase.php');
 
-use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
-use phpcassa\Schema\DataType;
-use phpcassa\SystemManager;
 
-use phpcassa\UUID;
-use phpcassa\UUID\UUIDGen;
-
-use phpcassa\UUID\DataType\LongType;
-use phpcassa\UUID\DataType\IntegerType;
-use phpcassa\UUID\DataType\BytesType;
-use phpcassa\UUID\DataType\AsciiType;
-use phpcassa\UUID\DataType\UTF8Type;
-use phpcassa\UUID\DataType\LexicalUUIDType;
-use phpcassa\UUID\DataType\TimeUUIDType;
-
-abstract class SuperBase extends PHPUnit_Framework_TestCase {
-
-    protected $SERIALIZED = false;
-
-    protected static $VALS = array('val1', 'val2', 'val3');
-    protected static $KEYS = array('key1', 'key2', 'key3');
-    protected static $KS = "TestAutopacking";
-
-    protected $client;
-    protected $cf;
-
-    public static function setUpBeforeClass() {
-        $sys = new SystemManager();
-
-        $ksdefs = $sys->describe_keyspaces();
-        $exists = False;
-        foreach ($ksdefs as $ksdef)
-            $exists = $exists || $ksdef->name == self::$KS;
-
-        if ($exists)
-            $sys->drop_keyspace(self::$KS);
-
-        $sys->create_keyspace(self::$KS, array());
-    }
-
-    public static function tearDownAfterClass() {
-        $sys = new SystemManager();
-        $sys->drop_keyspace(self::$KS);
-        $sys->close();
-    }
-
-    public function setUp() {}
-
-    public function tearDown() {
-        foreach($this->cfs as $cf) {
-            foreach(self::$KEYS as $key)
-                $cf->remove($key);
-        }
-    }
+abstract class SuperBase extends AutopackBase {
 
     protected function make_super_group($cf, $cols) {
         if ($this->SERIALIZED) {

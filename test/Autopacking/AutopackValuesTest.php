@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__.'/AutopackBase.php');
 
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
@@ -7,28 +8,11 @@ use phpcassa\SystemManager;
 
 use phpcassa\UUID;
 
-class AutopackValuesTest extends PHPUnit_Framework_TestCase {
-
-    private static $VALS = array('val1', 'val2', 'val3');
-    private static $KEYS = array('key1', 'key2', 'key3');
-    private static $KS = "TestAutopacking";
-
-    private $client;
-    private $cf;
+class AutopackValuesTest extends AutopackBase {
 
     public static function setUpBeforeClass() {
+        parent::setUpBeforeClass();
         $sys = new SystemManager();
-
-        $ksdefs = $sys->describe_keyspaces();
-        $exists = False;
-        foreach ($ksdefs as $ksdef)
-            $exists = $exists || $ksdef->name == self::$KS;
-
-        if ($exists)
-            $sys->drop_keyspace(self::$KS);
-
-        $sys->create_keyspace(self::$KS, array());
-
         $cfattrs = array("column_type" => "Standard");
 
         $cfattrs["default_validation_class"] = DataType::LONG_TYPE;
@@ -49,12 +33,6 @@ class AutopackValuesTest extends PHPUnit_Framework_TestCase {
         // Quick way to create a TimeUUIDType validator to subcol
         $sys->create_index(self::$KS, 'DefaultValidator', 'subcol',
             DataType::TIME_UUID_TYPE, NULL, NULL);
-    }
-
-    public static function tearDownAfterClass() {
-        $sys = new SystemManager();
-        $sys->drop_keyspace(self::$KS);
-        $sys->close();
     }
 
     public function setUp() {
