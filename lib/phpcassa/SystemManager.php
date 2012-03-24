@@ -110,7 +110,6 @@ class SystemManager {
         $this->wait_for_agreement();
     }
 
-
     private static function endswith($haystack, $needle) {
         $start  = strlen($needle) * -1; //negative
         return (substr($haystack, $start) === $needle);
@@ -122,39 +121,20 @@ class SystemManager {
         } else {
             $ksdef = new \cassandra_KsDef();
             $ksdef->strategy_class = 'SimpleStrategy';
-            $ksdef->strategy_options = NULL;
-            $ksdef->replication_factor = 1;
+            $ksdef->strategy_options = array("replication_factor" => "1");
             $ksdef->cf_defs = array();
         }
 
         $ksdef->name = $name;
         foreach ($attrs as $attr => $value) {
-            switch ($attr) {
-                case "strategy_class":
-                    if (strpos($value, ".") === false)
-                        $value = "org.apache.cassandra.locator.$value";
-                    $ksdef->strategy_class = $value;
-                    break;
-                case "strategy_options":
-                    $ksdef->strategy_options = $value;
-                    break;
-                case "replication_factor":
-                    $ksdef->replication_factor = $value;
-                    break;
-                case "durable_writes":
-                    $ksdef->durable_writes = $value;
-                    break;				
-                default:
-                    throw new \InvalidArgumentException(
-                        "$attr is not a valid keyspace attribute."
-                    );
+            if ($attr == "strategy_class") {
+                if (strpos($value, ".") === false)
+                    $value = "org.apache.cassandra.locator.$value";
+                $ksdef->strategy_class = $value;
+                break;
+            } else {
+                $ksdef->$attr = $value;
             }
-        }
-        if (self::endswith($ksdef->strategy_class, 'SimpleStrategy')) {
-            if ($ksdef->strategy_options === NULL)
-                $ksdef->strategy_options = array();
-            if (!array_key_exists('replication_factor', $ksdef->strategy_options))
-                $ksdef->strategy_options['replication_factor'] = (string)$ksdef->replication_factor;
         }
         return $ksdef;
     }
@@ -174,24 +154,7 @@ class SystemManager {
      * @param string $keyspace the keyspace containing the column family
      * @param string $column_family the name of the column family
      * @param array $attrs an array that maps attribute
-     *        names to values. Valid attribute names include:
-     *           "column_type",
-     *           "comparator_type",
-     *           "subcomparator_type",
-     *           "comment",
-     *           "row_cache_size",
-     *           "key_cache_size",
-     *           "read_repair_chance",
-     *           "column_metadata",
-     *           "gc_grace_seconds",
-     *           "default_validation_class",
-     *           "min_compaction_threshold",
-     *           "max_compaction_threshold",
-     *           "row_cache_save_period_in_seconds",
-     *           "key_cache_save_period_in_seconds",
-     *           "memtable_flush_after_mins",
-     *           "memtable_throughput_in_mb",
-     *           "memtable_operations_in_millions"
+     *        names to values.
      */
     public function create_column_family($keyspace, $column_family, $attrs) {
         $this->client->set_keyspace($keyspace);
@@ -222,6 +185,8 @@ class SystemManager {
         $cfdef->name = $cfname;
 
         foreach ($attrs as $attr => $value) {
+            $cfdef->$attr = $value;
+            /*
             switch ($attr) {
                 case "column_type":
                     $cfdef->column_type = $value;
@@ -297,6 +262,7 @@ class SystemManager {
                         "$attr is not a valid column family attribute."
                     );
             }
+             */
         }
         return $cfdef;
     }
