@@ -120,7 +120,7 @@ class UUID {
   * Create a new UUID based on provided data.
   * @param int $ver the UUID version to generate.
   */
- protected static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL) {
+ public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL) {
   switch((int) $ver) {
    case 1:
     return new self(self::mintTime($node, $time));
