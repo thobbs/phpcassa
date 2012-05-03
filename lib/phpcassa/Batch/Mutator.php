@@ -4,6 +4,10 @@ namespace phpcassa\Batch;
 use phpcassa\ConsistencyLevel;
 use phpcassa\Util\Clock;
 
+use cassandra\Deletion;
+use cassandra\Mutation;
+use cassandra\SlicePredicate;
+
 class Mutator
 {
     private $pool;
@@ -69,7 +73,7 @@ class Mutator
     public function remove($column_family, $key, $columns=null, $super_column=null, $timestamp=null) {
         if ($timestamp === null)
             $timestamp = Clock::get_time();
-        $deletion = new \cassandra_Deletion();
+        $deletion = new Deletion();
         $deletion->timestamp = $timestamp;
 
         if ($super_column !== null) {
@@ -81,12 +85,12 @@ class Mutator
             foreach ($columns as $col) {
                 $packed_cols[] = $column_family->pack_name($col, $is_super);
             }
-            $predicate = new \cassandra_SlicePredicate();
+            $predicate = new SlicePredicate();
             $predicate->column_names = $packed_cols;
             $deletion->predicate = $predicate;
         }
 
-        $mutation = new \cassandra_Mutation();
+        $mutation = new Mutation();
         $mutation->deletion = $deletion;
         $packed_key = $column_family->pack_key($key);
         $this->enqueue($packed_key, $column_family, array($mutation));

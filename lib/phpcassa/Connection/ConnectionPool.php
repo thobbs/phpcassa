@@ -5,12 +5,9 @@ use phpcassa\Connection\ConnectionWrapper;
 use phpcassa\Connection\MaxRetriesException;
 use phpcassa\Connection\NoServerAvailable;
 
-$GLOBALS['THRIFT_ROOT'] = (__DIR__) . '/../../thrift';
-require_once $GLOBALS['THRIFT_ROOT'].'/packages/cassandra/Cassandra.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
+use cassandra\TimedOutException;
+use cassandra\NotFoundException;
+use cassandra\UnavailableException;
 
 /**
  * A pool of connections to a set of servers in a cluster.
@@ -264,13 +261,13 @@ class ConnectionPool {
                 $resp = call_user_func_array(array($conn->client, $f), $args);
                 $this->return_connection($conn);
                 return $resp;
-            } catch (cassandra_NotFoundException $nfe) {
+            } catch (NotFoundException $nfe) {
                 $this->return_connection($conn);
                 throw $nfe;
-            } catch (\cassandra_TimedOutException $toe) {
+            } catch (TimedOutException $toe) {
                 $last_err = $toe;
                 $this->handle_conn_failure($conn, $f, $toe, $retry_count);
-            } catch (\cassandra_UnavailableException $ue) {
+            } catch (UnavailableException $ue) {
                 $last_err = $ue;
                 $this->handle_conn_failure($conn, $f, $ue, $retry_count);
             } catch (\TTransportException $tte) {

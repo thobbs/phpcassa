@@ -6,7 +6,7 @@ use phpcassa\ColumnFamily;
 /**
  * @package phpcassa\Index
  */
-class IndexClause extends \cassandra_IndexClause {
+class IndexClause extends \cassandra\IndexClause {
 
     /**
      * Constructs an index clause for use with get_indexed_slices().

@@ -6,7 +6,7 @@ use phpcassa\ColumnFamily;
 /**
  * @package phpcassa\Index
  */
-class IndexExpression extends \cassandra_IndexExpression {
+class IndexExpression extends \cassandra\IndexExpression {
 
     /**
      * Constructs an IndexExpression to be used in an IndexClause, which can
@@ -25,7 +25,7 @@ class IndexExpression extends \cassandra_IndexExpression {
         if (is_int($op)) {
             $this->op = $op;
         } else {
-            $operators = $GLOBALS['cassandra_E_IndexOperator'];
+            $operators = $GLOBALS['\cassandra\E_IndexOperator'];
             $this->op = $operators[$op];
         }
     }

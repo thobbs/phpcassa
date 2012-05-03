@@ -1,8 +1,6 @@
 <?php
 namespace phpcassa;
 
-use phpcassa\ConsistencyLevel;
-
 use phpcassa\Schema\DataType;
 use phpcassa\Schema\DataType\BytesType;
 use phpcassa\Schema\DataType\CompositeType;
@@ -13,6 +11,24 @@ use phpcassa\Iterator\RangeColumnFamilyIterator;
 use phpcassa\Batch\CfMutator;
 
 use phpcassa\Util\Clock;
+
+use cassandra\InvalidRequestException;
+use cassandra\NotFoundException;
+
+use cassandra\Mutation;
+use cassandra\Deletion;
+use cassandra\ConsistencyLevel;
+use cassandra\Column;
+use cassandra\ColumnParent;
+use cassandra\ColumnPath;
+use cassandra\ColumnOrSuperColumn;
+use cassandra\SuperColumn;
+use cassandra\CounterSuperColumn;
+use cassandra\CounterColumn;
+use cassandra\IndexClause;
+use cassandra\IndexExpression;
+use cassandra\SlicePredicate;
+use cassandra\SliceRange;
 
 /**
  * Representation of a ColumnFamily in Cassandra.  This may be used for
@@ -106,7 +122,7 @@ class ColumnFamily {
             }
         }
         if ($cf_def == null)
-            throw new \cassandra_NotFoundException();
+            throw new NotFoundException();
         else
             $this->cfdef = $cf_def;
 
@@ -174,7 +190,7 @@ class ColumnFamily {
     public function set_autopack_keys($pack_keys) {
         if ($pack_keys) {
             $this->autopack_keys = true;
-            if (property_exists('cassandra_CfDef', "key_validation_class")) {
+            if (property_exists('CfDef', "key_validation_class")) {
                 $this->key_type = DataType::get_type_for($this->cfdef->key_validation_class);
             } else {
                 $this->key_type = new BytesType();
@@ -219,7 +235,7 @@ class ColumnFamily {
             $this->rcl($read_consistency_level));
 
         if (count($resp) == 0)
-            throw new \cassandra_NotFoundException();
+            throw new NotFoundException();
 
         return $this->coscs_to_array($resp);
     }
@@ -426,7 +442,7 @@ class ColumnFamily {
         if ($buffer_size == null)
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
-            $ire = new cassandra_InvalidRequestException();
+            $ire = new InvalidRequestException();
             $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
@@ -475,14 +491,14 @@ class ColumnFamily {
         if ($buffer_size == null)
             $buffer_size = $this->buffer_size;
         if ($buffer_size < 2) {
-            $ire = new \cassandra_InvalidRequestException();
+            $ire = new InvalidRequestException();
             $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 
-        $new_clause = new \cassandra_IndexClause();
+        $new_clause = new IndexClause();
         foreach($index_clause->expressions as $expr) {
-            $new_expr = new \cassandra_IndexExpression();
+            $new_expr = new IndexExpression();
             $new_expr->value = $this->pack_value($expr->value, $expr->column_name);
             $new_expr->column_name = $this->pack_name($expr->column_name);
             $new_expr->op = $expr->op;
@@ -557,7 +573,7 @@ class ColumnFamily {
 
         $cp = $this->create_column_parent($super_column);
         $packed_key = $this->pack_key($key);
-        $counter = new \cassandra_CounterColumn();
+        $counter = new CounterColumn();
         $counter->name = $this->pack_name($column);
         $counter->value = $value;
         $this->pool->call("add", $packed_key, $cp, $counter, $this->wcl($write_consistency_level));
@@ -613,7 +629,7 @@ class ColumnFamily {
 
         if ($columns === null || count($columns) == 1)
         {
-            $cp = new \cassandra_ColumnPath();
+            $cp = new ColumnPath();
             $cp->column_family = $this->column_family;
 
             if ($super_column !== null) {
@@ -633,7 +649,7 @@ class ColumnFamily {
                 $this->wcl($write_consistency_level));
         }
 
-        $deletion = new \cassandra_Deletion();
+        $deletion = new Deletion();
         $deletion->timestamp = $timestamp;
 
         if ($super_column !== null) {
@@ -648,7 +664,7 @@ class ColumnFamily {
             $deletion->predicate = $predicate;
         }
 
-        $mutation = new \cassandra_Mutation();
+        $mutation = new Mutation();
         $mutation->deletion = $deletion;
 
         $mut_map = array($packed_key => array($this->column_family => array($mutation))); 
@@ -674,7 +690,7 @@ class ColumnFamily {
      */
     public function remove_counter($key, $column, $super_column=null,
                                    $write_consistency_level=null) {
-        $cp = new \cassandra_ColumnPath();
+        $cp = new ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
 
@@ -728,7 +744,7 @@ class ColumnFamily {
     private function create_slice_predicate($columns, $column_start, $column_finish,
                                             $column_reversed, $column_count) {
 
-        $predicate = new \cassandra_SlicePredicate();
+        $predicate = new SlicePredicate();
         if ($columns !== null) {
             $packed_cols = array();
             foreach($columns as $col)
@@ -744,7 +760,7 @@ class ColumnFamily {
                                                   $this->is_super,
                                                   self::SLICE_FINISH);
 
-            $slice_range = new \cassandra_SliceRange();
+            $slice_range = new SliceRange();
             $slice_range->count = $column_count;
             $slice_range->reversed = $column_reversed;
             $slice_range->start  = $column_start;
@@ -755,7 +771,7 @@ class ColumnFamily {
     }
 
     private function create_column_parent($super_column=null) {
-        $column_parent = new \cassandra_ColumnParent();
+        $column_parent = new ColumnParent();
         $column_parent->column_family = $this->column_family;
         if ($super_column !== null) {
             $column_parent->super_column = $this->pack_name($super_column, true);
@@ -924,7 +940,7 @@ class ColumnFamily {
         $c_or_sc = $this->array_to_coscs($array, $timestamp, $ttl);
         $ret = array();
         foreach($c_or_sc as $row) {
-            $mutation = new \cassandra_Mutation();
+            $mutation = new Mutation();
             $mutation->column_or_supercolumn = $row;
             $ret[] = $mutation;
         }
@@ -937,13 +953,13 @@ class ColumnFamily {
 
         $ret = array();
         foreach ($data as $name => $value) {
-            $c_or_sc = new \cassandra_ColumnOrSuperColumn();
+            $c_or_sc = new ColumnOrSuperColumn();
             if($this->is_super) {
                 if($this->has_counters) {
-                    $sub = new \cassandra_CounterSuperColumn();
+                    $sub = new CounterSuperColumn();
                     $c_or_sc->counter_super_column = $sub;
                 } else {
-                    $sub = new \cassandra_SuperColumn();
+                    $sub = new SuperColumn();
                     $c_or_sc->super_column = $sub;
                 }
                 $sub->name = $this->pack_name($name, true, self::NON_SLICE, true);
@@ -951,10 +967,10 @@ class ColumnFamily {
                 $sub->timestamp = $timestamp;
             } else {
                 if($this->has_counters) {
-                    $sub = new \cassandra_CounterColumn();
+                    $sub = new CounterColumn();
                     $c_or_sc->counter_column = $sub;
                 } else {
-                    $sub = new \cassandra_Column();
+                    $sub = new Column();
                     $c_or_sc->column = $sub;
                     $sub->timestamp = $timestamp;
                     $sub->ttl = $ttl;
@@ -976,9 +992,9 @@ class ColumnFamily {
         $ret = array();
         foreach($array as $name => $value) {
             if($this->has_counters) {
-                $column = new \cassandra_CounterColumn();
+                $column = new CounterColumn();
             } else {
-                $column = new \cassandra_Column();
+                $column = new Column();
                 $column->timestamp = $timestamp;
                 $column->ttl = $ttl;
             }

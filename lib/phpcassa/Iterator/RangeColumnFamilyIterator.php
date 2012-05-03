@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa\Iterator;
 
+use cassandra\KeyRange;
+
 /**
  * Iterates over a column family row-by-row, typically with only a subset
  * of each row's columns.
@@ -31,7 +33,7 @@ class RangeColumnFamilyIterator extends ColumnFamilyIterator {
             $buff_sz = $this->buffer_size;
         $this->expected_page_size = $buff_sz;
 
-        $key_range = new \cassandra_KeyRange();
+        $key_range = new KeyRange();
         $key_range->start_key = $this->column_family->pack_key($this->next_start_key);
         $key_range->end_key = $this->key_finish;
         $key_range->count = $buff_sz;

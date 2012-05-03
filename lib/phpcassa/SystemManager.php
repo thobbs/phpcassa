@@ -4,6 +4,10 @@ namespace phpcassa;
 use phpcassa\Schema\IndexType;
 use phpcassa\Connection\ConnectionWrapper;
 
+use cassandra\KsDef;
+use cassandra\CfDef;
+use cassandra\ColumnDef;
+
 /**
  * Helps with getting information about the schema, making
  * schema changes, and getting information about the state
@@ -119,7 +123,7 @@ class SystemManager {
         if ($orig !== NULL) {
             $ksdef = $orig;
         } else {
-            $ksdef = new \cassandra_KsDef();
+            $ksdef = new KsDef();
             $ksdef->strategy_class = 'SimpleStrategy';
             $ksdef->strategy_options = array("replication_factor" => "1");
             $ksdef->cf_defs = array();
@@ -177,7 +181,7 @@ class SystemManager {
         if ($orig !== NULL) {
             $cfdef = $orig;
         } else {
-            $cfdef = new \cassandra_CfDef();
+            $cfdef = new CfDef();
             $cfdef->column_type = "Standard";
         }
 
@@ -293,7 +297,7 @@ class SystemManager {
         if (strpos($data_type, ".") === false) {
             $data_type = "org.apache.cassandra.db.marshal.$data_type";
         }
-        $col_def = new \cassandra_ColumnDef();
+        $col_def = new ColumnDef();
         $col_def->name = $column;
         $col_def->validation_class = $data_type;
         $col_def->index_type = $index_type;
@@ -415,7 +419,7 @@ class SystemManager {
      *
      * @param string $keyspace the keyspace name
      *
-     * @return \cassandra_KsDef
+     * @return cassandra\KsDef
      */
     public function describe_keyspace($keyspace) {
         return $this->client->describe_keyspace($keyspace);
@@ -424,7 +428,7 @@ class SystemManager {
     /**
      * Like describe_keyspace(), but for all keyspaces.
      *
-     * @return array an array of \cassandra_KsDef
+     * @return array an array of cassandra\KsDef
      */
     public function describe_keyspaces() {
         return $this->client->describe_keyspaces();

@@ -1,7 +1,16 @@
 <?php
 namespace phpcassa\Connection;
 
+// These don't use namespaces yet, so we can't rely on the autoloader
+require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
+
 use phpcassa\Connection\IncompatibleAPIException;
+
+use cassandra\CassandraClient;
+use cassandra\AuthenticationRequest;
 
 /**
  * @package phpcassa\Connection
@@ -39,7 +48,7 @@ class ConnectionWrapper {
             $transport = new \TBufferedTransport($socket, 1024, 1024);
         }
 
-        $this->client = new \CassandraClient(new \TBinaryProtocolAccelerated($transport));
+        $this->client = new CassandraClient(new \TBinaryProtocolAccelerated($transport));
         $transport->open();
 
         $server_version = explode(".", $this->client->describe_version());
@@ -54,7 +63,7 @@ class ConnectionWrapper {
         $this->set_keyspace($keyspace);
 
         if ($credentials) {
-            $request = new \cassandra_AuthenticationRequest(array("credentials" => $credentials));
+            $request = new AuthenticationRequest(array("credentials" => $credentials));
             $this->client->login($request);
         }
 
