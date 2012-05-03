@@ -42,13 +42,11 @@ class AutopackKeysTest extends AutopackBase {
                             $res);
     }
 
-    /**
-     * @expectedException cassandra_NotFoundException
-     */
     public function test_remove() {
         $this->cf->insert(123, array("foo" => "bar"));
         $this->assertEquals(array("foo" => "bar"), $this->cf->get(123));
         $this->cf->remove(123);
+        $this->setExpectedException('\cassandra\NotFoundException');
         $this->cf->get(123);
     }
 

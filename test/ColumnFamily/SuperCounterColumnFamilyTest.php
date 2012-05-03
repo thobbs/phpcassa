@@ -5,6 +5,8 @@ use phpcassa\SystemManager;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
 
+use cassandra\NotFoundException;
+
 class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
 
     private $pool;
@@ -84,7 +86,7 @@ class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
         try {
             $result = $this->cf->get($key, array("supercol"));
             assert(false);
-        } catch (cassandra_NotFoundException $e) { }
+        } catch (NotFoundException $e) { }
     }
 
 }

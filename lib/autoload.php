@@ -1,7 +1,9 @@
 <?php
 
 $GLOBALS['THRIFT_ROOT'] = __DIR__.'/thrift';
-$GLOBALS['THRIFT_AUTOLOAD'] = array();
+if (! isset($GLOBALS['THRIFT_AUTOLOAD'])) {
+    $GLOBALS['THRIFT_AUTOLOAD'] = array();
+}
 
 spl_autoload_register(function($className){
     if (strpos($className, 'phpcassa') === 0) {

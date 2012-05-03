@@ -1,6 +1,5 @@
 <?php
 
-use phpcassa\ConsistencyLevel;
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
@@ -8,6 +7,9 @@ use phpcassa\SystemManager;
 
 use phpcassa\Index\IndexExpression;
 use phpcassa\Index\IndexClause;
+
+use cassandra\ConsistencyLevel;
+use cassandra\NotFoundException;
 
 class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
 
@@ -68,7 +70,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         try {
             $this->cf->get(self::$KEYS[0]);
             $this->assertTrue(false);
-        } catch (cassandra_NotFoundException $e) {
+        } catch (NotFoundException $e) {
         }
     }
 
@@ -559,7 +561,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         try {
             $this->cf->get(self::$KEYS[0]);
             $this->assertTrue(false);
-        } catch (cassandra_NotFoundException $e) {
+        } catch (NotFoundException $e) {
         }
     }
 }

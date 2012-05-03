@@ -6,6 +6,9 @@ use phpcassa\Connection\NoServerAvailable;
 use phpcassa\ColumnFamily;
 use phpcassa\SystemManager;
 
+use cassandra\TimedOutException;
+use cassandra\CassandraClient;
+
 class MockClient extends CassandraClient {
 
     public function __construct($transport) {
@@ -13,7 +16,7 @@ class MockClient extends CassandraClient {
     }
 
     public function batch_mutate($mutation_map, $consistency_level) {
-        throw new cassandra_TimedOutException();
+        throw new TimedOutException();
     }
 }
 

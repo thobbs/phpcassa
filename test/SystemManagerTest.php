@@ -3,7 +3,9 @@
 use phpcassa\SystemManager;
 use phpcassa\Schema\StrategyClass;
 use phpcassa\Schema\DataType;
-use phpcassa\Schema\IndexType;
+
+use cassandra\InvalidRequestException;
+use cassandra\IndexType;
 
 class SystemManagerTest extends PHPUnit_Framework_TestCase {
 
@@ -26,25 +28,24 @@ class SystemManagerTest extends PHPUnit_Framework_TestCase {
         $ksname = "PhpcassaKeyspace";
         try {
             $this->sys->drop_keyspace($ksname);
-        } catch (cassandra_InvalidRequestException $e) {
+        } catch (InvalidRequestException $e) {
             // don't care
         }
 
         $attrs = array();
         $attrs["strategy_class"] = StrategyClass::SIMPLE_STRATEGY;
-        $attrs["strategy_options"] = NULL;
-        $attrs["replication_factor"] = 1;
+        $attrs["strategy_options"] = array("replication_factor" => "1");
         $this->sys->create_keyspace($ksname, $attrs);
 
         $ksdef = $this->sys->describe_keyspace($ksname);
         $this->assertEquals($ksdef->name, $ksname);
-        $this->assertEquals($ksdef->replication_factor, 1);
+        $this->assertEquals($ksdef->strategy_options, array("replication_factor" => "1"));
 
         $attrs["strategy_class"] = StrategyClass::OLD_NETWORK_TOPOLOGY_STRATEGY;
         $this->sys->alter_keyspace($ksname, $attrs);
         $ksdef = $this->sys->describe_keyspace($ksname);
         $this->assertEquals($ksdef->name, $ksname);
-        $this->assertEquals($ksdef->replication_factor, 1);
+        $this->assertEquals($ksdef->strategy_options, array("replication_factor" => "1"));
 
         $this->sys->drop_keyspace($ksname);
     }
@@ -63,8 +64,7 @@ class SystemManagerTest extends PHPUnit_Framework_TestCase {
         $ksname = "PhpcassaKeyspace";
         $attrs = array();
         $attrs["strategy_class"] = StrategyClass::SIMPLE_STRATEGY;
-        $attrs["strategy_options"] = NULL;
-        $attrs["replication_factor"] = 1;
+        $attrs["strategy_options"] = array("replication_factor" => "1");
         $this->sys->create_keyspace($ksname, $attrs);
 
         $cfname = "CF";

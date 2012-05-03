@@ -1,12 +1,12 @@
 <?php
 namespace phpcassa;
 
-use phpcassa\Schema\IndexType;
 use phpcassa\Connection\ConnectionWrapper;
 
 use cassandra\KsDef;
 use cassandra\CfDef;
 use cassandra\ColumnDef;
+use cassandra\IndexType;
 
 /**
  * Helps with getting information about the schema, making

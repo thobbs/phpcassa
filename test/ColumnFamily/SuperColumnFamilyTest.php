@@ -5,6 +5,8 @@ use phpcassa\SystemManager;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
 
+use cassandra\NotFoundException;
+
 class TestSuperColumnFamily extends PHPUnit_Framework_TestCase {
 
     private $pool;
@@ -54,7 +56,7 @@ class TestSuperColumnFamily extends PHPUnit_Framework_TestCase {
         try {
             $this->cf->get(self::$KEYS[0]);
             assert(false);
-        } catch (cassandra_NotFoundException $e) {
+        } catch (NotFoundException $e) {
         }
 
         $this->cf->insert(self::$KEYS[0], $columns);
@@ -79,7 +81,7 @@ class TestSuperColumnFamily extends PHPUnit_Framework_TestCase {
         try {
             $this->cf->get($key, null, '', '', false, 100, $super_column='3');
             assert(false);
-        } catch (cassandra_NotFoundException $e) {
+        } catch (NotFoundException $e) {
         }
 
         $this->assertEquals($this->cf->multiget(array($key), null, '', '', false, 100, $super_column='1'),

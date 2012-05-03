@@ -95,7 +95,7 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra_NotFoundException');
+        $this->setExpectedException('\cassandra\NotFoundException');
         $this->cf->get("key1");
     }
 
@@ -127,7 +127,7 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra_NotFoundException');
+        $this->setExpectedException('\cassandra\NotFoundException');
         $this->super_cf->get("key1");
     }
 
@@ -157,7 +157,7 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra_NotFoundException');
+        $this->setExpectedException('\cassandra\NotFoundException');
         $this->counter_cf->get("key1");
     }
 
@@ -190,7 +190,7 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra_NotFoundException');
+        $this->setExpectedException('\cassandra\NotFoundException');
         $this->counter_super_cf->get("key1");
     }
 
