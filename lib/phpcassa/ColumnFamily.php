@@ -177,7 +177,7 @@ class ColumnFamily {
             if (property_exists('cassandra_CfDef', "key_validation_class")) {
                 $this->key_type = DataType::get_type_for($this->cfdef->key_validation_class);
             } else {
-                $this->key_type = 'BytesType';
+                $this->key_type = new BytesType();
             }
         } else {
             $this->autopack_keys = false;
@@ -203,7 +203,7 @@ class ColumnFamily {
                         $columns=null,
                         $column_start="",
                         $column_finish="",
-                        $column_reversed=False,
+                        $column_reversed=false,
                         $column_count=self::DEFAULT_COLUMN_COUNT,
                         $super_column=null,
                         $read_consistency_level=null) {
@@ -246,7 +246,7 @@ class ColumnFamily {
                              $columns=null,
                              $column_start="",
                              $column_finish="",
-                             $column_reversed=False,
+                             $column_reversed=false,
                              $column_count=self::DEFAULT_COLUMN_COUNT,
                              $super_column=null,
                              $read_consistency_level=null,
@@ -438,6 +438,7 @@ class ColumnFamily {
 
         $packed_key_start = $this->pack_key($key_start);
         $packed_key_finish = $this->pack_key($key_finish);
+
         return new RangeColumnFamilyIterator($this, $buffer_size,
                                              $packed_key_start, $packed_key_finish,
                                              $row_count, $column_parent, $predicate,
@@ -725,7 +726,7 @@ class ColumnFamily {
     }
 
     private function create_slice_predicate($columns, $column_start, $column_finish,
-                                                   $column_reversed, $column_count) {
+                                            $column_reversed, $column_count) {
 
         $predicate = new \cassandra_SlicePredicate();
         if ($columns !== null) {
