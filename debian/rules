@@ -1,6 +1,12 @@
 #!/usr/bin/make -f
 
-THRIFTDIR=thrift/ext/thrift_protocol
+export DH_VERBOSE=1
+
+EXT    = libphpcassa-php5
+EXT_so = libphpcassa-php5
+PHP_MAJOR := 5
+
+THRIFTDIR=lib/thrift/ext/thrift_protocol
 
 THRIFT_DETRITUS =   \
     config.h        \
@@ -36,6 +42,8 @@ override_dh_auto_install:
 	    dh_auto_install -plibphpcassa-php5 -D$(THRIFTDIR)
 	echo "php:Depends=phpapi-$$(/usr/bin/php-config5 --phpapi)" \
 	    >> debian/libphpcassa-php5.substvars
+	echo "extension=thrift_protocol.so" > debian/$(EXT_so).ini
+	install -D -m 644 debian/$(EXT_so).ini $(CURDIR)/debian/libphpcassa-php5/etc/php$(PHP_MAJOR)/conf.d/$(EXT_so).ini
 
 override_dh_install:
 	dh_install
@@ -54,3 +62,5 @@ override_dh_auto_clean:
 	[ -e $(THRIFTDIR)/Makefile ] && $(MAKE) -C $(THRIFTDIR) distclean || true
 	cd $(THRIFTDIR) && $(RM) -r $(THRIFT_DETRITUS)
 	$(RM) -r doc/_build
+	[ ! -f debian/$(EXT_so).autogen.ini ] || \
+	rm debian/$(EXT_so).autogen.ini debian/$(EXT_so).in

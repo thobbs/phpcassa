@@ -1,5 +1,6 @@
-*.php                             /usr/share/php/phpcassa
-thrift/*.php                      /usr/share/php/phpcassa/thrift
-thrift/protocol/*.php             /usr/share/php/phpcassa/thrift/protocol
-thrift/transport/*.php            /usr/share/php/phpcassa/thrift/transport
-thrift/packages/cassandra/*.php   /usr/share/php/phpcassa/thrift/packages/cassandra
+lib/*.php                             /usr/share/php/phpcassa
+lib/phpcassa                          /usr/share/php/phpcassa
+lib/thrift/*.php                      /usr/share/php/phpcassa/thrift
+lib/thrift/protocol/*.php             /usr/share/php/phpcassa/thrift/protocol
+lib/thrift/transport/*.php            /usr/share/php/phpcassa/thrift/transport
+lib/thrift/packages/cassandra/*.php   /usr/share/php/phpcassa/thrift/packages/cassandra
