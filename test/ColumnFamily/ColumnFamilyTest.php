@@ -67,11 +67,8 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_empty() {
-        try {
-            $this->cf->get(self::$KEYS[0]);
-            $this->assertTrue(false);
-        } catch (NotFoundException $e) {
-        }
+        $this->setExpectedException('\cassandra\NotFoundException');
+        $this->cf->get(self::$KEYS[0]);
     }
 
     public function test_insert_get() {
@@ -86,10 +83,10 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->cf->insert(self::$KEYS[0], $columns1);
         $this->cf->insert(self::$KEYS[1], $columns2);
         $rows = $this->cf->multiget(self::$KEYS);
-        $this->assertEquals(count($rows), 2);
+        $this->assertCount(2, $rows);
         $this->assertEquals($rows[self::$KEYS[0]], $columns1);
         $this->assertEquals($rows[self::$KEYS[1]], $columns2);
-        $this->assertFalse(in_array(self::$KEYS[2], $rows));
+        $this->assertNotContains(self::$KEYS[2], $rows);
 
         $keys = array();
         for ($i = 0; $i < 100; $i++)
@@ -99,7 +96,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         }
         shuffle($keys);
         $rows = $this->cf->multiget($keys);
-        $this->assertEquals(count($rows), 100);
+        $this->assertCount(100, $rows);
 
         $i = 0;
         foreach ($rows as $key => $cols) {
@@ -119,10 +116,10 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                       self::$KEYS[1] => $columns2);
         $this->cf->batch_insert($rows);
         $rows = $this->cf->multiget(self::$KEYS);
-        $this->assertEquals(count($rows), 2);
+        $this->assertCount(2, $rows);
         $this->assertEquals($rows[self::$KEYS[0]], $columns1);
         $this->assertEquals($rows[self::$KEYS[1]], $columns2);
-        $this->assertFalse(in_array(self::$KEYS[2], $rows));
+        $this->assertNotContains(self::$KEYS[2], $rows);
     }
 
     public function test_insert_get_count() {
@@ -149,27 +146,27 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
             $this->assertEquals($result[$key], 2);
 
         $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='1');
-        $this->assertEquals(count($result), 3);
+        $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 2);
 
         $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='', $column_finish='2');
-        $this->assertEquals(count($result), 3);
+        $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 2);
 
         $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='1', $column_finish='2');
-        $this->assertEquals(count($result), 3);
+        $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 2);
 
         $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='1', $column_finish='1');
-        $this->assertEquals(count($result), 3);
+        $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 1);
 
         $result = $this->cf->multiget_count(self::$KEYS, $columns=array('1', '2'));
-        $this->assertEquals(count($result), 3);
+        $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 2);
 
         $result = $this->cf->multiget_count(self::$KEYS, $columns=array('1'));
-        $this->assertEquals(count($result), 3);
+        $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 1);
 
         // Test that multiget_count preserves the key order
@@ -182,7 +179,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         }
         shuffle($keys);
         $rows = $this->cf->multiget_count($keys);
-        $this->assertEquals(count($rows), 100);
+        $this->assertCount(100, $rows);
 
         $i = 0;
         foreach ($rows as $key => $count) {
@@ -217,7 +214,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         # Buffer size = 10; rowcount is divisible by buffer size
         $count = 0;
         foreach ($cf->get_range() as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys), "$key was not expected");
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -230,7 +227,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=1000);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -243,7 +240,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=150);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=100) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -258,7 +255,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $count = 0;
         $rows = $cf->get_range($key_start='', $key_finish='', $row_count=100);
         foreach ($rows as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -273,7 +270,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $count = 0;
         $rows = $cf->get_range($key_start='', $key_finish='', $row_count=100);
         foreach ($rows as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -291,7 +288,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=2);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -304,7 +301,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=7);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -318,7 +315,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=200);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -331,7 +328,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=10000);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -367,7 +364,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         # Buffer size = 10; rowcount is divisible by buffer size
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -379,7 +376,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=1000);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -392,7 +389,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=150);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -405,7 +402,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=7);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -418,7 +415,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=2);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -437,7 +434,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=2);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -450,7 +447,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=7);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -464,7 +461,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=200);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -477,7 +474,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
                                $buffer_size=10000);
         $count = 0;
         foreach ($cf->get_indexed_slices($clause) as $key => $cols) {
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
             $count++;
         }
@@ -521,7 +518,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $count = 0;
         foreach($result as $key => $cols) {
             $count++;
-            $this->assertTrue($key == "key1" || $key == "key3");
+            $this->assertContains($key, array("key1", "key3"));
         }
         $this->assertEquals($count, 2);
 
@@ -539,7 +536,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $count = 0;
         foreach($result as $key => $cols) {
             $count++;
-            $this->assertTrue(in_array($key, $keys));
+            $this->assertContains($key, $keys);
             unset($keys[$key]);
         }
         $this->assertEquals($count, 20);
@@ -558,11 +555,8 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($this->cf->get(self::$KEYS[0]), $columns);
 
         $this->cf->remove(self::$KEYS[0]);
-        try {
-            $this->cf->get(self::$KEYS[0]);
-            $this->assertTrue(false);
-        } catch (NotFoundException $e) {
-        }
+        $this->setExpectedException('\cassandra\NotFoundException');
+        $this->cf->get(self::$KEYS[0]);
     }
 }
 

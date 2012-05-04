@@ -42,12 +42,8 @@ class AutopackStandardTest extends StandardBase {
         $this->cf_int->insert(self::$KEYS[0], array(0 => "foo"));
         $this->assertEquals($this->cf_int->get(self::$KEYS[0]), array(0 => "foo"));
         $this->cf_int->remove(self::$KEYS[0]);
-        try {
-            $this->cf_int->insert(self::$KEYS[0], array(null => "foo"));
-            $this->assertTrue(false); // shouldn't get here
-        } catch (UnexpectedValueException $exc) {
-            $this->assertTrue(true);
-        }
+        $this->setExpectedException('UnexpectedValueException');
+        $this->cf_int->insert(self::$KEYS[0], array(null => "foo"));
     }
 
     protected function make_type_groups() {

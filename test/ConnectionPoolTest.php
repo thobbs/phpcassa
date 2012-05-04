@@ -86,12 +86,11 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase {
             $conn->client = new MockClient($conn->transport);
             $pool->return_connection($conn);
         }
+
         $cf = new ColumnFamily($pool, self::$CF);
-        try {
-            $cf->insert('key', array('col' => 'val'));
-            $this->assertTrue(false);
-        } catch (MaxRetriesException $ex) {
-        }
+        $this->setExpectedException('\phpcassa\Connection\MaxRetriesException');
+        $cf->insert('key', array('col' => 'val'));
+
         $stats = $pool->stats();
         $this->assertEquals($stats['created'], 10);
         $this->assertEquals($stats['failed'], 5);
@@ -146,12 +145,9 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase {
         $pool->dispose();
 
         $servers = array('barfoo', 'foobar');
-        try {
-            $pool = new SilentConnectionPool(self::$KS, $servers);
-            $pool->fill();
-            $this->assertTrue(false);
-        } catch (NoServerAvailable $ex) {
-        }
+        $pool = new SilentConnectionPool(self::$KS, $servers);
+        $this->setExpectedException('\phpcassa\Connection\NoServerAvailable');
+        $pool->fill();
     }
 }
 
