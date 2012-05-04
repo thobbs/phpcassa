@@ -177,9 +177,9 @@ class TestAutopacking extends UnitTestCase {
         $this->TIME2 = CassandraUtil::uuid1();
         $this->TIME3 = CassandraUtil::uuid1();
 
-        $this->LEX1 = UUID::import('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')->bytes;
-        $this->LEX2 = UUID::import('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')->bytes;
-        $this->LEX3 = UUID::import('cccccccccccccccccccccccccccccccc')->bytes;
+        $this->LEX1 = CassandraUUID::import('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')->bytes;
+        $this->LEX2 = CassandraUUID::import('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')->bytes;
+        $this->LEX3 = CassandraUUID::import('cccccccccccccccccccccccccccccccc')->bytes;
 
 
         parent::__construct();

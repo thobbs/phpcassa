@@ -41,7 +41,7 @@ require_once('columnfamily.php');
  * @package phpcassa
  * @subpackage uuid
  */
-class UUID {
+class CassandraUUID {
  const MD5  = 3;
  const SHA1 = 5;
  const clearVer = 15;  // 00001111  Clears all bits of version byte with AND
