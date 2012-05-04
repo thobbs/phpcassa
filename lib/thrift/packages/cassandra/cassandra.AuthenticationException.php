@@ -6,13 +6,11 @@ namespace cassandra;
 class AuthenticationException extends \TException {
   static $_TSPEC;
 
-  public $why = null;
-
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'why',
+          'var' => 'message',
           'type' => \TType::STRING,
           ),
         );
