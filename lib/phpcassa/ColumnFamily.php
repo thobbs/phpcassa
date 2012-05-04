@@ -209,7 +209,6 @@ class ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param mixed $super_column return only columns in this super column
      * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -221,18 +220,19 @@ class ColumnFamily {
                         $column_finish="",
                         $column_reversed=false,
                         $column_count=self::DEFAULT_COLUMN_COUNT,
-                        $super_column=null,
                         $read_consistency_level=null) {
 
-        $column_parent = $this->create_column_parent($super_column);
+        $column_parent = $this->create_column_parent();
         $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
                                                    $column_reversed, $column_count);
 
+        return $this->_get($key, $column_parent, $predicate, $read_consistency_level);
+    }
+
+    protected function _get($key, $cp, $slice, $cl) {
         $resp = $this->pool->call("get_slice",
             $this->pack_key($key),
-            $column_parent,
-            $predicate,
-            $this->rcl($read_consistency_level));
+            $cp, $slice, $this->rcl($cl));
 
         if (count($resp) == 0)
             throw new NotFoundException();
@@ -249,7 +249,6 @@ class ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param mixed $super_column return only columns in this super column
      * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
@@ -264,40 +263,39 @@ class ColumnFamily {
                              $column_finish="",
                              $column_reversed=false,
                              $column_count=self::DEFAULT_COLUMN_COUNT,
-                             $super_column=null,
                              $read_consistency_level=null,
                              $buffer_size=16)  {
 
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   $column_reversed, $column_count);
+        $cp = $this->create_column_parent();
+        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                               $column_reversed, $column_count);
 
+        return $this->_multiget($keys, $cp, $slice, $read_consistency_level, $buffer_size);
+    }
+
+    protected function _multiget($keys, $cp, $slice, $cl, $buffsz) {
         $ret = array();
         foreach($keys as $key) {
             $ret[$key] = null;
         }
 
-        $cl = $this->rcl($read_consistency_level);
+        $cl = $this->rcl($cl);
 
         $resp = array();
-        if(count($keys) <= $buffer_size) {
+        if(count($keys) <= $buffsz) {
             $resp = $this->pool->call("multiget_slice",
                 array_map(array($this, "pack_key"), $keys),
-                $column_parent,
-                $predicate,
-                $cl);
+                $cp, $slice, $cl);
         } else {
             $subset_keys = array();
             $i = 0;
             foreach($keys as $key) {
                 $i += 1;
                 $subset_keys[] = $key;
-                if ($i == $buffer_size) {
+                if ($i == $buffsz) {
                     $sub_resp = $this->pool->call("multiget_slice",
                         array_map(array($this, "pack_key"), $subset_keys),
-                        $column_parent,
-                        $predicate,
-                        $cl);
+                        $cp, $slice, $cl);
                     $subset_keys = array();
                     $i = 0;
                     $resp = $resp + $sub_resp;
@@ -306,9 +304,7 @@ class ColumnFamily {
             if (count($subset_keys) != 0) {
                 $sub_resp = $this->pool->call("multiget_slice",
                     array_map(array($this, "pack_key"), $subset_keys),
-                    $column_parent,
-                    $predicate,
-                    $cl);
+                    $cp, $slice, $cl);
                 $resp = $resp + $sub_resp;
             }
         }
@@ -336,7 +332,6 @@ class ColumnFamily {
      * @param mixed[] $columns limit the possible columns or super columns counted to this list
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
-     * @param mixed $super_column count only columns in this super column
      * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -346,16 +341,17 @@ class ColumnFamily {
                               $columns=null,
                               $column_start='',
                               $column_finish='',
-                              $super_column=null,
                               $read_consistency_level=null) {
 
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   false, self::MAX_COUNT);
+        $cp = $this->create_column_parent();
+        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                               false, self::MAX_COUNT);
+        return $this->_get_count($key, $cp, $slice, $read_consistency_level);
+    }
 
+    protected function _get_count($key, $cp, $slice, $cl) {
         $packed_key = $this->pack_key($key);
-        return $this->pool->call("get_count", $packed_key, $column_parent, $predicate,
-            $this->rcl($read_consistency_level));
+        return $this->pool->call("get_count", $packed_key, $cp, $slice, $this->rcl($cl));
     }
 
     /**
@@ -365,7 +361,6 @@ class ColumnFamily {
      * @param mixed[] $columns limit the possible columns or super columns counted to this list
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
-     * @param mixed $super_column count only columns in this super column
      * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -375,21 +370,24 @@ class ColumnFamily {
                                    $columns=null,
                                    $column_start='',
                                    $column_finish='',
-                                   $super_column=null,
                                    $read_consistency_level=null) {
+
+        $cp = $this->create_column_parent();
+        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                               false, self::MAX_COUNT);
+        return $this->_multiget_count($keys, $cp, $slice, $read_consistency_level);
+    }
+
+    protected function _multiget_count($keys, $cp, $slice, $cl) {
 
         $ret = array();
         foreach($keys as $key) {
             $ret[$key] = null;
         }
 
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   false, self::MAX_COUNT);
-
         $packed_keys = array_map(array($this, "pack_key"), $keys);
-        $results = $this->pool->call("multiget_count", $packed_keys, $column_parent, $predicate,
-            $this->rcl($read_consistency_level));
+        $results = $this->pool->call("multiget_count", $packed_keys, $cp, $slice,
+            $this->rcl($cl));
 
         $non_empty_keys = array();
         foreach ($results as $key => $count) {
@@ -417,7 +415,6 @@ class ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param mixed $super_column return only columns in this super column
      * @param ConsistencyLevel $read_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need
@@ -435,30 +432,33 @@ class ColumnFamily {
                               $column_finish="",
                               $column_reversed=false,
                               $column_count=self::DEFAULT_COLUMN_COUNT,
-                              $super_column=null,
                               $read_consistency_level=null,
                               $buffer_size=null) {
 
-        if ($buffer_size == null)
-            $buffer_size = $this->buffer_size;
-        if ($buffer_size < 2) {
+        $cp = $this->create_column_parent();
+        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                               $column_reversed, $column_count);
+
+        return $this->_get_range($key_start, $key_finish, $row_count,
+            $cp, $slice, $read_consistency_level, $buffer_size);
+    }
+
+    protected function _get_range($start, $finish, $count, $cp, $slice, $cl, $buffsz) {
+
+        if ($buffsz == null)
+            $buffsz = $this->buffer_size;
+        if ($buffsz < 2) {
             $ire = new InvalidRequestException();
             $ire->message = 'buffer_size cannot be less than 2';
             throw $ire;
         }
 
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start,
-                                                   $column_finish, $column_reversed,
-                                                   $column_count);
+        $packed_key_start = $this->pack_key($start);
+        $packed_key_finish = $this->pack_key($finish);
 
-        $packed_key_start = $this->pack_key($key_start);
-        $packed_key_finish = $this->pack_key($key_finish);
-
-        return new RangeColumnFamilyIterator($this, $buffer_size,
+        return new RangeColumnFamilyIterator($this, $buffsz,
                                              $packed_key_start, $packed_key_finish,
-                                             $row_count, $column_parent, $predicate,
-                                             $this->rcl($read_consistency_level));
+                                             $count, $cp, $slice, $this->rcl($cl));
     }
 
    /**
@@ -472,7 +472,6 @@ class ColumnFamily {
     * @param mixed $column_finish only fetch columns with name <= this
     * @param bool $column_reversed fetch the columns in reverse order
     * @param int $column_count limit the number of columns returned to this amount
-    * @param mixed $super_column return only columns in this super column
     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
     * number of nodes that must respond before the operation returns
     *
@@ -484,7 +483,6 @@ class ColumnFamily {
                                        $column_finish='',
                                        $column_reversed=false,
                                        $column_count=self::DEFAULT_COLUMN_COUNT,
-                                       $super_column=null,
                                        $read_consistency_level=null,
                                        $buffer_size=null) {
 
@@ -507,7 +505,7 @@ class ColumnFamily {
         $new_clause->start_key = $this->pack_key($index_clause->start_key);
         $new_clause->count = $index_clause->count;
 
-        $column_parent = $this->create_column_parent($super_column);
+        $column_parent = $this->create_column_parent();
         $predicate = $this->create_slice_predicate($columns, $column_start,
                                                    $column_finish, $column_reversed,
                                                    $column_count);
@@ -563,20 +561,20 @@ class ColumnFamily {
      * @param string $key the row to insert or update the columns in
      * @param mixed $column the column name of the counter
      * @param int $value the amount to adjust the counter by
-     * @param mixed $super_column the super column to use if this is a
-     *        super column family
      * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
-    public function add($key, $column, $value=1, $super_column=null,
-                        $write_consistency_level=null) {
+    public function add($key, $column, $value=1, $write_consistency_level=null) {
+        $cp = $this->create_column_parent();
+        return $this->_add($key, $cp, $value, $write_consistency_level);
+    }
 
-        $cp = $this->create_column_parent($super_column);
+    protected function _add($key, $cp, $value, $cl) {
         $packed_key = $this->pack_key($key);
         $counter = new CounterColumn();
         $counter->name = $this->pack_name($column);
         $counter->value = $value;
-        $this->pool->call("add", $packed_key, $cp, $counter, $this->wcl($write_consistency_level));
+        return $this->pool->call("add", $packed_key, $cp, $counter, $this->wcl($cl));
     }
 
     /**
@@ -612,61 +610,56 @@ class ColumnFamily {
     }
 
     /**
-     * Remove columns from a row.
+     * Delete a row or a set of columns or supercolumns from a row.
      *
      * @param string $key the row to remove columns from
-     * @param mixed[] $columns the columns to remove. If null, the entire row will be removed.
-     * @param mixed $super_column only remove this super column
+     * @param mixed[] $columns the columns or supercolumns to remove.
+     *                If null, the entire row will be removed.
      * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
      */
-    public function remove($key, $columns=null, $super_column=null, $write_consistency_level=null) {
-
-        $timestamp = Clock::get_time();
-        $packed_key = $this->pack_key($key);
+    public function remove($key, $columns=null, $write_consistency_level=null) {
 
         if ($columns === null || count($columns) == 1)
         {
             $cp = new ColumnPath();
             $cp->column_family = $this->column_family;
 
-            if ($super_column !== null) {
-                $cp->super_column = $this->pack_name($super_column, true);
-            } else {
-                $cp->super_column = null;
-            }
-
             if ($columns !== null) {
-                if ($this->is_super && $super_column === null)
+                if ($this->is_super)
                     $cp->super_column = $this->pack_name($columns[0], true);
                 else
                     $cp->column = $this->pack_name($columns[0], false);
             }
-
-            return $this->pool->call("remove", $packed_key, $cp, $timestamp,
-                $this->wcl($write_consistency_level));
-        }
-
-        $deletion = new Deletion();
-        $deletion->timestamp = $timestamp;
-
-        if ($super_column !== null) {
-            $deletion->super_column = $this->pack_name($super_column, true);
+            return $this->_remove_single($key, $cp, $write_consistency_level);
         } else {
-            $deletion->super_column = null;
-        }
+            $deletion = new Deletion();
+            if ($columns !== null) {
+                $predicate = $this->create_slice_predicate($columns, '', '', false,
+                                                           self::DEFAULT_COLUMN_COUNT);
+                $deletion->predicate = $predicate;
+            }
 
-        if ($columns !== null) {
-            $predicate = $this->create_slice_predicate($columns, '', '', false,
-                                                       self::DEFAULT_COLUMN_COUNT);
-            $deletion->predicate = $predicate;
+            return $this->_remove_multi($key, $deletion, $write_consistency_level);
         }
+    }
 
+    protected function _remove_single($key, $cp, $cl) {
+        $timestamp = Clock::get_time();
+        $packed_key = $this->pack_key($key);
+        return $this->pool->call("remove", $packed_key, $cp, $timestamp,
+            $this->wcl($cl));
+    }
+
+    protected function _remove_multi($key, $deletion, $cl) {
+        $timestamp = Clock::get_time();
+        $deletion->timestamp = $timestamp;
         $mutation = new Mutation();
         $mutation->deletion = $deletion;
 
+        $packed_key = $this->pack_key($key);
         $mut_map = array($packed_key => array($this->column_family => array($mutation))); 
 
         return $this->pool->call("batch_mutate", $mut_map, $this->wcl($write_consistency_level));
@@ -681,32 +674,18 @@ class ColumnFamily {
      *
      * Available in Cassandra 0.8.0 and later.
      *
-     * @param string $key the row to insert or update the columns in
+     * @param string $key the key for the row
      * @param mixed $column the column name of the counter
-     * @param mixed $super_column the super column to use if this is a
-     *        super column family
      * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
-    public function remove_counter($key, $column, $super_column=null,
-                                   $write_consistency_level=null) {
+    public function remove_counter($key, $column, $write_consistency_level=null) {
         $cp = new ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
-
-        if ($super_column !== null) {
-            $cp->super_column = $this->pack_name($super_column, true);
-        } else {
-            $cp->super_column = null;
-        }
-
-        if ($column !== null) {
-            $cp->column = $this->pack_name($column);
-        } else {
-            $cp->column = null;
-        }
-
-        $this->pool->call("remove_counter", $packed_key, $cp, $this->wcl($write_consistency_level));
+        $cp->column = $this->pack_name($column);
+        $this->pool->call("remove_counter", $packed_key, $cp,
+            $this->wcl($write_consistency_level));
     }
 
     /**
@@ -742,7 +721,7 @@ class ColumnFamily {
     }
 
     protected function create_slice_predicate($columns, $column_start, $column_finish,
-                                            $column_reversed, $column_count) {
+                                              $column_reversed, $column_count) {
 
         $predicate = new SlicePredicate();
         if ($columns !== null) {
