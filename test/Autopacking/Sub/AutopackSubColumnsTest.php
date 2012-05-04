@@ -2,7 +2,7 @@
 require_once(__DIR__.'/SubBase.php');
 
 use phpcassa\Connection\ConnectionPool;
-use phpcassa\ColumnFamily;
+use phpcassa\SuperColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
@@ -32,10 +32,10 @@ class AutopackSubColumnsTest extends SubBase {
     public function setUp() {
         $this->client = new ConnectionPool(self::$KS);
 
-        $this->cf_suplong_sublong      = new ColumnFamily($this->client, 'SuperLongSubLong');
-        $this->cf_suplong_subint       = new ColumnFamily($this->client, 'SuperLongSubInt');
-        $this->cf_suplong_subascii     = new ColumnFamily($this->client, 'SuperLongSubAscii');
-        $this->cf_suplong_subutf8      = new ColumnFamily($this->client, 'SuperLongSubUTF8');
+        $this->cf_suplong_sublong  = new SuperColumnFamily($this->client, 'SuperLongSubLong');
+        $this->cf_suplong_subint   = new SuperColumnFamily($this->client, 'SuperLongSubInt');
+        $this->cf_suplong_subascii = new SuperColumnFamily($this->client, 'SuperLongSubAscii');
+        $this->cf_suplong_subutf8  = new SuperColumnFamily($this->client, 'SuperLongSubUTF8');
 
         $this->cfs = array($this->cf_suplong_sublong, $this->cf_suplong_subint,
                            $this->cf_suplong_subascii, $this->cf_suplong_subutf8);

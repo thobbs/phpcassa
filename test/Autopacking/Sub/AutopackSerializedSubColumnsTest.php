@@ -2,7 +2,7 @@
 require_once(__DIR__.'/SubBase.php');
 
 use phpcassa\Connection\ConnectionPool;
-use phpcassa\ColumnFamily;
+use phpcassa\SuperColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
@@ -37,11 +37,11 @@ class AutopackSerializedSubColumnsTest extends SubBase {
     public function setUp() {
         $this->client = new ConnectionPool(self::$KS);
 
-        $this->cf_suplong_subfloat     = new ColumnFamily($this->client, 'SuperLongSubFloat');
-        $this->cf_suplong_subdouble    = new ColumnFamily($this->client, 'SuperLongSubDouble');
-        $this->cf_suplong_subtime      = new ColumnFamily($this->client, 'SuperLongSubTime');
-        $this->cf_suplong_sublex       = new ColumnFamily($this->client, 'SuperLongSubLex');
-        $this->cf_suplong_subcomposite = new ColumnFamily($this->client, 'SuperLongSubComposite');
+        $this->cf_suplong_subfloat     = new SuperColumnFamily($this->client, 'SuperLongSubFloat');
+        $this->cf_suplong_subdouble    = new SuperColumnFamily($this->client, 'SuperLongSubDouble');
+        $this->cf_suplong_subtime      = new SuperColumnFamily($this->client, 'SuperLongSubTime');
+        $this->cf_suplong_sublex       = new SuperColumnFamily($this->client, 'SuperLongSubLex');
+        $this->cf_suplong_subcomposite = new SuperColumnFamily($this->client, 'SuperLongSubComposite');
 
         $this->cfs = array($this->cf_suplong_subfloat, $this->cf_suplong_subdouble,
                            $this->cf_suplong_subtime, $this->cf_suplong_sublex,

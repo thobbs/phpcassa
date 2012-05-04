@@ -2,7 +2,7 @@
 require_once(__DIR__.'/SuperBase.php');
 
 use phpcassa\Connection\ConnectionPool;
-use phpcassa\ColumnFamily;
+use phpcassa\SuperColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
@@ -37,11 +37,11 @@ class AutopackSerializedSupersTest extends SuperBase {
     public function setUp() {
         $this->client = new ConnectionPool(self::$KS);
 
-        $this->cf_supfloat     = new ColumnFamily($this->client, 'SuperFloat');
-        $this->cf_supdouble    = new ColumnFamily($this->client, 'SuperDouble');
-        $this->cf_suptime      = new ColumnFamily($this->client, 'SuperTime');
-        $this->cf_suplex       = new ColumnFamily($this->client, 'SuperLex');
-        $this->cf_supcomposite = new ColumnFamily($this->client, 'SuperComposite');
+        $this->cf_supfloat     = new SuperColumnFamily($this->client, 'SuperFloat');
+        $this->cf_supdouble    = new SuperColumnFamily($this->client, 'SuperDouble');
+        $this->cf_suptime      = new SuperColumnFamily($this->client, 'SuperTime');
+        $this->cf_suplex       = new SuperColumnFamily($this->client, 'SuperLex');
+        $this->cf_supcomposite = new SuperColumnFamily($this->client, 'SuperComposite');
 
         $this->cfs = array($this->cf_supfloat, $this->cf_supdouble, $this->cf_suptime,
                            $this->cf_suplex, $this->cf_supcomposite);

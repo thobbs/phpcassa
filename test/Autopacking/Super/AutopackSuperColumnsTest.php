@@ -2,7 +2,7 @@
 require_once(__DIR__.'/SuperBase.php');
 
 use phpcassa\Connection\ConnectionPool;
-use phpcassa\ColumnFamily;
+use phpcassa\SuperColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
@@ -30,10 +30,10 @@ class AutopackSuperColumnsTest extends SuperBase {
     public function setUp() {
         $this->client = new ConnectionPool(self::$KS);
 
-        $this->cf_suplong  = new ColumnFamily($this->client, 'SuperLong');
-        $this->cf_supint   = new ColumnFamily($this->client, 'SuperInt');
-        $this->cf_supascii = new ColumnFamily($this->client, 'SuperAscii');
-        $this->cf_suputf8  = new ColumnFamily($this->client, 'SuperUTF8');
+        $this->cf_suplong  = new SuperColumnFamily($this->client, 'SuperLong');
+        $this->cf_supint   = new SuperColumnFamily($this->client, 'SuperInt');
+        $this->cf_supascii = new SuperColumnFamily($this->client, 'SuperAscii');
+        $this->cf_suputf8  = new SuperColumnFamily($this->client, 'SuperUTF8');
 
         $this->cfs = array($this->cf_suplong, $this->cf_supint,
                            $this->cf_supascii, $this->cf_suputf8);

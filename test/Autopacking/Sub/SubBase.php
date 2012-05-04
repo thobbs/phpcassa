@@ -49,7 +49,7 @@ abstract class SubBase extends AutopackBase {
 
             ### remove() tests ###
 
-            $cf->remove(self::$KEYS[0], $columns=null, $super_column=$LONG);
+            $cf->remove_super_column(self::$KEYS[0], $LONG);
             $this->assertEquals(0, $cf->get_count(self::$KEYS[0]));
 
             # Insert more than one row
@@ -71,13 +71,7 @@ abstract class SubBase extends AutopackBase {
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict, $result[self::$KEYS[$i]]);
 
-            $result = $cf->multiget(self::$KEYS,
-                                    $columns=null,
-                                    $column_start='',
-                                    $column_finish='',
-                                    $column_reverse=False,
-                                    $count=ColumnFamily::DEFAULT_COLUMN_COUNT,
-                                    $supercolumn=$LONG);
+            $result = $cf->multiget_super_column(self::$KEYS, $LONG);
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict[$LONG], $result[self::$KEYS[$i]]);
 
@@ -110,15 +104,7 @@ abstract class SubBase extends AutopackBase {
             foreach($result as $subres)
                 $this->assertEquals($dict, $subres);
 
-            $result = $cf->get_range($key_start=self::$KEYS[0],
-                                     $key_finish='',
-                                     $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                     $columns=null,
-                                     $column_start='',
-                                     $column_finish='',
-                                     $column_revered=False,
-                                     $column_count=ColumnFamily::DEFAULT_COLUMN_COUNT,
-                                     $super_column=$LONG);
+            $result = $cf->get_super_column_range($LONG, $key_start=self::$KEYS[0]);
             foreach($result as $subres)
                 $this->assertEquals($dict[$LONG], $subres);
         }
