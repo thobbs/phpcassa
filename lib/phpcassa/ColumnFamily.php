@@ -813,7 +813,7 @@ class ColumnFamily {
     }
 
     public function pack_key($key) {
-        if (!$this->autopack_keys)
+        if (!$this->autopack_keys || $key === "")
             return $key;
         return $this->key_type->pack($key, false);
     }
