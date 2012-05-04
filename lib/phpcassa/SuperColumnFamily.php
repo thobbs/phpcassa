@@ -1,4 +1,13 @@
 <?php
+namespace phpcassa;
+
+use phpcassa\ColumnFamily;
+
+use cassandra\Deletion;
+use cassandra\ColumnParent;
+use cassandra\ColumnPath;
+use cassandra\CounterColumn;
+use cassandra\CounterSuperColumn;
 
 class SuperColumnFamily extends ColumnFamily {
 
@@ -17,20 +26,20 @@ class SuperColumnFamily extends ColumnFamily {
      *
      * @return mixed array(column_name => column_value)
      */
-    public function get_supercolumn($key,
-                                    $super_column,
-                                    $columns=null,
-                                    $column_start="",
-                                    $column_finish="",
-                                    $column_reversed=false,
-                                    $column_count=self::DEFAULT_COLUMN_COUNT,
-                                    $read_consistency_level=null) {
+    public function get_super_column($key,
+                                     $super_column,
+                                     $columns=null,
+                                     $column_start="",
+                                     $column_finish="",
+                                     $column_reversed=false,
+                                     $column_count=self::DEFAULT_COLUMN_COUNT,
+                                     $read_consistency_level=null) {
 
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   $column_reversed, $column_count);
+        $cp = $this->create_column_parent($super_column);
+        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                               $column_reversed, $column_count);
 
-        return $this->_get($key, $column_parent, $predicate, $read_consistency_level);
+        return $this->_get($key, $cp, $slice, $read_consistency_level);
     }
 
     /**
@@ -51,7 +60,7 @@ class SuperColumnFamily extends ColumnFamily {
      *
      * @return mixed array(key => array(column_name => column_value))
      */
-    public function multiget_supercolumn($keys,
+    public function multiget_super_column($keys,
                                          $super_column,
                                          $columns=null,
                                          $column_start="",
@@ -61,9 +70,9 @@ class SuperColumnFamily extends ColumnFamily {
                                          $read_consistency_level=null,
                                          $buffer_size=16)  {
 
-        $column_parent = $this->create_column_parent($super_column);
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   $column_reversed, $column_count);
+        $cp = $this->create_column_parent($super_column);
+        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
+                                               $column_reversed, $column_count);
 
         return $this->_multiget($keys, $cp, $slice, $read_consistency_level, $buffer_size);
     }
@@ -82,7 +91,7 @@ class SuperColumnFamily extends ColumnFamily {
      * @return int
      */
     public function get_subcolumn_count($key,
-                                        $super_column
+                                        $super_column,
                                         $columns=null,
                                         $column_start='',
                                         $column_finish='',
@@ -142,17 +151,17 @@ class SuperColumnFamily extends ColumnFamily {
      *
      * @return phpcassa\Iterator\RangeColumnFamilyIterator
      */
-    public function get_supercolumn_range($super_column,
-                                          $key_start="",
-                                          $key_finish="",
-                                          $row_count=self::DEFAULT_ROW_COUNT,
-                                          $columns=null,
-                                          $column_start="",
-                                          $column_finish="",
-                                          $column_reversed=false,
-                                          $column_count=self::DEFAULT_COLUMN_COUNT,
-                                          $read_consistency_level=null,
-                                          $buffer_size=null) {
+    public function get_super_column_range($super_column,
+                                           $key_start="",
+                                           $key_finish="",
+                                           $row_count=self::DEFAULT_ROW_COUNT,
+                                           $columns=null,
+                                           $column_start="",
+                                           $column_finish="",
+                                           $column_reversed=false,
+                                           $column_count=self::DEFAULT_COLUMN_COUNT,
+                                           $read_consistency_level=null,
+                                           $buffer_size=null) {
 
         $cp = $this->create_column_parent($super_column);
         $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
@@ -197,29 +206,30 @@ class SuperColumnFamily extends ColumnFamily {
      * Remove columns from a row.
      *
      * @param string $key the row to remove columns from
-     * @param mixed[] $columns the columns to remove. If null, the entire row will be removed.
-     * @param mixed $super_column only remove this super column
+     * @param mixed $super_column only remove this super column or its subcolumns
+     * @param mixed[] $subcolumns the subcolumns to remove. If null, the entire
+     *                            supercolumn will be removed.
      * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
      */
-    public function remove_supercolumn($key, $super_column, $columns=null,
-                                       $write_consistency_level=null) {
+    public function remove_super_column($key, $super_column, $subcolumns=null,
+                                        $write_consistency_level=null) {
 
-        if ($columns === null || count($columns) == 1) {
+        if ($subcolumns === null || count($subcolumns) == 1) {
             $cp = new ColumnPath();
             $cp->column_family = $this->column_family;
             $cp->super_column = $this->pack_name($super_column, true);
-            if ($columns !== null) {
-                $cp->column = $this->pack_name($columns[0], false);
+            if ($subcolumns !== null) {
+                $cp->column = $this->pack_name($subcolumns[0], false);
             }
             return $this->_remove_single($key, $cp, $write_consistency_level);
         } else {
             $deletion = new Deletion();
             $deletion->super_column = $this->pack_name($super_column, true);
-            if ($columns !== null) {
-                $predicate = $this->create_slice_predicate($columns, '', '', false,
+            if ($subcolumns !== null) {
+                $predicate = $this->create_slice_predicate($subcolumns, '', '', false,
                                                            self::DEFAULT_COLUMN_COUNT);
                 $deletion->predicate = $predicate;
             }
@@ -238,18 +248,21 @@ class SuperColumnFamily extends ColumnFamily {
      *
      * @param string $key the key for the row
      * @param mixed $super_column the super column the counter is in
-     * @param mixed $column the column name of the counter
+     * @param mixed $column the column name of the counter; if left as null,
+     *                      the entire super column will be removed
      * @param ConsistencyLevel $write_consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
-    public function remove_counter($key, $super_column, $column,
+    public function remove_counter($key, $super_column, $column=null,
                                    $write_consistency_level=null) {
         $cp = new ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
         $cp->super_column = $this->pack_name($super_column, true);
-        $cp->column = $this->pack_name($column);
-        $this->pool->call("remove_counter", $packed_key, $cp, $this->wcl($write_consistency_level));
+        if ($column !== null)
+            $cp->column = $this->pack_name($column);
+        $this->pool->call("remove_counter", $packed_key, $cp,
+            $this->wcl($write_consistency_level));
     }
 
 }

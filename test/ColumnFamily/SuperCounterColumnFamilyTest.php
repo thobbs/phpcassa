@@ -2,7 +2,7 @@
 
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\SystemManager;
-use phpcassa\ColumnFamily;
+use phpcassa\SuperColumnFamily;
 use phpcassa\Schema\DataType;
 
 use cassandra\NotFoundException;
@@ -46,7 +46,7 @@ class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         $this->pool = new ConnectionPool(self::$KS);
-        $this->cf = new ColumnFamily($this->pool, 'SuperCounter1');
+        $this->cf = new SuperColumnFamily($this->pool, 'SuperCounter1');
     }
 
     public function tearDown() {
@@ -55,38 +55,36 @@ class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
 
     public function test_add() {
         $key = "test_add";
-        $this->cf->add($key, "col", 1, "supercol");
+        $this->cf->add($key, "supercol", "col");
         $result = $this->cf->get($key, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col" => 1)));
 
-        $this->cf->add($key, "col", 2, "supercol");
+        $this->cf->add($key, "supercol", "col", 2);
         $result = $this->cf->get($key, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col" => 3)));
 
-        $this->cf->add($key, "col2", 5, "supercol");
+        $this->cf->add($key, "supercol", "col2", 5);
         $result = $this->cf->get($key);
         $this->assertEquals($result, array("supercol" => array("col" => 3, "col2" => 5)));
-        $result = $this->cf->get($key, null, "", "", False, 10, "supercol");
+        $result = $this->cf->get_super_column($key, "supercol");
         $this->assertEquals($result, array("col" => 3, "col2" => 5));
     }
 
     public function test_remove_counter() {
         $key = "test_remove_counter";
-        $this->cf->add($key, "col1", 1, "supercol");
-        $this->cf->add($key, "col2", 1, "supercol");
+        $this->cf->add($key, "supercol", "col1");
+        $this->cf->add($key, "supercol", "col2", 1);
         $result = $this->cf->get($key, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col1" => 1,
                                                              "col2" => 1)));
 
-        $this->cf->remove_counter($key, "col1", "supercol");
+        $this->cf->remove_counter($key, "supercol", "col1");
         $result = $this->cf->get($key, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col2" => 1)));
 
-        $this->cf->remove_counter($key, null, "supercol");
-        try {
-            $result = $this->cf->get($key, array("supercol"));
-            assert(false);
-        } catch (NotFoundException $e) { }
+        $this->cf->remove_counter($key, "supercol");
+        $this->setExpectedException('\cassandra\NotFoundException');
+        $result = $this->cf->get($key, array("supercol"));
     }
 
 }
