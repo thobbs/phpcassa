@@ -565,16 +565,13 @@ class ColumnFamily {
      *        number of nodes that must respond before the operation returns
      */
     public function add($key, $column, $value=1, $write_consistency_level=null) {
-        $cp = $this->create_column_parent();
-        return $this->_add($key, $cp, $value, $write_consistency_level);
-    }
-
-    protected function _add($key, $cp, $value, $cl) {
         $packed_key = $this->pack_key($key);
+        $cp = $this->create_column_parent();
         $counter = new CounterColumn();
         $counter->name = $this->pack_name($column);
         $counter->value = $value;
-        return $this->pool->call("add", $packed_key, $cp, $counter, $this->wcl($cl));
+        return $this->pool->call("add", $packed_key, $cp, $counter,
+            $this->wcl($write_consistency_level));
     }
 
     /**
@@ -662,7 +659,7 @@ class ColumnFamily {
         $packed_key = $this->pack_key($key);
         $mut_map = array($packed_key => array($this->column_family => array($mutation))); 
 
-        return $this->pool->call("batch_mutate", $mut_map, $this->wcl($write_consistency_level));
+        return $this->pool->call("batch_mutate", $mut_map, $this->wcl($cl));
     }
 
     /**

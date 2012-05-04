@@ -184,8 +184,13 @@ class SuperColumnFamily extends ColumnFamily {
      */
     public function add($key, $super_column, $column, $value=1,
                         $write_consistency_level=null) {
+        $packed_key = $this->pack_key($key);
         $cp = $this->create_column_parent($super_column);
-        return $this->_add($key, $cp, $value, $write_consistency_level);
+        $counter = new CounterColumn();
+        $counter->name = $this->pack_name($column);
+        $counter->value = $value;
+        return $this->pool->call("add", $packed_key, $cp, $counter,
+            $this->wcl($write_consistency_level));
     }
 
     /**
