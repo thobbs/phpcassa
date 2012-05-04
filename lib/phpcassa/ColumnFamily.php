@@ -190,7 +190,7 @@ class ColumnFamily {
     public function set_autopack_keys($pack_keys) {
         if ($pack_keys) {
             $this->autopack_keys = true;
-            if (property_exists('CfDef', "key_validation_class")) {
+            if (property_exists('\cassandra\CfDef', "key_validation_class")) {
                 $this->key_type = DataType::get_type_for($this->cfdef->key_validation_class);
             } else {
                 $this->key_type = new BytesType();
