@@ -34,22 +34,23 @@ class StrategyClass {
 class SystemManager {
 
     /**
-     * @param string $server the host and port to connect to, in the
-     *        form 'host:port'. Defaults to 'localhost:9160'.
+     * @param string $servers the hosts and port to connect to, in the
+     *        form of array of 'host:port'. Defaults to array('localhost:9160').
      * @param array $credentials if using authentication or authorization with Cassandra,
      *        a username and password need to be supplied. This should be in the form
      *        array("username" => username, "password" => password)
      * @param int $send_timeout the socket send timeout in milliseconds. Defaults to 15000.
      * @param int $recv_timeout the socket receive timeout in milliseconds. Defaults to 15000.
      */
-    public function __construct($server='localhost:9160',
+    public function __construct($servers=array('localhost:9160'),
                                 $credentials=NULL,
                                 $send_timeout=15000,
                                 $recv_timeout=15000)
     {
-        $this->conn = new ConnectionWrapper(
-            NULL, $server, $credentials, True,
+        $pool = new ConnectionPool(
+            NULL, $servers, $credentials, True,
             $send_timeout, $recv_timeout);
+        $this->conn = $pool->get();
         $this->client = $this->conn->client;
     }
 
