@@ -22,8 +22,6 @@ use cassandra\Column;
 use cassandra\ColumnParent;
 use cassandra\ColumnPath;
 use cassandra\ColumnOrSuperColumn;
-use cassandra\SuperColumn;
-use cassandra\CounterSuperColumn;
 use cassandra\CounterColumn;
 use cassandra\IndexClause;
 use cassandra\IndexExpression;
@@ -777,10 +775,8 @@ class ColumnFamily {
     }
 
     protected function unpack_name($b, $is_supercol_name=false) {
-        if (!$this->autopack_names)
+        if (!$this->autopack_names || $b === null)
             return $b;
-        if ($b === null)
-            return;
 
         if ($is_supercol_name)
             return $this->supercol_name_type->unpack($b, true);
@@ -927,34 +923,22 @@ class ColumnFamily {
         if($timestamp === null)
             $timestamp = Clock::get_time();
 
+        $have_counters = $this->has_counters;
         $ret = array();
         foreach ($data as $name => $value) {
             $c_or_sc = new ColumnOrSuperColumn();
-            if($this->is_super) {
-                if($this->has_counters) {
-                    $sub = new CounterSuperColumn();
-                    $c_or_sc->counter_super_column = $sub;
-                } else {
-                    $sub = new SuperColumn();
-                    $c_or_sc->super_column = $sub;
-                }
-                $sub->name = $this->pack_name($name, true, self::NON_SLICE, true);
-                $sub->columns = $this->array_to_columns($value, $timestamp, $ttl);
-                $sub->timestamp = $timestamp;
+            if($have_counters) {
+                $sub = new CounterColumn();
+                $c_or_sc->counter_column = $sub;
             } else {
-                if($this->has_counters) {
-                    $sub = new CounterColumn();
-                    $c_or_sc->counter_column = $sub;
-                } else {
-                    $sub = new Column();
-                    $c_or_sc->column = $sub;
-                    $sub->timestamp = $timestamp;
-                    $sub->ttl = $ttl;
-                }
-                $sub->name = $this->pack_name(
-                    $name, false, self::NON_SLICE, true);
-                $sub->value = $this->pack_value($value, $name);
+                $sub = new Column();
+                $c_or_sc->column = $sub;
+                $sub->timestamp = $timestamp;
+                $sub->ttl = $ttl;
             }
+            $sub->name = $this->pack_name(
+                $name, false, self::NON_SLICE, true);
+            $sub->value = $this->pack_value($value, $name);
             $ret[] = $c_or_sc;
         }
 

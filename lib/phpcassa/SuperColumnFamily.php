@@ -8,6 +8,8 @@ use cassandra\ColumnParent;
 use cassandra\ColumnPath;
 use cassandra\CounterColumn;
 use cassandra\CounterSuperColumn;
+use cassandra\ColumnOrSuperColumn;
+use cassandra\SuperColumn;
 
 class SuperColumnFamily extends ColumnFamily {
 
@@ -265,4 +267,27 @@ class SuperColumnFamily extends ColumnFamily {
             $this->wcl($write_consistency_level));
     }
 
+    protected function array_to_coscs($data, $timestamp=null, $ttl=null) {
+        if($timestamp === null)
+            $timestamp = Clock::get_time();
+
+        $have_counters = $this->has_counters;
+        $ret = array();
+        foreach ($data as $name => $value) {
+            $c_or_sc = new ColumnOrSuperColumn();
+            if($have_counters) {
+                $sub = new CounterSuperColumn();
+                $c_or_sc->counter_super_column = $sub;
+            } else {
+                $sub = new SuperColumn();
+                $c_or_sc->super_column = $sub;
+            }
+            $sub->name = $this->pack_name($name, true, self::NON_SLICE, true);
+            $sub->columns = $this->array_to_columns($value, $timestamp, $ttl);
+            $sub->timestamp = $timestamp;
+            $ret[] = $c_or_sc;
+        }
+
+        return $ret;
+    }
 }

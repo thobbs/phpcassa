@@ -2,6 +2,7 @@
 
 use phpcassa\SystemManager;
 use phpcassa\ColumnFamily;
+use phpcassa\SuperColumnFamily;
 use phpcassa\Batch\Mutator;
 use phpcassa\Connection\ConnectionPool;
 
@@ -62,8 +63,8 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $this->pool = new ConnectionPool(self::$KS);
         $this->cf = new ColumnFamily($this->pool, self::$CF);
         $this->counter_cf = new ColumnFamily($this->pool, self::$COUNTER_CF);
-        $this->super_cf = new ColumnFamily($this->pool, self::$SUPER_CF);
-        $this->counter_super_cf = new ColumnFamily($this->pool, self::$COUNTER_SUPER_CF);
+        $this->super_cf = new SuperColumnFamily($this->pool, self::$SUPER_CF);
+        $this->counter_super_cf = new SuperColumnFamily($this->pool, self::$COUNTER_SUPER_CF);
     }
 
     public function tearDown() {
