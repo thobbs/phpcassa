@@ -207,23 +207,7 @@ class SystemManager {
      * @param string $keyspace the keyspace containing the column family
      * @param string $column_family the name of the column family
      * @param array $attrs an array that maps attribute
-     *        names to values. Valid attribute names include:
-     *           "comparator_type",
-     *           "subcomparator_type",
-     *           "comment",
-     *           "row_cache_size",
-     *           "key_cache_size",
-     *           "read_repair_chance",
-     *           "column_metadata",
-     *           "gc_grace_seconds",
-     *           "default_validation_class",
-     *           "min_compaction_threshold",
-     *           "max_compaction_threshold",
-     *           "row_cache_save_period_in_seconds",
-     *           "key_cache_save_period_in_seconds",
-     *           "memtable_flush_after_mins",
-     *           "memtable_throughput_in_mb",
-     *           "memtable_operations_in_millions"
+     *        names to values.
      */
     public function alter_column_family($keyspace, $column_family, $attrs) {
         $cfdef = $this->get_cfdef($keyspace, $column_family);
@@ -286,7 +270,7 @@ class SystemManager {
      * @param DataType $data_type the data type of the values being indexed
      * @param string $index_name an optional name for the index
      * @param IndexType $index_type the type of index. Defaults to
-     *        IndexType::KEYS_INDEX, which is currently the only option.
+     *        \cassandra\IndexType::KEYS_INDEX, which is currently the only option.
      */
     public function create_index($keyspace, $column_family, $column,
         $data_type, $index_name=NULL, $index_type=IndexType::KEYS)
