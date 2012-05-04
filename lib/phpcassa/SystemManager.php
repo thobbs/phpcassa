@@ -44,7 +44,7 @@ class SystemManager {
         $this->conn->close();
     }
 
-    private function wait_for_agreement() {
+    protected function wait_for_agreement() {
         while (true) {
             $versions = $this->client->describe_schema_versions();
             if (count($versions) == 1)
@@ -114,12 +114,12 @@ class SystemManager {
         $this->wait_for_agreement();
     }
 
-    private static function endswith($haystack, $needle) {
+    protected static function endswith($haystack, $needle) {
         $start  = strlen($needle) * -1; //negative
         return (substr($haystack, $start) === $needle);
     }
 
-    private function make_ksdef($name, $attrs, $orig=NULL) {
+    protected function make_ksdef($name, $attrs, $orig=NULL) {
         if ($orig !== NULL) {
             $ksdef = $orig;
         } else {
@@ -167,7 +167,7 @@ class SystemManager {
         $this->wait_for_agreement();
     }
 
-    private function get_cfdef($ksname, $cfname) {
+    protected function get_cfdef($ksname, $cfname) {
         $ksdef = $this->client->describe_keyspace($ksname);
         $cfdefs = $ksdef->cf_defs;
         foreach($cfdefs as $cfdef) {
@@ -177,7 +177,7 @@ class SystemManager {
         return;
     }
 
-    private function make_cfdef($ksname, $cfname, $attrs, $orig=NULL) {
+    protected function make_cfdef($ksname, $cfname, $attrs, $orig=NULL) {
         if ($orig !== NULL) {
             $cfdef = $orig;
         } else {

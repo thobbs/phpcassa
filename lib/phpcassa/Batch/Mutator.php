@@ -10,9 +10,9 @@ use cassandra\SlicePredicate;
 
 class Mutator
 {
-    private $pool;
-    private $buffer;
-    private $cl;
+    protected $pool;
+    protected $buffer;
+    protected $cl;
 
     public function __construct($pool,
             $write_consistency_level=ConsistencyLevel::ONE) {
@@ -21,7 +21,7 @@ class Mutator
         $this->cl =  $write_consistency_level;
     }
 
-    private function enqueue($key, $cf, $mutations) {
+    protected function enqueue($key, $cf, $mutations) {
         $mut = array($key, $cf->column_family, $mutations);
         $this->buffer[] = $mut;
     }

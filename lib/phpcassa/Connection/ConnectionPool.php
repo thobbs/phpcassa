@@ -24,17 +24,17 @@ class ConnectionPool {
     const DEFAULT_MAX_RETRIES = 5;
     const DEFAULT_RECYCLE = 10000;
 
-    private static $default_servers = array('localhost:9160');
+    protected static $default_servers = array('localhost:9160');
 
     public $keyspace;
-    private $servers;
-    private $pool_size;
-    private $send_timeout;
-    private $recv_timeout;
-    private $credentials;
-    private $framed_transport;
-    private $queue;
-    private $keyspace_description = NULL;
+    protected $servers;
+    protected $pool_size;
+    protected $send_timeout;
+    protected $recv_timeout;
+    protected $credentials;
+    protected $framed_transport;
+    protected $queue;
+    protected $keyspace_description = NULL;
 
     /**
      * int $max_retries how many times an operation should be retried before
@@ -113,7 +113,7 @@ class ConnectionPool {
         $this->list_position = 0;
     }
 
-    private function make_conn() {
+    protected function make_conn() {
         // Keep trying to make a new connection, stopping after we've
         // tried every server twice
         $err = "";
@@ -282,7 +282,7 @@ class ConnectionPool {
             " The last error was " . get_class($last_err) . ":" . $last_err->getMessage());
     }
 
-    private function handle_conn_failure($conn, $f, $exc, $retry_count) {
+    protected function handle_conn_failure($conn, $f, $exc, $retry_count) {
         $err = (string)$exc;
         $this->error_log("Error performing $f on $conn->server: $err", 0);
         $conn->close();

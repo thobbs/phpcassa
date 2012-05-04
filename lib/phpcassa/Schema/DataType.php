@@ -19,7 +19,7 @@ class DataType
     const LEXICAL_UUID_TYPE = "LexicalUUIDType";
     const UUID_TYPE = "UUIDType";
 
-    private static $class_map;
+    public static $class_map;
 
     public static function init() {
         self::$class_map = array(
@@ -37,7 +37,7 @@ class DataType
         );
     }
 
-    private static function extract_type_name($typestr) {
+    protected static function extract_type_name($typestr) {
         if ($typestr == null or $typestr == '')
             return 'BytesType';
 
@@ -53,13 +53,13 @@ class DataType
     }
 
     /** Given a typestr like "Reversed(AsciiType)", returns "AsciiType". */
-    private static function get_inner_type($typestr) {
+    protected static function get_inner_type($typestr) {
         $paren_index = strpos($typestr, '(');
         $end = strlen($typestr) - $paren_index;
         return substr($typestr, $paren_index + 1, $end - 2);
     }
 
-    private static function get_inner_types($typestr) {
+    protected static function get_inner_types($typestr) {
         $inner = self::get_inner_type($typestr);
         $inner_typestrs = explode(',', $inner);
         $inner_types = array();

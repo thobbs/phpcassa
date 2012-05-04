@@ -50,10 +50,10 @@ class ColumnFamily {
 
     public $column_family;
     public $is_super;
-    private $cf_data_type;
-    private $col_name_type;
-    private $supercol_name_type;
-    private $col_type_dict;
+    protected $cf_data_type;
+    protected $col_name_type;
+    protected $supercol_name_type;
+    protected $col_type_dict;
 
 
     public $autopack_names;
@@ -142,7 +142,7 @@ class ColumnFamily {
         $this->set_autopack_keys(true);
     }
 
-    private static function endswith($str, $suffix) {
+    protected static function endswith($str, $suffix) {
         $suffix_len = strlen($suffix);
         return substr_compare($str, $suffix, strlen($str)-$suffix_len, $suffix_len) === 0;
     }
@@ -727,21 +727,21 @@ class ColumnFamily {
 
     /********************* Helper functions *************************/
 
-    private function rcl($read_consistency_level) {
+    protected function rcl($read_consistency_level) {
         if ($read_consistency_level === null)
             return $this->read_consistency_level;
         else
             return $read_consistency_level;
     }
 
-    private function wcl($write_consistency_level) {
+    protected function wcl($write_consistency_level) {
         if ($write_consistency_level === null)
             return $this->write_consistency_level;
         else
             return $write_consistency_level;
     }
 
-    private function create_slice_predicate($columns, $column_start, $column_finish,
+    protected function create_slice_predicate($columns, $column_start, $column_finish,
                                             $column_reversed, $column_count) {
 
         $predicate = new SlicePredicate();
@@ -770,7 +770,7 @@ class ColumnFamily {
         return $predicate;
     }
 
-    private function create_column_parent($super_column=null) {
+    protected function create_column_parent($super_column=null) {
         $column_parent = new ColumnParent();
         $column_parent->column_family = $this->column_family;
         if ($super_column !== null) {
@@ -800,7 +800,7 @@ class ColumnFamily {
             return $this->col_name_type->pack($value, true, $slice_end, $is_data);
     }
 
-    private function unpack_name($b, $is_supercol_name=false) {
+    protected function unpack_name($b, $is_supercol_name=false) {
         if (!$this->autopack_names)
             return $b;
         if ($b === null)
@@ -824,14 +824,14 @@ class ColumnFamily {
         return $this->key_type->unpack($b, true);
     }
 
-    private function get_data_type_for_col($col_name) {
+    protected function get_data_type_for_col($col_name) {
 		if (isset($this->col_type_dict[$col_name]))
 			return $this->col_type_dict[$col_name];
 		else 
 			return $this->cf_data_type;
     }
 
-    private function pack_value($value, $col_name) {
+    protected function pack_value($value, $col_name) {
         if (!$this->autopack_values)
             return $value;
 
@@ -843,7 +843,7 @@ class ColumnFamily {
         }
     }
 
-    private function unpack_value($value, $col_name) {
+    protected function unpack_value($value, $col_name) {
         if (!$this->autopack_values)
             return $value;
 
@@ -865,7 +865,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function coscs_to_array($array_of_c_or_sc) {
+    protected function coscs_to_array($array_of_c_or_sc) {
         $ret = null;
         if(count($array_of_c_or_sc) == 0) {
             return $ret;
@@ -906,7 +906,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function columns_to_array($array_of_c) {
+    protected function columns_to_array($array_of_c) {
         $ret = array();
         if ($this->include_timestamp) {
             foreach($array_of_c as $c) {
@@ -924,7 +924,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function counter_columns_to_array($array_of_c) {
+    protected function counter_columns_to_array($array_of_c) {
         $ret = array();
         foreach($array_of_c as $c) {
             $name = $this->unpack_name($c->name, false);
@@ -947,7 +947,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function array_to_coscs($data, $timestamp=null, $ttl=null) {
+    protected function array_to_coscs($data, $timestamp=null, $ttl=null) {
         if($timestamp === null)
             $timestamp = Clock::get_time();
 
@@ -985,7 +985,7 @@ class ColumnFamily {
         return $ret;
     }
 
-    private function array_to_columns($array, $timestamp=null, $ttl=null) {
+    protected function array_to_columns($array, $timestamp=null, $ttl=null) {
         if($timestamp === null)
             $timestamp = Clock::get_time();
 

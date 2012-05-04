@@ -5,7 +5,7 @@ use phpcassa\Batch\Mutator;
 
 class CfMutator extends Mutator {
 
-    private $cf;
+    protected $cf;
 
     public function __construct($column_family, $write_consistency_level=null) {
         $this->cf = $column_family;
