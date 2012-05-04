@@ -7,8 +7,6 @@ require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
 
-use phpcassa\Connection\IncompatibleAPIException;
-
 use cassandra\CassandraClient;
 use cassandra\AuthenticationRequest;
 
@@ -50,15 +48,6 @@ class ConnectionWrapper {
 
         $this->client = new CassandraClient(new \TBinaryProtocolAccelerated($transport));
         $transport->open();
-
-        $server_version = explode(".", $this->client->describe_version());
-        $server_version = $server_version[0];
-        if ($server_version < self::LOWEST_COMPATIBLE_VERSION) {
-            $ver = self::LOWEST_COMPATIBLE_VERSION;
-            throw new IncompatibleAPIException("The server's API version is too ".
-                "low to be comptible with phpcassa (server: $server_version, ".
-                "lowest compatible version: $ver)");
-        }
 
         $this->set_keyspace($keyspace);
 
