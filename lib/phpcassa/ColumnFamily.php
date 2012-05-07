@@ -39,10 +39,6 @@ class ColumnFamily {
 
     /** The default limit to the number of rows retrieved in queries. */
     const DEFAULT_ROW_COUNT = 100; // default max # of rows for get_range()
-    /** The default limit to the number of columns retrieved in queries. */
-    const DEFAULT_COLUMN_COUNT = 100; // default max # of columns for get()
-    /** The maximum number that can be returned by get_count(). */
-    const MAX_COUNT = 2147483647; # 2^31 - 1
 
     const DEFAULT_BUFFER_SIZE = 1024;
 
@@ -207,24 +203,19 @@ class ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(column_name => column_value)
      */
     public function get($key,
-                        $columns=null,
-                        $column_start="",
-                        $column_finish="",
-                        $column_reversed=false,
-                        $column_count=self::DEFAULT_COLUMN_COUNT,
-                        $read_consistency_level=null) {
+                        $column_slice=null,
+                        $column_names=null,
+                        $consistency_level=null) {
 
         $column_parent = $this->create_column_parent();
-        $predicate = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                                   $column_reversed, $column_count);
-
-        return $this->_get($key, $column_parent, $predicate, $read_consistency_level);
+        $predicate = $this->create_slice_predicate($column_names, $column_slice);
+        return $this->_get($key, $column_parent, $predicate, $consistency_level);
     }
 
     protected function _get($key, $cp, $slice, $cl) {
@@ -247,7 +238,7 @@ class ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
      *        rows are large, having a high buffer size gives poor performance; if your
@@ -256,19 +247,15 @@ class ColumnFamily {
      * @return mixed array(key => array(column_name => column_value))
      */
     public function multiget($keys,
-                             $columns=null,
-                             $column_start="",
-                             $column_finish="",
-                             $column_reversed=false,
-                             $column_count=self::DEFAULT_COLUMN_COUNT,
-                             $read_consistency_level=null,
+                             $column_slice=null,
+                             $column_names=null,
+                             $consistency_level=null,
                              $buffer_size=16)  {
 
         $cp = $this->create_column_parent();
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               $column_reversed, $column_count);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
 
-        return $this->_multiget($keys, $cp, $slice, $read_consistency_level, $buffer_size);
+        return $this->_multiget($keys, $cp, $slice, $consistency_level, $buffer_size);
     }
 
     protected function _multiget($keys, $cp, $slice, $cl, $buffsz) {
@@ -330,21 +317,19 @@ class ColumnFamily {
      * @param mixed[] $columns limit the possible columns or super columns counted to this list
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int
      */
     public function get_count($key,
-                              $columns=null,
-                              $column_start='',
-                              $column_finish='',
-                              $read_consistency_level=null) {
+                              $column_slice=null,
+                              $column_names=null,
+                              $consistency_level=null) {
 
         $cp = $this->create_column_parent();
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               false, self::MAX_COUNT);
-        return $this->_get_count($key, $cp, $slice, $read_consistency_level);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        return $this->_get_count($key, $cp, $slice, $consistency_level);
     }
 
     protected function _get_count($key, $cp, $slice, $cl) {
@@ -359,21 +344,20 @@ class ColumnFamily {
      * @param mixed[] $columns limit the possible columns or super columns counted to this list
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(row_key => row_count)
      */
     public function multiget_count($keys,
-                                   $columns=null,
-                                   $column_start='',
-                                   $column_finish='',
-                                   $read_consistency_level=null) {
+                                   $column_slice=null,
+                                   $column_names=null,
+                                   $consistency_level=null) {
 
         $cp = $this->create_column_parent();
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               false, self::MAX_COUNT);
-        return $this->_multiget_count($keys, $cp, $slice, $read_consistency_level);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
+
+        return $this->_multiget_count($keys, $cp, $slice, $consistency_level);
     }
 
     protected function _multiget_count($keys, $cp, $slice, $cl) {
@@ -413,7 +397,7 @@ class ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need
      *        to be buffered if we are fetching many rows, otherwise the Cassandra
@@ -425,20 +409,16 @@ class ColumnFamily {
     public function get_range($key_start="",
                               $key_finish="",
                               $row_count=self::DEFAULT_ROW_COUNT,
-                              $columns=null,
-                              $column_start="",
-                              $column_finish="",
-                              $column_reversed=false,
-                              $column_count=self::DEFAULT_COLUMN_COUNT,
-                              $read_consistency_level=null,
+                              $column_slice=null,
+                              $column_names=null,
+                              $consistency_level=null,
                               $buffer_size=null) {
 
         $cp = $this->create_column_parent();
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               $column_reversed, $column_count);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
 
         return $this->_get_range($key_start, $key_finish, $row_count,
-            $cp, $slice, $read_consistency_level, $buffer_size);
+            $cp, $slice, $consistency_level, $buffer_size);
     }
 
     protected function _get_range($start, $finish, $count, $cp, $slice, $cl, $buffsz) {
@@ -470,18 +450,15 @@ class ColumnFamily {
     * @param mixed $column_finish only fetch columns with name <= this
     * @param bool $column_reversed fetch the columns in reverse order
     * @param int $column_count limit the number of columns returned to this amount
-    * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+    * @param ConsistencyLevel $consistency_level affects the guaranteed
     * number of nodes that must respond before the operation returns
     *
     * @return phpcassa\Iterator\IndexedColumnFamilyIterator
     */
     public function get_indexed_slices($index_clause,
-                                       $columns=null,
-                                       $column_start='',
-                                       $column_finish='',
-                                       $column_reversed=false,
-                                       $column_count=self::DEFAULT_COLUMN_COUNT,
-                                       $read_consistency_level=null,
+                                       $column_slice=null,
+                                       $column_names=null,
+                                       $consistency_level=null,
                                        $buffer_size=null) {
 
         if ($buffer_size == null)
@@ -504,13 +481,11 @@ class ColumnFamily {
         $new_clause->count = $index_clause->count;
 
         $column_parent = $this->create_column_parent();
-        $predicate = $this->create_slice_predicate($columns, $column_start,
-                                                   $column_finish, $column_reversed,
-                                                   $column_count);
+        $predicate = $this->create_slice_predicate($column_names, $column_slice);
 
         return new IndexedColumnFamilyIterator($this, $new_clause, $buffer_size,
                                                $column_parent, $predicate,
-                                               $this->rcl($read_consistency_level));
+                                               $this->rcl($consistency_level));
     }
 
     /**
@@ -521,7 +496,7 @@ class ColumnFamily {
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
@@ -530,7 +505,7 @@ class ColumnFamily {
                            $columns,
                            $timestamp=null,
                            $ttl=null,
-                           $write_consistency_level=null) {
+                           $consistency_level=null) {
 
         if ($timestamp === null)
             $timestamp = Clock::get_time();
@@ -540,7 +515,7 @@ class ColumnFamily {
         $cfmap[$packed_key][$this->column_family] =
                 $this->array_to_mutation($columns, $timestamp, $ttl);
 
-        return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
+        return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
     }
 
     /**
@@ -559,17 +534,17 @@ class ColumnFamily {
      * @param string $key the row to insert or update the columns in
      * @param mixed $column the column name of the counter
      * @param int $value the amount to adjust the counter by
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
-    public function add($key, $column, $value=1, $write_consistency_level=null) {
+    public function add($key, $column, $value=1, $consistency_level=null) {
         $packed_key = $this->pack_key($key);
         $cp = $this->create_column_parent();
         $counter = new CounterColumn();
         $counter->name = $this->pack_name($column);
         $counter->value = $value;
         return $this->pool->call("add", $packed_key, $cp, $counter,
-            $this->wcl($write_consistency_level));
+            $this->wcl($consistency_level));
     }
 
     /**
@@ -581,12 +556,12 @@ class ColumnFamily {
      * @param int $timestamp the timestamp to use for these insertions. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
      */
-    public function batch_insert($rows, $timestamp=null, $ttl=null, $write_consistency_level=null) {
+    public function batch_insert($rows, $timestamp=null, $ttl=null, $consistency_level=null) {
         if ($timestamp === null)
             $timestamp = Clock::get_time();
 
@@ -597,11 +572,11 @@ class ColumnFamily {
                     $this->array_to_mutation($columns, $timestamp, $ttl);
         }
 
-        return $this->pool->call("batch_mutate", $cfmap, $this->wcl($write_consistency_level));
+        return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
     }
 
-    public function batch($write_consistency_level=null) {
-        return new CfMutator($this, $write_consistency_level);
+    public function batch($consistency_level=null) {
+        return new CfMutator($this, $consistency_level);
     }
 
     /**
@@ -610,34 +585,31 @@ class ColumnFamily {
      * @param string $key the row to remove columns from
      * @param mixed[] $columns the columns or supercolumns to remove.
      *                If null, the entire row will be removed.
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
      */
-    public function remove($key, $columns=null, $write_consistency_level=null) {
+    public function remove($key, $column_names=null, $consistency_level=null) {
 
-        if ($columns === null || count($columns) == 1)
+        if ($column_names === null || count($column_names) == 1)
         {
             $cp = new ColumnPath();
             $cp->column_family = $this->column_family;
 
-            if ($columns !== null) {
+            if ($column_names !== null) {
                 if ($this->is_super)
-                    $cp->super_column = $this->pack_name($columns[0], true);
+                    $cp->super_column = $this->pack_name($column_names[0], true);
                 else
-                    $cp->column = $this->pack_name($columns[0], false);
+                    $cp->column = $this->pack_name($column_names[0], false);
             }
-            return $this->_remove_single($key, $cp, $write_consistency_level);
+            return $this->_remove_single($key, $cp, $consistency_level);
         } else {
             $deletion = new Deletion();
-            if ($columns !== null) {
-                $predicate = $this->create_slice_predicate($columns, '', '', false,
-                                                           self::DEFAULT_COLUMN_COUNT);
-                $deletion->predicate = $predicate;
-            }
+            if ($column_names !== null)
+                $deletion->predicate = $this->create_slice_predicate($column_names, null);
 
-            return $this->_remove_multi($key, $deletion, $write_consistency_level);
+            return $this->_remove_multi($key, $deletion, $consistency_level);
         }
     }
 
@@ -671,16 +643,16 @@ class ColumnFamily {
      *
      * @param string $key the key for the row
      * @param mixed $column the column name of the counter
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
-    public function remove_counter($key, $column, $write_consistency_level=null) {
+    public function remove_counter($key, $column, $consistency_level=null) {
         $cp = new ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
         $cp->column = $this->pack_name($column);
         $this->pool->call("remove_counter", $packed_key, $cp,
-            $this->wcl($write_consistency_level));
+            $this->wcl($consistency_level));
     }
 
     /**
@@ -715,30 +687,39 @@ class ColumnFamily {
             return $write_consistency_level;
     }
 
-    protected function create_slice_predicate($columns, $column_start, $column_finish,
-                                              $column_reversed, $column_count) {
+    protected function create_slice_predicate($column_names, $column_slice) {
 
         $predicate = new SlicePredicate();
-        if ($columns !== null) {
+        if ($column_names !== null) {
             $packed_cols = array();
-            foreach($columns as $col)
+            foreach($column_names as $col)
                 $packed_cols[] = $this->pack_name($col, $this->is_super);
             $predicate->column_names = $packed_cols;
         } else {
-            if ($column_start !== null and $column_start != '')
-                $column_start = $this->pack_name($column_start,
-                                                 $this->is_super,
-                                                 self::SLICE_START);
-            if ($column_finish !== null and $column_finish != '')
-                $column_finish = $this->pack_name($column_finish,
-                                                  $this->is_super,
-                                                  self::SLICE_FINISH);
+            if ($column_slice !== null) {
+                $slice_range = new SliceRange();
 
-            $slice_range = new SliceRange();
-            $slice_range->count = $column_count;
-            $slice_range->reversed = $column_reversed;
-            $slice_range->start  = $column_start;
-            $slice_range->finish = $column_finish;
+                $column_start = $column_slice->start;
+                if ($column_start !== null and $column_start != '') {
+                    $slice_range->start = $this->pack_name(
+                        $column_start, $this->is_super, self::SLICE_START);
+                } else {
+                    $slice_range->start = '';
+                }
+
+                $column_finish = $column_slice->finish;
+                if ($column_finish !== null and $column_finish != '') {
+                    $slice_range->finish = $this->pack_name(
+                        $column_finish, $this->is_super, self::SLICE_FINISH);
+                } else {
+                    $slice_range->finish = '';
+                }
+
+                $slice_range->reversed = $column_slice->reversed;
+                $slice_range->count = $column_slice->count;
+            } else {
+                $slice_range = new ColumnSlice();
+            }
             $predicate->slice_range = $slice_range;
         }
         return $predicate;

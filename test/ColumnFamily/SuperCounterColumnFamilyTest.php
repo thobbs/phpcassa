@@ -56,11 +56,11 @@ class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
     public function test_add() {
         $key = "test_add";
         $this->cf->add($key, "supercol", "col");
-        $result = $this->cf->get($key, array("supercol"));
+        $result = $this->cf->get($key, null, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col" => 1)));
 
         $this->cf->add($key, "supercol", "col", 2);
-        $result = $this->cf->get($key, array("supercol"));
+        $result = $this->cf->get($key, null, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col" => 3)));
 
         $this->cf->add($key, "supercol", "col2", 5);
@@ -74,17 +74,17 @@ class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
         $key = "test_remove_counter";
         $this->cf->add($key, "supercol", "col1");
         $this->cf->add($key, "supercol", "col2", 1);
-        $result = $this->cf->get($key, array("supercol"));
+        $result = $this->cf->get($key, null, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col1" => 1,
                                                              "col2" => 1)));
 
         $this->cf->remove_counter($key, "supercol", "col1");
-        $result = $this->cf->get($key, array("supercol"));
+        $result = $this->cf->get($key, null, array("supercol"));
         $this->assertEquals($result, array("supercol" => array("col2" => 1)));
 
         $this->cf->remove_counter($key, "supercol");
         $this->setExpectedException('\cassandra\NotFoundException');
-        $result = $this->cf->get($key, array("supercol"));
+        $result = $this->cf->get($key, null, array("supercol"));
     }
 
 }

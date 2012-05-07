@@ -2,6 +2,7 @@
 require_once(__DIR__.'/../AutopackBase.php');
 
 use phpcassa\ColumnFamily;
+use phpcassa\ColumnSlice;
 
 abstract class SubBase extends AutopackBase {
 
@@ -37,13 +38,11 @@ abstract class SubBase extends AutopackBase {
 
             $cf->insert(self::$KEYS[0], $dict);
             $this->assertEquals($dict, $cf->get(self::$KEYS[0]));
-            $this->assertEquals($dict, $cf->get(self::$KEYS[0], $columns=array($LONG)));
+            $this->assertEquals($dict, $cf->get(self::$KEYS[0], null, array($LONG)));
 
             # A start and end that are the same
-            $this->assertEquals($dict,
-                $cf->get(self::$KEYS[0], $columns=null,
-                                         $column_start=$LONG,
-                                         $column_finish=$LONG));
+            $column_slice = new ColumnSlice($LONG, $LONG);
+            $this->assertEquals($dict, $cf->get(self::$KEYS[0], $column_slice));
 
             $this->assertEquals(1, $cf->get_count(self::$KEYS[0]));
 
@@ -67,7 +66,7 @@ abstract class SubBase extends AutopackBase {
             $result = $cf->multiget(array(self::$KEYS[2]));
             $this->assertEquals($dict, $result[self::$KEYS[2]]);
 
-            $result = $cf->multiget(self::$KEYS, $columns=array($LONG));
+            $result = $cf->multiget(self::$KEYS, null, array($LONG));
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict, $result[self::$KEYS[$i]]);
 
@@ -75,10 +74,8 @@ abstract class SubBase extends AutopackBase {
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict[$LONG], $result[self::$KEYS[$i]]);
 
-            $result = $cf->multiget(self::$KEYS,
-                                    $columns=null,
-                                    $column_start=$LONG,
-                                    $column_finish=$LONG);
+            $column_slice = new ColumnSlice($LONG, $LONG);
+            $result = $cf->multiget(self::$KEYS, $column_slice);
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict, $result[self::$KEYS[$i]]);
 
@@ -89,18 +86,16 @@ abstract class SubBase extends AutopackBase {
                 $this->assertEquals($dict, $subres);
             }
 
+            $column_slice = new ColumnSlice($LONG, $LONG);
             $result = $cf->get_range($key_start=self::$KEYS[0], $key_finish='',
                                      $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                     $columns=null,
-                                     $column_start=$LONG,
-                                     $column_finish=$LONG);
+                                     $column_slice);
             foreach($result as $subres)
                 $this->assertEquals($dict, $subres);
 
-            $result = $cf->get_range($key_start=self::$KEYS[0],
-                                     $key_finish='',
+            $result = $cf->get_range($key_start=self::$KEYS[0], $key_finish='',
                                      $row_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                     $columns=array($LONG));
+                                     $column_slice=null, $column_names=array($LONG));
             foreach($result as $subres)
                 $this->assertEquals($dict, $subres);
 

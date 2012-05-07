@@ -54,11 +54,11 @@ class TestCounterColumnFamily extends PHPUnit_Framework_TestCase {
     public function test_add() {
         $key = "test_add";
         $this->cf->add($key, "col");
-        $result = $this->cf->get($key, array("col"));
+        $result = $this->cf->get($key, null, array("col"));
         $this->assertEquals($result, array("col" => 1));
 
         $this->cf->add($key, "col", 2);
-        $result = $this->cf->get($key, array("col"));
+        $result = $this->cf->get($key, null, array("col"));
         $this->assertEquals($result, array("col" => 3));
 
         $this->cf->add($key, "col2", 5);
@@ -69,14 +69,12 @@ class TestCounterColumnFamily extends PHPUnit_Framework_TestCase {
     public function test_remove_counter() {
         $key = "test_remove_counter";
         $this->cf->add($key, "col");
-        $result = $this->cf->get($key, array("col"));
+        $result = $this->cf->get($key, null, array("col"));
         $this->assertEquals($result, array("col" => 1));
 
         $this->cf->remove_counter($key, "col");
-        try {
-            $result = $this->cf->get($key, array("col"));
-            assert(false);
-        } catch (NotFoundException $e) { }
+        $this->setExpectedException('\cassandra\NotFoundException');
+        $result = $this->cf->get($key, null, array("col"));
     }
 }
 

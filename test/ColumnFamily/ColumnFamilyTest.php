@@ -2,6 +2,7 @@
 
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
+use phpcassa\ColumnSlice;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
@@ -127,13 +128,27 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->cf->insert(self::$KEYS[0], $cols);
         $this->assertEquals($this->cf->get_count(self::$KEYS[0]), 2);
 
-        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $columns=null, $column_start='1'), 2);
-        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $columns=null, $column_start='',
-                                               $column_finish='2'), 2);
-        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $columns=null, $column_start='1', $column_finish='2'), 2);
-        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $columns=null, $column_start='1', $column_finish='1'), 1);
-        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $columns=array('1', '2')), 2);
-        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $columns=array('1')), 1);
+        $column_slice = new ColumnSlice('1');
+        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $column_slice), 2);
+
+        $column_slice = new ColumnSlice('', '2');
+        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $column_slice), 2);
+
+        $column_slice = new ColumnSlice('1', '2');
+        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $column_slice), 2);
+
+        $column_slice = new ColumnSlice('1', '1');
+        $this->assertEquals($this->cf->get_count(self::$KEYS[0], $column_slice), 1);
+
+        $this->assertEquals($this->cf->get_count(self::$KEYS[0], null, array('1', '2')), 2);
+        $this->assertEquals($this->cf->get_count(self::$KEYS[0], null, array('1')), 1);
+    }
+
+    private function multiget_slice_helper($start, $finish, $expected) {
+        $column_slice = new ColumnSlice($start, $finish);
+        $result = $this->cf->multiget_count(self::$KEYS, $column_slice);
+        $this->assertCount(3, $result);
+        $this->assertEquals($result[self::$KEYS[0]], $expected);
     }
 
     public function test_insert_multiget_count() {
@@ -145,27 +160,20 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         foreach(self::$KEYS as $key)
             $this->assertEquals($result[$key], 2);
 
-        $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='1');
+        $column_slice = new ColumnSlice('1');
+        $result = $this->cf->multiget_count(self::$KEYS, $column_slice);
         $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 2);
 
-        $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='', $column_finish='2');
+        $this->multiget_slice_helper('',  '2', 2);
+        $this->multiget_slice_helper('1', '2', 2);
+        $this->multiget_slice_helper('1', '1', 1);
+
+        $result = $this->cf->multiget_count(self::$KEYS, null, array('1', '2'));
         $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 2);
 
-        $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='1', $column_finish='2');
-        $this->assertCount(3, $result);
-        $this->assertEquals($result[self::$KEYS[0]], 2);
-
-        $result = $this->cf->multiget_count(self::$KEYS, $columns=null, $column_start='1', $column_finish='1');
-        $this->assertCount(3, $result);
-        $this->assertEquals($result[self::$KEYS[0]], 1);
-
-        $result = $this->cf->multiget_count(self::$KEYS, $columns=array('1', '2'));
-        $this->assertCount(3, $result);
-        $this->assertEquals($result[self::$KEYS[0]], 2);
-
-        $result = $this->cf->multiget_count(self::$KEYS, $columns=array('1'));
+        $result = $this->cf->multiget_count(self::$KEYS, null, array('1'));
         $this->assertCount(3, $result);
         $this->assertEquals($result[self::$KEYS[0]], 1);
 

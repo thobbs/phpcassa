@@ -2,6 +2,7 @@
 require_once(__DIR__.'/../AutopackBase.php');
 
 use phpcassa\ColumnFamily;
+use phpcassa\ColumnSlice;
 
 abstract class StandardBase extends AutopackBase {
 
@@ -45,31 +46,28 @@ abstract class StandardBase extends AutopackBase {
             # Check each column individually
             foreach(range(0,2) as $i)
                 $this->assertEquals(array($serialized_cols[$i] => self::$VALS[$i]),
-                    $cf->get(self::$KEYS[0], $columns=array($cols[$i])));
+                    $cf->get(self::$KEYS[0], null, array($cols[$i])));
 
             # Check with list of all columns
-            $this->assertEquals($dict, $cf->get(self::$KEYS[0], $columns=$cols));
+            $this->assertEquals($dict, $cf->get(self::$KEYS[0], null, $cols));
 
             # Same thing but with start and end
-            $this->assertEquals($dict,
-                $cf->get(self::$KEYS[0], $columns=null,
-                                         $column_start=$cols[0],
-                                         $column_finish=$cols[2]));
+            $column_slice = new ColumnSlice($cols[0], $cols[2]);
+            $this->assertEquals($dict, $cf->get(self::$KEYS[0], $column_slice));
 
             # Start and end are the same
+            $column_slice = new ColumnSlice($cols[0], $cols[0]);
             $this->assertEquals(array($serialized_cols[0] => self::$VALS[0]),
-                $cf->get(self::$KEYS[0], $columns=null,
-                                         $column_start=$cols[0],
-                                         $column_finish=$cols[0]));
+                $cf->get(self::$KEYS[0], $column_slice));
 
 
 
             ### remove() tests ###
 
-            $cf->remove(self::$KEYS[0], $columns=array($cols[0]));
+            $cf->remove(self::$KEYS[0], array($cols[0]));
             $this->assertEquals(2, $cf->get_count(self::$KEYS[0]));
 
-            $cf->remove(self::$KEYS[0], $columns=array($cols[1], $cols[2]));
+            $cf->remove(self::$KEYS[0], array($cols[1], $cols[2]));
             $this->assertEquals(0, $cf->get_count(self::$KEYS[0]));
 
             # Insert more than one row
@@ -89,28 +87,26 @@ abstract class StandardBase extends AutopackBase {
 
             # Check each column individually
             foreach(range(0,2) as $i) {
-                $result = $cf->multiget(self::$KEYS, $columns=array($cols[$i]));
+                $result = $cf->multiget(self::$KEYS, null, array($cols[$i]));
                 foreach(range(0,2) as $j)
                     $this->assertEquals(array($serialized_cols[$i] => self::$VALS[$i]),
                                         $result[self::$KEYS[$j]]);
             }
 
             # Check that if we list all columns, we get the full dict
-            $result = $cf->multiget(self::$KEYS, $columns=$cols);
+            $result = $cf->multiget(self::$KEYS, null, $cols);
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict, $result[self::$KEYS[$j]]);
 
             # The same thing with a start and end instead
-            $result = $cf->multiget(self::$KEYS, $columns=null,
-                                    $column_start=$cols[0],
-                                    $column_finish=$cols[2]);
+            $column_slice = new ColumnSlice($cols[0], $cols[2]);
+            $result = $cf->multiget(self::$KEYS, $column_slice);
             foreach(range(0,2) as $i)
                 $this->assertEquals($dict, $result[self::$KEYS[$j]]);
 
             # A start and end that are the same
-            $result = $cf->multiget(self::$KEYS, $columns=null,
-                                    $column_start=$cols[0],
-                                    $column_finish=$cols[0]);
+            $column_slice = new ColumnSlice($cols[0], $cols[0]);
+            $result = $cf->multiget(self::$KEYS, $column_slice);
             foreach(range(0,2) as $i)
                 $this->assertEquals(array($serialized_cols[0] => self::$VALS[0]),
                                     $result[self::$KEYS[$j]]);
@@ -122,17 +118,16 @@ abstract class StandardBase extends AutopackBase {
             foreach($result as $subres)
                 $this->assertEquals($dict, $subres);
 
+            $column_slice = new ColumnSlice($cols[0], $cols[2]);
             $result = $cf->get_range($key_start=self::$KEYS[0], $key_finish='',
                                      $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                     $columns=null,
-                                     $column_start=$cols[0],
-                                     $column_finish=$cols[2]);
+                                     $column_slice);
             foreach($result as $subres)
                 $this->assertEquals($dict, $subres);
 
             $result = $cf->get_range($key_start=self::$KEYS[0], $key_finish='',
                                      $key_count=ColumnFamily::DEFAULT_ROW_COUNT,
-                                     $columns=$cols);
+                                     $column_slice=null, $column_names=$cols);
             foreach($result as $subres)
                 $this->assertEquals($dict, $subres);
         }

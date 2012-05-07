@@ -58,9 +58,9 @@ class TestSuperColumnFamily extends PHPUnit_Framework_TestCase {
         $this->cf->get(self::$KEYS[0]);
 
         $this->cf->insert(self::$KEYS[0], $columns);
-        $this->assertEquals($this->cf->get(self::$KEYS[0]), $columns);
+        $this->assertEquals($this->cf->get(self::$KEYS[0]), null, $columns);
         $this->assertEquals(
-            $this->cf->multiget(array(self::$KEYS[0])),
+            $this->cf->multiget(array(self::$KEYS[0])), null,
             array(self::$KEYS[0] => $columns));
         $response = $this->cf->get_range($start_key=self::$KEYS[0],
                                          $finish_key=self::$KEYS[0]);

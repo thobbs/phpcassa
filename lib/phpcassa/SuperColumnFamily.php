@@ -23,25 +23,21 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(column_name => column_value)
      */
     public function get_super_column($key,
                                      $super_column,
-                                     $columns=null,
-                                     $column_start="",
-                                     $column_finish="",
-                                     $column_reversed=false,
-                                     $column_count=self::DEFAULT_COLUMN_COUNT,
-                                     $read_consistency_level=null) {
+                                     $column_slice=null,
+                                     $column_names=null,
+                                     $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               $column_reversed, $column_count);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
 
-        return $this->_get($key, $cp, $slice, $read_consistency_level);
+        return $this->_get($key, $cp, $slice, $consistency_level);
     }
 
     /**
@@ -54,7 +50,7 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
      *        rows are large, having a high buffer size gives poor performance; if your
@@ -64,19 +60,15 @@ class SuperColumnFamily extends ColumnFamily {
      */
     public function multiget_super_column($keys,
                                          $super_column,
-                                         $columns=null,
-                                         $column_start="",
-                                         $column_finish="",
-                                         $column_reversed=false,
-                                         $column_count=self::DEFAULT_COLUMN_COUNT,
-                                         $read_consistency_level=null,
+                                         $column_slice=null,
+                                         $column_names=null,
+                                         $consistency_level=null,
                                          $buffer_size=16)  {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               $column_reversed, $column_count);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
 
-        return $this->_multiget($keys, $cp, $slice, $read_consistency_level, $buffer_size);
+        return $this->_multiget($keys, $cp, $slice, $consistency_level, $buffer_size);
     }
 
     /**
@@ -87,22 +79,21 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed[] $columns limit the possible columns or super columns counted to this list
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int
      */
     public function get_subcolumn_count($key,
                                         $super_column,
-                                        $columns=null,
-                                        $column_start='',
-                                        $column_finish='',
-                                        $read_consistency_level=null) {
+                                        $column_slice=null,
+                                        $column_names=null,
+                                        $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               false, self::MAX_COUNT);
-        return $this->_get_count($key, $cp, $slice, $read_consistency_level);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
+
+        return $this->_get_count($key, $cp, $slice, $consistency_level);
     }
 
     /**
@@ -114,22 +105,21 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed[] $columns limit the possible columns or super columns counted to this list
      * @param mixed $column_start only count columns with name >= this
      * @param mixed $column_finish only count columns with name <= this
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(row_key => row_count)
      */
     public function multiget_count($keys,
                                    $super_column=null,
-                                   $columns=null,
-                                   $column_start='',
-                                   $column_finish='',
-                                   $read_consistency_level=null) {
+                                   $column_slice=null,
+                                   $column_names=null,
+                                   $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               false, self::MAX_COUNT);
-        return $this->_multiget_count($keys, $cp, $slice, $read_consistency_level);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
+
+        return $this->_multiget_count($keys, $cp, $slice, $consistency_level);
     }
 
     /**
@@ -144,7 +134,7 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed $column_finish only fetch columns with name <= this
      * @param bool $column_reversed fetch the columns in reverse order
      * @param int $column_count limit the number of columns returned to this amount
-     * @param ConsistencyLevel $read_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need
      *        to be buffered if we are fetching many rows, otherwise the Cassandra
@@ -157,20 +147,16 @@ class SuperColumnFamily extends ColumnFamily {
                                            $key_start="",
                                            $key_finish="",
                                            $row_count=self::DEFAULT_ROW_COUNT,
-                                           $columns=null,
-                                           $column_start="",
-                                           $column_finish="",
-                                           $column_reversed=false,
-                                           $column_count=self::DEFAULT_COLUMN_COUNT,
-                                           $read_consistency_level=null,
+                                           $column_slice=null,
+                                           $column_names=null,
+                                           $consistency_level=null,
                                            $buffer_size=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($columns, $column_start, $column_finish,
-                                               $column_reversed, $column_count);
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
 
         return $this->_get_range($key_start, $key_finish, $row_count,
-            $cp, $slice, $read_consistency_level, $buffer_size);
+            $cp, $slice, $consistency_level, $buffer_size);
     }
 
     /**
@@ -190,18 +176,18 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed $super_column the super column to use
      * @param mixed $column the column name of the counter
      * @param int $value the amount to adjust the counter by
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
     public function add($key, $super_column, $column, $value=1,
-                        $write_consistency_level=null) {
+                        $consistency_level=null) {
         $packed_key = $this->pack_key($key);
         $cp = $this->create_column_parent($super_column);
         $counter = new CounterColumn();
         $counter->name = $this->pack_name($column);
         $counter->value = $value;
         return $this->pool->call("add", $packed_key, $cp, $counter,
-            $this->wcl($write_consistency_level));
+            $this->wcl($consistency_level));
     }
 
     /**
@@ -211,13 +197,13 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed $super_column only remove this super column or its subcolumns
      * @param mixed[] $subcolumns the subcolumns to remove. If null, the entire
      *                            supercolumn will be removed.
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return int the timestamp for the operation
      */
     public function remove_super_column($key, $super_column, $subcolumns=null,
-                                        $write_consistency_level=null) {
+                                        $consistency_level=null) {
 
         if ($subcolumns === null || count($subcolumns) == 1) {
             $cp = new ColumnPath();
@@ -226,7 +212,7 @@ class SuperColumnFamily extends ColumnFamily {
             if ($subcolumns !== null) {
                 $cp->column = $this->pack_name($subcolumns[0], false);
             }
-            return $this->_remove_single($key, $cp, $write_consistency_level);
+            return $this->_remove_single($key, $cp, $consistency_level);
         } else {
             $deletion = new Deletion();
             $deletion->super_column = $this->pack_name($super_column, true);
@@ -235,7 +221,7 @@ class SuperColumnFamily extends ColumnFamily {
                                                            self::DEFAULT_COLUMN_COUNT);
                 $deletion->predicate = $predicate;
             }
-            return $this->_remove_multi($key, $deletion, $write_consistency_level);
+            return $this->_remove_multi($key, $deletion, $consistency_level);
         }
     }
 
@@ -252,11 +238,11 @@ class SuperColumnFamily extends ColumnFamily {
      * @param mixed $super_column the super column the counter is in
      * @param mixed $column the column name of the counter; if left as null,
      *                      the entire super column will be removed
-     * @param ConsistencyLevel $write_consistency_level affects the guaranteed
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      */
     public function remove_counter($key, $super_column, $column=null,
-                                   $write_consistency_level=null) {
+                                   $consistency_level=null) {
         $cp = new ColumnPath();
         $packed_key = $this->pack_key($key);
         $cp->column_family = $this->column_family;
@@ -264,7 +250,7 @@ class SuperColumnFamily extends ColumnFamily {
         if ($column !== null)
             $cp->column = $this->pack_name($column);
         $this->pool->call("remove_counter", $packed_key, $cp,
-            $this->wcl($write_consistency_level));
+            $this->wcl($consistency_level));
     }
 
     protected function array_to_coscs($data, $timestamp=null, $ttl=null) {
