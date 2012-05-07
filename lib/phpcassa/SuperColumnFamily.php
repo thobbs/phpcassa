@@ -242,10 +242,7 @@ class SuperColumnFamily extends ColumnFamily {
             $this->wcl($consistency_level));
     }
 
-    protected function array_to_coscs($data, $timestamp=null, $ttl=null) {
-        if($timestamp === null)
-            $timestamp = Clock::get_time();
-
+    protected function dict_to_coscs($data, $timestamp, $ttl) {
         $have_counters = $this->has_counters;
         $ret = array();
         foreach ($data as $name => $value) {
@@ -258,11 +255,70 @@ class SuperColumnFamily extends ColumnFamily {
                 $c_or_sc->super_column = $sub;
             }
             $sub->name = $this->pack_name($name, true, self::NON_SLICE, true);
-            $sub->columns = $this->array_to_columns($value, $timestamp, $ttl);
+            $sub->columns = $this->dict_to_columns($value, $timestamp, $ttl);
             $sub->timestamp = $timestamp;
             $ret[] = $c_or_sc;
         }
 
+        return $ret;
+    }
+
+    protected function array_to_coscs($data, $timestamp, $ttl) {
+        $have_counters = $this->has_counters;
+        $ret = array();
+        foreach ($data as $supercol) {
+            list($name, $columns) = $supercol;
+            $c_or_sc = new ColumnOrSuperColumn();
+            if($have_counters) {
+                $sub = new CounterSuperColumn();
+                $c_or_sc->counter_super_column = $sub;
+            } else {
+                $sub = new SuperColumn();
+                $c_or_sc->super_column = $sub;
+            }
+            $sub->name = $this->pack_name($name, true, self::NON_SLICE, false);
+            $sub->columns = $this->array_to_columns($columns, $timestamp, $ttl);
+            $sub->timestamp = $timestamp;
+            $ret[] = $c_or_sc;
+        }
+
+        return $ret;
+    }
+
+    protected function dict_to_columns($array, $timestamp, $ttl) {
+        $ret = array();
+        foreach($array as $name => $value) {
+            if($this->has_counters) {
+                $column = new CounterColumn();
+            } else {
+                $column = new Column();
+                $column->timestamp = $timestamp;
+                $column->ttl = $ttl;
+            }
+            $column->name = $this->pack_name(
+                $name, false, self::NON_SLICE, true);
+            $column->value = $this->pack_value($value, $name);
+            $ret[] = $column;
+        }
+        return $ret;
+    }
+
+    protected function array_to_columns($array, $timestamp, $ttl) {
+        $ret = array();
+        foreach($array as $col) {
+            list($name, $value) = $col;
+            if($this->has_counters) {
+                $column = new CounterColumn();
+            } else {
+                $column = new Column();
+                $column->timestamp = $timestamp;
+                $column->ttl = $ttl;
+            }
+            $column->name = $this->pack_name(
+                $name, false, self::NON_SLICE, false);
+            $column->value = $this->pack_value($value, $name);
+            $ret[] = $column;
+        }
         return $ret;
     }
 

@@ -257,8 +257,12 @@ class ColumnFamily {
 
     protected function _multiget($keys, $cp, $slice, $cl, $buffsz) {
         $ret = array();
-        foreach($keys as $key) {
-            $ret[$key] = null;
+
+        $have_dict = ($this->return_format == self::DICTIONARY_FORMAT);
+        if ($have_dict) {
+            foreach($keys as $key) {
+                $ret[$key] = null;
+            }
         }
 
         $cl = $this->rcl($cl);
@@ -294,15 +298,22 @@ class ColumnFamily {
         $non_empty_keys = array();
         foreach($resp as $key => $val) {
             if (count($val) > 0) {
-                $unpacked_key = $this->unpack_key($key);
-                $non_empty_keys[$unpacked_key] = 1;
-                $ret[$unpacked_key] = $this->unpack_coscs($val);
+                $unpacked_key = $this->unpack_key($key, $have_dict);
+
+                if ($have_dict) {
+                    $non_empty_keys[$unpacked_key] = 1;
+                    $ret[$unpacked_key] = $this->unpack_coscs($val);
+                } else {
+                    $ret[] = array($unpacked_key, $this->unpack_coscs($val));
+                }
             }
         }
 
-        foreach($keys as $key) {
-            if (!isset($non_empty_keys[$key]))
-                unset($ret[$key]);
+        if ($have_dict) {
+            foreach($keys as $key) {
+                if (!isset($non_empty_keys[$key]))
+                    unset($ret[$key]);
+            }
         }
         return $ret;
     }
@@ -501,7 +512,7 @@ class ColumnFamily {
         $cfmap = array();
         $packed_key = $this->pack_key($key);
         $cfmap[$packed_key][$this->column_family] =
-                $this->array_to_mutation($columns, $timestamp, $ttl);
+                $this->dict_to_mutation($columns, $timestamp, $ttl);
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
     }
@@ -557,7 +568,7 @@ class ColumnFamily {
         foreach($rows as $key => $columns) {
             $packed_key = $this->pack_key($key);
             $cfmap[$packed_key][$this->column_family] =
-                    $this->array_to_mutation($columns, $timestamp, $ttl);
+                    $this->dict_to_mutation($columns, $timestamp, $ttl);
         }
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
@@ -731,16 +742,16 @@ class ColumnFamily {
     public function pack_name($value,
                               $is_supercol_name=false,
                               $slice_end=self::NON_SLICE,
-                              $is_data=false) {
+                              $handle_serialize=false) {
         if (!$this->autopack_names)
             return $value;
         if ($slice_end === self::NON_SLICE && ($value === null || $value === "")) {
             throw new \UnexpectedValueException("Column names may not be null");
         }
         if ($is_supercol_name)
-            return $this->supercol_name_type->pack($value, true, $slice_end, $is_data);
+            return $this->supercol_name_type->pack($value, true, $slice_end, $handle_serialize);
         else
-            return $this->col_name_type->pack($value, true, $slice_end, $is_data);
+            return $this->col_name_type->pack($value, true, $slice_end, $handle_serialize);
     }
 
     protected function unpack_name($b, $is_supercol_name=false) {
@@ -759,10 +770,10 @@ class ColumnFamily {
         return $this->key_type->pack($key, false);
     }
 
-    public function unpack_key($b) {
+    public function unpack_key($b, $handle_serialize=true) {
         if (!$this->autopack_keys)
             return $b;
-        return $this->key_type->unpack($b, true);
+        return $this->key_type->unpack($b, $handle_serialize);
     }
 
     protected function get_data_type_for_col($col_name) {
@@ -876,11 +887,11 @@ class ColumnFamily {
         return $ret;
     }
 
-    public function array_to_mutation($array, $timestamp=null, $ttl=null) {
+    public function dict_to_mutation($array, $timestamp=null, $ttl=null) {
         if($timestamp === null)
             $timestamp = Clock::get_time();
 
-        $c_or_sc = $this->array_to_coscs($array, $timestamp, $ttl);
+        $c_or_sc = $this->dict_to_coscs($array, $timestamp, $ttl);
         $ret = array();
         foreach($c_or_sc as $row) {
             $mutation = new Mutation();
@@ -890,10 +901,21 @@ class ColumnFamily {
         return $ret;
     }
 
-    protected function array_to_coscs($data, $timestamp=null, $ttl=null) {
+    protected function pack_dict($data, $timestamp=null, $ttl=null) {
         if($timestamp === null)
             $timestamp = Clock::get_time();
 
+        if ($this->insert_format == self::DICTIONARY_FORMAT) {
+            return $this->dict_to_coscs($data, $timestamp, $ttl);
+        } else if ($this->insert_format == self::ARRAY_FORMAT) {
+            return $this->array_to_coscs($data, $timestamp, $ttl);
+        } else {
+            // TODO: better exception
+            throw Exception("Bad insert_format selected");
+        }
+    }
+
+    protected function dict_to_coscs($data, $timestamp, $ttl) {
         $have_counters = $this->has_counters;
         $ret = array();
         foreach ($data as $name => $value) {
@@ -912,29 +934,29 @@ class ColumnFamily {
             $sub->value = $this->pack_value($value, $name);
             $ret[] = $c_or_sc;
         }
-
         return $ret;
     }
 
-    protected function array_to_columns($array, $timestamp=null, $ttl=null) {
-        if($timestamp === null)
-            $timestamp = Clock::get_time();
-
+    protected function array_to_coscs($data, $timestamp, $ttl) {
+        $have_counters = $this->has_counters;
         $ret = array();
-        foreach($array as $name => $value) {
-            if($this->has_counters) {
-                $column = new CounterColumn();
+        foreach ($data as $col) {
+            list($name, $value) = $col;
+            $c_or_sc = new ColumnOrSuperColumn();
+            if($have_counters) {
+                $sub = new CounterColumn();
+                $c_or_sc->counter_column = $sub;
             } else {
-                $column = new Column();
-                $column->timestamp = $timestamp;
-                $column->ttl = $ttl;
+                $sub = new Column();
+                $c_or_sc->column = $sub;
+                $sub->timestamp = $timestamp;
+                $sub->ttl = $ttl;
             }
-            $column->name = $this->pack_name(
+            $sub->name = $this->pack_name(
                 $name, false, self::NON_SLICE, true);
-            $column->value = $this->pack_value($value, $name);
-            $ret[] = $column;
+            $sub->value = $this->pack_value($value, $name);
+            $ret[] = $c_or_sc;
         }
         return $ret;
     }
 }
-
