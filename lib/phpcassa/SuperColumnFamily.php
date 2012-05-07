@@ -17,12 +17,9 @@ class SuperColumnFamily extends ColumnFamily {
      * Fetch a row from this column family.
      *
      * @param string $key row key to fetch
-     * @param mixed $super_column return only columns in this super column
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
+     * @param mixed $super_column return only subcolumns of this super column
+     * @param \phpcassa\ColumnSlice a slice of subcolumns to fetch, or null
+     * @param mixed[] $column_names limit the subcolumns fetched to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -44,12 +41,9 @@ class SuperColumnFamily extends ColumnFamily {
      * Fetch a set of rows from this column family.
      *
      * @param string[] $keys row keys to fetch
-     * @param mixed $super_column return only columns in this super column
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
+     * @param mixed $super_column return only subcolumns of this super column
+     * @param \phpcassa\ColumnSlice a slice of subcolumns to fetch, or null
+     * @param mixed[] $column_names limit the subcolumns fetched to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
@@ -76,9 +70,8 @@ class SuperColumnFamily extends ColumnFamily {
      *
      * @param string $key row to be counted
      * @param mixed $super_column count only subcolumns in this super column
-     * @param mixed[] $columns limit the possible columns or super columns counted to this list
-     * @param mixed $column_start only count columns with name >= this
-     * @param mixed $column_finish only count columns with name <= this
+     * @param \phpcassa\ColumnSlice a slice of subcolumns to count, or null
+     * @param mixed[] $column_names limit the possible subcolumns or counted to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -101,20 +94,19 @@ class SuperColumnFamily extends ColumnFamily {
      * across a set of rows.
      *
      * @param string[] $keys rows to be counted
-     * @param mixed $super_column count only columns in this super column
-     * @param mixed[] $columns limit the possible columns or super columns counted to this list
-     * @param mixed $column_start only count columns with name >= this
-     * @param mixed $column_finish only count columns with name <= this
+     * @param mixed $super_column count only subcolumns in this super column
+     * @param \phpcassa\ColumnSlice a slice of subcolumns to count, or null
+     * @param mixed[] $column_names limit the possible subcolumns counted to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
      * @return mixed array(row_key => row_count)
      */
-    public function multiget_count($keys,
-                                   $super_column=null,
-                                   $column_slice=null,
-                                   $column_names=null,
-                                   $consistency_level=null) {
+    public function multiget_subcolumn_count($keys,
+                                             $super_column,
+                                             $column_slice=null,
+                                             $column_names=null,
+                                             $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
         $slice = $this->create_slice_predicate($column_names, $column_slice);
@@ -129,11 +121,8 @@ class SuperColumnFamily extends ColumnFamily {
      * @param string $key_start fetch rows with a key >= this
      * @param string $key_finish fetch rows with a key <= this
      * @param int $row_count limit the number of rows returned to this amount
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
+     * @param \phpcassa\ColumnSlice a slice of subcolumns to fetch, or null
+     * @param mixed[] $column_names limit the subcolumns fetched to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need

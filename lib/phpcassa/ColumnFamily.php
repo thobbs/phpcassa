@@ -198,11 +198,8 @@ class ColumnFamily {
      * Fetch a row from this column family.
      *
      * @param string $key row key to fetch
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
+     * @param \phpcassa\ColumnSlice a slice of columns to fetch, or null
+     * @param mixed[] $column_names limit the columns or super columns fetched to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -233,11 +230,8 @@ class ColumnFamily {
      * Fetch a set of rows from this column family.
      *
      * @param string[] $keys row keys to fetch
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
+     * @param \phpcassa\ColumnSlice a slice of columns to fetch, or null
+     * @param mixed[] $column_names limit the columns or super columns fetched to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size the number of keys to multiget at a single time. If your
@@ -314,9 +308,8 @@ class ColumnFamily {
      * Count the number of columns in a row.
      *
      * @param string $key row to be counted
-     * @param mixed[] $columns limit the possible columns or super columns counted to this list
-     * @param mixed $column_start only count columns with name >= this
-     * @param mixed $column_finish only count columns with name <= this
+     * @param \phpcassa\ColumnSlice a slice of columns to count, or null
+     * @param mixed[] $column_names limit the possible columns or super columns counted to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -341,9 +334,8 @@ class ColumnFamily {
      * Count the number of columns in a set of rows.
      *
      * @param string[] $keys rows to be counted
-     * @param mixed[] $columns limit the possible columns or super columns counted to this list
-     * @param mixed $column_start only count columns with name >= this
-     * @param mixed $column_finish only count columns with name <= this
+     * @param \phpcassa\ColumnSlice a slice of columns to count, or null
+     * @param mixed[] $column_names limit the possible columns or super columns counted to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
@@ -392,11 +384,8 @@ class ColumnFamily {
      * @param string $key_start fetch rows with a key >= this
      * @param string $key_finish fetch rows with a key <= this
      * @param int $row_count limit the number of rows returned to this amount
-     * @param mixed[] $columns limit the columns or super columns fetched to this list
-     * @param mixed $column_start only fetch columns with name >= this
-     * @param mixed $column_finish only fetch columns with name <= this
-     * @param bool $column_reversed fetch the columns in reverse order
-     * @param int $column_count limit the number of columns returned to this amount
+     * @param \phpcassa\ColumnSlice a slice of columns to fetch, or null
+     * @param mixed[] $column_names limit the columns or super columns fetched to this list
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      * @param int $buffer_size When calling `get_range`, the intermediate results need
@@ -445,12 +434,8 @@ class ColumnFamily {
     * @param phpcassa\Index\IndexClause $index_clause limits the keys that are returned based
     *        on expressions that compare the value of a column to a given value.  At least
     *        one of the expressions in the IndexClause must be on an indexed column.
-    * @param mixed[] $columns limit the columns or super columns fetched to this list
-    * @param mixed $column_start only fetch columns with name >= this
-    * @param mixed $column_finish only fetch columns with name <= this
-    * @param bool $column_reversed fetch the columns in reverse order
-    * @param int $column_count limit the number of columns returned to this amount
-    * @param ConsistencyLevel $consistency_level affects the guaranteed
+    * @param phpcassa\ColumnSlice a slice of columns to fetch, or null
+    * @param mixed[] $column_names limit the columns or super columns fetched to this list
     * number of nodes that must respond before the operation returns
     *
     * @return phpcassa\Iterator\IndexedColumnFamilyIterator
@@ -492,7 +477,7 @@ class ColumnFamily {
      * Insert or update columns in a row.
      *
      * @param string $key the row to insert or update the columns in
-     * @param mixed $columns array(column_name => column_value) the columns to insert or update
+     * @param mixed[] $columns array(column_name => column_value) the columns to insert or update
      * @param int $timestamp the timestamp to use for this insertion. Leaving this as null will
      *        result in a timestamp being generated for you
      * @param int $ttl time to live for the columns; after ttl seconds they will be deleted
@@ -583,7 +568,7 @@ class ColumnFamily {
      * Delete a row or a set of columns or supercolumns from a row.
      *
      * @param string $key the row to remove columns from
-     * @param mixed[] $columns the columns or supercolumns to remove.
+     * @param mixed[] $column_names the columns or supercolumns to remove.
      *                If null, the entire row will be removed.
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
