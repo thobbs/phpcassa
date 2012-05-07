@@ -265,4 +265,152 @@ class SuperColumnFamily extends ColumnFamily {
 
         return $ret;
     }
+
+    protected function coscs_to_dict($array_of_coscs) {
+        $ret = array();
+        $first = $array_of_coscs[0];
+        if($first->column) { // normal columns
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->column->name, false);
+                $value = $this->unpack_value($cosc->column->value, $cosc->column->name);
+                $ret[$name] = $value;
+            }
+        } else if($first->super_column) { // super columns
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->super_column->name, true);
+                $columns = $cosc->super_column->columns;
+                $ret[$name] = $this->columns_to_dict($columns, false);
+            }
+        } else if ($first->counter_column) {
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->counter_column->name, false);
+                $ret[$name] = $cosc->counter_column->value;
+            }
+        } else { // counter_super_column
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->counter_super_column->name, true);
+                $columns = $cosc->counter_super_column->columns;
+                $ret[$name] = $this->columns_to_dict($columns, true);
+            }
+        }
+        return $ret;
+    }
+
+    protected function coscs_to_array($array_of_coscs) {
+        $ret = array();
+        $first = $array_of_coscs[0];
+        if($first->column) { // normal columns
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->column->name, false);
+                $value = $this->unpack_value($cosc->column->value, $cosc->column->name);
+                $ret[] = array($name, $value);
+            }
+        } else if($first->super_column) { // super columns
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->super_column->name, true);
+                $columns = $cosc->super_column->columns;
+                $ret[] = array($name, $this->columns_to_array($columns));
+            }
+        } else if ($first->counter_column) {
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->counter_column->name, false);
+                $ret[] = array($name, $cosc->counter_column->value);
+            }
+        } else { // counter_super_column
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->counter_super_column->name, true);
+                $columns = $cosc->counter_super_column->columns;
+                $ret[] = array($name, $this->columns_to_array($columns));
+            }
+        }
+        return $ret;
+    }
+
+    protected function unpack_coscs_attr($array_of_coscs) {
+        $ret = array();
+        $first = $array_of_coscs[0];
+        if($first->column) { // normal columns
+            foreach($array_of_coscs as $cosc) {
+                $col = $cosc->column;
+                $name = $this->unpack_name($col->name, false);
+                $value = $this->unpack_value($col->value, $col->name);
+                $ret[] = $col;
+            }
+        } else if($first->super_column) { // super columns
+            foreach($array_of_coscs as $cosc) {
+                $supercol = $cosc->super_column;
+                $name = $this->unpack_name($supercol->name, true);
+                $columns = $cosc->super_column->columns;
+                $supercol->columns = $this->unpack_subcolumn_attrs($columns, false);
+                $ret[] = $supercol;
+            }
+        } else if ($first->counter_column) {
+            foreach($array_of_coscs as $cosc) {
+                $col = $cosc->counter_column;
+                $name = $this->unpack_name($col->name, false);
+                $ret[] = $col;
+            }
+        } else { // counter_super_column
+            foreach($array_of_coscs as $cosc) {
+                $supercol = $cosc->super_column;
+                $name = $this->unpack_name($cosc->counter_super_column->name, true);
+                $columns = $cosc->counter_super_column->columns;
+                $supercol->columns = $this->unpack_subcolumn_attrs($columns, true);
+                $ret[] = $supercol;
+            }
+        }
+        return $ret;
+    }
+
+    protected function unpack_subcolumn_attrs($columns, $have_counters) {
+        $ret = array();
+        if (!$have_counters) {
+            foreach($columns as $c) {
+                $c->$name = $this->unpack_name($col->name, false);
+                $c->$value = $this->unpack_value($col->value, $col->name);
+                $ret[] = $c;
+            }
+        } else {
+            foreach($columns as $c) {
+                $c->name = $this->unpack_name($c->name, false);
+                $ret[] = $c;
+            }
+        }
+        return $ret;
+    }
+
+    protected function columns_to_dict($columns, $have_counters) {
+        $ret = array();
+        if (!$have_counters) {
+            foreach($columns as $c) {
+                $name  = $this->unpack_name($c->name, false);
+                $value = $this->unpack_value($c->value, $c->name);
+                $ret[$name] = $value;
+            }
+        } else {
+            foreach($columns as $c) {
+                $name = $this->unpack_name($c->name, false);
+                $ret[$name] = $c->value;
+            }
+        }
+        return $ret;
+    }
+
+    protected function columns_to_array($columns, $have_counters) {
+        $ret = array();
+        if (!$have_counters) {
+            foreach($columns as $c) {
+                $name  = $this->unpack_name($c->name, false);
+                $value = $this->unpack_value($c->value, $c->name);
+                $ret[] = array($name, $value);
+            }
+        } else {
+            foreach($columns as $c) {
+                $name = $this->unpack_name($c->name, false);
+                $ret[] = array($name, $c->value);
+            }
+        }
+        return $ret;
+    }
+
 }

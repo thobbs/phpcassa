@@ -40,7 +40,11 @@ class ColumnFamily {
     /** The default limit to the number of rows retrieved in queries. */
     const DEFAULT_ROW_COUNT = 100; // default max # of rows for get_range()
 
-    const DEFAULT_BUFFER_SIZE = 1024;
+    const DEFAULT_BUFFER_SIZE = 100;
+
+    const DICTIONARY_FORMAT = 1;
+    const ARRAY_FORMAT = 2;
+    const OBJECT_FORMAT = 3;
 
     public $column_family;
     public $is_super;
@@ -59,9 +63,8 @@ class ColumnFamily {
     /** @var ConsistencyLevel the default write consistency level */
     public $write_consistency_level;
 
-    /** @var bool If true, column values in data fetching operations will be
-     * replaced by an array of the form array(column_value, column_timestamp). */
-    public $include_timestamp = false;
+    public $return_format = self::DICTIONARY_FORMAT;
+    public $insert_format = self::DICTIONARY_FORMAT;
 
     /**
      * @var int When calling `get_range`, the intermediate results need
@@ -223,7 +226,7 @@ class ColumnFamily {
         if (count($resp) == 0)
             throw new NotFoundException();
 
-        return $this->coscs_to_array($resp);
+        return $this->unpack_coscs($resp);
     }
 
     /**
@@ -293,7 +296,7 @@ class ColumnFamily {
             if (count($val) > 0) {
                 $unpacked_key = $this->unpack_key($key);
                 $non_empty_keys[$unpacked_key] = 1;
-                $ret[$unpacked_key] = $this->coscs_to_array($val);
+                $ret[$unpacked_key] = $this->unpack_coscs($val);
             }
         }
 
@@ -798,75 +801,77 @@ class ColumnFamily {
         foreach($keyslices as $keyslice) {
             $key = $this->unpack_key($keyslice->key);
             $columns = $keyslice->columns;
-            $ret[$key] = $this->coscs_to_array($columns);
+            $ret[$key] = $this->unpack_coscs($columns);
         }
         return $ret;
     }
 
-    protected function coscs_to_array($array_of_c_or_sc) {
-        $ret = null;
-        if(count($array_of_c_or_sc) == 0) {
-            return $ret;
+    protected function unpack_coscs($array_of_coscs) {
+        if(count($array_of_coscs) == 0)
+            return $array_of_coscs;
+
+        $format = $this->return_format;
+        if ($format == self::DICTIONARY_FORMAT) {
+            return $this->coscs_to_dict($array_of_coscs);
+        } else if ($format == self::ARRAY_FORMAT) {
+            return $this->coscs_to_array($array_of_coscs);
+        } else { // self::OBJECT_FORMAT
+            return $this->unpack_coscs_attrs($array_of_coscs);
         }
-        $first = $array_of_c_or_sc[0];
-        if($first->column) { // normal columns
-            if ($this->include_timestamp) {
-                foreach($array_of_c_or_sc as $c_or_sc) {
-                    $name = $this->unpack_name($c_or_sc->column->name, false);
-                    $value = $this->unpack_value($c_or_sc->column->value, $c_or_sc->column->name);
-                    $ret[$name] = array($value, $c_or_sc->column->timestamp);
-                }
-            } else {
-                foreach($array_of_c_or_sc as $c_or_sc) {
-                    $name = $this->unpack_name($c_or_sc->column->name, false);
-                    $value = $this->unpack_value($c_or_sc->column->value, $c_or_sc->column->name);
-                    $ret[$name] = $value;
-                }
-            }
-        } else if($first->super_column) { // super columns
-            foreach($array_of_c_or_sc as $c_or_sc) {
-                $name = $this->unpack_name($c_or_sc->super_column->name, true);
-                $columns = $c_or_sc->super_column->columns;
-                $ret[$name] = $this->columns_to_array($columns);
-            }
-        } else if ($first->counter_column) {
-            foreach($array_of_c_or_sc as $c_or_sc) {
-                $name = $this->unpack_name($c_or_sc->counter_column->name, false);
-                $ret[$name] = $c_or_sc->counter_column->value;
-            }
-        } else { // counter_super_column
-            foreach($array_of_c_or_sc as $c_or_sc) {
-                $name = $this->unpack_name($c_or_sc->counter_super_column->name, true);
-                $columns = $c_or_sc->counter_super_column->columns;
-                $ret[$name] = $this->counter_columns_to_array($columns);
-            }
-        }
-        return $ret;
     }
 
-    protected function columns_to_array($array_of_c) {
+    protected function coscs_to_dict($array_of_coscs) {
         $ret = array();
-        if ($this->include_timestamp) {
-            foreach($array_of_c as $c) {
-                $name  = $this->unpack_name($c->name, false);
-                $value = $this->unpack_value($c->value, $c->name);
-                $ret[$name] = array($value, $c->timestamp);
-            }
-        } else {
-            foreach($array_of_c as $c) {
-                $name  = $this->unpack_name($c->name, false);
-                $value = $this->unpack_value($c->value, $c->name);
+        $first = $array_of_coscs[0];
+        if($first->column) { // normal columns
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->column->name, false);
+                $value = $this->unpack_value($cosc->column->value, $cosc->column->name);
                 $ret[$name] = $value;
             }
+        } else if ($first->counter_column) {
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->counter_column->name, false);
+                $ret[$name] = $cosc->counter_column->value;
+            }
         }
         return $ret;
     }
 
-    protected function counter_columns_to_array($array_of_c) {
+    protected function coscs_to_array($array_of_coscs) {
         $ret = array();
-        foreach($array_of_c as $c) {
-            $name = $this->unpack_name($c->name, false);
-            $ret[$name] = $c->value;
+        $first = $array_of_coscs[0];
+        if($first->column) { // normal columns
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->column->name, false);
+                $value = $this->unpack_value($cosc->column->value, $cosc->column->name);
+                $ret[] = array($name, $value);
+            }
+        } else if ($first->counter_column) {
+            foreach($array_of_coscs as $cosc) {
+                $name = $this->unpack_name($cosc->counter_column->name, false);
+                $ret[] = array($name, $cosc->counter_column->value);
+            }
+        }
+        return $ret;
+    }
+
+    protected function unpack_coscs_attrs($array_of_coscs) {
+        $ret = array();
+        $first = $array_of_coscs[0];
+        if($first->column) { // normal columns
+            foreach($array_of_coscs as $cosc) {
+                $col = $cosc->column;
+                $name = $this->unpack_name($col->name, false);
+                $value = $this->unpack_value($col->value, $col->name);
+                $ret[] = $col;
+            }
+        } else { // counter columns
+            foreach($array_of_coscs as $cosc) {
+                $col = $cosc->counter_column;
+                $name = $this->unpack_name($col->name, false);
+                $ret[] = $col;
+            }
         }
         return $ret;
     }
