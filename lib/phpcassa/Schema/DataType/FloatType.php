@@ -2,6 +2,8 @@
 namespace phpcassa\Schema\DataType;
 
 /**
+ * Stores data as a 4-byte single-precision float.
+ *
  * @package phpcassa\Schema\DataType
  */
 class FloatType extends CassandraType

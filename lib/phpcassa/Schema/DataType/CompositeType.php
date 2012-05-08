@@ -2,10 +2,16 @@
 namespace phpcassa\Schema\DataType;
 
 /**
+ * Holds multiple types as subcomponents.
+ *
  * @package phpcassa\Schema\DataType
  */
 class CompositeType extends CassandraType
 {
+    /**
+     * @param phpcassa\Schema\DataType\CassandraType[] $inner_types an array
+     *        of other CassandraType instances.
+     */
     public function __construct($inner_types) {
         $this->inner_types = $inner_types;
     }

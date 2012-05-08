@@ -2,6 +2,8 @@
 namespace phpcassa\Schema\DataType;
 
 /**
+ * Stores data as an 8-byte double-precision float.
+ *
  * @package phpcassa\Schema\DataType
  */
 class DoubleType extends CassandraType

@@ -2,6 +2,8 @@
 namespace phpcassa\Util;
 
 /**
+ * A clock that can provide microsecond precision.
+ *
  * @package phpcassa\Util
  */
 class Clock {

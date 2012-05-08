@@ -2,6 +2,8 @@
 namespace phpcassa\Schema\DataType;
 
 /**
+ * Stores data as single-byte boolean values.
+ *
  * @package phpcassa\Schema\DataType
  */
 class BooleanType extends CassandraType {

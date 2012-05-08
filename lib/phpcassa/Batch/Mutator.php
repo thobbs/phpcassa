@@ -8,17 +8,32 @@ use cassandra\Deletion;
 use cassandra\Mutation;
 use cassandra\SlicePredicate;
 
+/**
+ * Allows you to group multiple mutations across one or more
+ * keys and column families into a single batch operation.
+ *
+ * @package phpcassa\Batch
+ */
 class Mutator
 {
     protected $pool;
     protected $buffer;
     protected $cl;
 
+    /**
+     * Intialize a mutator with a connection pool and consistency level.
+     *
+     * @param phpcassa\Connection\ConnectionPool $pool the connection pool to
+     *        use for all operations
+     * @param phpcassa\ConsistencyLevel $consistency_level the default consistency
+     *        level this mutator will write at, with a default of
+     *        ConsistencyLevel::ONE
+     */
     public function __construct($pool,
-            $write_consistency_level=ConsistencyLevel::ONE) {
+            $consistency_level=ConsistencyLevel::ONE) {
         $this->pool = $pool;
         $this->buffer = array();
-        $this->cl =  $write_consistency_level;
+        $this->cl =  $consistency_level;
     }
 
     protected function enqueue($key, $cf, $mutations) {
@@ -26,11 +41,20 @@ class Mutator
         $this->buffer[] = $mut;
     }
 
-    public function send($write_consistency_level=null) {
-        if ($write_consistency_level === null)
+    /**
+     * Send all buffered mutations.
+     *
+     * If an error occurs, the buffer will be preserverd, allowing you to
+     * attempt to call send() again later or take other recovery actions.
+     *
+     * @param phpcassa\ConsistencyLevel $consistency_level optional
+     *        override for the mutator's default consistency level
+     */
+    public function send($consistency_level=null) {
+        if ($consistency_level === null)
             $wcl = $this->cl;
         else
-            $wcl = $write_consistency_level;
+            $wcl = $consistency_level;
 
         $mutations = array();
         foreach ($this->buffer as $mut_set) {
@@ -59,6 +83,18 @@ class Mutator
         $this->buffer = array();
     }
 
+    /**
+     * Add an insertion to the buffer.
+     *
+     * @param phpcassa\ColumnFamily $column_family an initialized
+     *        ColumnFamily instance
+     * @param mixed $key the row key
+     * @param mixed[] $columns an array of columns to insert, whose format
+     *        should match $column_family->insert_format
+     * @param int $timestamp an optional timestamp (default is "now", when
+     *        this function is called, not when send() is called)
+     * @param int $ttl a TTL to apply to all columns inserted here
+     */
     public function insert($column_family, $key, $columns, $timestamp=null, $ttl=null) {
         if (!empty($columns)) {
             if ($timestamp === null)
@@ -70,6 +106,18 @@ class Mutator
         return $this;
     }
 
+    /**
+     * Add a deletion to the buffer.
+     *
+     * @param phpcassa\ColumnFamily $column_family an initialized
+     *        ColumnFamily instance
+     * @param mixed $key the row key
+     * @param mixed[] $columns a list of columns or super columns to delete
+     * @param mixed $supercolumn if you want to delete only some subcolumns from
+     *        a single super column, set this to the super column name
+     * @param int $timestamp an optional timestamp (default is "now", when
+     *        this function is called, not when send() is called)
+     */
     public function remove($column_family, $key, $columns=null, $super_column=null, $timestamp=null) {
         if ($timestamp === null)
             $timestamp = Clock::get_time();

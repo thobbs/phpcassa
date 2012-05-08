@@ -12,10 +12,20 @@ use cassandra\ColumnOrSuperColumn;
 use cassandra\Column;
 use cassandra\SuperColumn;
 
+/**
+ * Representation of a super column family in Cassandra.
+ *
+ * Subclasses \phpcassa\ColumnFamily, so those methods are also
+ * available.
+ *
+ * @package phpcassa
+ */
 class SuperColumnFamily extends ColumnFamily {
 
     /**
-     * Fetch a row from this column family.
+     * Fetch a single super column.
+     *
+     * Returns an array of the subcolumns in that super column.
      *
      * @param string $key row key to fetch
      * @param mixed $super_column return only subcolumns of this super column
@@ -24,7 +34,7 @@ class SuperColumnFamily extends ColumnFamily {
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
-     * @return mixed array(column_name => column_value)
+     * @return mixed array(subcolumn_name => subcolumn_value)
      */
     public function get_super_column($key,
                                      $super_column,
@@ -39,7 +49,10 @@ class SuperColumnFamily extends ColumnFamily {
     }
 
     /**
-     * Fetch a set of rows from this column family.
+     * Fetch a super column from multiple rows from this column family.
+     *
+     * The returned array will map directly from keys to the subcolumn
+     * array; the super column layer is omitted.
      *
      * @param string[] $keys row keys to fetch
      * @param mixed $super_column return only subcolumns of this super column
@@ -51,14 +64,14 @@ class SuperColumnFamily extends ColumnFamily {
      *        rows are large, having a high buffer size gives poor performance; if your
      *        rows are small, consider increasing this value.
      *
-     * @return mixed array(key => array(column_name => column_value))
+     * @return mixed array(key => array(subcolumn_name => subcolumn_value))
      */
     public function multiget_super_column($keys,
-                                         $super_column,
-                                         $column_slice=null,
-                                         $column_names=null,
-                                         $consistency_level=null,
-                                         $buffer_size=16)  {
+                                          $super_column,
+                                          $column_slice=null,
+                                          $column_names=null,
+                                          $consistency_level=null,
+                                          $buffer_size=16)  {
 
         $cp = $this->create_column_parent($super_column);
         $slice = $this->create_slice_predicate($column_names, $column_slice);
@@ -101,7 +114,7 @@ class SuperColumnFamily extends ColumnFamily {
      * @param ConsistencyLevel $consistency_level affects the guaranteed
      *        number of nodes that must respond before the operation returns
      *
-     * @return mixed array(row_key => row_count)
+     * @return mixed array(row_key => subcolumn_count)
      */
     public function multiget_subcolumn_count($keys,
                                              $super_column,
@@ -116,7 +129,11 @@ class SuperColumnFamily extends ColumnFamily {
     }
 
     /**
-     * Get an iterator over a range of rows.
+     * Get an iterator over a particular super column across a range of rows.
+     *
+     * The returned iterator will return one array per row. This array will
+     * look like array($rowkey, $subcolumns). Note that the super column layer
+     * is omitted from the results.
      *
      * @param mixed $super_column return only columns in this super column
      * @param string $key_start fetch rows with a key >= this
@@ -181,7 +198,8 @@ class SuperColumnFamily extends ColumnFamily {
     }
 
     /**
-     * Remove columns from a row.
+     * Remove a super column from a row or a set of subcolumns from
+     * a single super column.
      *
      * @param string $key the row to remove columns from
      * @param mixed $super_column only remove this super column or its subcolumns

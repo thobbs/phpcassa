@@ -4,6 +4,8 @@ namespace phpcassa\Schema\DataType;
 use phpcassa\UUID;
 
 /**
+ * Handles any type of UUID.
+ *
  * @package phpcassa\Schema\DataType
  */
 class UUIDType extends CassandraType

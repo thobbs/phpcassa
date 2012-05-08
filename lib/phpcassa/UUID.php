@@ -40,7 +40,7 @@ use phpcassa\UUID\UUIDException;
 use phpcassa\Util\Clock;
 
 /**
- * @package phpcassa\Util
+ * @package phpcassa
  */
 class UUID {
     const MD5  = 3;
@@ -75,11 +75,11 @@ class UUID {
 
     /**
      * Generate a v1 UUID (timestamp based)
-     * @return string a byte[] representation of a UUID
      * @param string $node what to use for the MAC portion of the UUID.  This will be generated
      *        randomly if left as NULL
      * @param int $time timestamp to use for the UUID.  This should be a number of microseconds
      *        since the UNIX epoch.
+     * @return string a byte[] representation of a UUID
      */
     public static function uuid1($node=null, $time=null) {
         return UUID::mint(1, $node, null, $time);

@@ -2,6 +2,10 @@
 namespace phpcassa\Schema\DataType;
 
 /**
+ * Stores data in a variable-length BigInteger-compatible format.
+ *
+ * This is the most space-efficient integer format.
+ *
  * @package phpcassa\Schema\DataType
  */
 class IntegerType extends CassandraType {

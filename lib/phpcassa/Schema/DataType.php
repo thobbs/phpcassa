@@ -4,6 +4,8 @@ namespace phpcassa\Schema;
 use phpcassa\Schema\DataType\CompositeType;
 
 /**
+ * Maps type strings to packer and unpacker functions.
+ *
  * @package phpcassa\Schema
  */
 class DataType

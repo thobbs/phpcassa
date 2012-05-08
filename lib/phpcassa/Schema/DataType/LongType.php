@@ -2,6 +2,8 @@
 namespace phpcassa\Schema\DataType;
 
 /**
+ * Stores data as an 8-byte integer.
+ *
  * @package phpcassa\Schema\DataType
  */
 class LongType extends CassandraType {

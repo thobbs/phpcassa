@@ -29,21 +29,62 @@ use cassandra\SlicePredicate;
 use cassandra\SliceRange;
 
 /**
- * Representation of a ColumnFamily in Cassandra.  This may be used for
- * standard column families or super column families. All data insertions,
- * deletions, or retrievals will go through a ColumnFamily.
+ * Representation of a column family in Cassandra.
+ *
+ * All data insertions, deletions, or retrievals will go through a ColumnFamily.
+ * This may only be used for standard column families; you must use
+ * \phpcassa\SuperColumnFamily for super column families.
  *
  * @package phpcassa
  */
 class ColumnFamily {
 
     /** The default limit to the number of rows retrieved in queries. */
-    const DEFAULT_ROW_COUNT = 100; // default max # of rows for get_range()
+    const DEFAULT_ROW_COUNT = 100;
 
     const DEFAULT_BUFFER_SIZE = 100;
 
+    /**
+     * Data that is returned will be stored in a "dictionary" format,
+     * where array keys correspond to row keys, super column names,
+     * or column names. Data that is inserted should match this format.
+     *
+     * When using non-scalar types or floats with this format, array keys
+     * must be serialized and unserialized. This is typically a good reason
+     * to use one of the other formats.
+     *
+     * This format is what phpcassa has historically used. This may be used
+     * for both ColumnFamily::insert_format and ColumnFamily::return_format.
+     */
     const DICTIONARY_FORMAT = 1;
+
+    /**
+     * Data that is returned will be stored in normal, non-mapping arrays.
+     * For example, a column will be represented as array($name, $value),
+     * and a row returned with multiget() will be represented as
+     * array($rowkey, array(array($colname1, $colval1), array($colname2, $colval2))).
+     *
+     * Data that is inserted should match this format. Serialization is not needed with
+     * this format.
+     *
+     * This may be used for both ColumnFamily::insert_format and
+     * ColumnFamily::return_format.
+     */
     const ARRAY_FORMAT = 2;
+
+    /**
+     * Data will be returned in a object-based format, roughly matching
+     * what Thrift returns directly.  This means that results will contain:
+     * Column objects, which have $name, $value, $timestamp, and $ttl attributes;
+     * CounterColumn objects, which have $name and $value attributes;
+     * SuperColumn objects, which have $name and $columns attributes, where
+     * $columns is an array of Column or CounterColumn objects.
+     *
+     * This format can currently only be used for ColumnFamily::return_format,
+     * not ColumnFamily::insert_format.
+     *
+     * Unserialization is not required for this format.
+     */
     const OBJECT_FORMAT = 3;
 
     public $column_family;
@@ -63,7 +104,24 @@ class ColumnFamily {
     /** @var ConsistencyLevel the default write consistency level */
     public $write_consistency_level;
 
+    /**
+     * The format that data will be returned in.
+     *
+     * Valid values include ColumnFamily::DICTIONARY_FORMAT,
+     * ColumnFamily::ARRAY_FORMAT, ColumnFamily::OBJECT_FORMAT.
+     *
+     * The default is to use ColumnFamily::DICTIONARY_FORMAT.
+     */
     public $return_format = self::DICTIONARY_FORMAT;
+
+    /**
+     * The format that data should be inserted in.
+     *
+     * Valid values include ColumnFamily::DICTIONARY_FORMAT
+     * and ColumnFamily::ARRAY_FORMAT.
+     *
+     * The default is to use ColumnFamily::DICTIONARY_FORMAT.
+     */
     public $insert_format = self::DICTIONARY_FORMAT;
 
     /**
