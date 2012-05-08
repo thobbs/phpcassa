@@ -128,9 +128,9 @@ class ColumnFamily {
      * @var int When calling `get_range`, the intermediate results need
      *       to be buffered if we are fetching many rows, otherwise the Cassandra
      *       server will overallocate memory and fail.  This is the size of
-     *       that buffer in number of rows. The default is 1024.
+     *       that buffer in number of rows. The default is 100.
      */
-    public $buffer_size = 1024;
+    public $buffer_size = 100;
 
     /**
      * Constructs a ColumnFamily.
