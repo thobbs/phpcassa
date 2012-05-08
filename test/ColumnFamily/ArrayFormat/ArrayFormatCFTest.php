@@ -12,12 +12,13 @@ use phpcassa\UUID;
 
 class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
-    private static $KEYS = array('key1', 'key2', 'key3');
+    private static $KEYS = array(0.25, 0.5, 0.75);
     private static $KS = "TestColumnFamily";
     protected static $CF = "Standard1";
 
     protected static $cfattrs = array(
         "column_type" => "Standard",
+        "key_validation_class" => "FloatType",
         "comparator_type" => "TimeUUIDType"
     );
 
@@ -37,7 +38,8 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
             $sys->create_column_family(self::$KS, self::$CF, self::$cfattrs);
 
-            $sys->create_column_family(self::$KS, 'Indexed1');
+            $sys->create_column_family(self::$KS, 'Indexed1',
+                array("key_validation_class" => "FloatType"));
             $sys->create_index(self::$KS, 'Indexed1', 'birthdate',
                                      DataType::LONG_TYPE, 'birthday_index');
             $sys->close();
@@ -97,6 +99,19 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $res);
     }
 
+    public function test_multiget_count() {
+        $this->cf->insert(self::$KEYS[0], $this->cols);
+        $this->cf->insert(self::$KEYS[1], $this->cols);
+
+        $res = $this->cf->multiget_count(array(self::$KEYS[0], self::$KEYS[1]));
+        usort($res, array("ArrayFormatCFTest", "sort_rows"));
+
+        $expected = array(array(self::$KEYS[0], 2),
+                          array(self::$KEYS[1], 2));
+
+        $this->assertEquals($expected, $res);
+    }
+
     public function test_get_range() {
         $rows = array(array(self::$KEYS[0], $this->cols),
                       array(self::$KEYS[1], $this->cols),
@@ -125,7 +140,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         $clause = new IndexClause(array($expr));
         $result = iterator_to_array($cf->get_indexed_slices($clause));
 
-        usort($rows, array("ArrayFormatCFTest", "sort_rows"));
+        // usort($rows, array("ArrayFormatCFTest", "sort_rows"));
         usort($result, array("ArrayFormatCFTest", "sort_rows"));
         $this->assertEquals($rows, $result);
     }

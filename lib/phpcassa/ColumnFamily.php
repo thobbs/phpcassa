@@ -315,6 +315,7 @@ class ColumnFamily {
                     unset($ret[$key]);
             }
         }
+
         return $ret;
     }
 
@@ -369,8 +370,11 @@ class ColumnFamily {
     protected function _multiget_count($keys, $cp, $slice, $cl) {
 
         $ret = array();
-        foreach($keys as $key) {
-            $ret[$key] = null;
+        $have_dict = ($this->return_format == self::DICTIONARY_FORMAT);
+        if ($have_dict) {
+            foreach($keys as $key) {
+                $ret[$key] = null;
+            }
         }
 
         $packed_keys = array_map(array($this, "pack_key"), $keys);
@@ -379,14 +383,21 @@ class ColumnFamily {
 
         $non_empty_keys = array();
         foreach ($results as $key => $count) {
-            $unpacked_key = $this->unpack_key($key);
-            $non_empty_keys[$unpacked_key] = 1;
-            $ret[$unpacked_key] = $count;
+            $unpacked_key = $this->unpack_key($key, $have_dict);
+
+            if ($have_dict) {
+                $non_empty_keys[$unpacked_key] = 1;
+                $ret[$unpacked_key] = $count;
+            } else {
+                $ret[] = array($unpacked_key, $count);
+            }
         }
 
-        foreach($keys as $key) {
-            if (!isset($non_empty_keys[$key]))
-                unset($ret[$key]);
+        if ($have_dict) {
+            foreach($keys as $key) {
+                if (!isset($non_empty_keys[$key]))
+                    unset($ret[$key]);
+            }
         }
 
         return $ret;
@@ -835,7 +846,7 @@ class ColumnFamily {
             }
         } else {
             foreach($keyslices as $keyslice) {
-                $key = $this->unpack_key($keyslice->key);
+                $key = $this->unpack_key($keyslice->key, false);
                 $columns = $keyslice->columns;
                 $ret[] = array($key, $this->unpack_coscs($columns));
             }

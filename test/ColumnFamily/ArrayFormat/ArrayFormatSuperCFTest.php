@@ -13,12 +13,13 @@ use phpcassa\UUID;
 
 class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
 
-    private static $KEYS = array('key1', 'key2', 'key3');
+    private static $KEYS = array(0.25, 0.5, 0.75);
     private static $KS = "TestColumnFamily";
     protected static $CF = "Super1";
 
     protected static $cfattrs = array(
         "column_type" => "Super",
+        "key_validation_class" => "FloatType",
         "subcomparator_type" => "TimeUUIDType"
     );
 
@@ -105,6 +106,20 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $result);
     }
 
+    public function test_multiget_count() {
+        $cols = array(array('super1', $this->subcols),
+                      array('super2', $this->subcols));
+        $this->cf->insert(self::$KEYS[0], $cols);
+        $this->cf->insert(self::$KEYS[1], $cols);
+        $result = $this->cf->multiget_count(array(self::$KEYS[0], self::$KEYS[1]));
+        usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
+
+        $expected = array(array(self::$KEYS[0], 2),
+                          array(self::$KEYS[1], 2));
+
+        $this->assertEquals($expected, $result);
+    }
+
     public function test_multiget_super_column() {
         $cols = array(array('super1', $this->subcols));
         $this->cf->insert(self::$KEYS[0], $cols);
@@ -118,6 +133,21 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
 
         usort($expected, array("ArrayFormatSuperCFTest", "sort_rows"));
         usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
+        $this->assertEquals($expected, $result);
+    }
+
+    public function test_multiget_subcolumn_count() {
+        $cols = array(array('super1', $this->subcols));
+        $this->cf->insert(self::$KEYS[0], $cols);
+        $this->cf->insert(self::$KEYS[1], $cols);
+
+        $keys = array(self::$KEYS[0], self::$KEYS[1]);
+        $result = $this->cf->multiget_subcolumn_count($keys, 'super1');
+        usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
+
+        $expected = array(array(self::$KEYS[0], 2),
+                          array(self::$KEYS[1], 2));
+
         $this->assertEquals($expected, $result);
     }
 
