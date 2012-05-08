@@ -8,14 +8,18 @@ use phpcassa\SystemManager;
 use phpcassa\Index\IndexExpression;
 use phpcassa\Index\IndexClause;
 
+use phpcassa\UUID;
+
 class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
     private static $KEYS = array('key1', 'key2', 'key3');
     private static $KS = "TestColumnFamily";
     protected static $CF = "Standard1";
 
-    protected static $cfattrs = array("column_type" => "Standard");
-    protected $cols = array(array('col1', 'val1'), array('col2', 'val2'));
+    protected static $cfattrs = array(
+        "column_type" => "Standard",
+        "comparator_type" => "TimeUUIDType"
+    );
 
     public static function setUpBeforeClass() {
         try {
@@ -51,6 +55,9 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function setUp() {
+        $this->cols = array(array(UUID::uuid1(), 'val1'),
+                            array(UUID::uuid1(), 'val2'));
+
         $this->pool = new ConnectionPool(self::$KS);
         $this->cf = new ColumnFamily($this->pool, self::$CF);
         $this->cf->insert_format = ColumnFamily::ARRAY_FORMAT;

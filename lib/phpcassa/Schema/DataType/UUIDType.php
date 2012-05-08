@@ -14,9 +14,9 @@ class UUIDType extends CassandraType
         return $value->bytes;
     }
 
-    public function unpack($data, $is_name=true) {
+    public function unpack($data, $handle_serialize=true) {
         $value = UUID::import($data);
-        if ($is_name) {
+        if ($handle_serialize) {
             return serialize($value);
         } else {
             return $value;

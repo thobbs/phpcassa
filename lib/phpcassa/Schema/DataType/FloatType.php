@@ -12,9 +12,9 @@ class FloatType extends CassandraType
         return pack("f", $value);
     }
 
-    public function unpack($data, $is_name=true) {
+    public function unpack($data, $handle_serialize=true) {
         $value = array_shift(unpack("f", $data));
-        if ($is_name) {
+        if ($handle_serialize) {
             return serialize($value);
         } else {
             return $value;

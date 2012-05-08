@@ -356,24 +356,24 @@ class SuperColumnFamily extends ColumnFamily {
         $first = $array_of_coscs[0];
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
-                $name = $this->unpack_name($cosc->column->name, false);
+                $name = $this->unpack_name($cosc->column->name, false, false);
                 $value = $this->unpack_value($cosc->column->value, $cosc->column->name);
                 $ret[] = array($name, $value);
             }
         } else if($first->super_column) { // super columns
             foreach($array_of_coscs as $cosc) {
-                $name = $this->unpack_name($cosc->super_column->name, true);
+                $name = $this->unpack_name($cosc->super_column->name, true, false);
                 $columns = $cosc->super_column->columns;
                 $ret[] = array($name, $this->columns_to_array($columns, false));
             }
         } else if ($first->counter_column) {
             foreach($array_of_coscs as $cosc) {
-                $name = $this->unpack_name($cosc->counter_column->name, false);
+                $name = $this->unpack_name($cosc->counter_column->name, false, false);
                 $ret[] = array($name, $cosc->counter_column->value);
             }
         } else { // counter_super_column
             foreach($array_of_coscs as $cosc) {
-                $name = $this->unpack_name($cosc->counter_super_column->name, true);
+                $name = $this->unpack_name($cosc->counter_super_column->name, true, false);
                 $columns = $cosc->counter_super_column->columns;
                 $ret[] = array($name, $this->columns_to_array($columns, true));
             }
@@ -387,14 +387,14 @@ class SuperColumnFamily extends ColumnFamily {
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->column;
-                $name = $this->unpack_name($col->name, false);
+                $name = $this->unpack_name($col->name, false, false);
                 $value = $this->unpack_value($col->value, $col->name);
                 $ret[] = $col;
             }
         } else if($first->super_column) { // super columns
             foreach($array_of_coscs as $cosc) {
                 $supercol = $cosc->super_column;
-                $name = $this->unpack_name($supercol->name, true);
+                $name = $this->unpack_name($supercol->name, true, false);
                 $columns = $cosc->super_column->columns;
                 $supercol->columns = $this->unpack_subcolumn_attrs($columns, false);
                 $ret[] = $supercol;
@@ -402,13 +402,13 @@ class SuperColumnFamily extends ColumnFamily {
         } else if ($first->counter_column) {
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->counter_column;
-                $name = $this->unpack_name($col->name, false);
+                $name = $this->unpack_name($col->name, false, false);
                 $ret[] = $col;
             }
         } else { // counter_super_column
             foreach($array_of_coscs as $cosc) {
                 $supercol = $cosc->super_column;
-                $name = $this->unpack_name($cosc->counter_super_column->name, true);
+                $name = $this->unpack_name($cosc->counter_super_column->name, true, false);
                 $columns = $cosc->counter_super_column->columns;
                 $supercol->columns = $this->unpack_subcolumn_attrs($columns, true);
                 $ret[] = $supercol;
@@ -421,13 +421,13 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         if (!$have_counters) {
             foreach($columns as $c) {
-                $c->name = $this->unpack_name($c->name, false);
+                $c->name = $this->unpack_name($c->name, false, false);
                 $c->value = $this->unpack_value($c->value, $c->name);
                 $ret[] = $c;
             }
         } else {
             foreach($columns as $c) {
-                $c->name = $this->unpack_name($c->name, false);
+                $c->name = $this->unpack_name($c->name, false, false);
                 $ret[] = $c;
             }
         }
@@ -455,13 +455,13 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         if (!$have_counters) {
             foreach($columns as $c) {
-                $name  = $this->unpack_name($c->name, false);
+                $name  = $this->unpack_name($c->name, false, false);
                 $value = $this->unpack_value($c->value, $c->name);
                 $ret[] = array($name, $value);
             }
         } else {
             foreach($columns as $c) {
-                $name = $this->unpack_name($c->name, false);
+                $name = $this->unpack_name($c->name, false, false);
                 $ret[] = array($name, $c->value);
             }
         }

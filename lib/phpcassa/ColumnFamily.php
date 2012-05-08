@@ -766,14 +766,14 @@ class ColumnFamily {
             return $this->col_name_type->pack($value, true, $slice_end, $handle_serialize);
     }
 
-    protected function unpack_name($b, $is_supercol_name=false) {
+    protected function unpack_name($b, $is_supercol_name=false, $handle_serialize=true) {
         if (!$this->autopack_names || $b === null)
             return $b;
 
         if ($is_supercol_name)
-            return $this->supercol_name_type->unpack($b, true);
+            return $this->supercol_name_type->unpack($b, $handle_serialize);
         else
-            return $this->col_name_type->unpack($b, true);
+            return $this->col_name_type->unpack($b, $handle_serialize);
     }
 
     public function pack_key($key) {
@@ -798,6 +798,9 @@ class ColumnFamily {
     protected function pack_value($value, $col_name) {
         if (!$this->autopack_values)
             return $value;
+
+        if (!is_scalar($col_name) || is_float($col_name))
+            $col_name = serialize($col_name);
 
         if (isset($this->col_type_dict[$col_name])) {
             $dtype = $this->col_type_dict[$col_name];
@@ -874,13 +877,15 @@ class ColumnFamily {
         $first = $array_of_coscs[0];
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
-                $name = $this->unpack_name($cosc->column->name, false);
+                $name = $this->unpack_name(
+                        $cosc->column->name, false, $handle_serialize=false);
                 $value = $this->unpack_value($cosc->column->value, $cosc->column->name);
                 $ret[] = array($name, $value);
             }
         } else if ($first->counter_column) {
             foreach($array_of_coscs as $cosc) {
-                $name = $this->unpack_name($cosc->counter_column->name, false);
+                $name = $this->unpack_name(
+                        $cosc->counter_column->name, false, $handle_serialize=false);
                 $ret[] = array($name, $cosc->counter_column->value);
             }
         }
@@ -893,14 +898,16 @@ class ColumnFamily {
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->column;
-                $col->name = $this->unpack_name($col->name, false);
+                $col->name = $this->unpack_name(
+                        $col->name, false, $handle_serialize=false);
                 $col->value = $this->unpack_value($col->value, $col->name);
                 $ret[] = $col;
             }
         } else { // counter columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->counter_column;
-                $col->name = $this->unpack_name($col->name, false);
+                $col->name = $this->unpack_name(
+                        $col->name, false, $handle_serialize=false);
                 $ret[] = $col;
             }
         }
@@ -970,7 +977,7 @@ class ColumnFamily {
                 $sub->ttl = $ttl;
             }
             $sub->name = $this->pack_name(
-                $name, false, self::NON_SLICE, true);
+                $name, false, self::NON_SLICE, false);
             $sub->value = $this->pack_value($value, $name);
             $ret[] = $c_or_sc;
         }

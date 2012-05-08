@@ -1,5 +1,7 @@
 <?php
 
+use phpcassa\UUID;
+
 require_once(__DIR__.'/ArrayFormatCFTest.php');
 
 class ArrayFormatCounterCFTest extends ArrayFormatCFTest {
@@ -11,7 +13,11 @@ class ArrayFormatCounterCFTest extends ArrayFormatCFTest {
         "default_validation_class" => "CounterColumnType"
     );
 
-    protected $cols = array(array('col1', 'val1'), array('col2', 'val2'));
+    public function setUp() {
+        parent::setUp();
+        $this->cols = array(array(UUID::uuid1(), 1),
+                            array(UUID::uuid1(), 2));
+    }
 
     public function test_indexed_slices() { }
 }
