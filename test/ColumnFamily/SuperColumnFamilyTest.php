@@ -30,6 +30,7 @@ class TestSuperColumnFamily extends PHPUnit_Framework_TestCase {
             $cfattrs = array("column_type" => "Super");
             $sys->create_column_family(self::$KS, 'Super1', $cfattrs);
         }
+        $sys->close();
     }
 
     public static function tearDownAfterClass() {

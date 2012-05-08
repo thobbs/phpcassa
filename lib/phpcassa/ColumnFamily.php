@@ -821,10 +821,18 @@ class ColumnFamily {
 
     public function keyslices_to_array($keyslices) {
         $ret = array();
-        foreach($keyslices as $keyslice) {
-            $key = $this->unpack_key($keyslice->key);
-            $columns = $keyslice->columns;
-            $ret[$key] = $this->unpack_coscs($columns);
+        if ($this->return_format == self::DICTIONARY_FORMAT) {
+            foreach($keyslices as $keyslice) {
+                $key = $this->unpack_key($keyslice->key);
+                $columns = $keyslice->columns;
+                $ret[$key] = $this->unpack_coscs($columns);
+            }
+        } else {
+            foreach($keyslices as $keyslice) {
+                $key = $this->unpack_key($keyslice->key);
+                $columns = $keyslice->columns;
+                $ret[] = array($key, $this->unpack_coscs($columns));
+            }
         }
         return $ret;
     }

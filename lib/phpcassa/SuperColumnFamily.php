@@ -9,6 +9,7 @@ use cassandra\ColumnPath;
 use cassandra\CounterColumn;
 use cassandra\CounterSuperColumn;
 use cassandra\ColumnOrSuperColumn;
+use cassandra\Column;
 use cassandra\SuperColumn;
 
 class SuperColumnFamily extends ColumnFamily {
@@ -246,18 +247,17 @@ class SuperColumnFamily extends ColumnFamily {
         $have_counters = $this->has_counters;
         $ret = array();
         foreach ($data as $name => $value) {
-            $c_or_sc = new ColumnOrSuperColumn();
+            $cosc = new ColumnOrSuperColumn();
             if($have_counters) {
                 $sub = new CounterSuperColumn();
-                $c_or_sc->counter_super_column = $sub;
+                $cosc->counter_super_column = $sub;
             } else {
                 $sub = new SuperColumn();
-                $c_or_sc->super_column = $sub;
+                $cosc->super_column = $sub;
             }
             $sub->name = $this->pack_name($name, true, self::NON_SLICE, true);
             $sub->columns = $this->dict_to_columns($value, $timestamp, $ttl);
-            $sub->timestamp = $timestamp;
-            $ret[] = $c_or_sc;
+            $ret[] = $cosc;
         }
 
         return $ret;
@@ -268,18 +268,17 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         foreach ($data as $supercol) {
             list($name, $columns) = $supercol;
-            $c_or_sc = new ColumnOrSuperColumn();
+            $cosc = new ColumnOrSuperColumn();
             if($have_counters) {
                 $sub = new CounterSuperColumn();
-                $c_or_sc->counter_super_column = $sub;
+                $cosc->counter_super_column = $sub;
             } else {
                 $sub = new SuperColumn();
-                $c_or_sc->super_column = $sub;
+                $cosc->super_column = $sub;
             }
             $sub->name = $this->pack_name($name, true, self::NON_SLICE, false);
             $sub->columns = $this->array_to_columns($columns, $timestamp, $ttl);
-            $sub->timestamp = $timestamp;
-            $ret[] = $c_or_sc;
+            $ret[] = $cosc;
         }
 
         return $ret;
@@ -365,7 +364,7 @@ class SuperColumnFamily extends ColumnFamily {
             foreach($array_of_coscs as $cosc) {
                 $name = $this->unpack_name($cosc->super_column->name, true);
                 $columns = $cosc->super_column->columns;
-                $ret[] = array($name, $this->columns_to_array($columns));
+                $ret[] = array($name, $this->columns_to_array($columns, false));
             }
         } else if ($first->counter_column) {
             foreach($array_of_coscs as $cosc) {
@@ -376,7 +375,7 @@ class SuperColumnFamily extends ColumnFamily {
             foreach($array_of_coscs as $cosc) {
                 $name = $this->unpack_name($cosc->counter_super_column->name, true);
                 $columns = $cosc->counter_super_column->columns;
-                $ret[] = array($name, $this->columns_to_array($columns));
+                $ret[] = array($name, $this->columns_to_array($columns, true));
             }
         }
         return $ret;
