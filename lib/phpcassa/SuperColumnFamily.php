@@ -387,30 +387,32 @@ class SuperColumnFamily extends ColumnFamily {
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->column;
-                $name = $this->unpack_name($col->name, false, false);
-                $value = $this->unpack_value($col->value, $col->name);
+                $col->name = $this->unpack_name($col->name, false, false);
+                $col->value = $this->unpack_value($col->value, $col->name);
                 $ret[] = $col;
             }
         } else if($first->super_column) { // super columns
             foreach($array_of_coscs as $cosc) {
                 $supercol = $cosc->super_column;
-                $name = $this->unpack_name($supercol->name, true, false);
-                $columns = $cosc->super_column->columns;
-                $supercol->columns = $this->unpack_subcolumn_attrs($columns, false);
+                $supercol->name = $this->unpack_name(
+                        $supercol->name, true, false);
+                $supercol->columns = $this->unpack_subcolumn_attrs(
+                        $supercol->columns, false);
                 $ret[] = $supercol;
             }
         } else if ($first->counter_column) {
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->counter_column;
-                $name = $this->unpack_name($col->name, false, false);
+                $col->name = $this->unpack_name($col->name, false, false);
                 $ret[] = $col;
             }
         } else { // counter_super_column
             foreach($array_of_coscs as $cosc) {
                 $supercol = $cosc->super_column;
-                $name = $this->unpack_name($cosc->counter_super_column->name, true, false);
-                $columns = $cosc->counter_super_column->columns;
-                $supercol->columns = $this->unpack_subcolumn_attrs($columns, true);
+                $supercol->name = $this->unpack_name(
+                        $supercol->name, true, false);
+                $supercol->columns = $this->unpack_subcolumn_attrs(
+                        $supercol->columns, true);
                 $ret[] = $supercol;
             }
         }

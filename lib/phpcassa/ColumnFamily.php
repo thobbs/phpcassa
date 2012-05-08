@@ -814,6 +814,9 @@ class ColumnFamily {
         if (!$this->autopack_values)
             return $value;
 
+        if (!is_scalar($col_name) || is_float($col_name))
+            $col_name = serialize($col_name);
+
         if (isset($this->col_type_dict[$col_name])) {
             $dtype = $this->col_type_dict[$col_name];
             return $dtype->unpack($value, false);
