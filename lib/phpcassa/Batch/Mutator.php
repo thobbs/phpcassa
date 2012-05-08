@@ -64,7 +64,7 @@ class Mutator
             if ($timestamp === null)
                 $timestamp = Clock::get_time();
             $key = $column_family->pack_key($key);
-            $mut_list = $column_family->array_to_mutation($columns, $timestamp, $ttl);
+            $mut_list = $column_family->make_mutation($columns, $timestamp, $ttl);
             $this->enqueue($key, $column_family, $mut_list);
         }
         return $this;

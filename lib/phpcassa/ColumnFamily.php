@@ -512,7 +512,7 @@ class ColumnFamily {
         $cfmap = array();
         $packed_key = $this->pack_key($key);
         $cfmap[$packed_key][$this->column_family] =
-                $this->dict_to_mutation($columns, $timestamp, $ttl);
+                $this->make_mutation($columns, $timestamp, $ttl);
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
     }
@@ -565,10 +565,22 @@ class ColumnFamily {
             $timestamp = Clock::get_time();
 
         $cfmap = array();
-        foreach($rows as $key => $columns) {
-            $packed_key = $this->pack_key($key);
-            $cfmap[$packed_key][$this->column_family] =
-                    $this->dict_to_mutation($columns, $timestamp, $ttl);
+        if ($this->insert_format == self::DICTIONARY_FORMAT) {
+            foreach($rows as $key => $columns) {
+                $packed_key = $this->pack_key($key);
+                $cfmap[$packed_key][$this->column_family] =
+                        $this->make_mutation($columns, $timestamp, $ttl);
+            }
+        } else if ($this->insert_format == self::ARRAY_FORMAT) {
+            foreach($rows as $row) {
+                list($key, $columns) = $row;
+                $packed_key = $this->pack_key($key);
+                $cfmap[$packed_key][$this->column_family] =
+                        $this->make_mutation($columns, $timestamp, $ttl);
+            }
+        } else {
+            // TODO better exception
+            throw new Exception("Bad insert_format selected");
         }
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
@@ -887,21 +899,18 @@ class ColumnFamily {
         return $ret;
     }
 
-    public function dict_to_mutation($array, $timestamp=null, $ttl=null) {
-        if($timestamp === null)
-            $timestamp = Clock::get_time();
-
-        $c_or_sc = $this->dict_to_coscs($array, $timestamp, $ttl);
+    public function make_mutation($array, $timestamp=null, $ttl=null) {
+        $coscs = $this->pack_data($array, $timestamp, $ttl);
         $ret = array();
-        foreach($c_or_sc as $row) {
+        foreach($coscs as $cosc) {
             $mutation = new Mutation();
-            $mutation->column_or_supercolumn = $row;
+            $mutation->column_or_supercolumn = $cosc;
             $ret[] = $mutation;
         }
         return $ret;
     }
 
-    protected function pack_dict($data, $timestamp=null, $ttl=null) {
+    protected function pack_data($data, $timestamp=null, $ttl=null) {
         if($timestamp === null)
             $timestamp = Clock::get_time();
 
