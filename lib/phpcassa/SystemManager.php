@@ -160,7 +160,10 @@ class SystemManager {
      * @param array $attrs an array that maps attribute
      *        names to values.
      */
-    public function create_column_family($keyspace, $column_family, $attrs) {
+    public function create_column_family($keyspace, $column_family, $attrs=null) {
+        if ($attrs === null)
+            $attrs = array();
+
         $this->client->set_keyspace($keyspace);
         $cfdef = $this->make_cfdef($keyspace, $column_family, $attrs);
         $this->client->system_add_column_family($cfdef);

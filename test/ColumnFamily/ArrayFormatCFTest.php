@@ -12,6 +12,10 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
     private static $KEYS = array('key1', 'key2', 'key3');
     private static $KS = "TestColumnFamily";
+    protected static $CF = "Standard1";
+
+    protected static $cfattrs = array("column_type" => "Standard");
+    protected $cols = array(array('col1', 'val1'), array('col2', 'val2'));
 
     public static function setUpBeforeClass() {
         try {
@@ -27,10 +31,9 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
             $sys->create_keyspace(self::$KS, array());
 
-            $cfattrs = array("column_type" => "Standard");
-            $sys->create_column_family(self::$KS, 'Standard1', $cfattrs);
+            $sys->create_column_family(self::$KS, self::$CF, self::$cfattrs);
 
-            $sys->create_column_family(self::$KS, 'Indexed1', $cfattrs);
+            $sys->create_column_family(self::$KS, 'Indexed1');
             $sys->create_index(self::$KS, 'Indexed1', 'birthdate',
                                      DataType::LONG_TYPE, 'birthday_index');
             $sys->close();
@@ -49,7 +52,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         $this->pool = new ConnectionPool(self::$KS);
-        $this->cf = new ColumnFamily($this->pool, 'Standard1');
+        $this->cf = new ColumnFamily($this->pool, self::$CF);
         $this->cf->insert_format = ColumnFamily::ARRAY_FORMAT;
         $this->cf->return_format = ColumnFamily::ARRAY_FORMAT;
     }
@@ -63,28 +66,25 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_get() {
-        $cols = array(array('col', 'val'), array('col2', 'val2'));
-        $this->cf->insert(self::$KEYS[0], $cols);
+        $this->cf->insert(self::$KEYS[0], $this->cols);
         $res = $this->cf->get(self::$KEYS[0]);
-        $this->assertEquals($cols, $res);
+        $this->assertEquals($this->cols, $res);
     }
 
     public function test_multiget() {
-        $cols = array(array('col', 'val'), array('col2', 'val2'));
-        $this->cf->insert(self::$KEYS[0], $cols);
-        $this->cf->insert(self::$KEYS[1], $cols);
+        $this->cf->insert(self::$KEYS[0], $this->cols);
+        $this->cf->insert(self::$KEYS[1], $this->cols);
         $res = $this->cf->multiget(array(self::$KEYS[0], self::$KEYS[1]));
 
-        $expected = array(array(self::$KEYS[0], $cols),
-                          array(self::$KEYS[1], $cols));
+        $expected = array(array(self::$KEYS[0], $this->cols),
+                          array(self::$KEYS[1], $this->cols));
         $this->assertEquals(sort($expected), sort($res));
     }
 
     public function test_get_range() {
-        $cols = array(array('col', 'val'), array('col2', 'val2'));
-        $rows = array(array(self::$KEYS[0], $cols),
-                      array(self::$KEYS[1], $cols),
-                      array(self::$KEYS[2], $cols));
+        $rows = array(array(self::$KEYS[0], $this->cols),
+                      array(self::$KEYS[1], $this->cols),
+                      array(self::$KEYS[2], $this->cols));
         $this->cf->batch_insert($rows);
 
         $result = iterator_to_array($this->cf->get_range());

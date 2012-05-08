@@ -15,10 +15,14 @@ function sort_rows($a, $b) {
     return $a[0] < $b[0] ? -1 : 1;
 }
 
-class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
+class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
 
     private static $KEYS = array('key1', 'key2', 'key3');
     private static $KS = "TestColumnFamily";
+    protected static $CF = "Super1";
+
+    protected static $cfattrs = array("column_type" => "Super");
+    protected $subcols = array(array('col1', 'val1'), array('col2', 'val2'));
 
     public static function setUpBeforeClass() {
         try {
@@ -31,9 +35,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
             if (!$exists) {
                 $sys->create_keyspace(self::$KS, array());
-
-                $cfattrs = array("column_type" => "Super");
-                $sys->create_column_family(self::$KS, 'Super1', $cfattrs);
+                $sys->create_column_family(self::$KS, self::$CF, self::$cfattrs);
             }
             $sys->close();
 
@@ -51,7 +53,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         $this->pool = new ConnectionPool(self::$KS);
-        $this->cf = new SuperColumnFamily($this->pool, 'Super1');
+        $this->cf = new SuperColumnFamily($this->pool, self::$CF);
         $this->cf->insert_format = ColumnFamily::ARRAY_FORMAT;
         $this->cf->return_format = ColumnFamily::ARRAY_FORMAT;
     }
@@ -65,8 +67,8 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_get() {
-        $cols = array(array('super1', array(array('col', 'val'), array('col2', 'val2'))),
-                      array('super2', array(array('col', 'val'), array('col2', 'val2'))));
+        $cols = array(array('super1', $this->subcols),
+                      array('super2', $this->subcols));
         $this->cf->insert(self::$KEYS[0], $cols);
         $res = $this->cf->get(self::$KEYS[0]);
 
@@ -74,17 +76,16 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_get_super_column() {
-        $subcols = array(array('col', 'val'), array('col2', 'val2'));
-        $cols = array(array('super1', $subcols));
+        $cols = array(array('super1', $this->subcols));
         $this->cf->insert(self::$KEYS[0], $cols);
         $res = $this->cf->get_super_column(self::$KEYS[0], 'super1');
 
-        $this->assertEquals($subcols, $res);
+        $this->assertEquals($this->subcols, $res);
     }
 
     public function test_multiget() {
-        $cols = array(array('super1', array(array('col', 'val'), array('col2', 'val2'))),
-                      array('super2', array(array('col', 'val'), array('col2', 'val2'))));
+        $cols = array(array('super1', $this->subcols),
+                      array('super2', $this->subcols));
         $this->cf->insert(self::$KEYS[0], $cols);
         $this->cf->insert(self::$KEYS[1], $cols);
         $result = $this->cf->multiget(array(self::$KEYS[0], self::$KEYS[1]));
@@ -98,16 +99,15 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_multiget_super_column() {
-        $subcols = array(array('col', 'val'), array('col2', 'val2'));
-        $cols = array(array('super1', $subcols));
+        $cols = array(array('super1', $this->subcols));
         $this->cf->insert(self::$KEYS[0], $cols);
         $this->cf->insert(self::$KEYS[1], $cols);
 
         $keys = array(self::$KEYS[0], self::$KEYS[1]);
         $result = $this->cf->multiget_super_column($keys, 'super1');
 
-        $expected = array(array(self::$KEYS[0], $subcols),
-                          array(self::$KEYS[1], $subcols));
+        $expected = array(array(self::$KEYS[0], $this->subcols),
+                          array(self::$KEYS[1], $this->subcols));
 
         usort($expected, "sort_rows");
         usort($result, "sort_rows");
@@ -115,8 +115,8 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_get_range() {
-        $cols = array(array('super1', array(array('col', 'val'), array('col2', 'val2'))),
-                      array('super2', array(array('col', 'val'), array('col2', 'val2'))));
+        $cols = array(array('super1', $this->subcols),
+                      array('super2', $this->subcols));
         $rows = array(array(self::$KEYS[0], $cols),
                       array(self::$KEYS[1], $cols),
                       array(self::$KEYS[2], $cols));
@@ -129,8 +129,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_get_super_column_range() {
-        $subcols = array(array('col', 'val'), array('col2', 'val2'));
-        $cols = array(array('super1', $subcols));
+        $cols = array(array('super1', $this->subcols));
         $rows = array(array(self::$KEYS[0], $cols),
                       array(self::$KEYS[1], $cols),
                       array(self::$KEYS[2], $cols));
@@ -139,9 +138,9 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         $result = $this->cf->get_super_column_range('super1');
         $result = iterator_to_array($result);
 
-        $expected = array(array(self::$KEYS[0], $subcols),
-                          array(self::$KEYS[1], $subcols),
-                          array(self::$KEYS[2], $subcols));
+        $expected = array(array(self::$KEYS[0], $this->subcols),
+                          array(self::$KEYS[1], $this->subcols),
+                          array(self::$KEYS[2], $this->subcols));
         usort($expected, "sort_rows");
         usort($result, "sort_rows");
         $this->assertEquals($expected, $result);
