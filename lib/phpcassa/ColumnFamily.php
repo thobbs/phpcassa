@@ -893,14 +893,14 @@ class ColumnFamily {
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->column;
-                $name = $this->unpack_name($col->name, false);
-                $value = $this->unpack_value($col->value, $col->name);
+                $col->name = $this->unpack_name($col->name, false);
+                $col->value = $this->unpack_value($col->value, $col->name);
                 $ret[] = $col;
             }
         } else { // counter columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->counter_column;
-                $name = $this->unpack_name($col->name, false);
+                $col->name = $this->unpack_name($col->name, false);
                 $ret[] = $col;
             }
         }

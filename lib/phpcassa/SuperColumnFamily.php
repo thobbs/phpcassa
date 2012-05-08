@@ -381,7 +381,7 @@ class SuperColumnFamily extends ColumnFamily {
         return $ret;
     }
 
-    protected function unpack_coscs_attr($array_of_coscs) {
+    protected function unpack_coscs_attrs($array_of_coscs) {
         $ret = array();
         $first = $array_of_coscs[0];
         if($first->column) { // normal columns
@@ -421,8 +421,8 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         if (!$have_counters) {
             foreach($columns as $c) {
-                $c->$name = $this->unpack_name($col->name, false);
-                $c->$value = $this->unpack_value($col->value, $col->name);
+                $c->name = $this->unpack_name($c->name, false);
+                $c->value = $this->unpack_value($c->value, $c->name);
                 $ret[] = $c;
             }
         } else {

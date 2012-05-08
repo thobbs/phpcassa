@@ -6,10 +6,8 @@ use phpcassa\SuperColumnFamily;
 use phpcassa\Schema\DataType;
 use phpcassa\SystemManager;
 
-use phpcassa\Index\IndexExpression;
-use phpcassa\Index\IndexClause;
 
-class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
+class ObjectFormatSuperCFTest extends PHPUnit_Framework_TestCase {
 
     private static $KEYS = array('key1', 'key2', 'key3');
     private static $KS = "TestColumnFamily";
@@ -49,7 +47,7 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $this->pool = new ConnectionPool(self::$KS);
         $this->cf = new SuperColumnFamily($this->pool, self::$CF);
         $this->cf->insert_format = ColumnFamily::ARRAY_FORMAT;
-        $this->cf->return_format = ColumnFamily::ARRAY_FORMAT;
+        $this->cf->return_format = ColumnFamily::OBJECT_FORMAT;
     }
 
     public function tearDown() {
@@ -66,13 +64,25 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         return $a[0] < $b[0] ? -1 : 1;
     }
 
+    protected function assertMatches($expected, $col) {
+        list($name, $value) = $expected;
+        $this->assertEquals($col->name, $name);
+        $this->assertEquals($col->value, $value);
+    }
+
     public function test_get() {
         $cols = array(array('super1', $this->subcols),
                       array('super2', $this->subcols));
         $this->cf->insert(self::$KEYS[0], $cols);
-        $res = $this->cf->get(self::$KEYS[0]);
+        $result = $this->cf->get(self::$KEYS[0]);
 
-        $this->assertEquals($cols, $res);
+        $this->assertCount(2, $result);
+        $first_super = $result[0];
+
+        $this->assertEquals("super1", $first_super->name);
+        $this->assertCount(2, $first_super->columns);
+        $this->assertMatches($this->subcols[0], $first_super->columns[0]);
+        $this->assertMatches($this->subcols[1], $first_super->columns[1]);
     }
 
     public function test_get_super_column() {
@@ -80,7 +90,9 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $this->cf->insert(self::$KEYS[0], $cols);
         $res = $this->cf->get_super_column(self::$KEYS[0], 'super1');
 
-        $this->assertEquals($this->subcols, $res);
+        $this->assertCount(2, $res);
+        $this->assertMatches($this->subcols[0], $res[0]);
+        $this->assertMatches($this->subcols[1], $res[1]);
     }
 
     public function test_multiget() {
@@ -90,12 +102,17 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $this->cf->insert(self::$KEYS[1], $cols);
         $result = $this->cf->multiget(array(self::$KEYS[0], self::$KEYS[1]));
 
-        $expected = array(array(self::$KEYS[0], $cols),
-                          array(self::$KEYS[1], $cols));
+        usort($result, array("ObjectFormatSuperCFTest", "sort_rows"));
+        $this->assertEquals(self::$KEYS[0], $result[0][0]);
 
-        usort($expected, array("ArrayFormatSuperCFTest", "sort_rows"));
-        usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
-        $this->assertEquals($expected, $result);
+        $first_row = $result[0][1];
+        $this->assertCount(2, $first_row);
+
+        $first_super = $first_row[0];
+        $this->assertEquals("super1", $first_super->name);
+        $this->assertCount(2, $first_super->columns);
+        $this->assertMatches($this->subcols[0], $first_super->columns[0]);
+        $this->assertMatches($this->subcols[1], $first_super->columns[1]);
     }
 
     public function test_multiget_super_column() {
@@ -106,12 +123,12 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $keys = array(self::$KEYS[0], self::$KEYS[1]);
         $result = $this->cf->multiget_super_column($keys, 'super1');
 
-        $expected = array(array(self::$KEYS[0], $this->subcols),
-                          array(self::$KEYS[1], $this->subcols));
+        usort($result, array("ObjectFormatSuperCFTest", "sort_rows"));
+        $this->assertEquals(self::$KEYS[0], $result[0][0]);
 
-        usort($expected, array("ArrayFormatSuperCFTest", "sort_rows"));
-        usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
-        $this->assertEquals($expected, $result);
+        $first_subcols = $result[0][1];
+        $this->assertMatches($this->subcols[0], $first_subcols[0]);
+        $this->assertMatches($this->subcols[1], $first_subcols[1]);
     }
 
     public function test_get_range() {
@@ -123,9 +140,16 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $this->cf->batch_insert($rows);
 
         $result = iterator_to_array($this->cf->get_range());
-        usort($rows, array("ArrayFormatSuperCFTest", "sort_rows"));
-        usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
-        $this->assertEquals($rows, $result);
+        usort($result, array("ObjectFormatSuperCFTest", "sort_rows"));
+
+        $first_row = $result[0][1];
+        $this->assertCount(2, $first_row);
+
+        $first_super = $first_row[0];
+        $this->assertEquals("super1", $first_super->name);
+        $this->assertCount(2, $first_super->columns);
+        $this->assertMatches($this->subcols[0], $first_super->columns[0]);
+        $this->assertMatches($this->subcols[1], $first_super->columns[1]);
     }
 
     public function test_get_super_column_range() {
@@ -138,12 +162,11 @@ class ArrayFormatSuperCFTest extends PHPUnit_Framework_TestCase {
         $result = $this->cf->get_super_column_range('super1');
         $result = iterator_to_array($result);
 
-        $expected = array(array(self::$KEYS[0], $this->subcols),
-                          array(self::$KEYS[1], $this->subcols),
-                          array(self::$KEYS[2], $this->subcols));
-        usort($expected, array("ArrayFormatSuperCFTest", "sort_rows"));
-        usort($result, array("ArrayFormatSuperCFTest", "sort_rows"));
-        $this->assertEquals($expected, $result);
-    }
+        usort($result, array("ObjectFormatSuperCFTest", "sort_rows"));
+        $this->assertEquals(self::$KEYS[0], $result[0][0]);
 
+        $first_subcols = $result[0][1];
+        $this->assertMatches($this->subcols[0], $first_subcols[0]);
+        $this->assertMatches($this->subcols[1], $first_subcols[1]);
+    }
 }

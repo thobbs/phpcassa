@@ -8,10 +8,12 @@ use phpcassa\SystemManager;
 use phpcassa\Index\IndexExpression;
 use phpcassa\Index\IndexClause;
 
-class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
+use cassandra\Column;
+
+class ObjectFormatCFTest extends PHPUnit_Framework_TestCase {
 
     private static $KEYS = array('key1', 'key2', 'key3');
-    private static $KS = "TestColumnFamily";
+    private static $KS = "phpcassa";
     protected static $CF = "Standard1";
 
     protected static $cfattrs = array("column_type" => "Standard");
@@ -35,7 +37,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
 
             $sys->create_column_family(self::$KS, 'Indexed1');
             $sys->create_index(self::$KS, 'Indexed1', 'birthdate',
-                                     DataType::LONG_TYPE, 'birthday_index');
+                               DataType::LONG_TYPE, 'birthday_index');
             $sys->close();
 
         } catch (Exception $e) {
@@ -54,7 +56,7 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         $this->pool = new ConnectionPool(self::$KS);
         $this->cf = new ColumnFamily($this->pool, self::$CF);
         $this->cf->insert_format = ColumnFamily::ARRAY_FORMAT;
-        $this->cf->return_format = ColumnFamily::ARRAY_FORMAT;
+        $this->cf->return_format = ColumnFamily::OBJECT_FORMAT;
     }
 
     public function tearDown() {
@@ -71,23 +73,37 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         return $a[0] < $b[0] ? -1 : 1;
     }
 
+    protected function assertMatches($expected, $col) {
+        list($name, $value) = $expected;
+        $this->assertEquals($col->name, $name);
+        $this->assertEquals($col->value, $value);
+    }
+
     public function test_get() {
         $this->cf->insert(self::$KEYS[0], $this->cols);
         $res = $this->cf->get(self::$KEYS[0]);
-        $this->assertEquals($this->cols, $res);
+
+        $this->assertCount(2, $res);
+        $this->assertMatches($this->cols[0], $res[0]);
+        $this->assertMatches($this->cols[1], $res[1]);
     }
 
     public function test_multiget() {
         $this->cf->insert(self::$KEYS[0], $this->cols);
         $this->cf->insert(self::$KEYS[1], $this->cols);
-        $res = $this->cf->multiget(array(self::$KEYS[0], self::$KEYS[1]));
+        $result = $this->cf->multiget(array(self::$KEYS[0], self::$KEYS[1]));
+        usort($result, array("ObjectFormatCFTest", "sort_rows"));
 
         $expected = array(array(self::$KEYS[0], $this->cols),
                           array(self::$KEYS[1], $this->cols));
 
-        usort($expected, array("ArrayFormatCFTest", "sort_rows"));
-        usort($res, array("ArrayFormatCFTest", "sort_rows"));
-        $this->assertEquals($expected, $res);
+        $this->assertCount(2, $result);
+        $this->assertEquals(self::$KEYS[0], $result[0][0]);
+
+        $first_cols = $result[0][1];
+        $this->assertCount(2, $first_cols);
+        $this->assertMatches($this->cols[0], $first_cols[0]);
+        $this->assertMatches($this->cols[1], $first_cols[1]);
     }
 
     public function test_get_range() {
@@ -97,16 +113,21 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         $this->cf->batch_insert($rows);
 
         $result = iterator_to_array($this->cf->get_range());
+        usort($result, array("ObjectFormatCFTest", "sort_rows"));
 
-        usort($rows, array("ArrayFormatCFTest", "sort_rows"));
-        usort($result, array("ArrayFormatCFTest", "sort_rows"));
-        $this->assertEquals($rows, $result);
+        $this->assertCount(3, $result);
+        $this->assertEquals(self::$KEYS[0], $result[0][0]);
+
+        $first_cols = $result[0][1];
+        $this->assertCount(2, $first_cols);
+        $this->assertMatches($this->cols[0], $first_cols[0]);
+        $this->assertMatches($this->cols[1], $first_cols[1]);
     }
 
     public function test_get_indexed_slices() {
         $cf = new ColumnFamily($this->pool, 'Indexed1');
         $cf->insert_format = ColumnFamily::ARRAY_FORMAT;
-        $cf->return_format = ColumnFamily::ARRAY_FORMAT;
+        $cf->return_format = ColumnFamily::OBJECT_FORMAT;
 
         $cols = array(array('birthdate', 1), array('col', 'val'));
         $rows = array(array(self::$KEYS[0], $cols),
@@ -117,9 +138,14 @@ class ArrayFormatCFTest extends PHPUnit_Framework_TestCase {
         $expr = new IndexExpression('birthdate', 1);
         $clause = new IndexClause(array($expr));
         $result = iterator_to_array($cf->get_indexed_slices($clause));
+        usort($result, array("ObjectFormatCFTest", "sort_rows"));
 
-        usort($rows, array("ArrayFormatCFTest", "sort_rows"));
-        usort($result, array("ArrayFormatCFTest", "sort_rows"));
-        $this->assertEquals($rows, $result);
+        $this->assertCount(3, $result);
+        $this->assertEquals(self::$KEYS[0], $result[0][0]);
+
+        $first_cols = $result[0][1];
+        $this->assertCount(2, $first_cols);
+        $this->assertMatches($cols[0], $first_cols[0]);
+        $this->assertMatches($cols[1], $first_cols[1]);
     }
 }
