@@ -2,4 +2,5 @@ title: phpcassa
 source: lib/
 destination: built_docs/
 skipDocPath: [*/lib/thrift/protocol/*, */lib/thrift/transport/*]
+skipDocPrefix: ["cassandra\\Cassandra_"]
 accessLevels: [public]
