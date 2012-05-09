@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\ColumnFamily;
+
 /**
  * Holds multiple types as subcomponents.
  *
@@ -21,28 +23,31 @@ class CompositeType extends CassandraType
             $value = unserialize($value);
 
         $res = "";
-        for ($i = 0; $i < count($value); $i++) {
-            $eoc = 0x00;
+        $num_items = count($value);
+        for ($i = 0; $i < $num_items; $i++) {
             $item = $value[$i];
             if (is_array($item)) {
                 list($item, $inclusive) = $item;
                 if ($inclusive) {
-                    if ($slice_end == self::SLICE_START) {
+                    if ($slice_end == ColumnFamily::SLICE_START)
                         $eoc = 0xFF;
-                    }
-                    elseif ($slice_end == self::SLICE_FINISH) {
+                    else if ($slice_end == ColumnFamily::SLICE_FINISH)
                         $eoc = 0x01;
-                    }
-                }
-                else {
-                    if ($slice_end == self::SLICE_START) {
+                } else {
+                    if ($slice_end == ColumnFamily::SLICE_START)
                         $eoc = 0x01;
-                    }
-                    elseif ($slice_end == self::SLICE_FINISH) {
+                    else if ($slice_end == ColumnFamily::SLICE_FINISH)
                         $eoc = 0xFF;
-                    }
                 }
+            } else if ($i === ($num_items - 1)) {
+                if ($slice_end == ColumnFamily::SLICE_START)
+                    $eoc = 0xFF;
+                else if ($slice_end == ColumnFamily::SLICE_FINISH)
+                    $eoc = 0x01;
+            } else {
+                $eoc = 0x00;
             }
+
             $type = $this->inner_types[$i];
             $packed = $type->pack($item);
             $len = strlen($packed);

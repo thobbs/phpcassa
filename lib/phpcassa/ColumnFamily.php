@@ -794,16 +794,26 @@ class ColumnFamily {
 
                 $column_start = $column_slice->start;
                 if ($column_start !== null and $column_start != '') {
+                    if ($column_slice->reversed)
+                        $slice_end = self::SLICE_FINISH;
+                    else
+                        $slice_end = self::SLICE_START;
+
                     $slice_range->start = $this->pack_name(
-                        $column_start, $this->is_super, self::SLICE_START);
+                        $column_start, $this->is_super, $slice_end);
                 } else {
                     $slice_range->start = '';
                 }
 
                 $column_finish = $column_slice->finish;
                 if ($column_finish !== null and $column_finish != '') {
+                    if ($column_slice->reversed)
+                        $slice_end = self::SLICE_START;
+                    else
+                        $slice_end = self::SLICE_FINISH;
+
                     $slice_range->finish = $this->pack_name(
-                        $column_finish, $this->is_super, self::SLICE_FINISH);
+                        $column_finish, $this->is_super, $slice_end);
                 } else {
                     $slice_range->finish = '';
                 }
