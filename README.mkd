@@ -15,6 +15,11 @@ thorough documentation can be found here:
 
 [http://thobbs.github.com/phpcassa](http://thobbs.github.com/phpcassa)
 
+
+Examples
+--------
+You can find a few fully working example scripts in the `examples/` directory.
+
 Opening Connections
 -------------------
 
