@@ -1,0 +1,5 @@
+title: phpcassa
+source: lib/
+destination: built_docs/
+skipDocPath: [*/lib/thrift/protocol/*, */lib/thrift/transport/*]
+accessLevels: [public]

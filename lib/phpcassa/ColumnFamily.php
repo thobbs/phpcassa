@@ -87,40 +87,45 @@ class ColumnFamily {
      */
     const OBJECT_FORMAT = 3;
 
+    /** @internal */
     public $column_family;
+
+    /** @internal */
     public $is_super;
+
     protected $cf_data_type;
     protected $col_name_type;
     protected $supercol_name_type;
     protected $col_type_dict;
 
 
-    public $autopack_names;
-    public $autopack_values;
-    public $autopack_keys;
+    /** Whether column names should be packed and unpacked automatically. */
+    public $autopack_names = true;
+
+    /** Whether column values should be packed and unpacked automatically. */
+    public $autopack_values = true;
+
+    /** Whether keys should be packed and unpacked automatically. */
+    public $autopack_keys = true;
 
     /** @var ConsistencyLevel the default read consistency level */
-    public $read_consistency_level;
+    public $read_consistency_level = ConsistencyLevel::ONE;
     /** @var ConsistencyLevel the default write consistency level */
-    public $write_consistency_level;
+    public $write_consistency_level = ConsistencyLevel::ONE;
 
     /**
      * The format that data will be returned in.
      *
-     * Valid values include ColumnFamily::DICTIONARY_FORMAT,
-     * ColumnFamily::ARRAY_FORMAT, ColumnFamily::OBJECT_FORMAT.
-     *
-     * The default is to use ColumnFamily::DICTIONARY_FORMAT.
+     * Valid values include DICTIONARY_FORMAT, ARRAY_FORMAT,
+     * and OBJECT_FORMAT.
      */
     public $return_format = self::DICTIONARY_FORMAT;
 
     /**
      * The format that data should be inserted in.
      *
-     * Valid values include ColumnFamily::DICTIONARY_FORMAT
-     * and ColumnFamily::ARRAY_FORMAT.
-     *
-     * The default is to use ColumnFamily::DICTIONARY_FORMAT.
+     * Valid values include DICTIONARY_FORMAT and
+     * ARRAY_FORMAT.
      */
     public $insert_format = self::DICTIONARY_FORMAT;
 
@@ -816,8 +821,11 @@ class ColumnFamily {
         return $column_parent;
     }
 
+    /** @internal */
     const NON_SLICE = 0;
+    /** @internal */
     const SLICE_START = 1;
+    /** @internal */
     const SLICE_FINISH = 2;
 
     public function pack_name($value,

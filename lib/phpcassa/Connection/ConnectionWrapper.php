@@ -11,6 +11,7 @@ use cassandra\CassandraClient;
 use cassandra\AuthenticationRequest;
 
 /**
+ * @internal
  * @package phpcassa\Connection
  */
 class ConnectionWrapper {
