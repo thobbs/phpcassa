@@ -2,7 +2,7 @@ phpcassa
 ========
 phpcassa is a PHP client library for [Apache Cassandra](http://cassandra.apache.org).
 
-* Compatible with Cassandra 0.7 and 0.8
+* Compatible with Cassandra 0.7, 0.8, 1.0, and 1.1
 * Optional C extension for improved performance
 
 phpcassa is open source under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
@@ -60,7 +60,7 @@ The C extension is crucial for phpcassa's performance.
 
 You need to configure and make to be able to use the C extension.
 
-    cd thrift/ext/thrift_protocol
+    cd lib/thrift/ext/thrift_protocol
     phpize
     ./configure
     make
