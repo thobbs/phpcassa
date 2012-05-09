@@ -66,9 +66,9 @@ another and import a couple of classes:
     <?php
         require('lib/phpcassa/autoload.php');
 
-        use phpcassa/ColumnFamily;
-        use phpcassa/ColumnSlice;
-        use phpcassa/Connection/ConnectionPool;
+        use phpcassa\ColumnFamily;
+        use phpcassa\ColumnSlice;
+        use phpcassa\Connection\ConnectionPool;
 
         // tutorial code starts here
     ?>
