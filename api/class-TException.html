@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class TException | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-TBase.html">TBase</a></li>
+				<li><a href="class-TMessageType.html">TMessageType</a></li>
+				<li><a href="class-TType.html">TType</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-TApplicationException.html">TApplicationException</a></li>
+				<li class="active"><a href="class-TException.html">TException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class TException</h1>
+
+
+	<div class="description">
+	
+<p>NOTE(mcslee): This currently contains a ton of duplicated code from TBase
+because we need to save CPU cycles and this is not yet in an extension. Ideally
+we'd multiply-inherit TException from both Exception and Base, but that's not
+possible in PHP and there are no modules either, so for now we apologetically
+take a trip to HackTown.</p>
+
+<p>Can be called with standard Exception constructor (message, code) or with
+Thrift Base object constructor (spec, vals).</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Exception.html"><span>Exception</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>TException</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-cassandra.AuthenticationException.html">cassandra\AuthenticationException</a>, 
+			<a href="class-cassandra.AuthorizationException.html">cassandra\AuthorizationException</a>, 
+			<a href="class-cassandra.InvalidRequestException.html">cassandra\InvalidRequestException</a>, 
+			<a href="class-cassandra.NotFoundException.html">cassandra\NotFoundException</a>, 
+			<a href="class-cassandra.SchemaDisagreementException.html">cassandra\SchemaDisagreementException</a>, 
+			<a href="class-cassandra.TimedOutException.html">cassandra\TimedOutException</a>, 
+			<a href="class-cassandra.UnavailableException.html">cassandra\UnavailableException</a>, 
+			<a href="class-TApplicationException.html">TApplicationException</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+				<b>Param:</b>
+				<code>mixed</code><br>$p1 Message (string) or type-spec (array)<br />
+				<b>Param:</b>
+				<code>mixed</code><br>$p2 Code (integer) or values (array)<br />
+		<b>Located at</b> <a href="source-class-TException.html#57" title="Go to source code">thrift/Thrift.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-TException.html#71" title="Go to source code">__construct</a>( <span> <var>$p1</var> = <span class="php-keyword1">null</span></span>, <span> <var>$p2</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Exception.html#methods">Exception</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Exception.html#___toString">__toString()</a>, 
+			<a href="class-Exception.html#_getCode">getCode()</a>, 
+			<a href="class-Exception.html#_getFile">getFile()</a>, 
+			<a href="class-Exception.html#_getLine">getLine()</a>, 
+			<a href="class-Exception.html#_getMessage">getMessage()</a>, 
+			<a href="class-Exception.html#_getPrevious">getPrevious()</a>, 
+			<a href="class-Exception.html#_getTrace">getTrace()</a>, 
+			<a href="class-Exception.html#_getTraceAsString">getTraceAsString()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="tmethod" id="$tmethod">
+
+		<td class="attributes"><code>
+			public static
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TException.html#86" title="Go to source code"><var>$tmethod</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(TType::BOOL   =&gt; <span class="php-quote">'Bool'</span>,
+                      TType::BYTE   =&gt; <span class="php-quote">'Byte'</span>,
+                      TType::I16    =&gt; <span class="php-quote">'I16'</span>,
+                      TType::I32    =&gt; <span class="php-quote">'I32'</span>,
+                      TType::I64    =&gt; <span class="php-quote">'I64'</span>,
+                      TType::DOUBLE =&gt; <span class="php-quote">'Double'</span>,
+                      TType::STRING =&gt; <span class="php-quote">'String'</span>)</code></td>
+		<td class="description"><div>
+			<a href="#$tmethod" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

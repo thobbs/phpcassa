@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial &mdash; phpcassa v0.8.a.2 documentation</title>
+    <title>Tutorial &mdash; phpcassa v1.0.a.1 documentation</title>
     <link rel="stylesheet" href="static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.8.a.2',
+        VERSION:     '1.0.a.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="static/jquery.js"></script>
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
-    <link rel="top" title="phpcassa v0.8.a.2 documentation" href="index.html" />
+    <link rel="top" title="phpcassa v1.0.a.1 documentation" href="index.html" />
     <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
     <link rel="prev" title="Installing" href="installation.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="installation.html" title="Installing"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">phpcassa v0.8.a.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">phpcassa v1.0.a.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -49,6 +49,7 @@
 <li><a class="reference internal" href="#">Tutorial</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#creating-a-keyspace-and-column-families">Creating a Keyspace and Column Families</a></li>
+<li><a class="reference internal" href="#autoload-and-imports">Autoload and Imports</a></li>
 <li><a class="reference internal" href="#making-a-connection">Making a Connection</a></li>
 <li><a class="reference internal" href="#getting-a-columnfamily">Getting a ColumnFamily</a></li>
 <li><a class="reference internal" href="#inserting-data">Inserting Data</a></li>
@@ -97,16 +98,11 @@
   <div class="section" id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
 <p>This tutorial is intended as an introduction to working with
-Cassandra and <strong>phpcassa</strong>.</p>
+Cassandra and phpcassa.</p>
 <div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
-<p>Before we start, make sure that you have <strong>phpcassa</strong>
-<a class="reference internal" href="installation.html"><em>installed</em></a>. The following
-should execute without raising an exception:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;phpcassa/connection.php&#39;</span><span class="p">);</span>
-<span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;phpcassa/columnfamily.php&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
+<p>Before we start, make sure that you have phpcassa
+<a class="reference internal" href="installation.html"><em>installed</em></a>.</p>
 <p>This tutorial also assumes that a Cassandra instance is running on the
 default host and port. Read the <a class="reference external" href="http://wiki.apache.org/cassandra/GettingStarted">instructions for getting started
 with Cassandra</a>.
@@ -147,9 +143,27 @@ user@~ $
 <p>This connects to a local instance of Cassandra and creates a keyspace
 named &#8216;Keyspace1&#8217; with a column family named &#8216;ColumnFamily1&#8217;.</p>
 </div>
+<div class="section" id="autoload-and-imports">
+<h2>Autoload and Imports<a class="headerlink" href="#autoload-and-imports" title="Permalink to this headline">¶</a></h2>
+<p>You can bootstrap the PHP autoloader to easily import phpcassa
+classes by requiring or including <tt class="file docutils literal"><span class="pre">lib/phpcassa/autoload.php</span></tt>.</p>
+<p>To start the tutorial, require the bootstrap file in one way or
+another and import a couple of classes:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+    <span class="k">require</span><span class="p">(</span><span class="s1">&#39;lib/phpcassa/autoload.php&#39;</span><span class="p">);</span>
+
+    <span class="k">use</span> <span class="nx">phpcassa\ColumnFamily</span><span class="p">;</span>
+    <span class="k">use</span> <span class="nx">phpcassa\ColumnSlice</span><span class="p">;</span>
+    <span class="k">use</span> <span class="nx">phpcassa\Connection\ConnectionPool</span><span class="p">;</span>
+
+    <span class="c1">// tutorial code starts here</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="making-a-connection">
 <h2>Making a Connection<a class="headerlink" href="#making-a-connection" title="Permalink to this headline">¶</a></h2>
-<p>The first step when working with <strong>phpcassa</strong> is to create a
+<p>The first step when working with phpcassa is to create a
 <a class="reference external" href="api/phpcassa/connection/ConnectionPool">ConnectionPool</a> which
 will connect to the Cassandra instance(s):</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$pool</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ConnectionPool</span><span class="p">(</span><span class="s2">&quot;Keyspace&quot;</span><span class="p">);</span>
@@ -196,7 +210,7 @@ were already included in the schema file:</p>
 <p>There are many more ways to get data out of Cassandra than there are
 to insert data.</p>
 <p>The simplest way to get data is to use
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get">ColumnFamily::get()</a></p>
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#_get">ColumnFamily::get()</a></p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;colname&#39; =&gt; &#39;col_val&#39;)</span>
 </pre></div>
@@ -210,23 +224,26 @@ specify them using a <cite>$columns</cite> argument:</p>
 </pre></div>
 </div>
 <p>We may also get a slice (or subrange) or the columns in a row. To do this,
-use the <cite>$column_start</cite> and <cite>$column_finish</cite> parameters.  One or both of these may
-be left empty to allow the slice to extend to one or both ends the.
-Note that <cite>$column_finish</cite> is inclusive. Assuming we&#8217;ve inserted several
+we need to make a <a class="reference external" href="api/class-phpcassa.ColumnSlice.html">ColumnSlice</a> object.</p>
+<p>The first two parameters are <cite>$start</cite> and <cite>$finish</cite>.  One or both of these may
+be left as empty strings to allow the slice to extend to one or both ends of
+the row.</p>
+<p>Assuming we&#8217;ve inserted several
 columns with names &#8216;1&#8217; through &#8216;9&#8217;, we can do the following:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$columns</span><span class="o">=</span><span class="k">null</span><span class="p">,</span> <span class="nv">$column_start</span><span class="o">=</span><span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="nv">$column_finish</span><span class="o">=</span><span class="s1">&#39;7&#39;</span><span class="p">);</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$slice</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnSlice</span><span class="p">(</span><span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$slice</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;5&#39; =&gt; &#39;foo&#39;, &#39;6&#39; =&gt; &#39;bar&#39;, &#39;7&#39; =&gt; &#39;baz&#39;)</span>
 </pre></div>
 </div>
 <p>There are also two ways to get multiple rows at the same time.
 The first is to specify them by name using
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#multiget">ColumnFamily::multiget()</a></p>
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#_multiget">ColumnFamily::multiget()</a></p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget</span><span class="p">([</span><span class="s1">&#39;row_key1&#39;</span><span class="p">,</span> <span class="s1">&#39;row_key2&#39;</span><span class="p">]);</span>
 <span class="c1">// returns: array(&#39;row_key1&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;), &#39;row_key2&#39; =&gt; array(&#39;name&#39; =&gt; &#39;val&#39;))</span>
 </pre></div>
 </div>
 <p>The other way is to get a range of keys at once by using
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get_range">ColumnFamily::get_range()</a>.
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#_get_range">ColumnFamily::get_range()</a>
 The parameter <cite>$key_finish</cite> is also inclusive here, too.  Assuming we&#8217;ve inserted
 some rows with keys &#8216;row_key1&#8217; through &#8216;row_key9&#8217;, we can do this:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$rows</span> <span class="o">=</span> <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_range</span><span class="p">(</span><span class="nv">$key_start</span><span class="o">=</span><span class="s1">&#39;row_key5&#39;</span><span class="p">,</span> <span class="nv">$key_finish</span><span class="o">=</span><span class="s1">&#39;row_key7&#39;</span><span class="p">);</span>
@@ -242,16 +259,12 @@ some rows with keys &#8216;row_key1&#8217; through &#8216;row_key9&#8217;, we ca
 </pre></div>
 </div>
 <p>It&#8217;s also possible to specify a set of columns or a slice for
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#multiget">ColumnFamily::multiget()</a>
-and
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get_range">ColumnFamily::get_range()</a>,
-just like we did for
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get">ColumnFamily::get()</a></p>
+<cite>multiget()</cite> and <cite>get_range()</cite> just like we did for <cite>get()</cite>.</p>
 </div>
 <div class="section" id="removing-data">
 <h2>Removing Data<a class="headerlink" href="#removing-data" title="Permalink to this headline">¶</a></h2>
 <p>You may remove data from a column family with
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#remove">ColumnFamily::remove()</a>.</p>
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#_remove">ColumnFamily::remove()</a>.</p>
 <p>You can remove an entire row at once:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">);</span>
 </pre></div>
@@ -265,27 +278,31 @@ just like we did for
 <div class="section" id="counting">
 <h2>Counting<a class="headerlink" href="#counting" title="Permalink to this headline">¶</a></h2>
 <p>If you just want to know how many columns are in a row, you can use
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get_count">ColumnFamily::get_count()</a>:</p>
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#_get_count">ColumnFamily::get_count()</a>:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">);</span>
 <span class="c1">// returns: 3</span>
 </pre></div>
 </div>
 <p>If you only want to get a count of the number of columns that are inside
 of a slice or have particular names, you can do that as well:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$columns</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">));</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span>
+      <span class="nv">$column_names</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">));</span>
 <span class="c1">// returns: 2</span>
-<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$column_start</span><span class="o">=</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+
+<span class="nv">$slice</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnSlice</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$slice</span><span class="p">);</span>
 <span class="c1">// returns: 3</span>
 </pre></div>
 </div>
 <p>You can also do this in parallel for multiple rows using
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#multiget_count">ColumnFamily::multiget_count()</a>:</p>
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#_multiget_count">ColumnFamily::multiget_count()</a>:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget_count</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;fib0&#39;</span><span class="p">,</span> <span class="s1">&#39;fib1&#39;</span><span class="p">,</span> <span class="s1">&#39;fib2&#39;</span><span class="p">,</span> <span class="s1">&#39;fib3&#39;</span><span class="p">,</span> <span class="s1">&#39;fib4&#39;</span><span class="p">));</span>
 <span class="c1">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 5)</span>
 </pre></div>
 </div>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget_count</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;fib0&#39;</span><span class="p">,</span> <span class="s1">&#39;fib1&#39;</span><span class="p">,</span> <span class="s1">&#39;fib2&#39;</span><span class="p">,</span> <span class="s1">&#39;fib3&#39;</span><span class="p">,</span> <span class="s1">&#39;fib4&#39;</span><span class="p">),</span>
-                               <span class="nv">$columns</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;col1&#39;</span><span class="p">,</span> <span class="s1">&#39;col2&#39;</span><span class="p">,</span> <span class="s1">&#39;col3&#39;</span><span class="p">));</span>
+                               <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span>
+                               <span class="nv">$column_names</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;col1&#39;</span><span class="p">,</span> <span class="s1">&#39;col2&#39;</span><span class="p">,</span> <span class="s1">&#39;col3&#39;</span><span class="p">));</span>
 <span class="c1">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 3)</span>
 </pre></div>
 </div>
@@ -304,47 +321,33 @@ cassandra-cli like this:</p>
 632cf985-645e-11e0-ad9e-e700f669bcfc
 </pre></div>
 </div>
-<p>To use a super column in <strong>phpcassa</strong>, you only need to
-add an extra level to the array:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Super1&#39;</span><span class="p">);</span>
+<p>To use a super columns in phpcassa, you need to create an instance
+of <tt class="docutils literal"><span class="pre">phpcassa\SuperColumnFamily</span></tt>:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="k">use</span> <span class="nx">phpcassa\SuperColumnFamily</span><span class="p">;</span>
+
+
+<span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SuperColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Super1&#39;</span><span class="p">);</span>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;supercol_name&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;col_name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;col_val&#39;</span><span class="p">)));</span>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;supercol_name&#39; =&gt; (&#39;col_name&#39; =&gt; &#39;col_val&#39;))</span>
-<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">remove</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="s1">&#39;supercolumn_name&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">remove_super_column</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="s1">&#39;supercolumn_name&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="typed-column-names-and-values">
 <h2>Typed Column Names and Values<a class="headerlink" href="#typed-column-names-and-values" title="Permalink to this headline">¶</a></h2>
-<p>In Cassandra 0.7, you can specify a comparator type for column names
-and a validator type for column values.</p>
-<p>The types available are:</p>
-<ul class="simple">
-<li>BytesType - no type</li>
-<li>IntegerType - 32 bit integer</li>
-<li>LongType - 64 bit integer</li>
-<li>AsciiType - ASCII string</li>
-<li>UTF8Type - UTF8 encoded string</li>
-<li>TimeUUIDType - version 1 UUID (timestamp based)</li>
-<li>LexicalUUID - non-version 1 UUID</li>
-</ul>
+<p>In Cassandra, you can specify a comparator type for column names
+and a validator type for row keys and column values.</p>
+<p>There are
+<a class="reference external" href="api/namespace-phpcassa.Schema.DataType.html">several types supported by default</a>.</p>
 <p>The column name comparator types affect how columns are sorted within
 a row. You can use these with standard column families as well as with
 super column families; with super column families, the subcolumns may
-even have a different comparator type.  Here&#8217;s an example <tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt>:</p>
-<div class="highlight-python"><pre>- name: StandardInt
-  column_type: Standard
-  compare_with: IntegerType
-
-- name: SuperLongSubAscii
-  column_type: Super
-  compare_with: LongType
-  compare_subcolumns_with: AsciiType</pre>
-</div>
-<p>Cassandra still requires you to pack these types into a binary format it
-can understand.  Fortunately, when <strong>phpcassa</strong> sees that a column family
-uses these types, it knows to pack and unpack these data types automatically
-for you. So, if we want to write to the StandardInt column family, we can do
+even have a different comparator type.</p>
+<p>Cassandra requires clients to pack these types into a binary format it
+can understand.  When phpcassa sees that a column family uses these types,
+it knows to pack and unpack these data types automatically.
+So, if we want to write to the StandardInt column family, we can do
 the following:</p>
 <div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;StandardInt&#39;</span><span class="p">);</span>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="mi">42</span> <span class="o">=&gt;</span> <span class="s1">&#39;some_val&#39;</span><span class="p">));</span>
@@ -355,69 +358,50 @@ the following:</p>
 <p>Notice that 42 is an integer here, not a string.</p>
 <p>As mentioned above, Cassandra also offers validators on column values with
 the same set of types.  Validators can be set for an entire column family,
-for individual columns, or both.  Here&#8217;s another example <tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt>:</p>
-<div class="highlight-python"><pre>- name: AllLongs
-  column_type: Standard
-  default_validation_class: LongType
-
-- name: OneUUID
-  column_type: Standard
-  column_metadata:
-    - name: uuid
-      validator_class: TimeUUIDType
-
-- name: LongsExceptUUID
-  column_type: Standard
-  default_validation_class: LongType
-  column_metadata:
-    - name: uuid
-      validator_class: TimeUUIDType</pre>
-</div>
-<p><strong>phpcassa</strong> knows to pack these column values automatically too:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$connection</span><span class="p">,</span> <span class="s1">&#39;LongsExceptUUID&#39;</span><span class="p">)</span>
-<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span>  <span class="mi">123456789</span><span class="p">,</span> <span class="s1">&#39;uuid&#39;</span> <span class="o">=&gt;</span> <span class="nx">CassandraUtil</span><span class="o">::</span><span class="na">uuid1</span><span class="p">()));</span>
+for individual columns, or both:</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$pool</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">)</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="nv">$user_id</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;joe&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span> <span class="o">=&gt;</span> <span class="mi">23</span><span class="p">));</span>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">);</span>
-<span class="c1">// returns: array(&#39;foo&#39; =&gt; 123456789, &#39;uuid&#39; =&gt; UUID(&#39;5880c4b8-bd1a-11df-bbe1-00234d21610a&#39;))</span>
+<span class="c1">// returns: array(&#39;name&#39; =&gt; &#39;joe&#39;, &#39;age&#39; =&gt; 23)</span>
 </pre></div>
 </div>
-<p>Of course, if <strong>phpcassa</strong>&#8216;s automatic behavior isn&#8217;t working for you, you
-can turn it off when you create the
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily">ColumnFamily</a>:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;ColumnFamily1&#39;</span><span class="p">,</span>
-                                  <span class="nv">$autopack_names</span><span class="o">=</span><span class="k">False</span><span class="p">,</span>
-                                  <span class="nv">$autopack_values</span><span class="o">=</span><span class="k">False</span><span class="p">);</span>
+<p>Of course, if phpcassa&#8217;s automatic behavior isn&#8217;t working for you, you
+can turn it off with
+<a class="reference external" href="api/class-phpcassa.ColumnFamily.html#$autopack_names">ColumnFamily::$autopack_names</a>
+and the other <cite>$autopack</cite> attributes.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;ColumnFamily1&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="nv">$autopack_names</span><span class="o">=</span><span class="k">False</span><span class="p">;</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="nv">$autopack_values</span><span class="o">=</span><span class="k">False</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="indexes">
 <h2>Indexes<a class="headerlink" href="#indexes" title="Permalink to this headline">¶</a></h2>
-<p>Cassandra 0.7.0 adds support for secondary indexes, which allow you to
+<p>Cassandra supports built-in secondary indexes, which allow you to
 efficiently get only rows which match a certain expression.</p>
-<p>To use secondary indexes with Cassandra, you need to specify what columns
-will be indexed.  In a <tt class="docutils literal"><span class="pre">cassandra.yaml</span></tt> file, this might look like:</p>
-<div class="highlight-python"><pre>- name: Indexed1
-  column_type: Standard
-  column_metadata:
-    - name: birthdate
-      validator_class: LongType
-      index_type: KEYS</pre>
-</div>
 <p>In order to use
-<a class="reference external" href="api/phpcassa/columnfamily/ColumnFamily#get_indexed_slices">ColumnFamily::get_indexed_slices()</a>
-to get data from Indexed1 using the indexed column, we need to create an
-<a class="reference external" href="http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexClause.html">IndexClause</a>
+<a class="reference external" href="api/class-phpcassa.ColumnFamily#_get_indexed_slices">ColumnFamily::get_indexed_slices()</a>
+, we need to create an
+<a class="reference external" href="api/class-phpcassa.Index.IndexClause">IndexClause</a>
 which contains a list of
-<a class="reference external" href="http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html">IndexExpression</a>
-objects.  The functions
-<a class="reference external" href="api/phpcassa/columnfamily/CassandraUtil#create_index_expression">CassandraUtil::create_index_expression()</a>
-and
-<a class="reference external" href="api/phpcassa/columnfamily/CassandraUtil#create_index_clause">CassandraUtil::create_index_clause()</a>
-are designed to make this easier.</p>
+<a class="reference external" href="api/class-phpcassa.Index.IndexExpression">IndexExpression</a>
+objects.</p>
 <p>Suppose we are only interested in rows where &#8216;birthdate&#8217; is 1984. We might do
 the following:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Indexed1&#39;</span><span class="p">);</span>
-<span class="nv">$index_exp</span> <span class="o">=</span> <span class="nx">CassandraUtil</span><span class="o">::</span><span class="na">create_index_expression</span><span class="p">(</span><span class="s1">&#39;birthdate&#39;</span><span class="p">,</span> <span class="mi">1984</span><span class="p">);</span>
-<span class="nv">$index_clause</span> <span class="o">=</span> <span class="nx">CassandraUtil</span><span class="o">::</span><span class="na">create_index_clause</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="nv">$index_exp</span><span class="p">));</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="k">use</span> <span class="nx">phpcassa\SystemManager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">phpcassa\Index\IndexExpression</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">phpcassa\Index\IndexClause</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">phpcassa\Schema\DataType\LongType</span><span class="p">;</span>
+
+<span class="nv">$sys</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SystemManager</span><span class="p">();</span>
+<span class="nv">$sys</span><span class="o">-&gt;</span><span class="na">create_column_family</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">);</span>
+<span class="nv">$sys</span><span class="o">-&gt;</span><span class="na">create_index</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">,</span> <span class="s1">&#39;birthdate&#39;</span><span class="p">,</span> <span class="nx">LongType</span><span class="p">());</span>
+
+<span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;winston&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;birthdate&#39;</span> <span class="o">=&gt;</span> <span class="mi">1984</span><span class="p">));</span>
+
+<span class="nv">$index_exp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IndexExpression</span><span class="p">(</span><span class="s1">&#39;birthdate&#39;</span><span class="p">,</span> <span class="mi">1984</span><span class="p">);</span>
+<span class="nv">$index_clause</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IndexClause</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="nv">$index_exp</span><span class="p">));</span>
 <span class="nv">$rows</span> <span class="o">=</span> <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_indexed_slices</span><span class="p">(</span><span class="nv">$index_clause</span><span class="p">);</span>
 <span class="c1">// returns an Iterator over:</span>
 <span class="c1">//    array(&#39;winston smith&#39; =&gt; array(&#39;birthdate&#39; =&gt; 1984))</span>
@@ -428,10 +412,9 @@ the following:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Although at least one
-<a class="reference external" href="http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html">IndexExpression</a>
-in every clause must be on an indexed column, you may also have other expressions
-which are on non-indexed columns.</p>
+<p>Although at least one <cite>IndexExpression</cite> in every clause must use an equality
+match against an indexed column, you may also have other expressions which are
+apply to non-indexed columns or use comparators other than <cite>&#8220;EQ&#8221;</cite>.</p>
 </div>
 </div>
 
@@ -453,7 +436,7 @@ which are on non-indexed columns.</p>
         <li class="right" >
           <a href="installation.html" title="Installing"
              >previous</a> |</li>
-        <li><a href="index.html">phpcassa v0.8.a.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">phpcassa v1.0.a.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

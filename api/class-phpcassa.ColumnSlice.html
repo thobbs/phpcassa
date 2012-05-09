@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\ColumnSlice | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-phpcassa.ColumnFamily.html">ColumnFamily</a></li>
+				<li class="active"><a href="class-phpcassa.ColumnSlice.html">ColumnSlice</a></li>
+				<li><a href="class-phpcassa.SuperColumnFamily.html">SuperColumnFamily</a></li>
+				<li><a href="class-phpcassa.SystemManager.html">SystemManager</a></li>
+				<li><a href="class-phpcassa.UUID.html">UUID</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.html" title="Summary of phpcassa"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ColumnSlice</h1>
+
+
+	<div class="description">
+	
+<p>Represents a range of columns to slice from a row, multiple rows, or a super
+column.</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-TBase.html"><span>TBase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-cassandra.SliceRange.html"><span>cassandra\SliceRange</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>phpcassa\ColumnSlice</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
+		<b>Package:</b> phpcassa<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.ColumnSlice.html#6" title="Go to source code">phpcassa/ColumnSlice.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-phpcassa.ColumnSlice.html#20" title="Go to source code">__construct</a>( <span>mixed <var>$start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>mixed <var>$finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$count</var> = <code><a href="class-phpcassa.ColumnSlice.html#DEFAULT_COLUMN_COUNT">phpcassa\ColumnSlice::<b>DEFAULT_COLUMN_COUNT</b></a></code></span>, <span>boolean <var>$reversed</var> = <span class="php-keyword1">False</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Defines a range of columns.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Defines a range of columns.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$start</var></dt>
+					<dd><code>mixed</code><br> the column to start with, or '' for the beginning of the row</dd>
+					<dt><var>$finish</var></dt>
+					<dd><code>mixed</code><br> the column to finish with, or '' for the end of the row</dd>
+					<dt><var>$count</var></dt>
+					<dd><code>integer</code><br> an upper bound on the number of columns to fetch. The default limit is 100
+columns.</dd>
+					<dt><var>$reversed</var></dt>
+					<dd><code>boolean</code><br> whether or not to reverse the column slice, going backwards from $start to
+$finish.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-cassandra.SliceRange.html#methods">cassandra\SliceRange</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-cassandra.SliceRange.html#_getName">getName()</a>, 
+			<a href="class-cassandra.SliceRange.html#_read">read()</a>, 
+			<a href="class-cassandra.SliceRange.html#_write">write()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="DEFAULT_COLUMN_COUNT" id="DEFAULT_COLUMN_COUNT">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.ColumnSlice.html#14" title="Go to source code"><b>DEFAULT_COLUMN_COUNT</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">100</span></code></td>
+		<td class="description"><div>
+			<a href="#DEFAULT_COLUMN_COUNT" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The default limit to the number of columns retrieved in queries.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The default limit to the number of columns retrieved in queries.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="MAX_COUNT" id="MAX_COUNT">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.ColumnSlice.html#17" title="Go to source code"><b>MAX_COUNT</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">2147483647</span></code></td>
+		<td class="description"><div>
+			<a href="#MAX_COUNT" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The maximum number number of columns that can be fetch at once.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The maximum number number of columns that can be fetch at once.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-cassandra.SliceRange.html#properties">cassandra\SliceRange</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-cassandra.SliceRange.html#$_TSPEC"><var>$_TSPEC</var></a>, 
+			<a href="class-cassandra.SliceRange.html#$count"><var>$count</var></a>, 
+			<a href="class-cassandra.SliceRange.html#$finish"><var>$finish</var></a>, 
+			<a href="class-cassandra.SliceRange.html#$reversed"><var>$reversed</var></a>, 
+			<a href="class-cassandra.SliceRange.html#$start"><var>$start</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-TBase.html#properties">TBase</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TBase.html#$tmethod"><var>$tmethod</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

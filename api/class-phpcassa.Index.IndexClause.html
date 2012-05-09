@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\Index\IndexClause | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-phpcassa.Index.IndexClause.html">IndexClause</a></li>
+				<li><a href="class-phpcassa.Index.IndexExpression.html">IndexExpression</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.Index.html" title="Summary of phpcassa\Index"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class IndexClause</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-TBase.html"><span>TBase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-cassandra.IndexClause.html"><span>cassandra\IndexClause</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>phpcassa\Index\IndexClause</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a>\<a href="namespace-phpcassa.Index.html">Index</a><br />
+		<b>Package:</b> phpcassa\Index<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.Index.IndexClause.html#6" title="Go to source code">phpcassa/Index/IndexClause.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-phpcassa.Index.IndexClause.html#11" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.Index.IndexExpression.html">phpcassa\Index\IndexExpression</a>[]</code> <var>$expr_list</var></span>, <span>mixed <var>$start_key</var> = <span class="php-quote">''</span></span>, <span>integer <var>$count</var> = <code><a href="class-phpcassa.ColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\ColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span> )</code>
+
+		<div class="description short">
+			
+<p>Constructs an index clause for use with get_indexed_slices().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Constructs an index clause for use with get_indexed_slices().</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$expr_list</var></dt>
+					<dd><code><code><a href="class-phpcassa.Index.IndexExpression.html">phpcassa\Index\IndexExpression</a>[]</code></code><br> the list of expressions to match; at least one of these must be on an indexed
+column</dd>
+					<dt><var>$start_key</var></dt>
+					<dd><code>mixed</code><br> the key to begin searching from</dd>
+					<dt><var>$count</var></dt>
+					<dd><code>integer</code><br> the number of results to return</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-cassandra.IndexClause.html#methods">cassandra\IndexClause</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-cassandra.IndexClause.html#_getName">getName()</a>, 
+			<a href="class-cassandra.IndexClause.html#_read">read()</a>, 
+			<a href="class-cassandra.IndexClause.html#_write">write()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-cassandra.IndexClause.html#properties">cassandra\IndexClause</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-cassandra.IndexClause.html#$_TSPEC"><var>$_TSPEC</var></a>, 
+			<a href="class-cassandra.IndexClause.html#$count"><var>$count</var></a>, 
+			<a href="class-cassandra.IndexClause.html#$expressions"><var>$expressions</var></a>, 
+			<a href="class-cassandra.IndexClause.html#$start_key"><var>$start_key</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-TBase.html#properties">TBase</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TBase.html#$tmethod"><var>$tmethod</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

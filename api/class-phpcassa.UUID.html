@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\UUID | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-phpcassa.ColumnFamily.html">ColumnFamily</a></li>
+				<li><a href="class-phpcassa.ColumnSlice.html">ColumnSlice</a></li>
+				<li><a href="class-phpcassa.SuperColumnFamily.html">SuperColumnFamily</a></li>
+				<li><a href="class-phpcassa.SystemManager.html">SystemManager</a></li>
+				<li class="active"><a href="class-phpcassa.UUID.html">UUID</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.html" title="Summary of phpcassa"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class UUID</h1>
+
+
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
+		<b>Package:</b> phpcassa<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.UUID.html#42" title="Go to source code">phpcassa/UUID.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="uuid1" id="_uuid1">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_uuid1">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#76" title="Go to source code">uuid1</a>( <span>string <var>$node</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$time</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Generate a v1 UUID (timestamp based)</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a v1 UUID (timestamp based)</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$node</var></dt>
+					<dd><code>string</code><br> what to use for the MAC portion of the UUID. This will be generated randomly if
+left as NULL</dd>
+					<dt><var>$time</var></dt>
+					<dd><code>integer</code><br> timestamp to use for the UUID. This should be a number of microseconds since
+the UNIX epoch.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>a byte[] representation of a UUID<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="uuid3" id="_uuid3">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_uuid3">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#88" title="Go to source code">uuid3</a>( <span> <var>$node</var> = <span class="php-keyword1">null</span></span>, <span> <var>$namespace</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Generate a v3 UUID</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a v3 UUID</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>a byte[] representation of a UUID<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="uuid4" id="_uuid4">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_uuid4">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#96" title="Go to source code">uuid4</a>( )</code>
+
+		<div class="description short">
+			
+<p>Generate a v4 UUID</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a v4 UUID</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>a byte[] representation of a UUID<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="uuid5" id="_uuid5">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_uuid5">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#104" title="Go to source code">uuid5</a>( <span> <var>$node</var></span>, <span> <var>$namespace</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Generate a v5 UUID</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a v5 UUID</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>a byte[] representation of a UUID<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="import" id="_import">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_import">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#112" title="Go to source code">import</a>( <span> <var>$uuid</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Import an existing UUID.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Import an existing UUID.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mint" id="_mint">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mint">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#119" title="Go to source code">mint</a>( <span>integer <var>$ver</var> = <span class="php-num">1</span></span>, <span> <var>$node</var> = <span class="php-keyword1">NULL</span></span>, <span> <var>$ns</var> = <span class="php-keyword1">NULL</span></span>, <span> <var>$time</var> = <span class="php-keyword1">NULL</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Create a new UUID based on provided data.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Create a new UUID based on provided data.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$ver</var></dt>
+					<dd><code>integer</code><br> the UUID version to generate.</dd>
+					<dt><var>$node</var></dt>
+					<dd></dd>
+					<dt><var>$ns</var></dt>
+					<dd></dd>
+					<dt><var>$time</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="compare" id="_compare">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_compare">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#141" title="Go to source code">compare</a>( <span> <var>$a</var></span>, <span> <var>$b</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Compare the binary representations of two UUIDs. The comparison will return
+true if they are bit-exact, or if neither is valid.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Compare the binary representations of two UUIDs. The comparison will return
+true if they are bit-exact, or if neither is valid.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__toString" id="___toString">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___toString">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#153" title="Go to source code">__toString</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__get" id="___get">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___get">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#157" title="Go to source code">__get</a>( <span> <var>$var</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="initRandom" id="_initRandom">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_initRandom">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#317" title="Go to source code">initRandom</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="randomBytes" id="_randomBytes">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_randomBytes">#</a>
+		<code><a href="source-class-phpcassa.UUID.html#334" title="Go to source code">randomBytes</a>( <span> <var>$bytes</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="MD5" id="MD5">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#46" title="Go to source code"><b>MD5</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">3</span></code></td>
+		<td class="description"><div>
+			<a href="#MD5" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="SHA1" id="SHA1">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#47" title="Go to source code"><b>SHA1</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">5</span></code></td>
+		<td class="description"><div>
+			<a href="#SHA1" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="clearVer" id="clearVer">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#48" title="Go to source code"><b>clearVer</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">15</span></code></td>
+		<td class="description"><div>
+			<a href="#clearVer" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="clearVar" id="clearVar">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#49" title="Go to source code"><b>clearVar</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">63</span></code></td>
+		<td class="description"><div>
+			<a href="#clearVar" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="varRes" id="varRes">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#50" title="Go to source code"><b>varRes</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">224</span></code></td>
+		<td class="description"><div>
+			<a href="#varRes" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="varMS" id="varMS">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#51" title="Go to source code"><b>varMS</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">192</span></code></td>
+		<td class="description"><div>
+			<a href="#varMS" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="varRFC" id="varRFC">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#52" title="Go to source code"><b>varRFC</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">128</span></code></td>
+		<td class="description"><div>
+			<a href="#varRFC" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="varNCS" id="varNCS">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#53" title="Go to source code"><b>varNCS</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#varNCS" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="version1" id="version1">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#54" title="Go to source code"><b>version1</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">16</span></code></td>
+		<td class="description"><div>
+			<a href="#version1" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="version3" id="version3">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#55" title="Go to source code"><b>version3</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">48</span></code></td>
+		<td class="description"><div>
+			<a href="#version3" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="version4" id="version4">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#56" title="Go to source code"><b>version4</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">64</span></code></td>
+		<td class="description"><div>
+			<a href="#version4" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="version5" id="version5">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#57" title="Go to source code"><b>version5</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">80</span></code></td>
+		<td class="description"><div>
+			<a href="#version5" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="interval" id="interval">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#58" title="Go to source code"><b>interval</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">0x01b21dd213814000</span></code></td>
+		<td class="description"><div>
+			<a href="#interval" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nsDNS" id="nsDNS">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#59" title="Go to source code"><b>nsDNS</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">'6ba7b810-9dad-11d1-80b4-00c04fd430c8'</span></code></td>
+		<td class="description"><div>
+			<a href="#nsDNS" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nsURL" id="nsURL">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#60" title="Go to source code"><b>nsURL</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">'6ba7b811-9dad-11d1-80b4-00c04fd430c8'</span></code></td>
+		<td class="description"><div>
+			<a href="#nsURL" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nsOID" id="nsOID">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#61" title="Go to source code"><b>nsOID</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">'6ba7b812-9dad-11d1-80b4-00c04fd430c8'</span></code></td>
+		<td class="description"><div>
+			<a href="#nsOID" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nsX500" id="nsX500">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.UUID.html#62" title="Go to source code"><b>nsX500</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">'6ba7b814-9dad-11d1-80b4-00c04fd430c8'</span></code></td>
+		<td class="description"><div>
+			<a href="#nsX500" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

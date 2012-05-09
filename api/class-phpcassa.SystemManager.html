@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\SystemManager | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-phpcassa.ColumnFamily.html">ColumnFamily</a></li>
+				<li><a href="class-phpcassa.ColumnSlice.html">ColumnSlice</a></li>
+				<li><a href="class-phpcassa.SuperColumnFamily.html">SuperColumnFamily</a></li>
+				<li class="active"><a href="class-phpcassa.SystemManager.html">SystemManager</a></li>
+				<li><a href="class-phpcassa.UUID.html">UUID</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.html" title="Summary of phpcassa"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class SystemManager</h1>
+
+
+	<div class="description">
+	
+<p>Helps with getting information about the schema, making schema changes, and
+getting information about the state and configuration of the cluster.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
+		<b>Package:</b> phpcassa<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.SystemManager.html#11" title="Go to source code">phpcassa/SystemManager.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#20" title="Go to source code">__construct</a>( <span>string <var>$server</var> = <span class="php-quote">'localhost:9160'</span></span>, <span>array <var>$credentials</var> = <span class="php-keyword1">NULL</span></span>, <span>integer <var>$send_timeout</var> = <span class="php-num">15000</span></span>, <span>integer <var>$recv_timeout</var> = <span class="php-num">15000</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$server</var></dt>
+					<dd><code>string</code><br> the host and port to connect to, in the form 'host:port'. Defaults to
+'localhost:9160'.</dd>
+					<dt><var>$credentials</var></dt>
+					<dd><code>array</code><br> if using authentication or authorization with Cassandra, a username and
+password need to be supplied. This should be in the form array("username" =&gt;
+username, "password" =&gt; password)</dd>
+					<dt><var>$send_timeout</var></dt>
+					<dd><code>integer</code><br> the socket send timeout in milliseconds. Defaults to 15000.</dd>
+					<dt><var>$recv_timeout</var></dt>
+					<dd><code>integer</code><br> the socket receive timeout in milliseconds. Defaults to 15000.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="close" id="_close">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_close">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#40" title="Go to source code">close</a>( )</code>
+
+		<div class="description short">
+			
+<p>Closes the underlying Thrift connection.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Closes the underlying Thrift connection.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="create_keyspace" id="_create_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_create_keyspace">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#56" title="Go to source code">create_keyspace</a>( <span>string <var>$keyspace</var></span>, <span>array <var>$attrs</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Creates a new keyspace.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates a new keyspace.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-keyword1">use</span> phpcassa\SystemManager;
+<span
+class="php-keyword1">use</span> phpcassa\Schema\StrategyClass;
+
+<span
+class="php-var">$sys</span> = SystemManager();
+<span
+class="php-var">$attrs</span> = <span class="php-keyword1">array</span>(<span
+class="php-quote">&quot;strategy_class&quot;</span> =&gt; StrategyClass\SIMPLE_STRATEGY,
+               <span
+class="php-quote">&quot;strategy_options&quot;</span> =&gt; <span
+class="php-keyword1">array</span>(<span
+class="php-quote">&quot;replication_factor&quot;</span> =&gt; <span
+class="php-quote">&quot;1&quot;</span>));
+<span
+class="php-var">$sys</span>-&gt;create_keyspace(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-var">$attrs</span>);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace name</dd>
+					<dt><var>$attrs</var></dt>
+					<dd><code>array</code><br> an array that maps attribute names to values. Valid attribute names include
+"strategy_class", "strategy_options", and "replication_factor". By default,
+SimpleStrategy will be used with a replication factor of 1 and no strategy
+options.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="alter_keyspace" id="_alter_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_alter_keyspace">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#86" title="Go to source code">alter_keyspace</a>( <span>string <var>$keyspace</var></span>, <span>array <var>$attrs</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Modifies a keyspace's properties.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Modifies a keyspace's properties.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-var">$sys</span> = SystemManager();
+<span
+class="php-var">$attrs</span> = <span class="php-keyword1">array</span>(<span
+class="php-quote">&quot;replication_factor&quot;</span> =&gt; <span
+class="php-num">2</span>);
+<span
+class="php-var">$sys</span>-&gt;alter_keyspace(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-var">$attrs</span>);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace to modify</dd>
+					<dt><var>$attrs</var></dt>
+					<dd><code>array</code><br> an array that maps attribute names to values. Valid attribute names include
+"strategy_class", "strategy_options", and "replication_factor".</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="drop_keyspace" id="_drop_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_drop_keyspace">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#115" title="Go to source code">drop_keyspace</a>( <span> <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="create_column_family" id="_create_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_create_column_family">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#149" title="Go to source code">create_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>array <var>$attrs</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Creates a column family.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates a column family.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-var">$sys</span> = SystemManager();
+<span
+class="php-var">$attrs</span> = <span class="php-keyword1">array</span>(<span
+class="php-quote">&quot;column_type&quot;</span> =&gt; <span
+class="php-quote">&quot;Standard&quot;</span>,
+               <span
+class="php-quote">&quot;comparator_type&quot;</span> =&gt; <span
+class="php-quote">&quot;org.apache.cassandra.db.marshal.AsciiType&quot;</span>,
+               <span
+class="php-quote">&quot;memtable_throughput_in_mb&quot;</span> =&gt; <span
+class="php-num">32</span>);
+<span
+class="php-var">$sys</span>-&gt;create_column_family(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-quote">&quot;ColumnFamily1&quot;</span>, <span
+class="php-var">$attrs</span>);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace containing the column family</dd>
+					<dt><var>$column_family</var></dt>
+					<dd><code>string</code><br> the name of the column family</dd>
+					<dt><var>$attrs</var></dt>
+					<dd><code>array</code><br> an array that maps attribute names to values.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="alter_column_family" id="_alter_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_alter_column_family">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#203" title="Go to source code">alter_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>array <var>$attrs</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Modifies a column family's attributes.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Modifies a column family's attributes.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-var">$sys</span> = SystemManager();
+<span
+class="php-var">$attrs</span> = <span class="php-keyword1">array</span>(<span
+class="php-quote">&quot;max_compaction_threshold&quot;</span> =&gt; <span
+class="php-num">10</span>);
+<span
+class="php-var">$sys</span>-&gt;alter_column_family(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-quote">&quot;ColumnFamily1&quot;</span>, <span
+class="php-var">$attrs</span>);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace containing the column family</dd>
+					<dt><var>$column_family</var></dt>
+					<dd><code>string</code><br> the name of the column family</dd>
+					<dt><var>$attrs</var></dt>
+					<dd><code>array</code><br> an array that maps attribute names to values.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="drop_column_family" id="_drop_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_drop_column_family">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#232" title="Go to source code">drop_column_family</a>( <span> <var>$keyspace</var></span>, <span> <var>$column_family</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="truncate_column_family" id="_truncate_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_truncate_column_family">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#238" title="Go to source code">truncate_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Mark the entire column family as deleted.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Mark the entire column family as deleted.</p>
+
+<p>From the user's perspective a successful call to truncate will result
+complete data deletion from cfname. Internally, however, disk space will not be
+immediatily released, as with all deletes in cassandra, this one only marks the
+data as deleted.</p>
+
+<p>The operation succeeds only if all hosts in the cluster at available and will
+throw an UnavailableException if some hosts are down.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-var">$sys</span> = SystemManager();
+<span
+class="php-var">$sys</span>-&gt;truncate_column_family(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-quote">&quot;ColumnFamily1&quot;</span>);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace the CF is in</dd>
+					<dt><var>$column_family</var></dt>
+					<dd><code>string</code><br> the column family name</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="create_index" id="_create_index">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_create_index">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#263" title="Go to source code">create_index</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span>, <span>DataType <var>$data_type</var></span>, <span>string <var>$index_name</var> = <span class="php-keyword1">NULL</span></span>, <span><code><a href="class-cassandra.IndexType.html">cassandra\IndexType</a></code> <var>$index_type</var> = <code><a href="class-cassandra.IndexType.html#KEYS">cassandra\IndexType::<b>KEYS</b></a></code></span> )</code>
+
+		<div class="description short">
+			
+<p>Adds an index to a column family.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Adds an index to a column family.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-var">$sys</span> = <span
+class="php-keyword1">new</span> SystemManager();
+<span
+class="php-var">$sys</span>-&gt;create_index(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-quote">&quot;Users&quot;</span>, <span
+class="php-quote">&quot;name&quot;</span>, DataType::UTF8_TYPE);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the name of the keyspace containing the column family</dd>
+					<dt><var>$column_family</var></dt>
+					<dd><code>string</code><br> the name of the column family</dd>
+					<dt><var>$column</var></dt>
+					<dd><code>string</code><br> the name of the column to put the index on</dd>
+					<dt><var>$data_type</var></dt>
+					<dd><code>DataType</code><br> the data type of the values being indexed</dd>
+					<dt><var>$index_name</var></dt>
+					<dd><code>string</code><br> an optional name for the index</dd>
+					<dt><var>$index_type</var></dt>
+					<dd><code><code><a href="class-cassandra.IndexType.html">cassandra\IndexType</a></code></code><br> the type of index. Defaults to \cassandra\IndexType::KEYS_INDEX, which is
+currently the only option.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="drop_index" id="_drop_index">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_drop_index">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#311" title="Go to source code">drop_index</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Drop an index from a column family.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Drop an index from a column family.</p>
+
+<p>Example usage:</p>
+
+<pre>
+<span class="php-var">$sys</span> = <span
+class="php-keyword1">new</span> SystemManager();
+<span
+class="php-var">$sys</span>-&gt;drop_index(<span
+class="php-quote">&quot;Keyspace1&quot;</span>, <span
+class="php-quote">&quot;Users&quot;</span>, <span
+class="php-quote">&quot;name&quot;</span>);
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the name of the keyspace containing the column family</dd>
+					<dt><var>$column_family</var></dt>
+					<dd><code>string</code><br> the name of the column family</dd>
+					<dt><var>$column</var></dt>
+					<dd><code>string</code><br> the name of the column to drop the index from</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_ring" id="_describe_ring">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_ring">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#348" title="Go to source code">describe_ring</a>( <span> <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Describes the Cassandra cluster.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Describes the Cassandra cluster.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>the node to token mapping<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_cluster_name" id="_describe_cluster_name">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_cluster_name">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#357" title="Go to source code">describe_cluster_name</a>( )</code>
+
+		<div class="description short">
+			
+<p>Gives the cluster name.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Gives the cluster name.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>the cluster name<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_version" id="_describe_version">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_version">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#366" title="Go to source code">describe_version</a>( )</code>
+
+		<div class="description short">
+			
+<p>Gives the Thrift API version for the Cassandra instance.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Gives the Thrift API version for the Cassandra instance.</p>
+
+<p>Note that this is different than the Cassandra version.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>the API version<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_schema_versions" id="_describe_schema_versions">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_schema_versions">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#377" title="Go to source code">describe_schema_versions</a>( )</code>
+
+		<div class="description short">
+			
+<p>Describes what schema version each node currently has. Differences in schema
+versions indicate a schema conflict.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Describes what schema version each node currently has. Differences in schema
+versions indicate a schema conflict.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>a mapping of schema versions to nodes.<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_partitioner" id="_describe_partitioner">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_partitioner">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#387" title="Go to source code">describe_partitioner</a>( )</code>
+
+		<div class="description short">
+			
+<p>Describes the cluster's partitioner.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Describes the cluster's partitioner.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>the name of the partitioner in use<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_snitch" id="_describe_snitch">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_snitch">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#396" title="Go to source code">describe_snitch</a>( )</code>
+
+		<div class="description short">
+			
+<p>Describes the cluster's snitch.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Describes the cluster's snitch.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>the name of the snitch in use<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_keyspace" id="_describe_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-cassandra.KsDef.html">cassandra\KsDef</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_keyspace">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#405" title="Go to source code">describe_keyspace</a>( <span>string <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Returns a description of the keyspace and its column families. This includes
+all configuration settings for the keyspace and column families.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns a description of the keyspace and its column families. This includes
+all configuration settings for the keyspace and column families.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-cassandra.KsDef.html">cassandra\KsDef</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_keyspaces" id="_describe_keyspaces">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_keyspaces">#</a>
+		<code><a href="source-class-phpcassa.SystemManager.html#418" title="Go to source code">describe_keyspaces</a>( )</code>
+
+		<div class="description short">
+			
+<p>Like describe_keyspace(), but for all keyspaces.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Like describe_keyspace(), but for all keyspaces.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>an array of cassandra\KsDef<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

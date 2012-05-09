@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="robots" content="noindex" />
+
+	<title>File phpcassa/Iterator/IndexedColumnFamilyIterator.php | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-phpcassa.Iterator.ColumnFamilyIterator.html">ColumnFamilyIterator</a></li>
+				<li class="active"><a href="class-phpcassa.Iterator.IndexedColumnFamilyIterator.html">IndexedColumnFamilyIterator</a></li>
+				<li><a href="class-phpcassa.Iterator.RangeColumnFamilyIterator.html">RangeColumnFamilyIterator</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.Iterator.html" title="Summary of phpcassa\Iterator"><span>Namespace</span></a>
+			</li>
+			<li>
+				<a href="class-phpcassa.Iterator.IndexedColumnFamilyIterator.html" title="Summary of phpcassa\Iterator\IndexedColumnFamilyIterator"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre><code><a href="#1" id="1" class="l"> 1: </a><span class="xlang">&lt;?php</span>
+<a href="#2" id="2" class="l"> 2: </a><span class="php-keyword1">namespace</span> phpcassa\Iterator;
+<a href="#3" id="3" class="l"> 3: </a>
+<a href="#4" id="4" class="l"> 4: </a><span class="php-comment">/**
+</span><a href="#5" id="5" class="l"> 5: </a><span class="php-comment"> * Iterates over a column family row-by-row, typically with only a subset
+</span><a href="#6" id="6" class="l"> 6: </a><span class="php-comment"> * of each row's columns.
+</span><a href="#7" id="7" class="l"> 7: </a><span class="php-comment"> *
+</span><a href="#8" id="8" class="l"> 8: </a><span class="php-comment"> * @package phpcassa\Iterator
+</span><a href="#9" id="9" class="l"> 9: </a><span class="php-comment"> */</span>
+<a href="#10" id="10" class="l">10: </a><span class="php-keyword1">class</span> IndexedColumnFamilyIterator <span class="php-keyword1">extends</span> ColumnFamilyIterator {
+<a href="#11" id="11" class="l">11: </a>
+<a href="#12" id="12" class="l">12: </a>    <span class="php-keyword1">private</span> <span class="php-var">$index_clause</span>;
+<a href="#13" id="13" class="l">13: </a>
+<a href="#14" id="14" class="l">14: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> __construct(<span class="php-var">$column_family</span>, <span class="php-var">$index_clause</span>, <span class="php-var">$buffer_size</span>,
+<a href="#15" id="15" class="l">15: </a>                                <span class="php-var">$column_parent</span>, <span class="php-var">$predicate</span>,
+<a href="#16" id="16" class="l">16: </a>                                <span class="php-var">$read_consistency_level</span>) {
+<a href="#17" id="17" class="l">17: </a>
+<a href="#18" id="18" class="l">18: </a>        <span class="php-var">$this</span>-&gt;index_clause = <span class="php-var">$index_clause</span>;
+<a href="#19" id="19" class="l">19: </a>        <span class="php-var">$row_count</span> = <span class="php-var">$index_clause</span>-&gt;<span class="php-keyword2">count</span>;
+<a href="#20" id="20" class="l">20: </a>        <span class="php-var">$orig_start_key</span> = <span class="php-var">$index_clause</span>-&gt;start_key;
+<a href="#21" id="21" class="l">21: </a>
+<a href="#22" id="22" class="l">22: </a>        parent::__construct(<span class="php-var">$column_family</span>, <span class="php-var">$buffer_size</span>, <span class="php-var">$row_count</span>,
+<a href="#23" id="23" class="l">23: </a>                            <span class="php-var">$orig_start_key</span>, <span class="php-var">$column_parent</span>, <span class="php-var">$predicate</span>,
+<a href="#24" id="24" class="l">24: </a>                            <span class="php-var">$read_consistency_level</span>);
+<a href="#25" id="25" class="l">25: </a>    }
+<a href="#26" id="26" class="l">26: </a>
+<a href="#27" id="27" class="l">27: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> get_buffer() {
+<a href="#28" id="28" class="l">28: </a>        <span class="php-comment"># Figure out how many rows we need to get and record that</span>
+<a href="#29" id="29" class="l">29: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;row_count != <span class="php-keyword1">null</span>)
+<a href="#30" id="30" class="l">30: </a>            <span class="php-var">$this</span>-&gt;index_clause-&gt;<span class="php-keyword2">count</span> = <span class="php-keyword2">min</span>(<span class="php-var">$this</span>-&gt;row_count - <span class="php-var">$this</span>-&gt;rows_seen + <span class="php-num">1</span>, <span class="php-var">$this</span>-&gt;buffer_size);
+<a href="#31" id="31" class="l">31: </a>        <span class="php-keyword1">else</span>
+<a href="#32" id="32" class="l">32: </a>            <span class="php-var">$this</span>-&gt;index_clause-&gt;<span class="php-keyword2">count</span> = <span class="php-var">$this</span>-&gt;buffer_size;
+<a href="#33" id="33" class="l">33: </a>        <span class="php-var">$this</span>-&gt;expected_page_size = <span class="php-var">$this</span>-&gt;index_clause-&gt;<span class="php-keyword2">count</span>;
+<a href="#34" id="34" class="l">34: </a>
+<a href="#35" id="35" class="l">35: </a>        <span class="php-var">$this</span>-&gt;index_clause-&gt;start_key = <span class="php-var">$this</span>-&gt;column_family-&gt;pack_key(<span class="php-var">$this</span>-&gt;next_start_key);
+<a href="#36" id="36" class="l">36: </a>        <span class="php-var">$resp</span> = <span class="php-var">$this</span>-&gt;column_family-&gt;pool-&gt;call(<span class="php-quote">&quot;get_indexed_slices&quot;</span>,
+<a href="#37" id="37" class="l">37: </a>                <span class="php-var">$this</span>-&gt;column_parent, <span class="php-var">$this</span>-&gt;index_clause, <span class="php-var">$this</span>-&gt;predicate,
+<a href="#38" id="38" class="l">38: </a>                <span class="php-var">$this</span>-&gt;read_consistency_level);
+<a href="#39" id="39" class="l">39: </a>
+<a href="#40" id="40" class="l">40: </a>        <span class="php-var">$this</span>-&gt;current_buffer = <span class="php-var">$this</span>-&gt;column_family-&gt;keyslices_to_array(<span class="php-var">$resp</span>);
+<a href="#41" id="41" class="l">41: </a>        <span class="php-var">$this</span>-&gt;current_page_size = <span class="php-keyword2">count</span>(<span class="php-var">$this</span>-&gt;current_buffer);
+<a href="#42" id="42" class="l">42: </a>    }
+<a href="#43" id="43" class="l">43: </a>}
+<a href="#44" id="44" class="l">44: </a>
+<a href="#45" id="45" class="l">45: </a></code></pre>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

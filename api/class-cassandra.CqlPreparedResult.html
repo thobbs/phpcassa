@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class cassandra\CqlPreparedResult | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-cassandra.AuthenticationRequest.html">AuthenticationRequest</a></li>
+				<li><a href="class-cassandra.CassandraClient.html">CassandraClient</a></li>
+				<li><a href="class-cassandra.CfDef.html">CfDef</a></li>
+				<li><a href="class-cassandra.Column.html">Column</a></li>
+				<li><a href="class-cassandra.ColumnDef.html">ColumnDef</a></li>
+				<li><a href="class-cassandra.ColumnOrSuperColumn.html">ColumnOrSuperColumn</a></li>
+				<li><a href="class-cassandra.ColumnParent.html">ColumnParent</a></li>
+				<li><a href="class-cassandra.ColumnPath.html">ColumnPath</a></li>
+				<li><a href="class-cassandra.Compression.html">Compression</a></li>
+				<li><a href="class-cassandra.ConsistencyLevel.html">ConsistencyLevel</a></li>
+				<li><a href="class-cassandra.CounterColumn.html">CounterColumn</a></li>
+				<li><a href="class-cassandra.CounterSuperColumn.html">CounterSuperColumn</a></li>
+				<li><a href="class-cassandra.CqlMetadata.html">CqlMetadata</a></li>
+				<li class="active"><a href="class-cassandra.CqlPreparedResult.html">CqlPreparedResult</a></li>
+				<li><a href="class-cassandra.CqlResult.html">CqlResult</a></li>
+				<li><a href="class-cassandra.CqlResultType.html">CqlResultType</a></li>
+				<li><a href="class-cassandra.CqlRow.html">CqlRow</a></li>
+				<li><a href="class-cassandra.Deletion.html">Deletion</a></li>
+				<li><a href="class-cassandra.EndpointDetails.html">EndpointDetails</a></li>
+				<li><a href="class-cassandra.IndexClause.html">IndexClause</a></li>
+				<li><a href="class-cassandra.IndexExpression.html">IndexExpression</a></li>
+				<li><a href="class-cassandra.IndexOperator.html">IndexOperator</a></li>
+				<li><a href="class-cassandra.IndexType.html">IndexType</a></li>
+				<li><a href="class-cassandra.KeyCount.html">KeyCount</a></li>
+				<li><a href="class-cassandra.KeyRange.html">KeyRange</a></li>
+				<li><a href="class-cassandra.KeySlice.html">KeySlice</a></li>
+				<li><a href="class-cassandra.KsDef.html">KsDef</a></li>
+				<li><a href="class-cassandra.Mutation.html">Mutation</a></li>
+				<li><a href="class-cassandra.SlicePredicate.html">SlicePredicate</a></li>
+				<li><a href="class-cassandra.SliceRange.html">SliceRange</a></li>
+				<li><a href="class-cassandra.SuperColumn.html">SuperColumn</a></li>
+				<li><a href="class-cassandra.TokenRange.html">TokenRange</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-cassandra.CassandraIf.html">CassandraIf</a></li>
+			</ul>
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-cassandra.AuthenticationException.html">AuthenticationException</a></li>
+				<li><a href="class-cassandra.AuthorizationException.html">AuthorizationException</a></li>
+				<li><a href="class-cassandra.InvalidRequestException.html">InvalidRequestException</a></li>
+				<li><a href="class-cassandra.NotFoundException.html">NotFoundException</a></li>
+				<li><a href="class-cassandra.SchemaDisagreementException.html">SchemaDisagreementException</a></li>
+				<li><a href="class-cassandra.TimedOutException.html">TimedOutException</a></li>
+				<li><a href="class-cassandra.UnavailableException.html">UnavailableException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-cassandra.html" title="Summary of cassandra"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class CqlPreparedResult</h1>
+
+
+	<div class="description">
+	
+<p>Base class from which other Thrift structs extend. This is so that we can cut
+back on the size of the generated code which is turning out to have a nontrivial
+cost just to load thanks to the wondrously abysmal implementation of PHP. Note
+that code is intentionally duplicated in here to avoid making function calls for
+every field or member of a container..</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-TBase.html"><span>TBase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>cassandra\CqlPreparedResult</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-cassandra.html">cassandra</a><br />
+		
+
+		<b>Located at</b> <a href="source-class-cassandra.CqlPreparedResult.html#6" title="Go to source code">thrift/packages/cassandra/cassandra.CqlPreparedResult.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-cassandra.CqlPreparedResult.html#13" title="Go to source code">__construct</a>( <span> <var>$vals</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getName" id="_getName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getName">#</a>
+		<code><a href="source-class-cassandra.CqlPreparedResult.html#39" title="Go to source code">getName</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="read" id="_read">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_read">#</a>
+		<code><a href="source-class-cassandra.CqlPreparedResult.html#43" title="Go to source code">read</a>( <span> <var>$input</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="write" id="_write">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_write">#</a>
+		<code><a href="source-class-cassandra.CqlPreparedResult.html#47" title="Go to source code">write</a>( <span> <var>$output</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="_TSPEC" id="$_TSPEC">
+
+		<td class="attributes"><code>
+			public static
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-cassandra.CqlPreparedResult.html#7" title="Go to source code"><var>$_TSPEC</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$_TSPEC" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="itemId" id="$itemId">
+
+		<td class="attributes"><code>
+			public 
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-cassandra.CqlPreparedResult.html#9" title="Go to source code"><var>$itemId</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$itemId" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="count" id="$count">
+
+		<td class="attributes"><code>
+			public 
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-cassandra.CqlPreparedResult.html#10" title="Go to source code"><var>$count</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$count" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="variable_types" id="$variable_types">
+
+		<td class="attributes"><code>
+			public 
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-cassandra.CqlPreparedResult.html#11" title="Go to source code"><var>$variable_types</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$variable_types" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-TBase.html#properties">TBase</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TBase.html#$tmethod"><var>$tmethod</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

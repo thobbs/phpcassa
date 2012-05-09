@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Interface cassandra\CassandraIf | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-cassandra.AuthenticationRequest.html">AuthenticationRequest</a></li>
+				<li><a href="class-cassandra.CassandraClient.html">CassandraClient</a></li>
+				<li><a href="class-cassandra.CfDef.html">CfDef</a></li>
+				<li><a href="class-cassandra.Column.html">Column</a></li>
+				<li><a href="class-cassandra.ColumnDef.html">ColumnDef</a></li>
+				<li><a href="class-cassandra.ColumnOrSuperColumn.html">ColumnOrSuperColumn</a></li>
+				<li><a href="class-cassandra.ColumnParent.html">ColumnParent</a></li>
+				<li><a href="class-cassandra.ColumnPath.html">ColumnPath</a></li>
+				<li><a href="class-cassandra.Compression.html">Compression</a></li>
+				<li><a href="class-cassandra.ConsistencyLevel.html">ConsistencyLevel</a></li>
+				<li><a href="class-cassandra.CounterColumn.html">CounterColumn</a></li>
+				<li><a href="class-cassandra.CounterSuperColumn.html">CounterSuperColumn</a></li>
+				<li><a href="class-cassandra.CqlMetadata.html">CqlMetadata</a></li>
+				<li><a href="class-cassandra.CqlPreparedResult.html">CqlPreparedResult</a></li>
+				<li><a href="class-cassandra.CqlResult.html">CqlResult</a></li>
+				<li><a href="class-cassandra.CqlResultType.html">CqlResultType</a></li>
+				<li><a href="class-cassandra.CqlRow.html">CqlRow</a></li>
+				<li><a href="class-cassandra.Deletion.html">Deletion</a></li>
+				<li><a href="class-cassandra.EndpointDetails.html">EndpointDetails</a></li>
+				<li><a href="class-cassandra.IndexClause.html">IndexClause</a></li>
+				<li><a href="class-cassandra.IndexExpression.html">IndexExpression</a></li>
+				<li><a href="class-cassandra.IndexOperator.html">IndexOperator</a></li>
+				<li><a href="class-cassandra.IndexType.html">IndexType</a></li>
+				<li><a href="class-cassandra.KeyCount.html">KeyCount</a></li>
+				<li><a href="class-cassandra.KeyRange.html">KeyRange</a></li>
+				<li><a href="class-cassandra.KeySlice.html">KeySlice</a></li>
+				<li><a href="class-cassandra.KsDef.html">KsDef</a></li>
+				<li><a href="class-cassandra.Mutation.html">Mutation</a></li>
+				<li><a href="class-cassandra.SlicePredicate.html">SlicePredicate</a></li>
+				<li><a href="class-cassandra.SliceRange.html">SliceRange</a></li>
+				<li><a href="class-cassandra.SuperColumn.html">SuperColumn</a></li>
+				<li><a href="class-cassandra.TokenRange.html">TokenRange</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li class="active"><a href="class-cassandra.CassandraIf.html">CassandraIf</a></li>
+			</ul>
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-cassandra.AuthenticationException.html">AuthenticationException</a></li>
+				<li><a href="class-cassandra.AuthorizationException.html">AuthorizationException</a></li>
+				<li><a href="class-cassandra.InvalidRequestException.html">InvalidRequestException</a></li>
+				<li><a href="class-cassandra.NotFoundException.html">NotFoundException</a></li>
+				<li><a href="class-cassandra.SchemaDisagreementException.html">SchemaDisagreementException</a></li>
+				<li><a href="class-cassandra.TimedOutException.html">TimedOutException</a></li>
+				<li><a href="class-cassandra.UnavailableException.html">UnavailableException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-cassandra.html" title="Summary of cassandra"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Interface CassandraIf</h1>
+
+
+
+
+
+
+
+	<div>
+		<h4>Direct known implementers</h4>
+			<a href="class-cassandra.CassandraClient.html">cassandra\CassandraClient</a>
+	</div>
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-cassandra.html">cassandra</a><br />
+		
+
+		<b>Located at</b> <a href="source-class-cassandra.CassandraIf.html#13" title="Go to source code">thrift/packages/cassandra/Cassandra.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="login" id="_login">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_login">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#14" title="Go to source code">login</a>( <span> <var>$auth_request</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="set_keyspace" id="_set_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_set_keyspace">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#15" title="Go to source code">set_keyspace</a>( <span> <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get" id="_get">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#16" title="Go to source code">get</a>( <span> <var>$key</var></span>, <span> <var>$column_path</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_slice" id="_get_slice">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_slice">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#17" title="Go to source code">get_slice</a>( <span> <var>$key</var></span>, <span> <var>$column_parent</var></span>, <span> <var>$predicate</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_count" id="_get_count">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_count">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#18" title="Go to source code">get_count</a>( <span> <var>$key</var></span>, <span> <var>$column_parent</var></span>, <span> <var>$predicate</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="multiget_slice" id="_multiget_slice">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_multiget_slice">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#19" title="Go to source code">multiget_slice</a>( <span> <var>$keys</var></span>, <span> <var>$column_parent</var></span>, <span> <var>$predicate</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="multiget_count" id="_multiget_count">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_multiget_count">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#20" title="Go to source code">multiget_count</a>( <span> <var>$keys</var></span>, <span> <var>$column_parent</var></span>, <span> <var>$predicate</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_range_slices" id="_get_range_slices">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_range_slices">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#21" title="Go to source code">get_range_slices</a>( <span> <var>$column_parent</var></span>, <span> <var>$predicate</var></span>, <span> <var>$range</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_paged_slice" id="_get_paged_slice">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_paged_slice">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#22" title="Go to source code">get_paged_slice</a>( <span> <var>$column_family</var></span>, <span> <var>$range</var></span>, <span> <var>$start_column</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_indexed_slices" id="_get_indexed_slices">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_indexed_slices">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#23" title="Go to source code">get_indexed_slices</a>( <span> <var>$column_parent</var></span>, <span> <var>$index_clause</var></span>, <span> <var>$column_predicate</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="insert" id="_insert">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_insert">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#24" title="Go to source code">insert</a>( <span> <var>$key</var></span>, <span> <var>$column_parent</var></span>, <span> <var>$column</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="add" id="_add">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_add">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#25" title="Go to source code">add</a>( <span> <var>$key</var></span>, <span> <var>$column_parent</var></span>, <span> <var>$column</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="remove" id="_remove">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_remove">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#26" title="Go to source code">remove</a>( <span> <var>$key</var></span>, <span> <var>$column_path</var></span>, <span> <var>$timestamp</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="remove_counter" id="_remove_counter">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_remove_counter">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#27" title="Go to source code">remove_counter</a>( <span> <var>$key</var></span>, <span> <var>$path</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="batch_mutate" id="_batch_mutate">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_batch_mutate">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#28" title="Go to source code">batch_mutate</a>( <span> <var>$mutation_map</var></span>, <span> <var>$consistency_level</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="truncate" id="_truncate">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_truncate">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#29" title="Go to source code">truncate</a>( <span> <var>$cfname</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_schema_versions" id="_describe_schema_versions">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_schema_versions">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#30" title="Go to source code">describe_schema_versions</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_keyspaces" id="_describe_keyspaces">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_keyspaces">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#31" title="Go to source code">describe_keyspaces</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_cluster_name" id="_describe_cluster_name">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_cluster_name">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#32" title="Go to source code">describe_cluster_name</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_version" id="_describe_version">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_version">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#33" title="Go to source code">describe_version</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_ring" id="_describe_ring">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_ring">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#34" title="Go to source code">describe_ring</a>( <span> <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_partitioner" id="_describe_partitioner">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_partitioner">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#35" title="Go to source code">describe_partitioner</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_snitch" id="_describe_snitch">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_snitch">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#36" title="Go to source code">describe_snitch</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_keyspace" id="_describe_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_keyspace">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#37" title="Go to source code">describe_keyspace</a>( <span> <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_splits" id="_describe_splits">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_splits">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#38" title="Go to source code">describe_splits</a>( <span> <var>$cfName</var></span>, <span> <var>$start_token</var></span>, <span> <var>$end_token</var></span>, <span> <var>$keys_per_split</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="system_add_column_family" id="_system_add_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_system_add_column_family">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#39" title="Go to source code">system_add_column_family</a>( <span> <var>$cf_def</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="system_drop_column_family" id="_system_drop_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_system_drop_column_family">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#40" title="Go to source code">system_drop_column_family</a>( <span> <var>$column_family</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="system_add_keyspace" id="_system_add_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_system_add_keyspace">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#41" title="Go to source code">system_add_keyspace</a>( <span> <var>$ks_def</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="system_drop_keyspace" id="_system_drop_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_system_drop_keyspace">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#42" title="Go to source code">system_drop_keyspace</a>( <span> <var>$keyspace</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="system_update_keyspace" id="_system_update_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_system_update_keyspace">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#43" title="Go to source code">system_update_keyspace</a>( <span> <var>$ks_def</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="system_update_column_family" id="_system_update_column_family">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_system_update_column_family">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#44" title="Go to source code">system_update_column_family</a>( <span> <var>$cf_def</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="execute_cql_query" id="_execute_cql_query">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_execute_cql_query">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#45" title="Go to source code">execute_cql_query</a>( <span> <var>$query</var></span>, <span> <var>$compression</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="prepare_cql_query" id="_prepare_cql_query">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_prepare_cql_query">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#46" title="Go to source code">prepare_cql_query</a>( <span> <var>$query</var></span>, <span> <var>$compression</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="execute_prepared_cql_query" id="_execute_prepared_cql_query">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_execute_prepared_cql_query">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#47" title="Go to source code">execute_prepared_cql_query</a>( <span> <var>$itemId</var></span>, <span> <var>$values</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="set_cql_version" id="_set_cql_version">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_set_cql_version">#</a>
+		<code><a href="source-class-cassandra.CassandraIf.html#48" title="Go to source code">set_cql_version</a>( <span> <var>$version</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

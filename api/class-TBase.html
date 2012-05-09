@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class TBase | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-TBase.html">TBase</a></li>
+				<li><a href="class-TMessageType.html">TMessageType</a></li>
+				<li><a href="class-TType.html">TType</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-TApplicationException.html">TApplicationException</a></li>
+				<li><a href="class-TException.html">TException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class TBase</h1>
+
+
+	<div class="description">
+	
+<p>Base class from which other Thrift structs extend. This is so that we can cut
+back on the size of the generated code which is turning out to have a nontrivial
+cost just to load thanks to the wondrously abysmal implementation of PHP. Note
+that code is intentionally duplicated in here to avoid making function calls for
+every field or member of a container..</p>
+
+	</div>
+
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-cassandra.AuthenticationRequest.html">cassandra\AuthenticationRequest</a>, 
+			<a href="class-cassandra.CfDef.html">cassandra\CfDef</a>, 
+			<a href="class-cassandra.CqlPreparedResult.html">cassandra\CqlPreparedResult</a>, 
+			<a href="class-cassandra.CqlResult.html">cassandra\CqlResult</a>, 
+			<a href="class-cassandra.CqlRow.html">cassandra\CqlRow</a>, 
+			<a href="class-cassandra.Deletion.html">cassandra\Deletion</a>, 
+			<a href="class-cassandra.EndpointDetails.html">cassandra\EndpointDetails</a>, 
+			<a href="class-cassandra.IndexClause.html">cassandra\IndexClause</a>, 
+			<a href="class-cassandra.IndexExpression.html">cassandra\IndexExpression</a>, 
+			<a href="class-cassandra.KeyCount.html">cassandra\KeyCount</a>, 
+			<a href="class-cassandra.KeyRange.html">cassandra\KeyRange</a>, 
+			<a href="class-cassandra.KeySlice.html">cassandra\KeySlice</a>, 
+			<a href="class-cassandra.Column.html">cassandra\Column</a>, 
+			<a href="class-cassandra.KsDef.html">cassandra\KsDef</a>, 
+			<a href="class-cassandra.Mutation.html">cassandra\Mutation</a>, 
+			<a href="class-cassandra.SlicePredicate.html">cassandra\SlicePredicate</a>, 
+			<a href="class-cassandra.SliceRange.html">cassandra\SliceRange</a>, 
+			<a href="class-cassandra.SuperColumn.html">cassandra\SuperColumn</a>, 
+			<a href="class-cassandra.TokenRange.html">cassandra\TokenRange</a>, 
+			<a href="class-cassandra.ColumnDef.html">cassandra\ColumnDef</a>, 
+			<a href="class-cassandra.ColumnOrSuperColumn.html">cassandra\ColumnOrSuperColumn</a>, 
+			<a href="class-cassandra.ColumnParent.html">cassandra\ColumnParent</a>, 
+			<a href="class-cassandra.ColumnPath.html">cassandra\ColumnPath</a>, 
+			<a href="class-cassandra.CounterColumn.html">cassandra\CounterColumn</a>, 
+			<a href="class-cassandra.CounterSuperColumn.html">cassandra\CounterSuperColumn</a>, 
+			<a href="class-cassandra.CqlMetadata.html">cassandra\CqlMetadata</a>
+	</div>
+
+	<div>
+		<h4>Indirect known subclasses</h4>
+			<a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a>, 
+			<a href="class-phpcassa.Index.IndexClause.html">phpcassa\Index\IndexClause</a>, 
+			<a href="class-phpcassa.Index.IndexExpression.html">phpcassa\Index\IndexExpression</a>
+	</div>
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br />
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-TBase.html#400" title="Go to source code">thrift/Thrift.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="read" id="_read">
+
+		<td class="attributes"><code>
+			abstract public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_read">#</a>
+		<code><a href="source-class-TBase.html#417" title="Go to source code">read</a>( <span> <var>$input</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="write" id="_write">
+
+		<td class="attributes"><code>
+			abstract public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_write">#</a>
+		<code><a href="source-class-TBase.html#419" title="Go to source code">write</a>( <span> <var>$output</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-TBase.html#421" title="Go to source code">__construct</a>( <span> <var>$spec</var> = <span class="php-keyword1">null</span></span>, <span> <var>$vals</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="tmethod" id="$tmethod">
+
+		<td class="attributes"><code>
+			public static
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TBase.html#409" title="Go to source code"><var>$tmethod</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(TType::BOOL   =&gt; <span class="php-quote">'Bool'</span>,
+                      TType::BYTE   =&gt; <span class="php-quote">'Byte'</span>,
+                      TType::I16    =&gt; <span class="php-quote">'I16'</span>,
+                      TType::I32    =&gt; <span class="php-quote">'I32'</span>,
+                      TType::I64    =&gt; <span class="php-quote">'I64'</span>,
+                      TType::DOUBLE =&gt; <span class="php-quote">'Double'</span>,
+                      TType::STRING =&gt; <span class="php-quote">'String'</span>)</code></td>
+		<td class="description"><div>
+			<a href="#$tmethod" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

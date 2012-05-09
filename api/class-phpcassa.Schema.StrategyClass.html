@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\Schema\StrategyClass | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-phpcassa.Schema.DataType.html">DataType</a></li>
+				<li class="active"><a href="class-phpcassa.Schema.StrategyClass.html">StrategyClass</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.Schema.html" title="Summary of phpcassa\Schema"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class StrategyClass</h1>
+
+
+	<div class="description">
+	
+<p>Replication strategies for keyspaces.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a>\<a href="namespace-phpcassa.Schema.html">Schema</a><br />
+		<b>Package:</b> phpcassa\Schema<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.Schema.StrategyClass.html#4" title="Go to source code">phpcassa/Schema/StrategyClass.php</a><br />
+	</div>
+
+
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="SIMPLE_STRATEGY" id="SIMPLE_STRATEGY">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Schema.StrategyClass.html#11" title="Go to source code"><b>SIMPLE_STRATEGY</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">&quot;SimpleStrategy&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#SIMPLE_STRATEGY" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Ignores node DCs and racks.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Ignores node DCs and racks.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="NETWORK_TOPOLOGY_STRATEGY" id="NETWORK_TOPOLOGY_STRATEGY">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Schema.StrategyClass.html#14" title="Go to source code"><b>NETWORK_TOPOLOGY_STRATEGY</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">&quot;NetworkTopologyStrategy&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#NETWORK_TOPOLOGY_STRATEGY" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Allows a replication factor per-DC.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Allows a replication factor per-DC.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="OLD_NETWORK_TOPOLOGY_STRATEGY" id="OLD_NETWORK_TOPOLOGY_STRATEGY">
+
+		<td class="attributes"><code>
+			string
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Schema.StrategyClass.html#17" title="Go to source code"><b>OLD_NETWORK_TOPOLOGY_STRATEGY</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-quote">&quot;OldNetworkTopologyStrategy&quot;</span></code></td>
+		<td class="description"><div>
+			<a href="#OLD_NETWORK_TOPOLOGY_STRATEGY" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Only available for backwards-compatibility.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Only available for backwards-compatibility.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

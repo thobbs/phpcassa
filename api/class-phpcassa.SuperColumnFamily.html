@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\SuperColumnFamily | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-phpcassa.ColumnFamily.html">ColumnFamily</a></li>
+				<li><a href="class-phpcassa.ColumnSlice.html">ColumnSlice</a></li>
+				<li class="active"><a href="class-phpcassa.SuperColumnFamily.html">SuperColumnFamily</a></li>
+				<li><a href="class-phpcassa.SystemManager.html">SystemManager</a></li>
+				<li><a href="class-phpcassa.UUID.html">UUID</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.html" title="Summary of phpcassa"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class SuperColumnFamily</h1>
+
+
+	<div class="description">
+	
+<p>Representation of a super column family in Cassandra.</p>
+
+<p>Subclasses \phpcassa\ColumnFamily, so those methods are also available.</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-phpcassa.ColumnFamily.html"><span>phpcassa\ColumnFamily</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>phpcassa\SuperColumnFamily</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
+		<b>Package:</b> phpcassa<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.SuperColumnFamily.html#15" title="Go to source code">phpcassa/SuperColumnFamily.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="get_super_column" id="_get_super_column">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_super_column">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#25" title="Go to source code">get_super_column</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Fetch a single super column.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Fetch a single super column.</p>
+
+<p>Returns an array of the subcolumns in that super column.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br> row key to fetch</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> return only subcolumns of this super column</dd>
+					<dt><var>$column_slice</var></dt>
+					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to fetch, or null</dd>
+					<dt><var>$column_names</var></dt>
+					<dd><code>mixed[]</code><br> limit the subcolumns fetched to this list</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br>array(subcolumn_name =&gt; subcolumn_value)<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="multiget_super_column" id="_multiget_super_column">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_multiget_super_column">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#51" title="Go to source code">multiget_super_column</a>( <span>string[] <var>$keys</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-num">16</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Fetch a super column from multiple rows from this column family.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Fetch a super column from multiple rows from this column family.</p>
+
+<p>The returned array will map directly from keys to the subcolumn array; the
+super column layer is omitted.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keys</var></dt>
+					<dd><code>string[]</code><br> row keys to fetch</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> return only subcolumns of this super column</dd>
+					<dt><var>$column_slice</var></dt>
+					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to fetch, or null</dd>
+					<dt><var>$column_names</var></dt>
+					<dd><code>mixed[]</code><br> limit the subcolumns fetched to this list</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+					<dt><var>$buffer_size</var></dt>
+					<dd><code>integer</code><br> the number of keys to multiget at a single time. If your rows are large, having
+a high buffer size gives poor performance; if your rows are small, consider
+increasing this value.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br>array(key =&gt; array(subcolumn_name =&gt; subcolumn_value))<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_subcolumn_count" id="_get_subcolumn_count">
+
+		<td class="attributes"><code>
+			 public 
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_subcolumn_count">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#82" title="Go to source code">get_subcolumn_count</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Count the number of subcolumns in a supercolumn.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Count the number of subcolumns in a supercolumn.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br> row to be counted</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> count only subcolumns in this super column</dd>
+					<dt><var>$column_slice</var></dt>
+					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to count, or null</dd>
+					<dt><var>$column_names</var></dt>
+					<dd><code>mixed[]</code><br> limit the possible subcolumns or counted to this list</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer</code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="multiget_subcolumn_count" id="_multiget_subcolumn_count">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_multiget_subcolumn_count">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#106" title="Go to source code">multiget_subcolumn_count</a>( <span>string[] <var>$keys</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Count the number of subcolumns in a particular super column across a set of
+rows.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Count the number of subcolumns in a particular super column across a set of
+rows.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keys</var></dt>
+					<dd><code>string[]</code><br> rows to be counted</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> count only subcolumns in this super column</dd>
+					<dt><var>$column_slice</var></dt>
+					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to count, or null</dd>
+					<dt><var>$column_names</var></dt>
+					<dd><code>mixed[]</code><br> limit the possible subcolumns counted to this list</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br>array(row_key =&gt; subcolumn_count)<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_super_column_range" id="_get_super_column_range">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-phpcassa.Iterator.RangeColumnFamilyIterator.html">phpcassa\Iterator\RangeColumnFamilyIterator</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_super_column_range">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#131" title="Go to source code">get_super_column_range</a>( <span>mixed <var>$super_column</var></span>, <span>string <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.ColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\ColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Get an iterator over a particular super column across a range of rows.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get an iterator over a particular super column across a range of rows.</p>
+
+<p>The returned iterator will return one array per row. This array will look
+like array($rowkey, $subcolumns). Note that the super column layer is omitted
+from the results.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> return only columns in this super column</dd>
+					<dt><var>$key_start</var></dt>
+					<dd><code>string</code><br> fetch rows with a key &gt;= this</dd>
+					<dt><var>$key_finish</var></dt>
+					<dd><code>string</code><br> fetch rows with a key &lt;= this</dd>
+					<dt><var>$row_count</var></dt>
+					<dd><code>integer</code><br> limit the number of rows returned to this amount</dd>
+					<dt><var>$column_slice</var></dt>
+					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to fetch, or null</dd>
+					<dt><var>$column_names</var></dt>
+					<dd><code>mixed[]</code><br> limit the subcolumns fetched to this list</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+					<dt><var>$buffer_size</var></dt>
+					<dd><code>integer</code><br> When calling <code>get_range</code>, the intermediate results need to be
+buffered if we are fetching many rows, otherwise the Cassandra server will
+overallocate memory and fail. This is the size of that buffer in number of rows.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-phpcassa.Iterator.RangeColumnFamilyIterator.html">phpcassa\Iterator\RangeColumnFamilyIterator</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="add" id="_add">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_add">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#169" title="Go to source code">add</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var></span>, <span>integer <var>$value</var> = <span class="php-num">1</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Increment or decrement a counter.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Increment or decrement a counter.</p>
+
+<p><code>value</code> should be an integer, either positive or negative, to be
+added to a counter column. By default, <code>value</code> is 1.</p>
+
+<p>This method is not idempotent. Retrying a failed add may result in a double
+count. You should consider using a separate ConnectionPool with retries disabled
+for column families with counters.</p>
+
+<p>Only available in Cassandra 0.8.0 and later.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br> the row to insert or update the columns in</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> the super column to use</dd>
+					<dt><var>$column</var></dt>
+					<dd><code>mixed</code><br> the column name of the counter</dd>
+					<dt><var>$value</var></dt>
+					<dd><code>integer</code><br> the amount to adjust the counter by</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="remove_super_column" id="_remove_super_column">
+
+		<td class="attributes"><code>
+			 public 
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_remove_super_column">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#200" title="Go to source code">remove_super_column</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed[] <var>$subcolumns</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Remove a super column from a row or a set of subcolumns from a single super
+column.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Remove a super column from a row or a set of subcolumns from a single super
+column.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br> the row to remove columns from</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> only remove this super column or its subcolumns</dd>
+					<dt><var>$subcolumns</var></dt>
+					<dd><code>mixed[]</code><br> the subcolumns to remove. If null, the entire supercolumn will be removed.</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer</code><br>the timestamp for the operation<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="remove_counter" id="_remove_counter">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_remove_counter">#</a>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#236" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Remove a counter at the specified location.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Remove a counter at the specified location.</p>
+
+<p>Note that counters have limited support for deletes: if you remove a counter,
+you must wait to issue any following update until the delete has reached all the
+nodes and all of them have been fully compacted.</p>
+
+<p>Available in Cassandra 0.8.0 and later.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br> the key for the row</dd>
+					<dt><var>$super_column</var></dt>
+					<dd><code>mixed</code><br> the super column the counter is in</dd>
+					<dt><var>$column</var></dt>
+					<dd><code>mixed</code><br> the column name of the counter; if left as null, the entire super column will
+be removed</dd>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
+returns</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-phpcassa.ColumnFamily.html#methods">phpcassa\ColumnFamily</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-phpcassa.ColumnFamily.html#___construct">__construct()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_batch">batch()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_batch_insert">batch_insert()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_get">get()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_get_count">get_count()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_get_indexed_slices">get_indexed_slices()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_get_range">get_range()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_insert">insert()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_keyslices_to_array">keyslices_to_array()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_make_mutation">make_mutation()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_multiget">multiget()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_multiget_count">multiget_count()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_pack_key">pack_key()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_pack_name">pack_name()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_remove">remove()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_set_autopack_keys">set_autopack_keys()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_set_autopack_names">set_autopack_names()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_set_autopack_values">set_autopack_values()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_truncate">truncate()</a>, 
+			<a href="class-phpcassa.ColumnFamily.html#_unpack_key">unpack_key()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-phpcassa.ColumnFamily.html#constants">phpcassa\ColumnFamily</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-phpcassa.ColumnFamily.html#ARRAY_FORMAT"><b>ARRAY_FORMAT</b></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#DEFAULT_BUFFER_SIZE"><b>DEFAULT_BUFFER_SIZE</b></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#DEFAULT_ROW_COUNT"><b>DEFAULT_ROW_COUNT</b></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#DICTIONARY_FORMAT"><b>DICTIONARY_FORMAT</b></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#OBJECT_FORMAT"><b>OBJECT_FORMAT</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-phpcassa.ColumnFamily.html#properties">phpcassa\ColumnFamily</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-phpcassa.ColumnFamily.html#$autopack_keys"><var>$autopack_keys</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$autopack_names"><var>$autopack_names</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$autopack_values"><var>$autopack_values</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$buffer_size"><var>$buffer_size</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$insert_format"><var>$insert_format</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$read_consistency_level"><var>$read_consistency_level</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$return_format"><var>$return_format</var></a>, 
+			<a href="class-phpcassa.ColumnFamily.html#$write_consistency_level"><var>$write_consistency_level</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

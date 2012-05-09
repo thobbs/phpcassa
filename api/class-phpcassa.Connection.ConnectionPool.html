@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.6.1" />
+
+	<title>Class phpcassa\Connection\ConnectionPool | phpcassa</title>
+
+	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-cassandra.html">cassandra</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.html">phpcassa<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Batch.html">Batch</a>
+						</li>
+				<li class="active"><a href="namespace-phpcassa.Connection.html">Connection</a>
+						</li>
+				<li><a href="namespace-phpcassa.Index.html">Index</a>
+						</li>
+				<li><a href="namespace-phpcassa.Iterator.html">Iterator</a>
+						</li>
+				<li><a href="namespace-phpcassa.Schema.html">Schema<span></span></a>
+						<ul>
+				<li><a href="namespace-phpcassa.Schema.DataType.html">DataType</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-phpcassa.Connection.ConnectionPool.html">ConnectionPool</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-phpcassa.Connection.MaxRetriesException.html">MaxRetriesException</a></li>
+				<li><a href="class-phpcassa.Connection.NoServerAvailable.html">NoServerAvailable</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-phpcassa.Connection.html" title="Summary of phpcassa\Connection"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ConnectionPool</h1>
+
+
+	<div class="description">
+	
+<p>A pool of connections to a set of servers in a cluster. Each ConnectionPool
+is keyspace specific.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a>\<a href="namespace-phpcassa.Connection.html">Connection</a><br />
+		<b>Package:</b> phpcassa\Connection<br />
+
+		<b>Located at</b> <a href="source-class-phpcassa.Connection.ConnectionPool.html#12" title="Go to source code">phpcassa/Connection/ConnectionPool.php</a><br />
+	</div>
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#52" title="Go to source code">__construct</a>( <span>string <var>$keyspace</var></span>, <span>mixed <var>$servers</var> = <span class="php-keyword1">NULL</span></span>, <span>integer <var>$pool_size</var> = <span class="php-keyword1">NULL</span></span>, <span>integer <var>$max_retries</var> = <code><a href="class-phpcassa.Connection.ConnectionPool.html#DEFAULT_MAX_RETRIES">phpcassa\Connection\ConnectionPool::<b>DEFAULT_MAX_RETRIES</b></a></code></span>, <span>integer <var>$send_timeout</var> = <span class="php-num">5000</span></span>, <span>integer <var>$recv_timeout</var> = <span class="php-num">5000</span></span>, <span>integer <var>$recycle</var> = <code><a href="class-phpcassa.Connection.ConnectionPool.html#DEFAULT_RECYCLE">phpcassa\Connection\ConnectionPool::<b>DEFAULT_RECYCLE</b></a></code></span>, <span>mixed <var>$credentials</var> = <span class="php-keyword1">NULL</span></span>, <span>boolean <var>$framed_transport</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Constructs a ConnectionPool.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Constructs a ConnectionPool.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keyspace</var></dt>
+					<dd><code>string</code><br> the keyspace all connections will use</dd>
+					<dt><var>$servers</var></dt>
+					<dd><code>mixed</code><br> an array of strings representing the servers to open connections to. Each item
+in the array should be a string of the form 'host' or 'host:port'. If a port is
+not given, 9160 is assumed. If $servers is NULL, 'localhost:9160' will be used.</dd>
+					<dt><var>$pool_size</var></dt>
+					<dd><code>integer</code><br> the number of open connections to keep in the pool. If $pool_size is left as
+NULL, max(5, count($servers) * 2) will be used.</dd>
+					<dt><var>$max_retries</var></dt>
+					<dd><code>integer</code><br> how many times an operation should be retried before throwing a
+MaxRetriesException. Using 0 disables retries; using -1 causes unlimited
+retries. The default is 5.</dd>
+					<dt><var>$send_timeout</var></dt>
+					<dd><code>integer</code><br> the socket send timeout in milliseconds. Defaults to 5000.</dd>
+					<dt><var>$recv_timeout</var></dt>
+					<dd><code>integer</code><br> the socket receive timeout in milliseconds. Defaults to 5000.</dd>
+					<dt><var>$recycle</var></dt>
+					<dd><code>integer</code><br> after this many operations, a connection will be automatically closed and
+replaced. Defaults to 10,000.</dd>
+					<dt><var>$credentials</var></dt>
+					<dd><code>mixed</code><br> if using authentication or authorization with Cassandra, a username and
+password need to be supplied. This should be in the form array("username" =&gt;
+username, "password" =&gt; password)</dd>
+					<dt><var>$framed_transport</var></dt>
+					<dd><code>boolean</code><br> whether to use framed transport or buffered transport. This must match
+Cassandra's configuration. In Cassandra 0.7, framed transport is the default.
+The default value is true.</dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fill" id="_fill">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fill">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#142" title="Go to source code">fill</a>( )</code>
+
+		<div class="description short">
+			
+<p>Adds connections to the pool until $pool_size connections are in the
+pool.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Adds connections to the pool until $pool_size connections are in the
+pool.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get" id="_get">
+
+		<td class="attributes"><code>
+			 public 
+			phpcassa\Connection\ConnectionWrapper
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#151" title="Go to source code">get</a>( )</code>
+
+		<div class="description short">
+			
+<p>Retrieves a connection from the pool.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retrieves a connection from the pool.</p>
+
+<p>If the pool has fewer than $pool_size connections in it, a new connection
+will be created.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>phpcassa\Connection\ConnectionWrapper</code><br>a connection<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="return_connection" id="_return_connection">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_return_connection">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#172" title="Go to source code">return_connection</a>( <span>phpcassa\Connection\ConnectionWrapper <var>$connection</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Returns a connection to the pool.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns a connection to the pool.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$connection</var></dt>
+					<dd><code>phpcassa\Connection\ConnectionWrapper</code></dd>
+				</dl></div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="describe_keyspace" id="_describe_keyspace">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_describe_keyspace">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#186" title="Go to source code">describe_keyspace</a>( )</code>
+
+		<div class="description short">
+			
+<p>Gets the keyspace description, caching the results for later lookups.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Gets the keyspace description, caching the results for later lookups.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="dispose" id="_dispose">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_dispose">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#198" title="Go to source code">dispose</a>( )</code>
+
+		<div class="description short">
+			
+<p>Closes all connections in the pool.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Closes all connections in the pool.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="close" id="_close">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_close">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#206" title="Go to source code">close</a>( )</code>
+
+		<div class="description short">
+			
+<p>Closes all connections in the pool.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Closes all connections in the pool.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="stats" id="_stats">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_stats">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#213" title="Go to source code">stats</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns information about the number of opened connections, failed
+operations, and recycled connections.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns information about the number of opened connections, failed
+operations, and recycled connections.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>Stats in the form array("failed" =&gt; failure_count, "created" =&gt;
+creation_count, "recycled" =&gt; recycle_count)<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="call" id="_call">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_call">#</a>
+		<code><a href="source-class-phpcassa.Connection.ConnectionPool.html#223" title="Go to source code">call</a>( )</code>
+
+		<div class="description short">
+			
+<p>Performs a Thrift operation using a connection from the pool. The first
+argument should be the name of the function. The following arguments should be
+the arguments for that Thrift function.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Performs a Thrift operation using a connection from the pool. The first
+argument should be the name of the function. The following arguments should be
+the arguments for that Thrift function.</p>
+
+<p>If the connect fails with any exception other than a NotFoundException, the
+connection will be closed and replaced in the pool. If the Exception is suitable
+for retrying the operation (TimedOutException, UnavailableException,
+TTransportException), the operation will be retried with a new connection after
+an exponentially increasing backoff is performed.</p>
+
+<p>To avoid automatic retries, create a ConnectionPool with the $max_retries
+argument set to 0.</p>
+
+<p>In general, this method should <em>not</em> be used by users of the library.
+It is primarily intended for internal use, but is left exposed as an open
+workaround if needed.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="BASE_BACKOFF" id="BASE_BACKOFF">
+
+		<td class="attributes"><code>
+			float
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#20" title="Go to source code"><b>BASE_BACKOFF</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">0.1</span></code></td>
+		<td class="description"><div>
+			<a href="#BASE_BACKOFF" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="MICROS" id="MICROS">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#21" title="Go to source code"><b>MICROS</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">1000000</span></code></td>
+		<td class="description"><div>
+			<a href="#MICROS" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="MAX_RETRIES" id="MAX_RETRIES">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#22" title="Go to source code"><b>MAX_RETRIES</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">2147483647</span></code></td>
+		<td class="description"><div>
+			<a href="#MAX_RETRIES" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="DEFAULT_MAX_RETRIES" id="DEFAULT_MAX_RETRIES">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#24" title="Go to source code"><b>DEFAULT_MAX_RETRIES</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">5</span></code></td>
+		<td class="description"><div>
+			<a href="#DEFAULT_MAX_RETRIES" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="DEFAULT_RECYCLE" id="DEFAULT_RECYCLE">
+
+		<td class="attributes"><code>
+			integer
+		</code></td>
+		<td class="name"><code>
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#25" title="Go to source code"><b>DEFAULT_RECYCLE</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">10000</span></code></td>
+		<td class="description"><div>
+			<a href="#DEFAULT_RECYCLE" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="keyspace" id="$keyspace">
+
+		<td class="attributes"><code>
+			public 
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#29" title="Go to source code"><var>$keyspace</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$keyspace" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="max_retries" id="$max_retries">
+
+		<td class="attributes"><code>
+			public 
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#39" title="Go to source code"><var>$max_retries</var></a>
+		</td>
+		<td class="value"><code><code><a href="class-phpcassa.Connection.ConnectionPool.html#DEFAULT_MAX_RETRIES">phpcassa\Connection\ConnectionPool::<b>DEFAULT_MAX_RETRIES</b></a></code></code></td>
+		<td class="description"><div>
+			<a href="#$max_retries" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>int $max_retries how many times an operation should be retried before<br />
+throwing a MaxRetriesException. Using 0 disables retries; using -1 causes<br />
+unlimited retries. The default is 5.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>int $max_retries how many times an operation should be retried before
+throwing a MaxRetriesException. Using 0 disables retries; using -1 causes
+unlimited retries. The default is 5.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="recycle" id="$recycle">
+
+		<td class="attributes"><code>
+			public 
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-phpcassa.Connection.ConnectionPool.html#46" title="Go to source code"><var>$recycle</var></a>
+		</td>
+		<td class="value"><code><code><a href="class-phpcassa.Connection.ConnectionPool.html#DEFAULT_RECYCLE">phpcassa\Connection\ConnectionPool::<b>DEFAULT_RECYCLE</b></a></code></code></td>
+		<td class="description"><div>
+			<a href="#$recycle" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>int $recycle after this many operations, a connection will be
+automatically<br />
+closed and replaced. Defaults to 10,000.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>int $recycle after this many operations, a connection will be automatically
+closed and replaced. Defaults to 10,000.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+</div>
+
+	<div id="footer">
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
