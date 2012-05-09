@@ -1,3 +1,10 @@
+phpcassa (1.0.a.1) unstable; urgency=low
+
+  * Cassandra 1.x compatibility
+  * Use PHP Namespaces
+
+ --  Tyler Hobbs <tyler@datastax.com>  Wed, 9 May 2012 22:03:09 +0000
+
 phpcassa (0.8.a.1) unstable; urgency=low
 
   * Cassandra 0.8 compatibility

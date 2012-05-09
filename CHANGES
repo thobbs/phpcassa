@@ -1,6 +1,35 @@
 Changelog
 =========
 
+Changes in 1.0.a.1
+------------------
+This release introduces several major changes to phpcassa:
+- PHP namespaces are now used for phpcassa and thrift classes
+- Many classes or functions that were once part of columnfamily.php
+  are now in their own classes and modules
+- An autoload.php file has been added for bootstrapping the autoloader
+  for phpcassa and Thrift classes; this *must* be used for imports to
+  work correctly
+- Full batch operation support has been added
+- CompositeType support has been added
+- Alternate formats for inserting and fetching data may now
+  be used
+- Super column families should be handled with the new phpcassa\SuperColumnFamily
+  class. Any $super_column parameters have been removed from methods
+  in ColumnFamily.
+- Parameters related to column slices are now handled by a single ColumnSlice
+  parameter; in most cases, parameter order has changed slightly for these
+  methods, so check the documentation carefully
+- FloatType, DoubleType, and BooleanType are now supported
+- Thrift has been upgraded to 0.8.0
+
+To help make the upgrade process easier and to demonstrate some of the new
+features, an examples/ directory has been created with full, working
+examples.
+
+Additionally, test coverage has been greatly improved, so a few miscellaneous
+bugs have likely been resolved recently.
+
 Changes in 0.8.a.2
 ------------------
 This release upgrades the bundled version of Thrift
