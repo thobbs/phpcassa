@@ -31,7 +31,7 @@ for this tutorial:
 
 .. code-block:: none
 
-    user@~ $ cassandra-cli 
+    user@~ $ cassandra-cli
     Welcome to cassandra CLI.
 
     Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
@@ -194,11 +194,7 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
   }
 
 It's also possible to specify a set of columns or a slice for
-`ColumnFamily::multiget() <api/class-phpcassa.ColumnFamily.html#_multiget>`_
-and
-`ColumnFamily::get_range() <api/class-phpcassa.ColumnFamily.html#_get_range>`_
-just like we did for
-`ColumnFamily::get() <api/class-phpcassa.ColumnFamily.html#_get>`_.
+`multiget()` and `get_range()` just like we did for `get()`.
 
 Removing Data
 -------------
@@ -328,53 +324,49 @@ for individual columns, or both:
   // returns: array('name' => 'joe', 'age' => 23)
 
 Of course, if phpcassa's automatic behavior isn't working for you, you
-can turn it off when you create the
-`ColumnFamily <api/phpcassa/columnfamily/ColumnFamily>`_:
+can turn it off with
+`ColumnFamily::$autopack_names <api/class-phpcassa.ColumnFamily.html#$autopack_names>`_
+and the other `$autopack` attributes.
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'ColumnFamily1',
-                                    $autopack_names=False,
-                                    $autopack_values=False);
+  $column_family = new ColumnFamily($conn, 'ColumnFamily1');
+  $column_family->$autopack_names=False;
+  $column_family->$autopack_values=False;
 
 
 Indexes
 -------
-Cassandra 0.7.0 adds support for secondary indexes, which allow you to
+Cassandra supports built-in secondary indexes, which allow you to
 efficiently get only rows which match a certain expression.
 
-To use secondary indexes with Cassandra, you need to specify what columns
-will be indexed.  In a ``cassandra.yaml`` file, this might look like:
-
-::
-
-  - name: Indexed1
-    column_type: Standard
-    column_metadata:
-      - name: birthdate
-        validator_class: LongType
-        index_type: KEYS
-
-In order to use 
-`ColumnFamily::get_indexed_slices() <api/phpcassa/columnfamily/ColumnFamily#get_indexed_slices>`_
-to get data from Indexed1 using the indexed column, we need to create an 
-`IndexClause <http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexClause.html>`_
+In order to use
+`ColumnFamily::get_indexed_slices() <api/class-phpcassa.ColumnFamily#_get_indexed_slices>`_
+, we need to create an
+`IndexClause <api/class-phpcassa.Index.IndexClause>`_
 which contains a list of
-`IndexExpression <http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html>`_
-objects.  The functions 
-`CassandraUtil::create_index_expression() <api/phpcassa/columnfamily/CassandraUtil#create_index_expression>`_
-and
-`CassandraUtil::create_index_clause() <api/phpcassa/columnfamily/CassandraUtil#create_index_clause>`_
-are designed to make this easier.
+`IndexExpression <api/class-phpcassa.Index.IndexExpression>`_
+objects.
 
 Suppose we are only interested in rows where 'birthdate' is 1984. We might do
 the following:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Indexed1');
-  $index_exp = CassandraUtil::create_index_expression('birthdate', 1984);
-  $index_clause = CassandraUtil::create_index_clause(array($index_exp));
+  use phpcassa\SystemManager;
+  use phpcassa\Index\IndexExpression;
+  use phpcassa\Index\IndexClause;
+  use phpcassa\Schema\DataType\LongType;
+
+  $sys = new SystemManager();
+  $sys->create_column_family('Keyspace', 'Users');
+  $sys->create_index('Keyspace', 'Users', 'birthdate', LongType());
+
+  $column_family = new ColumnFamily($conn, 'Users');
+  $column_family->insert('winston', array('birthdate' => 1984));
+
+  $index_exp = new IndexExpression('birthdate', 1984);
+  $index_clause = new IndexClause(array($index_exp));
   $rows = $column_family->get_indexed_slices($index_clause);
   // returns an Iterator over:
   //    array('winston smith' => array('birthdate' => 1984))
@@ -384,7 +376,6 @@ the following:
       Print_r($columns)
   }
 
-Although at least one 
-`IndexExpression <http://thobbs.github.com/phpcassa/api/phpcassa/cassandra_IndexExpression.html>`_
-in every clause must be on an indexed column, you may also have other expressions
-which are on non-indexed columns.
+Although at least one `IndexExpression` in every clause must use an equality
+match against an indexed column, you may also have other expressions which are
+apply to non-indexed columns or use comparators other than `"EQ"`.
