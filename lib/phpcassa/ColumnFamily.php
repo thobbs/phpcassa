@@ -99,14 +99,23 @@ class ColumnFamily {
     protected $col_type_dict;
 
 
-    /** Whether column names should be packed and unpacked automatically. */
-    public $autopack_names = true;
+    /**
+     * Whether column names should be packed and unpacked automatically.
+     * Default is true.
+     */
+    public $autopack_names;
 
-    /** Whether column values should be packed and unpacked automatically. */
-    public $autopack_values = true;
+    /**
+     * Whether column values should be packed and unpacked automatically.
+     * Default is true.
+     */
+    public $autopack_values;
 
-    /** Whether keys should be packed and unpacked automatically. */
-    public $autopack_keys = true;
+    /**
+     * Whether keys should be packed and unpacked automatically.
+     * Default is true.
+     */
+    public $autopack_keys;
 
     /** @var ConsistencyLevel the default read consistency level */
     public $read_consistency_level = ConsistencyLevel::ONE;
