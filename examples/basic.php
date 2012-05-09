@@ -4,6 +4,7 @@
  * This file demonstrates some of the basic operations when working with
  * phpcassa and Cassandra.
  *
+ *
  * If the cli version of PHP is installed, it may be run directly:
  *
  *    $ php basic.php'
