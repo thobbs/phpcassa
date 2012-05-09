@@ -2,18 +2,12 @@ Tutorial
 ========
 
 This tutorial is intended as an introduction to working with
-Cassandra and **phpcassa**.
+Cassandra and phpcassa.
 
 Prerequisites
 -------------
-Before we start, make sure that you have **phpcassa**
-:doc:`installed <installation>`. The following
-should execute without raising an exception:
-
-.. code-block:: php
-
-    require_once('phpcassa/connection.php');
-    require_once('phpcassa/columnfamily.php');
+Before we start, make sure that you have phpcassa
+:doc:`installed <installation>`.
 
 This tutorial also assumes that a Cassandra instance is running on the
 default host and port. Read the `instructions for getting started
@@ -59,9 +53,29 @@ for this tutorial:
 This connects to a local instance of Cassandra and creates a keyspace
 named 'Keyspace1' with a column family named 'ColumnFamily1'.
 
+Autoload and Imports
+--------------------
+You can bootstrap the PHP autoloader to easily import phpcassa
+classes by requiring or including :file:`lib/phpcassa/autoload.php`.
+
+To start the tutorial, require the bootstrap file in one way or
+another and import a couple of classes:
+
+.. code-block:: php
+
+    <?php
+        require('lib/phpcassa/autoload.php');
+
+        use phpcassa/ColumnFamily;
+        use phpcassa/ColumnSlice;
+        use phpcassa/Connection/ConnectionPool;
+
+        // tutorial code starts here
+    ?>
+
 Making a Connection
 -------------------
-The first step when working with **phpcassa** is to create a
+The first step when working with phpcassa is to create a
 `ConnectionPool <api/phpcassa/connection/ConnectionPool>`_ which
 will connect to the Cassandra instance(s):
 
@@ -119,7 +133,7 @@ There are many more ways to get data out of Cassandra than there are
 to insert data.
 
 The simplest way to get data is to use
-`ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
+`ColumnFamily::get() <api/class-phpcassa.ColumnFamily.html#_get>`_
 
 .. code-block:: php
 
@@ -137,19 +151,24 @@ specify them using a `$columns` argument:
   // returns: array('name1' => 'foo', 'name2' => 'bar')
 
 We may also get a slice (or subrange) or the columns in a row. To do this,
-use the `$column_start` and `$column_finish` parameters.  One or both of these may
-be left empty to allow the slice to extend to one or both ends the.
-Note that `$column_finish` is inclusive. Assuming we've inserted several
+we need to make a `ColumnSlice <api/class-phpcassa.ColumnSlice.html>`_ object.
+
+The first two parameters are `$start` and `$finish`.  One or both of these may
+be left as empty strings to allow the slice to extend to one or both ends of
+the row.
+
+Assuming we've inserted several
 columns with names '1' through '9', we can do the following:
 
 .. code-block:: php
 
-  $column_family->get('row_key', $columns=null, $column_start='5', $column_finish='7');
+  $slice = new ColumnSlice('5', '7');
+  $column_family->get('row_key', $slice);
   // returns: array('5' => 'foo', '6' => 'bar', '7' => 'baz')
 
 There are also two ways to get multiple rows at the same time.
 The first is to specify them by name using
-`ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
+`ColumnFamily::multiget() <api/class-phpcassa.ColumnFamily.html#_multiget>`_
 
 .. code-block:: php
 
@@ -157,7 +176,7 @@ The first is to specify them by name using
   // returns: array('row_key1' => array('name' => 'val'), 'row_key2' => array('name' => 'val'))
 
 The other way is to get a range of keys at once by using
-`ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_.
+`ColumnFamily::get_range() <api/class-phpcassa.ColumnFamily.html#_get_range>`_
 The parameter `$key_finish` is also inclusive here, too.  Assuming we've inserted
 some rows with keys 'row_key1' through 'row_key9', we can do this:
 
@@ -174,17 +193,17 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
       Print_r($columns);
   }
 
-It's also possible to specify a set of columns or a slice for 
-`ColumnFamily::multiget() <api/phpcassa/columnfamily/ColumnFamily#multiget>`_
+It's also possible to specify a set of columns or a slice for
+`ColumnFamily::multiget() <api/class-phpcassa.ColumnFamily.html#_multiget>`_
 and
-`ColumnFamily::get_range() <api/phpcassa/columnfamily/ColumnFamily#get_range>`_,
+`ColumnFamily::get_range() <api/class-phpcassa.ColumnFamily.html#_get_range>`_
 just like we did for
-`ColumnFamily::get() <api/phpcassa/columnfamily/ColumnFamily#get>`_
+`ColumnFamily::get() <api/class-phpcassa.ColumnFamily.html#_get>`_.
 
 Removing Data
 -------------
 You may remove data from a column family with
-`ColumnFamily::remove() <api/phpcassa/columnfamily/ColumnFamily#remove>`_.
+`ColumnFamily::remove() <api/class-phpcassa.ColumnFamily.html#_remove>`_.
 
 You can remove an entire row at once:
 
@@ -203,7 +222,7 @@ You cannot remove a slice of columns from a row.
 Counting
 --------
 If you just want to know how many columns are in a row, you can use
-`ColumnFamily::get_count() <api/phpcassa/columnfamily/ColumnFamily#get_count>`_:
+`ColumnFamily::get_count() <api/class-phpcassa.ColumnFamily.html#_get_count>`_:
 
 .. code-block:: php
 
@@ -215,13 +234,16 @@ of a slice or have particular names, you can do that as well:
 
 .. code-block:: php
 
-  $column_family->get_count('row_key', $columns=array('foo', 'bar'));
+  $column_family->get_count('row_key', $column_slice=null,
+        $column_names=array('foo', 'bar'));
   // returns: 2
-  $column_family->get_count('row_key', $column_start='foo');
+
+  $slice = new ColumnSlice('foo');
+  $column_family->get_count('row_key', $slice);
   // returns: 3
 
 You can also do this in parallel for multiple rows using
-`ColumnFamily::multiget_count() <api/phpcassa/columnfamily/ColumnFamily#multiget_count>`_:
+`ColumnFamily::multiget_count() <api/class-phpcassa.ColumnFamily.html#_multiget_count>`_:
 
 .. code-block:: php
 
@@ -231,7 +253,8 @@ You can also do this in parallel for multiple rows using
 .. code-block:: php
 
   $column_family->multiget_count(array('fib0', 'fib1', 'fib2', 'fib3', 'fib4'),
-                                 $columns=array('col1', 'col2', 'col3'));
+                                 $column_slice=null,
+                                 $column_names=array('col1', 'col2', 'col3'));
   // returns: array('fib0' => 1, 'fib1' => 1, 'fib2' => 2, 'fib3' => 3, 'fib4' => 3)
 
 .. code-block:: php
@@ -251,16 +274,19 @@ cassandra-cli like this:
     [default@Keyspace1] create column family Super1 with column_type=Super;
     632cf985-645e-11e0-ad9e-e700f669bcfc
 
-To use a super column in **phpcassa**, you only need to
-add an extra level to the array:
+To use a super columns in phpcassa, you need to create an instance
+of ``phpcassa\SuperColumnFamily``:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($conn, 'Super1');
+  use phpcassa\SuperColumnFamily;
+
+
+  $column_family = new SuperColumnFamily($conn, 'Super1');
   $column_family->insert('row_key', array('supercol_name' => array('col_name' => 'col_val')));
   $column_family->get('row_key');
   // returns: array('supercol_name' => ('col_name' => 'col_val'))
-  $column_family->remove('row_key', NULL, 'supercolumn_name');
+  $column_family->remove_super_column('row_key', 'supercolumn_name');
 
 Typed Column Names and Values
 -----------------------------
@@ -294,7 +320,7 @@ even have a different comparator type.  Here's an example ``cassandra.yaml``:
     compare_subcolumns_with: AsciiType
 
 Cassandra still requires you to pack these types into a binary format it
-can understand.  Fortunately, when **phpcassa** sees that a column family
+can understand.  Fortunately, when phpcassa sees that a column family
 uses these types, it knows to pack and unpack these data types automatically
 for you. So, if we want to write to the StandardInt column family, we can do
 the following:
