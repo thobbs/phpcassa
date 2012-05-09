@@ -653,8 +653,7 @@ class ColumnFamily {
                         $this->make_mutation($columns, $timestamp, $ttl);
             }
         } else {
-            // TODO better exception
-            throw new Exception("Bad insert_format selected");
+            throw new UnexpectedValueException("Bad insert_format selected");
         }
 
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
@@ -1014,8 +1013,7 @@ class ColumnFamily {
         } else if ($this->insert_format == self::ARRAY_FORMAT) {
             return $this->array_to_coscs($data, $timestamp, $ttl);
         } else {
-            // TODO: better exception
-            throw Exception("Bad insert_format selected");
+            throw new UnexpectedValueException("Bad insert_format selected");
         }
     }
 
