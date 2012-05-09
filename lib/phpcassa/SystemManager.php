@@ -58,9 +58,12 @@ class SystemManager {
      *
      * Example usage:
      * <code>
+     * use phpcassa\SystemManager;
+     * use phpcassa\Schema\StrategyClass;
+     *
      * $sys = SystemManager();
-     * $attrs = array("replication_factor" => 1,
-     *                "strategy_class" => "org.apache.cassandra.locator.SimpleStrategy");
+     * $attrs = array("strategy_class" => StrategyClass\SIMPLE_STRATEGY,
+     *                "strategy_options" => array("replication_factor" => "1"));
      * $sys->create_keyspace("Keyspace1", $attrs);
      * </code>
      *
