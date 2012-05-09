@@ -290,39 +290,21 @@ of ``phpcassa\SuperColumnFamily``:
 
 Typed Column Names and Values
 -----------------------------
-In Cassandra 0.7, you can specify a comparator type for column names
-and a validator type for column values.
+In Cassandra, you can specify a comparator type for column names
+and a validator type for row keys and column values.
 
-The types available are:
-
-* BytesType - no type
-* IntegerType - 32 bit integer
-* LongType - 64 bit integer
-* AsciiType - ASCII string
-* UTF8Type - UTF8 encoded string
-* TimeUUIDType - version 1 UUID (timestamp based)
-* LexicalUUID - non-version 1 UUID
+There are
+`several types supported by default <api/namespace-phpcassa.Schema.DataType.html>`_.
 
 The column name comparator types affect how columns are sorted within
 a row. You can use these with standard column families as well as with
 super column families; with super column families, the subcolumns may
-even have a different comparator type.  Here's an example ``cassandra.yaml``:
+even have a different comparator type.
 
-::
-
-  - name: StandardInt
-    column_type: Standard
-    compare_with: IntegerType
-
-  - name: SuperLongSubAscii
-    column_type: Super
-    compare_with: LongType
-    compare_subcolumns_with: AsciiType
-
-Cassandra still requires you to pack these types into a binary format it
-can understand.  Fortunately, when phpcassa sees that a column family
-uses these types, it knows to pack and unpack these data types automatically
-for you. So, if we want to write to the StandardInt column family, we can do
+Cassandra requires clients to pack these types into a binary format it
+can understand.  When phpcassa sees that a column family uses these types,
+it knows to pack and unpack these data types automatically.
+So, if we want to write to the StandardInt column family, we can do
 the following:
 
 .. code-block:: php
@@ -336,37 +318,16 @@ Notice that 42 is an integer here, not a string.
 
 As mentioned above, Cassandra also offers validators on column values with
 the same set of types.  Validators can be set for an entire column family,
-for individual columns, or both.  Here's another example ``cassandra.yaml``:
-
-::
-
-  - name: AllLongs
-    column_type: Standard
-    default_validation_class: LongType
-
-  - name: OneUUID
-    column_type: Standard
-    column_metadata:
-      - name: uuid
-        validator_class: TimeUUIDType
-
-  - name: LongsExceptUUID
-    column_type: Standard
-    default_validation_class: LongType
-    column_metadata:
-      - name: uuid
-        validator_class: TimeUUIDType
-
-**phpcassa** knows to pack these column values automatically too:
+for individual columns, or both:
 
 .. code-block:: php
 
-  $column_family = new ColumnFamily($connection, 'LongsExceptUUID')
-  $column_family->insert('row_key', array('foo'  123456789, 'uuid' => CassandraUtil::uuid1()));
+  $column_family = new ColumnFamily($pool, 'Users')
+  $column_family->insert($user_id, array('name' => 'joe', 'age' => 23));
   $column_family->get('row_key');
-  // returns: array('foo' => 123456789, 'uuid' => UUID('5880c4b8-bd1a-11df-bbe1-00234d21610a'))
+  // returns: array('name' => 'joe', 'age' => 23)
 
-Of course, if **phpcassa**'s automatic behavior isn't working for you, you
+Of course, if phpcassa's automatic behavior isn't working for you, you
 can turn it off when you create the
 `ColumnFamily <api/phpcassa/columnfamily/ColumnFamily>`_:
 
