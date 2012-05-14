@@ -13,9 +13,9 @@ class BooleanType extends CassandraType {
         return pack('C', $value);
     }
 
-    public function unpack($data, $is_name=null)
+    public function unpack($vata, $is_name=null)
     {
-        return unpack('C', $value);
+        return unpack('C', $value) === 1;
     }
 }
 
