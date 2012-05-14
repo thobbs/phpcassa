@@ -147,7 +147,8 @@ specify them using a `$columns` argument:
 
 .. code-block:: php
 
-  $column_family->get('row_key', $columns=array('name1', 'name2'));
+  $column_names = array('name1', 'name2');
+  $column_family->get('row_key', $column_slice=null, $column_names=$column_names);
   // returns: array('name1' => 'foo', 'name2' => 'bar')
 
 We may also get a slice (or subrange) or the columns in a row. To do this,
@@ -230,8 +231,8 @@ of a slice or have particular names, you can do that as well:
 
 .. code-block:: php
 
-  $column_family->get_count('row_key', $column_slice=null,
-        $column_names=array('foo', 'bar'));
+  $column_names=array('foo', 'bar');
+  $column_family->get_count('row_key', $column_slice=null, $column_names=$column_names);
   // returns: 2
 
   $slice = new ColumnSlice('foo');
@@ -248,15 +249,15 @@ You can also do this in parallel for multiple rows using
 
 .. code-block:: php
 
+  $names = array('col1', 'col2', 'col3');
   $column_family->multiget_count(array('fib0', 'fib1', 'fib2', 'fib3', 'fib4'),
-                                 $column_slice=null,
-                                 $column_names=array('col1', 'col2', 'col3'));
+                                 $column_slice=null, $column_names=$names);
   // returns: array('fib0' => 1, 'fib1' => 1, 'fib2' => 2, 'fib3' => 3, 'fib4' => 3)
 
 .. code-block:: php
 
-  $column_family->multiget_count(array('fib0', 'fib1', 'fib2', 'fib3', 'fib4'),
-                                 $columns=null, $column_start='col1', $column_finish='col3')
+  $slice = new ColumnSlice('col1', 'col3');
+  $column_family->multiget_count(array('fib0', 'fib1', 'fib2', 'fib3', 'fib4'), $slice);
   // returns: array('fib0' => 1, 'fib1' => 1, 'fib2' => 2, 'fib3' => 3, 'fib4' => 3)
 
 Super Columns

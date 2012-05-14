@@ -219,7 +219,8 @@ to insert data.</p>
 returns every column in the row (up to <cite>$column_count</cite>, which defaults to 100).
 If you only want a few of the columns and you know them by name, you can
 specify them using a <cite>$columns</cite> argument:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$columns</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;name1&#39;</span><span class="p">,</span> <span class="s1">&#39;name2&#39;</span><span class="p">));</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_names</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name1&#39;</span><span class="p">,</span> <span class="s1">&#39;name2&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span> <span class="nv">$column_names</span><span class="o">=</span><span class="nv">$column_names</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;name1&#39; =&gt; &#39;foo&#39;, &#39;name2&#39; =&gt; &#39;bar&#39;)</span>
 </pre></div>
 </div>
@@ -285,8 +286,8 @@ some rows with keys &#8216;row_key1&#8217; through &#8216;row_key9&#8217;, we ca
 </div>
 <p>If you only want to get a count of the number of columns that are inside
 of a slice or have particular names, you can do that as well:</p>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span>
-      <span class="nv">$column_names</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">));</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_names</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">get_count</span><span class="p">(</span><span class="s1">&#39;row_key&#39;</span><span class="p">,</span> <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span> <span class="nv">$column_names</span><span class="o">=</span><span class="nv">$column_names</span><span class="p">);</span>
 <span class="c1">// returns: 2</span>
 
 <span class="nv">$slice</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnSlice</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
@@ -300,14 +301,14 @@ of a slice or have particular names, you can do that as well:</p>
 <span class="c1">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 5)</span>
 </pre></div>
 </div>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget_count</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;fib0&#39;</span><span class="p">,</span> <span class="s1">&#39;fib1&#39;</span><span class="p">,</span> <span class="s1">&#39;fib2&#39;</span><span class="p">,</span> <span class="s1">&#39;fib3&#39;</span><span class="p">,</span> <span class="s1">&#39;fib4&#39;</span><span class="p">),</span>
-                               <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span>
-                               <span class="nv">$column_names</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;col1&#39;</span><span class="p">,</span> <span class="s1">&#39;col2&#39;</span><span class="p">,</span> <span class="s1">&#39;col3&#39;</span><span class="p">));</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$names</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;col1&#39;</span><span class="p">,</span> <span class="s1">&#39;col2&#39;</span><span class="p">,</span> <span class="s1">&#39;col3&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget_count</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;fib0&#39;</span><span class="p">,</span> <span class="s1">&#39;fib1&#39;</span><span class="p">,</span> <span class="s1">&#39;fib2&#39;</span><span class="p">,</span> <span class="s1">&#39;fib3&#39;</span><span class="p">,</span> <span class="s1">&#39;fib4&#39;</span><span class="p">),</span>
+                               <span class="nv">$column_slice</span><span class="o">=</span><span class="k">null</span><span class="p">,</span> <span class="nv">$column_names</span><span class="o">=</span><span class="nv">$names</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 3)</span>
 </pre></div>
 </div>
-<div class="highlight-php"><div class="highlight"><pre><span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget_count</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;fib0&#39;</span><span class="p">,</span> <span class="s1">&#39;fib1&#39;</span><span class="p">,</span> <span class="s1">&#39;fib2&#39;</span><span class="p">,</span> <span class="s1">&#39;fib3&#39;</span><span class="p">,</span> <span class="s1">&#39;fib4&#39;</span><span class="p">),</span>
-                               <span class="nv">$columns</span><span class="o">=</span><span class="k">null</span><span class="p">,</span> <span class="nv">$column_start</span><span class="o">=</span><span class="s1">&#39;col1&#39;</span><span class="p">,</span> <span class="nv">$column_finish</span><span class="o">=</span><span class="s1">&#39;col3&#39;</span><span class="p">)</span>
+<div class="highlight-php"><div class="highlight"><pre><span class="nv">$slice</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnSlice</span><span class="p">(</span><span class="s1">&#39;col1&#39;</span><span class="p">,</span> <span class="s1">&#39;col3&#39;</span><span class="p">);</span>
+<span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">multiget_count</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;fib0&#39;</span><span class="p">,</span> <span class="s1">&#39;fib1&#39;</span><span class="p">,</span> <span class="s1">&#39;fib2&#39;</span><span class="p">,</span> <span class="s1">&#39;fib3&#39;</span><span class="p">,</span> <span class="s1">&#39;fib4&#39;</span><span class="p">),</span> <span class="nv">$slice</span><span class="p">);</span>
 <span class="c1">// returns: array(&#39;fib0&#39; =&gt; 1, &#39;fib1&#39; =&gt; 1, &#39;fib2&#39; =&gt; 2, &#39;fib3&#39; =&gt; 3, &#39;fib4&#39; =&gt; 3)</span>
 </pre></div>
 </div>
