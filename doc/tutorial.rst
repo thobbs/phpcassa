@@ -143,7 +143,7 @@ The simplest way to get data is to use
 Without any other arguments, :meth:`ColumnFamily::get()`
 returns every column in the row (up to `$column_count`, which defaults to 100).
 If you only want a few of the columns and you know them by name, you can
-specify them using a `$columns` argument:
+specify them using a `$column_names` argument:
 
 .. code-block:: php
 
