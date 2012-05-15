@@ -15,7 +15,7 @@ class BooleanType extends CassandraType {
 
     public function unpack($data, $is_name=null)
     {
-        return unpack('C', $data) === 1;
+        return array_shift(unpack('C', $data)) === 1;
     }
 }
 
