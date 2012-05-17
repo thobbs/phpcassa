@@ -1,9 +1,9 @@
 <?
 namespace phpcassa\Batch;
 
-use phpcassa\ConsistencyLevel;
 use phpcassa\Util\Clock;
 
+use cassandra\ConsistencyLevel;
 use cassandra\Deletion;
 use cassandra\Mutation;
 use cassandra\SlicePredicate;
@@ -25,7 +25,7 @@ class Mutator
      *
      * @param phpcassa\Connection\ConnectionPool $pool the connection pool to
      *        use for all operations
-     * @param phpcassa\ConsistencyLevel $consistency_level the default consistency
+     * @param cassandra\ConsistencyLevel $consistency_level the default consistency
      *        level this mutator will write at, with a default of
      *        ConsistencyLevel::ONE
      */
@@ -47,7 +47,7 @@ class Mutator
      * If an error occurs, the buffer will be preserverd, allowing you to
      * attempt to call send() again later or take other recovery actions.
      *
-     * @param phpcassa\ConsistencyLevel $consistency_level optional
+     * @param cassandra\ConsistencyLevel $consistency_level optional
      *        override for the mutator's default consistency level
      */
     public function send($consistency_level=null) {
