@@ -12,6 +12,9 @@ spl_autoload_register(function($className){
         // Find the thrift-generated class file
         global $THRIFT_AUTOLOAD;
         $classl = strtolower($className);
+        if ($classl[0] == "\\") {
+            $classl = substr($classl, 1);
+        }
         if (isset($THRIFT_AUTOLOAD[$classl])) {
           require_once $GLOBALS['THRIFT_ROOT'].'/packages/'.$THRIFT_AUTOLOAD[$classl];
         } else {
