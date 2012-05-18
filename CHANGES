@@ -1,6 +1,18 @@
 Changelog
 =========
 
+Changes in 1.0.a.2
+------------------
+This addresses a few bugs in the 1.0.a.2 release only.
+
+Bugfixes
+^^^^^^^^
+- Fix autoloading issues in older versions of PHP 5.3
+- Fix ConsistencyLevel reference in Batch\Mutator
+- Fix BooleanType unpacking
+- Fix Thrift C extension for PHP 5.4
+- Add php5-dev, g++ to debian build dependencies
+
 Changes in 1.0.a.1
 ------------------
 This release introduces several major changes to phpcassa:

@@ -1,3 +1,9 @@
+phpcassa (1.0.a.2) unstable; urgency=low
+
+  * Bugfixes
+
+ -- Tyler Hobbs <tyler@datastax.com>  Fri, 18 May 2012 14:46:01 -0500
+
 phpcassa (1.0.a.1) unstable; urgency=low
 
   * Cassandra 1.x compatibility
