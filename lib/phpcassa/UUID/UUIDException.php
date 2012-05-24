@@ -1,5 +1,5 @@
 <?php
-namespace phpcassa\Util;
+namespace phpcassa\UUID;
 
 /**
  * @package phpcassa\Util
