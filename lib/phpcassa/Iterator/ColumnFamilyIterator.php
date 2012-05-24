@@ -125,14 +125,46 @@ class ColumnFamilyIterator implements \Iterator {
             # in the CF
 
             # Get the next buffer (next_start_key has already been set)
-            $this->get_buffer();
-
-            # If the result set is 1, we can stop because the first item
-            # should always be skipped
-            if(count($this->current_buffer) == 1)
-                $this->is_valid = false;
-            else
-                $this->next();
+            # we loop through multiple calls of get_buffer() in case the entire
+            # buffer load is tombstones, the old method of just calling next() could 
+            # result in excessive recursion
+            while ( $this->is_valid ) {
+                $this->get_buffer();
+    
+                # If the result set is 1, we can stop because the first item
+                # should always be skipped
+                if(count($this->current_buffer) == 1) {
+                    $this->is_valid = false;
+                    break;
+                }
+                else {
+                    // eat up tombstones
+                    if (count(current($this->current_buffer)) == 0) {
+                        $doitagain = false;
+                        while (count(current($this->current_buffer)) == 0) {
+                            $this->next_start_key = key($this->current_buffer);
+                            next($this->current_buffer);
+                            $key = key($this->current_buffer);
+                            if ( !isset($key) ) {
+                                if ( $this->current_page_size < $this->expected_page_size ) {
+                                    // looks like we're at the last page of data so just give up
+                                    $this->is_valid = false;
+                                }
+                                else
+                                    // found nothing, gotta go get another buffer load
+                                    $doitagain = true;
+                                break;        
+                            }
+                        }
+                        if ( !$doitagain )
+                            break;
+                    }
+                    else {
+                        $this->next();
+                        break;
+                    }
+                }
+            }
         }
     }
 }
