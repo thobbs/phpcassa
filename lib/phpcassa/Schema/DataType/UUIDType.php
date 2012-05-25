@@ -1,6 +1,7 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\Schema\DataType\Serialized;
 use phpcassa\UUID;
 
 /**
@@ -8,7 +9,7 @@ use phpcassa\UUID;
  *
  * @package phpcassa\Schema\DataType
  */
-class UUIDType extends CassandraType
+class UUIDType extends CassandraType implements Serialized
 {
     public function pack($value, $is_name=true, $slice_end=null, $is_data=false) {
         if ($is_name && $is_data)

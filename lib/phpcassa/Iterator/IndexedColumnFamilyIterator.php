@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa\Iterator;
 
+use phpcassa\Schema\DataType\Serialized;
+
 /**
  * Iterates over a column family row-by-row, typically with only a subset
  * of each row's columns.
@@ -41,7 +43,12 @@ class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
         $this->index_clause->count = $buff_sz;
         $this->buffer_number++;
 
-        $this->index_clause->start_key = $this->column_family->pack_key($this->next_start_key);
+        if (is_string($this->next_start_key) && $this->column_family->key_type instanceof Serialized) {
+            $handle_serialize = true;
+        } else {
+            $handle_serialize = false;
+        }
+        $this->index_clause->start_key = $this->column_family->pack_key($this->next_start_key, $handle_serialize);
         $resp = $this->column_family->pool->call("get_indexed_slices",
                 $this->column_parent, $this->index_clause, $this->predicate,
                 $this->read_consistency_level);

@@ -1,6 +1,7 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\Schema\DataType\Serialized;
 use phpcassa\ColumnFamily;
 
 /**
@@ -8,7 +9,7 @@ use phpcassa\ColumnFamily;
  *
  * @package phpcassa\Schema\DataType
  */
-class CompositeType extends CassandraType
+class CompositeType extends CassandraType implements Serialized
 {
     /**
      * @param phpcassa\Schema\DataType\CassandraType[] $inner_types an array

@@ -1,6 +1,7 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\Schema\DataType\Serialized;
 use phpcassa\Schema\DataType\UUIDType;
 
 /**

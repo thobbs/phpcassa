@@ -1,6 +1,7 @@
 <?php
 namespace phpcassa\Iterator;
 
+use phpcassa\Schema\DataType\Serialized;
 use cassandra\KeyRange;
 
 /**
@@ -41,7 +42,12 @@ class RangeColumnFamilyIterator extends ColumnFamilyIterator {
         $this->buffer_number++;
 
         $key_range = new KeyRange();
-        $key_range->start_key = $this->column_family->pack_key($this->next_start_key);
+        if (is_string($this->next_start_key) && $this->column_family->key_type instanceof Serialized) {
+            $handle_serialize = true;
+        } else {
+            $handle_serialize = false;
+        }
+        $key_range->start_key = $this->column_family->pack_key($this->next_start_key, $handle_serialize);
         $key_range->end_key = $this->key_finish;
         $key_range->count = $buff_sz;
 

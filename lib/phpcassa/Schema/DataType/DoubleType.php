@@ -1,12 +1,14 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\Schema\DataType\Serialized;
+
 /**
  * Stores data as an 8-byte double-precision float.
  *
  * @package phpcassa\Schema\DataType
  */
-class DoubleType extends CassandraType
+class DoubleType extends CassandraType implements Serialized
 {
     public function pack($value, $is_name=true, $slice_end=null, $is_data=false) {
         if ($is_name && $is_data)

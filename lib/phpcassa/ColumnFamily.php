@@ -4,6 +4,7 @@ namespace phpcassa;
 use phpcassa\Schema\DataType;
 use phpcassa\Schema\DataType\BytesType;
 use phpcassa\Schema\DataType\CompositeType;
+use phpcassa\Schema\DataType\Serialized;
 
 use phpcassa\Iterator\IndexedColumnFamilyIterator;
 use phpcassa\Iterator\RangeColumnFamilyIterator;
@@ -331,9 +332,16 @@ class ColumnFamily {
         $ret = array();
 
         $have_dict = ($this->return_format == self::DICTIONARY_FORMAT);
+        $should_serialize = ($this->key_type instanceof Serialized);
         if ($have_dict) {
-            foreach($keys as $key) {
-                $ret[$key] = null;
+            if ($should_serialize) {
+                foreach($keys as $key) {
+                    $ret[serialize($key)] = null;
+                }
+            } else {
+                foreach($keys as $key) {
+                    $ret[$key] = null;
+                }
             }
         }
 
@@ -382,9 +390,17 @@ class ColumnFamily {
         }
 
         if ($have_dict) {
-            foreach($keys as $key) {
-                if (!isset($non_empty_keys[$key]))
-                    unset($ret[$key]);
+            if ($should_serialize) {
+                foreach($keys as $key) {
+                    $skey = serialize($key);
+                    if (!isset($non_empty_keys[$skey]))
+                        unset($ret[$skey]);
+                }
+            } else {
+                foreach($keys as $key) {
+                    if (!isset($non_empty_keys[$key]))
+                        unset($ret[$key]);
+                }
             }
         }
 
@@ -871,10 +887,10 @@ class ColumnFamily {
             return $this->col_name_type->unpack($b, $handle_serialize);
     }
 
-    public function pack_key($key) {
+    public function pack_key($key, $handle_serialize=false) {
         if (!$this->autopack_keys || $key === "")
             return $key;
-        return $this->key_type->pack($key, false);
+        return $this->key_type->pack($key, true, null, $handle_serialize);
     }
 
     public function unpack_key($b, $handle_serialize=true) {
