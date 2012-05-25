@@ -225,7 +225,6 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         }
         $this->assertEquals($count, 100);
 
-
         # Buffer size larger than row count
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
@@ -237,7 +236,6 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
             $count++;
         }
         $this->assertEquals($count, 100);
-
 
         # Buffer size larger than row count, less than total number of rows
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
@@ -313,11 +311,11 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($count, 201);
 
 
- 
+
         # Row count above total number of rows, buffer_size = total number of rows
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
-                               $buffer_size=200);
+                               $buffer_size=201);
         $count = 0;
         foreach ($cf->get_range($key_start='', $key_finish='', $row_count=10000) as $key => $cols) {
             $this->assertContains($key, $keys);
@@ -326,8 +324,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         }
         $this->assertEquals($count, 201);
 
-
-        # Row count above total number of rows, buffer_size = total number of rows
+        # Row count above total number of rows, buffer_size > total number of rows
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
                                $buffer_size=10000);
