@@ -17,7 +17,7 @@ class DoubleType extends CassandraType implements Serialized
     }
 
     public function unpack($data, $is_name=true) {
-        $value = array_shift(unpack("d", $data));
+        $value = current(unpack("d", $data));
         if ($is_name) {
             return serialize($value);
         } else {
