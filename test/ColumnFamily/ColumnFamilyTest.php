@@ -225,6 +225,14 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         }
         $this->assertEquals($count, 100);
 
+        # Fetch a single row
+        $count = 0;
+        foreach ($cf->get_range($key_start='', $key_finish='', $row_count=1) as $key => $cols) {
+            $this->assertContains($key, array($keys[0]));
+            $count++;
+        }
+        $this->assertEquals(1, $count);
+
         # Buffer size larger than row count
         $cf = new ColumnFamily($this->pool, 'Standard1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,

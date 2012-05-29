@@ -11,14 +11,13 @@ use phpcassa\Schema\DataType\Serialized;
  */
 class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
 
-    private $index_clause, $buffer_number;
+    private $index_clause;
 
     public function __construct($column_family, $index_clause, $buffer_size,
                                 $column_parent, $predicate,
                                 $read_consistency_level) {
 
         $this->index_clause = $index_clause;
-        $this->buffer_number = 0;
 
         $row_count = $index_clause->count;
         $orig_start_key = $index_clause->start_key;
@@ -39,6 +38,13 @@ class IndexedColumnFamilyIterator extends ColumnFamilyIterator {
                 $buff_sz = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
             }
         }
+
+        // when fetching a second buffer or later, we have to fetch a minimum
+        // of two rows since the first will be a repeat
+        if ($this->buffer_number >= 1) {
+            $buff_sz = max($buff_sz, 2);
+        }
+
         $this->expected_page_size = $buff_sz;
         $this->index_clause->count = $buff_sz;
         $this->buffer_number++;

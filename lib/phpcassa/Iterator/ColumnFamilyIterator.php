@@ -12,7 +12,7 @@ class ColumnFamilyIterator implements \Iterator {
     protected $read_consistency_level;
     protected $column_parent, $predicate;
 
-    protected $current_buffer;
+    protected $current_buffer, $buffer_number;
     protected $next_start_key, $orig_start_key;
     protected $is_valid;
     protected $rows_seen;
@@ -36,6 +36,8 @@ class ColumnFamilyIterator implements \Iterator {
 
         if ($this->row_count !== null)
             $this->buffer_size = min($this->row_count, $buffer_size);
+
+        $this->buffer_number = 0;
     }
 
     public function rewind() {
@@ -136,8 +138,8 @@ class ColumnFamilyIterator implements \Iterator {
                 $this->get_buffer();
 
                 # If the result set is 1, we can stop because the first item
-                # should always be skipped
-                if(count($this->current_buffer) == 1)
+                # should always be skipped if we're not on the first buffer
+                if(count($this->current_buffer) == 1 && $this->buffer_number != 1)
                 {
                     $this->is_valid = false;
                     break;

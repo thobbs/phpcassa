@@ -12,7 +12,7 @@ use cassandra\KeyRange;
  */
 class RangeColumnFamilyIterator extends ColumnFamilyIterator {
 
-    private $key_start, $key_finish, $buffer_number;
+    private $key_start, $key_finish;
 
     public function __construct($column_family, $buffer_size,
                                 $key_start, $key_finish, $row_count,
@@ -21,7 +21,6 @@ class RangeColumnFamilyIterator extends ColumnFamilyIterator {
 
         $this->key_start = $key_start;
         $this->key_finish = $key_finish;
-        $this->buffer_number = 0;
 
         parent::__construct($column_family, $buffer_size, $row_count,
                             $key_start, $column_parent, $predicate,
@@ -38,6 +37,13 @@ class RangeColumnFamilyIterator extends ColumnFamilyIterator {
                 $buff_sz = min($this->row_count - $this->rows_seen + 1, $this->buffer_size);
             }
         }
+
+        // when fetching a second buffer or later, we have to fetch a minimum
+        // of two rows since the first will be a repeat
+        if ($this->buffer_number >= 1) {
+            $buff_sz = max($buff_sz, 2);
+        }
+
         $this->expected_page_size = $buff_sz;
         $this->buffer_number++;
 
