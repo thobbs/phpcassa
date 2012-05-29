@@ -194,6 +194,11 @@ some rows with keys 'row_key1' through 'row_key9', we can do this:
       Print_r($columns);
   }
 
+.. note:: Cassandra must be using an OrderPreservingPartitioner for you to be
+          able to get a meaningful range of rows; the default, RandomPartitioner,
+          stores rows in the order of the MD5 hash of their keys. See
+          http://www.datastax.com/docs/1.0/cluster_architecture/partitioning.
+
 It's also possible to specify a set of columns or a slice for
 `multiget()` and `get_range()` just like we did for `get()`.
 
