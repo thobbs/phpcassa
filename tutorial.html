@@ -259,6 +259,13 @@ some rows with keys &#8216;row_key1&#8217; through &#8216;row_key9&#8217;, we ca
 <span class="p">}</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Cassandra must be using an OrderPreservingPartitioner for you to be
+able to get a meaningful range of rows; the default, RandomPartitioner,
+stores rows in the order of the MD5 hash of their keys. See
+<a class="reference external" href="http://www.datastax.com/docs/1.0/cluster_architecture/partitioning">http://www.datastax.com/docs/1.0/cluster_architecture/partitioning</a>.</p>
+</div>
 <p>It&#8217;s also possible to specify a set of columns or a slice for
 <cite>multiget()</cite> and <cite>get_range()</cite> just like we did for <cite>get()</cite>.</p>
 </div>
