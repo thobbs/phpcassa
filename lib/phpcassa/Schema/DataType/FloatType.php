@@ -17,7 +17,7 @@ class FloatType extends CassandraType implements Serialized
     }
 
     public function unpack($data, $handle_serialize=true) {
-        $value = array_shift(unpack("f", $data));
+        $value = current(unpack("f", $data));
         if ($handle_serialize) {
             return serialize($value);
         } else {
