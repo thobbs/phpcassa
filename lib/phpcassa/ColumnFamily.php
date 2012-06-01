@@ -244,7 +244,7 @@ class ColumnFamily {
             $this->autopack_values = true;
             $this->cf_data_type = DataType::get_type_for($this->cfdef->default_validation_class);
             foreach($this->cfdef->column_metadata as $coldef) {
-                $this->col_type_dict[$coldef->name] =
+                $this->col_type_dict[$this->col_name_type->unpack($coldef->name)] =
                         DataType::get_type_for($coldef->validation_class);
             }
         } else {
@@ -927,6 +927,8 @@ class ColumnFamily {
 
         if (!is_scalar($col_name) || is_float($col_name))
             $col_name = serialize($col_name);
+
+        $col_name = $this->col_name_type->unpack($col_name);
 
         if (isset($this->col_type_dict[$col_name])) {
             $dtype = $this->col_type_dict[$col_name];
