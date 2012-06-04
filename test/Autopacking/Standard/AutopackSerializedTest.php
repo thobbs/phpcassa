@@ -5,7 +5,9 @@ require_once(__DIR__.'/StandardBase.php');
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
+use phpcassa\Schema\DataType\DateType;
 use phpcassa\SystemManager;
+use phpcassa\Util\Clock;
 
 use phpcassa\UUID;
 
@@ -30,6 +32,9 @@ class AutopackStandardSerializedTest extends StandardBase {
         $cfattrs = array("comparator_type" => DataType::LEXICAL_UUID_TYPE);
         $sys->create_column_family(self::$KS, 'StdLexicalUUID', $cfattrs);
 
+        $cfattrs = array("comparator_type" => DataType::DATE_TYPE);
+        $sys->create_column_family(self::$KS, 'StdDate', $cfattrs);
+
         $cfattrs = array("comparator_type" => 'CompositeType(LongType, AsciiType)');
         $sys->create_column_family(self::$KS, 'StdComposite', $cfattrs);
     }
@@ -41,11 +46,21 @@ class AutopackStandardSerializedTest extends StandardBase {
         $this->cf_double    = new ColumnFamily($this->client, 'StdDouble');
         $this->cf_time      = new ColumnFamily($this->client, 'StdTimeUUID');
         $this->cf_lex       = new ColumnFamily($this->client, 'StdLexicalUUID');
+        $this->cf_date  = new ColumnFamily($this->client, 'StdDate');
         $this->cf_composite = new ColumnFamily($this->client, 'StdComposite');
 
         $this->cfs = array($this->cf_float, $this->cf_double,
                            $this->cf_time, $this->cf_lex,
                            $this->cf_composite);
+
+        // make a millisecond precision timestamp
+        $base_time = Clock::get_time();
+        $base_time -= ((int)$base_time) % 1000;
+        $base_time /= 1e6;
+
+        $this->DATE1 = $base_time + 0;
+        $this->DATE2 = $base_time + 1;
+        $this->DATE3 = $base_time + 2;
 
         $this->TIME1 = UUID::mint();
         $this->TIME2 = UUID::mint();
@@ -71,6 +86,9 @@ class AutopackStandardSerializedTest extends StandardBase {
         $lex_cols = array($this->LEX1, $this->LEX2, $this->LEX3);
         $type_groups[] = $this->make_group($this->cf_lex, $lex_cols);
 
+        $date_cols = array($this->DATE1, $this->DATE2, $this->DATE3);
+        $type_groups[] = $this->make_group($this->cf_date, $date_cols);
+
         $composite_cols = array(array(1, 'a'), array(2, 'b'), array(3, 'c'));
         $type_groups[] = $this->make_group($this->cf_composite, $composite_cols);
 
@@ -84,4 +102,16 @@ class AutopackStandardSerializedTest extends StandardBase {
         $this->assertEquals($micros, $t, '', 100);
     }
 
+    public function test_date_type_formats() {
+        $time1 = \microtime();
+        \settype($time1, 'string'); //convert to string to keep trailing zeroes
+        $time2 = explode(" ", $time1);
+        $sub_secs = \preg_replace('/0./', '', $time2[0], 1);
+        $time3 = ($time2[1].$sub_secs)/100;
+        $time3 -= ((int)$time3) % 1000;
+        $time3 /= 1000000;
+
+        $unpacked = DateType::unpack(DateType::pack($time1), false);
+        $this->assertEquals($time3, $unpacked);
+    }
 }
