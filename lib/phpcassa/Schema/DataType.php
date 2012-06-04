@@ -20,6 +20,7 @@ class DataType
     const TIME_UUID_TYPE = "TimeUUIDType";
     const LEXICAL_UUID_TYPE = "LexicalUUIDType";
     const UUID_TYPE = "UUIDType";
+    const DATE_TYPE = "DateType";
 
     public static $class_map;
 
@@ -35,7 +36,8 @@ class DataType
             'TimeUUIDType'    => 'phpcassa\Schema\DataType\TimeUUIDType',
             'LexicalUUIDType' => 'phpcassa\Schema\DataType\LexicalUUIDType',
             'UUIDType'        => 'phpcassa\Schema\DataType\UUIDType',
-            'BooleanType'     => 'phpcassa\Schema\DataType\BooleanType'
+            'BooleanType'     => 'phpcassa\Schema\DataType\BooleanType',
+            'DateType'        => 'phpcassa\Schema\DataType\DateType',
         );
     }
 
