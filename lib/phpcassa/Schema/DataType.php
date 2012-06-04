@@ -13,6 +13,7 @@ class DataType
     const BYTES_TYPE = "BytesType";
     const LONG_TYPE = "LongType";
     const INTEGER_TYPE = "IntegerType";
+    const INT32_TYPE = "Int32Type";
     const FLOAT_TYPE = "FloatType";
     const DOUBLE_TYPE = "DoubleType";
     const ASCII_TYPE = "AsciiType";
@@ -38,6 +39,7 @@ class DataType
             'UUIDType'        => 'phpcassa\Schema\DataType\UUIDType',
             'BooleanType'     => 'phpcassa\Schema\DataType\BooleanType',
             'DateType'        => 'phpcassa\Schema\DataType\DateType',
+            'Int32Type'        => 'phpcassa\Schema\DataType\Int32Type',
         );
     }
 

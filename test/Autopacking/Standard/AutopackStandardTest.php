@@ -19,6 +19,9 @@ class AutopackStandardTest extends StandardBase {
         $cfattrs = array("comparator_type" => DataType::INTEGER_TYPE);
         $sys->create_column_family(self::$KS, 'StdInteger', $cfattrs);
 
+        $cfattrs = array("comparator_type" => DataType::INT32_TYPE);
+        $sys->create_column_family(self::$KS, 'StdInt32', $cfattrs);
+
         $cfattrs = array("comparator_type" => DataType::ASCII_TYPE);
         $sys->create_column_family(self::$KS, 'StdAscii', $cfattrs);
 
@@ -31,6 +34,7 @@ class AutopackStandardTest extends StandardBase {
 
         $this->cf_long  = new ColumnFamily($this->client, 'StdLong');
         $this->cf_int   = new ColumnFamily($this->client, 'StdInteger');
+        $this->cf_int32  = new ColumnFamily($this->client, 'StdInt32');
         $this->cf_ascii = new ColumnFamily($this->client, 'StdAscii');
         $this->cf_utf8  = new ColumnFamily($this->client, 'StdUTF8');
 
@@ -56,6 +60,9 @@ class AutopackStandardTest extends StandardBase {
 
         $int_cols = array(1, 2, 3);
         $type_groups[] = $this->make_group($this->cf_int, $int_cols);
+
+        $int32_cols = array(-123456789, 0, 123456789);
+        $type_groups[] = $this->make_group($this->cf_int32, $int32_cols);
 
         $ascii_cols = array('aaaa', 'bbbb', 'cccc');
         $type_groups[] = $this->make_group($this->cf_ascii, $ascii_cols);

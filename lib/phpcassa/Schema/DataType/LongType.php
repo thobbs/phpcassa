@@ -2,7 +2,7 @@
 namespace phpcassa\Schema\DataType;
 
 /**
- * Stores data as an 8-byte integer.
+ * Stores data as an 8-byte signed integer.
  *
  * @package phpcassa\Schema\DataType
  */
