@@ -1,25 +1,36 @@
 <?php
 namespace phpcassa\Schema\DataType;
 
+use phpcassa\Schema\DataType\LongType;
+use phpcassa\Schema\DataType\Serialized;
+
 /**
- * Stores data as an 8-byte integer.
+ * Stores a date as a number of milliseconds since the unix epoch.
  *
  * @package phpcassa\Schema\DataType
  */
-class DateType extends LongType {
+class DateType extends LongType implements Serialized {
 
-    public function pack($value, $is_name=null, $slice_end=null, $is_data=null)
+    public function pack($value, $is_name=true, $slice_end=null, $is_data=false)
     {
-        if (false !== ($p = strpos($value, ' ')))
-            $value = substr($value, $p+1) + substr($value, 0, 1);
+        if (false !== strpos($value, ' ')) {
+            list($usec, $sec) = explode(' ', $value);
+            $value = $sec + $usec;
+        } else if ($is_name && $is_data) {
+            $value = unserialize($value);
+        }
 
-        $value *= 1e3;
-
-        return parent::pack(floor($value), $is_name, $slice_end, $is_data);
+        $value = floor($value * 1e3);
+        return parent::pack($value);
     }
 
-    public function unpack($data, $is_name=null)
+    public function unpack($data, $handle_serialize=true)
     {
-        return parent::unpack($data, $is_name) / 1e3;
+        $value = parent::unpack($data, false) / 1e3;
+        if ($handle_serialize) {
+            return serialize($value);
+        } else {
+            return $value;
+        }
     }
 }
