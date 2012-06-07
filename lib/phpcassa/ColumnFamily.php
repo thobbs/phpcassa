@@ -533,11 +533,7 @@ class ColumnFamily {
             throw $ire;
         }
 
-        $packed_key_start = $this->pack_key($start);
-        $packed_key_finish = $this->pack_key($finish);
-
-        return new RangeColumnFamilyIterator($this, $buffsz,
-                                             $packed_key_start, $packed_key_finish,
+        return new RangeColumnFamilyIterator($this, $buffsz, $start, $finish,
                                              $count, $cp, $slice, $this->rcl($cl));
     }
 
@@ -575,7 +571,7 @@ class ColumnFamily {
             $new_expr->op = $expr->op;
             $new_clause->expressions[] = $new_expr;
         }
-        $new_clause->start_key = $this->pack_key($index_clause->start_key);
+        $new_clause->start_key = $index_clause->start_key;
         $new_clause->count = $index_clause->count;
 
         $column_parent = $this->create_column_parent();

@@ -29,7 +29,6 @@ class AutopackKeysTest extends AutopackBase {
         );
         $sys->create_column_family(self::$KS, 'UUIDKeys', $cfattrs);
         $sys->create_index(self::$KS, 'UUIDKeys', 'subcol', DataType::LONG_TYPE);
-        $sys->create_index(self::$KS, 'UUIDKeys', 'subcol', DataType::LONG_TYPE);
     }
 
     public function setUp() {
@@ -96,13 +95,21 @@ class AutopackKeysTest extends AutopackBase {
         $this->cf->insert(1, array("b" => "b"));
         $this->cf->insert(2, array("c" => "c"));
 
-        $this->cf->buffer_size = 2;
+        $expected = array(0 => array("a" => "a"),
+                          1 => array("b" => "b"),
+                          2 => array("c" => "c"));
 
+        $this->cf->buffer_size = 2;
         $res = iterator_to_array($this->cf->get_range());
-        $this->assertEquals(array(0 => array("a" => "a"),
-                                  1 => array("b" => "b"),
-                                  2 => array("c" => "c")),
-                            $res);
+        $this->assertEquals($expected, $res);
+
+        // supply a start key
+        $res = iterator_to_array($this->cf->get_range(0));
+        $this->assertEquals($expected, $res);
+
+        // ... and an end key
+        $res = iterator_to_array($this->cf->get_range(0, 2));
+        $this->assertEquals($expected, $res);
     }
 
     public function test_get_range_serialized() {
@@ -114,12 +121,21 @@ class AutopackKeysTest extends AutopackBase {
         $this->uuid_cf->insert($uuid2, array("b" => "b"));
         $this->uuid_cf->insert($uuid3, array("c" => "c"));
 
+        $expected = array(serialize($uuid1) => array("a" => "a"),
+                          serialize($uuid2) => array("b" => "b"),
+                          serialize($uuid3) => array("c" => "c"));
+
         $this->uuid_cf->buffer_size = 2;
         $res = iterator_to_array($this->uuid_cf->get_range());
-        $this->assertEquals(array(serialize($uuid1) => array("a" => "a"),
-                                  serialize($uuid2) => array("b" => "b"),
-                                  serialize($uuid3) => array("c" => "c")),
-                            $res);
+        $this->assertEquals($expected, $res);
+
+        // supply a start key
+        $res = iterator_to_array($this->uuid_cf->get_range($uuid1));
+        $this->assertEquals($expected, $res);
+
+        // ... and an end key
+        $res = iterator_to_array($this->uuid_cf->get_range($uuid1, $uuid3));
+        $this->assertEquals($expected, $res);
     }
 
     public function test_get_indexed_slices() {
@@ -130,14 +146,19 @@ class AutopackKeysTest extends AutopackBase {
         $this->cf->insert(3, array("subcol" => 1));
 
         $this->cf->buffer_size = 2;
+        $expected = array(1 => array("subcol" => 1),
+                          2 => array("subcol" => 1),
+                          3 => array("subcol" => 1));
 
         $expr = new IndexExpression("subcol", 1);
         $clause = new IndexClause(array($expr));
         $res = iterator_to_array($this->cf->get_indexed_slices($clause));
-        $this->assertEquals(array(1 => array("subcol" => 1),
-                                  2 => array("subcol" => 1),
-                                  3 => array("subcol" => 1)),
-                            $res);
+        $this->assertEquals($expected, $res);
+
+        // supply a start key
+        $clause = new IndexClause(array($expr), 0);
+        $res = iterator_to_array($this->cf->get_indexed_slices($clause));
+        $this->assertEquals($expected, $res);
 
         $expr = new IndexExpression("subcol", 0);
         $clause = new IndexClause(array($expr));
@@ -151,18 +172,27 @@ class AutopackKeysTest extends AutopackBase {
         $uuid1 = UUID::uuid1();
         $uuid2 = UUID::uuid1();
         $uuid3 = UUID::uuid1();
+        $uuid4 = UUID::uuid1();
         $this->uuid_cf->insert($uuid1, array("subcol" => 0));
         $this->uuid_cf->insert($uuid2, array("subcol" => 1));
         $this->uuid_cf->insert($uuid3, array("subcol" => 1));
+        $this->uuid_cf->insert($uuid4, array("subcol" => 1));
 
         $this->uuid_cf->buffer_size = 2;
+
+        $expected = array(serialize($uuid2) => array("subcol" => 1),
+                          serialize($uuid3) => array("subcol" => 1),
+                          serialize($uuid4) => array("subcol" => 1));
 
         $expr = new IndexExpression("subcol", 1);
         $clause = new IndexClause(array($expr));
         $res = iterator_to_array($this->uuid_cf->get_indexed_slices($clause));
-        $this->assertEquals(array(serialize($uuid2) => array("subcol" => 1),
-                                  serialize($uuid3) => array("subcol" => 1)),
-                            $res);
+        $this->assertEquals($expected, $res);
+
+        // supply a start key
+        $clause = new IndexClause(array($expr), $uuid1);
+        $res = iterator_to_array($this->uuid_cf->get_indexed_slices($clause));
+        $this->assertEquals($expected, $res);
 
         $expr = new IndexExpression("subcol", 0);
         $clause = new IndexClause(array($expr));

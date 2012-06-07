@@ -12,15 +12,17 @@ use cassandra\KeyRange;
  */
 class RangeColumnFamilyIterator extends ColumnFamilyIterator {
 
-    private $key_start, $key_finish;
+    private $key_start;
+    private $key_finish;
 
     public function __construct($column_family, $buffer_size,
                                 $key_start, $key_finish, $row_count,
                                 $column_parent, $predicate,
                                 $read_consistency_level) {
 
+        // The key_start will be packed during the first get_buffer call
         $this->key_start = $key_start;
-        $this->key_finish = $key_finish;
+        $this->key_finish = $column_family->pack_key($key_finish);
 
         parent::__construct($column_family, $buffer_size, $row_count,
                             $key_start, $column_parent, $predicate,
