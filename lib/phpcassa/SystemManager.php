@@ -283,10 +283,10 @@ class SystemManager {
      *        \cassandra\IndexType::KEYS_INDEX, which is currently the only option.
      */
     public function create_index($keyspace, $column_family, $column,
-        $data_type, $index_name=NULL, $index_type=IndexType::KEYS)
+        $data_type=self::KEEP, $index_name=NULL, $index_type=IndexType::KEYS)
     {
         $this->_alter_column($keyspace, $column_family, $column,
-            $data_type=self::KEEP, $index_type=$index_type, $index_name=$index_name);
+            $data_type=$data_type, $index_type=$index_type, $index_name=$index_name);
     }
 
     /**
@@ -342,7 +342,6 @@ class SystemManager {
 
         $this->client->set_keyspace($keyspace);
         $cfdef = $this->get_cfdef($keyspace, $column_family);
-        $data_type = self::qualify_class_name($data_type);
 
         if ($cfdef->column_type == 'Super') {
             $col_name_type = DataType::get_type_for($cfdef->subcomparator_type);
@@ -354,8 +353,9 @@ class SystemManager {
         $col_def = null;
         $col_meta = $cfdef->column_metadata;
         for ($i = 0; $i < count($col_meta); $i++) {
-            $col_def = $col_meta[$i];
-            if ($col_def->name === $packed_name) {
+            $temp_col_def = $col_meta[$i];
+            if ($temp_col_def->name === $packed_name) {
+                $col_def = $temp_col_def;
                 unset($col_meta[$i]);
                 break;
             }

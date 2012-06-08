@@ -81,13 +81,13 @@ class SystemManagerTest extends PHPUnit_Framework_TestCase {
         $cfdef = $this->get_cfdef($ksname, $cfname);
         $this->assertEquals($cfdef->comment, 'this is a new comment');
 
-        $this->sys->create_index($ksname, $cfname, "name", DataType::ASCII_TYPE,
+        $this->sys->create_index($ksname, $cfname, "name", "AsciiType",
             "name_index", IndexType::KEYS);
 
-        $this->sys->create_index($ksname, $cfname, "name2", DataType::ASCII_TYPE,
+        $this->sys->create_index($ksname, $cfname, "name2", "AsciiType",
             "name_index2");
 
-        $this->sys->create_index($ksname, $cfname, "name3", DataType::ASCII_TYPE);
+        $this->sys->create_index($ksname, $cfname, "name3", "AsciiType");
 
         $this->sys->drop_index($ksname, $cfname, "name");
         $this->sys->drop_index($ksname, $cfname, "name2");
