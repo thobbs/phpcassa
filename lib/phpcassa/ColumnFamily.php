@@ -94,9 +94,16 @@ class ColumnFamily {
     /** @internal */
     public $is_super;
 
+    /** @internal */
     protected $cf_data_type;
+
+    /** @internal */
     protected $col_name_type;
+
+    /** @internal */
     protected $supercol_name_type;
+
+    /** @internal */
     protected $col_type_dict;
 
 
@@ -858,6 +865,7 @@ class ColumnFamily {
     /** @internal */
     const SLICE_FINISH = 2;
 
+    /** @internal */
     public function pack_name($value,
                               $is_supercol_name=false,
                               $slice_end=self::NON_SLICE,
@@ -928,6 +936,7 @@ class ColumnFamily {
         }
     }
 
+    /** @internal */
     public function keyslices_to_array($keyslices) {
         $ret = array();
         if ($this->return_format == self::DICTIONARY_FORMAT) {
