@@ -314,7 +314,7 @@ class SuperColumnFamily extends ColumnFamily {
             }
             $column->name = $this->pack_name(
                 $name, false, self::NON_SLICE, true);
-            $column->value = $this->pack_value($value, $name);
+            $column->value = $this->pack_value($value, $column->name);
             $ret[] = $column;
         }
         return $ret;
@@ -333,7 +333,7 @@ class SuperColumnFamily extends ColumnFamily {
             }
             $column->name = $this->pack_name(
                 $name, false, self::NON_SLICE, false);
-            $column->value = $this->pack_value($value, $name);
+            $column->value = $this->pack_value($value, $column->name);
             $ret[] = $column;
         }
         return $ret;
@@ -405,8 +405,8 @@ class SuperColumnFamily extends ColumnFamily {
         if($first->column) { // normal columns
             foreach($array_of_coscs as $cosc) {
                 $col = $cosc->column;
-                $col->name = $this->unpack_name($col->name, false, false);
                 $col->value = $this->unpack_value($col->value, $col->name);
+                $col->name = $this->unpack_name($col->name, false, false);
                 $ret[] = $col;
             }
         } else if($first->super_column) { // super columns
@@ -441,8 +441,8 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         if (!$have_counters) {
             foreach($columns as $c) {
-                $c->name = $this->unpack_name($c->name, false, false);
                 $c->value = $this->unpack_value($c->value, $c->name);
+                $c->name = $this->unpack_name($c->name, false, false);
                 $ret[] = $c;
             }
         } else {
@@ -458,8 +458,8 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         if (!$have_counters) {
             foreach($columns as $c) {
-                $name  = $this->unpack_name($c->name, false);
                 $value = $this->unpack_value($c->value, $c->name);
+                $name  = $this->unpack_name($c->name, false);
                 $ret[$name] = $value;
             }
         } else {
@@ -475,8 +475,8 @@ class SuperColumnFamily extends ColumnFamily {
         $ret = array();
         if (!$have_counters) {
             foreach($columns as $c) {
-                $name  = $this->unpack_name($c->name, false, false);
                 $value = $this->unpack_value($c->value, $c->name);
+                $name  = $this->unpack_name($c->name, false, false);
                 $ret[] = array($name, $value);
             }
         } else {

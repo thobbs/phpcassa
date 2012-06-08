@@ -27,12 +27,16 @@ class AutopackValuesTest extends AutopackBase {
         $cfattrs["default_validation_class"] = "CompositeType(LongType, AsciiType)";
         $sys->create_column_family(self::$KS, 'ValidatorComposite', $cfattrs);
 
-
         $cfattrs["default_validation_class"] = DataType::LONG_TYPE;
         $sys->create_column_family(self::$KS, 'DefaultValidator', $cfattrs);
-        // Quick way to create a TimeUUIDType validator to subcol
-        $sys->create_index(self::$KS, 'DefaultValidator', 'subcol',
-            DataType::TIME_UUID_TYPE, NULL, NULL);
+        $sys->alter_column(self::$KS, 'DefaultValidator', 'subcol', 'TimeUUIDType');
+
+        $cfattrs = array(
+            "comparator_type" => "CompositeType(Int32Type, AsciiType)",
+            "default_validation_class" => "Int32Type"
+        );
+        $sys->create_column_family(self::$KS, 'CompositeNames', $cfattrs);
+        $sys->alter_column(self::$KS, 'CompositeNames', array(0, 'meta'), 'AsciiType');
     }
 
     public function setUp() {
@@ -83,5 +87,17 @@ class AutopackValuesTest extends AutopackBase {
         $this->cf_def_valid->insert(self::$KEYS[0], $col_cm);
         $this->assertEquals($this->cf_def_valid->get(self::$KEYS[0]),
                           array('aaaaaa' => 222222222222, 'subcol' => $time));
+    }
+
+    public function test_serialized_col_name_validators() {
+        $cf = new ColumnFamily($this->client, 'CompositeNames');
+
+        $columns = array(
+            serialize(array(0, 'meta')) => 'foo',
+            serialize(array(1, 'blah')) => 10
+        );
+
+        $cf->insert('key', $columns);
+        $this->assertEquals($columns, $cf->get('key'));
     }
 }
