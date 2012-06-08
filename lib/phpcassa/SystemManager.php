@@ -2,6 +2,7 @@
 namespace phpcassa;
 
 use phpcassa\Connection\ConnectionWrapper;
+use phpcassa\Schema\DataType;
 
 use cassandra\KsDef;
 use cassandra\CfDef;
@@ -16,6 +17,9 @@ use cassandra\IndexType;
  * @package phpcassa
  */
 class SystemManager {
+
+    /** @internal */
+    const KEEP = "<__keep__>";
 
     /**
      * @param string $server the host and port to connect to, in the
@@ -267,13 +271,13 @@ class SystemManager {
      *
      * <code>
      * $sys = new SystemManager();
-     * $sys->create_index("Keyspace1", "Users", "name", DataType::UTF8_TYPE);
+     * $sys->create_index("Keyspace1", "Users", "name", "UTF8Type");
      * </code>
      *
      * @param string $keyspace the name of the keyspace containing the column family
      * @param string $column_family the name of the column family
      * @param string $column the name of the column to put the index on
-     * @param DataType $data_type the data type of the values being indexed
+     * @param string $data_type the data type of the values being indexed
      * @param string $index_name an optional name for the index
      * @param IndexType $index_type the type of index. Defaults to
      *        \cassandra\IndexType::KEYS_INDEX, which is currently the only option.
@@ -281,31 +285,8 @@ class SystemManager {
     public function create_index($keyspace, $column_family, $column,
         $data_type, $index_name=NULL, $index_type=IndexType::KEYS)
     {
-        $this->client->set_keyspace($keyspace);
-        $cfdef = $this->get_cfdef($keyspace, $column_family);
-
-        if (strpos($data_type, ".") === false) {
-            $data_type = "org.apache.cassandra.db.marshal.$data_type";
-        }
-        $col_def = new ColumnDef();
-        $col_def->name = $column;
-        $col_def->validation_class = $data_type;
-        $col_def->index_type = $index_type;
-        $col_def->index_name = $index_name;
-
-        $col_meta = $cfdef->column_metadata;
-        for ($i = 0; $i < count($col_meta); $i++) {
-            $col = $col_meta[$i];
-            if ($col->name == $column) {
-                unset($col_meta[$i]);
-                break;
-            }
-        }
-
-        $col_meta[] = $col_def;
-        $cfdef->column_metadata = $col_meta;
-        $this->client->system_update_column_family($cfdef);
-        $this->wait_for_agreement();
+        $this->_alter_column($keyspace, $column_family, $column,
+            $data_type=self::KEEP, $index_type=$index_type, $index_name=$index_name);
     }
 
     /**
@@ -323,26 +304,78 @@ class SystemManager {
      * @param string $column the name of the column to drop the index from
      */
     public function drop_index($keyspace, $column_family, $column) {
-        $matched = false;       
-        $this->client->set_keyspace($keyspace);
-        $cfdef = $this->get_cfdef($keyspace, $column_family);       
-        $col_metas = $cfdef->column_metadata;
+        $this->_alter_column($keyspace, $column_family, $column,
+            $data_type=self::KEEP, $index_type=NULL, $index_name=NULL);
+    }
 
-        for ($i = 0; $i < count($col_metas); $i++) {
-            $col_meta = $col_metas[$i];           
-            if ($col_meta->name == $column) {
-                $col_meta->index_type = NULL;
-                $col_meta->index_name = NULL;
-                $col_metas[$i] = $col_meta;
-                $cfdef->column_metadata = $col_metas;
-                $matched = true;
+    /**
+     * Changes or sets the validation class of a single column.
+     *
+     * Example usage:
+     *
+     * <code>
+     * $sys = new SystemManager();
+     * $sys->alter_column("Keyspace1", "Users", "name", "UTF8Type");
+     * </code>
+     *
+     * @param string $keyspace the name of the keyspace containing the column family
+     * @param string $column_family the name of the column family
+     * @param string $column the name of the column to put the index on
+     * @param string $data_type the data type of the values being indexed
+     */
+    public function alter_column($keyspace, $column_family, $column, $data_type) {
+        $this->_alter_column($keyspace, $column_family, $column, $data_type);
+    }
+
+    protected static function qualify_class_name($data_type) {
+        if ($data_type === null)
+            return null;
+
+        if (strpos($data_type, ".") === false)
+            return "org.apache.cassandra.db.marshal.$data_type";
+        else
+            return $data_type;
+    }
+
+    protected function _alter_column($keyspace, $column_family, $column,
+        $data_type=self::KEEP, $index_type=self::KEEP, $index_name=self::KEEP) {
+
+        $this->client->set_keyspace($keyspace);
+        $cfdef = $this->get_cfdef($keyspace, $column_family);
+        $data_type = self::qualify_class_name($data_type);
+
+        if ($cfdef->column_type == 'Super') {
+            $col_name_type = DataType::get_type_for($cfdef->subcomparator_type);
+        } else {
+            $col_name_type = DataType::get_type_for($cfdef->comparator_type);
+        }
+        $packed_name = $col_name_type->pack($column);
+
+        $col_def = null;
+        $col_meta = $cfdef->column_metadata;
+        for ($i = 0; $i < count($col_meta); $i++) {
+            $col_def = $col_meta[$i];
+            if ($col_def->name === $packed_name) {
+                unset($col_meta[$i]);
                 break;
             }
         }
 
-        if ($matched) {
-            $this->client->system_update_column_family($cfdef);
+        if ($col_def === null) {
+            $col_def = new ColumnDef();
+            $col_def->name = $packed_name;
         }
+        if ($data_type !== self::KEEP)
+            $col_def->validation_class = self::qualify_class_name($data_type);
+        if ($index_type !== self::KEEP)
+            $col_def->index_type = $index_type;
+        if ($index_name !== self::KEEP)
+            $col_def->index_name = $index_name;
+
+        $col_meta[] = $col_def;
+        $cfdef->column_metadata = $col_meta;
+        $this->client->system_update_column_family($cfdef);
+        $this->wait_for_agreement();
     }
 
     /**
