@@ -27,6 +27,7 @@ class CompositeType extends CassandraType implements Serialized
         $num_items = count($value);
         for ($i = 0; $i < $num_items; $i++) {
             $item = $value[$i];
+            $eoc = 0x00;
             if (is_array($item)) {
                 list($item, $inclusive) = $item;
                 if ($inclusive) {
@@ -45,8 +46,6 @@ class CompositeType extends CassandraType implements Serialized
                     $eoc = 0xFF;
                 else if ($slice_end == ColumnFamily::SLICE_FINISH)
                     $eoc = 0x01;
-            } else {
-                $eoc = 0x00;
             }
 
             $type = $this->inner_types[$i];
