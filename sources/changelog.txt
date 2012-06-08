@@ -1,6 +1,30 @@
 Changelog
 =========
 
+Changes in 1.0.a.3
+------------------
+This is primarily a bug fix release, with most of the bugs
+affecting get_range() and get_indexed_slices().
+
+Features
+^^^^^^^^
+- Int32Type support (4 byte signed integers)
+- DateType support (millisecond precision timestamps)
+- SystemManager::alter_column() has been added, allowing you to easily
+  set a single column validator
+
+Bugfixes
+^^^^^^^^
+- Avoid potential stack overflow from recursing too deep while skipping
+  tombstones in get_range() and get_indexed_slices()
+- Use correct namespace for UUIDException in UUID.php
+- Fix paging in get_range() and get_indexed_slices() for column families
+  that have non-string key validation classes
+- Handle row count of 1 for get_range() and get_indexed_slices() correctly
+- Fix packing and unpacking of validated columns on column familes with
+  non-string column names
+- Allow creation and dropping of indexes on non-string column names
+
 Changes in 1.0.a.2
 ------------------
 This addresses a few bugs in the 1.0.a.2 release only.

@@ -8,7 +8,7 @@
 	<title>File phpcassa/SuperColumnFamily.php | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<script type="text/javascript" src="elementlist.js?3836923824"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -44,6 +44,8 @@
 						</li>
 							</ul></li>
 				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+				<li><a href="namespace-phpcassa.UUID.html">UUID</a>
 						</li>
 							</ul></li>
 			</ul>
@@ -418,7 +420,7 @@
 <a href="#314" id="314" class="l">314: </a>            }
 <a href="#315" id="315" class="l">315: </a>            <span class="php-var">$column</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(
 <a href="#316" id="316" class="l">316: </a>                <span class="php-var">$name</span>, <span class="php-keyword1">false</span>, self::NON_SLICE, <span class="php-keyword1">true</span>);
-<a href="#317" id="317" class="l">317: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$name</span>);
+<a href="#317" id="317" class="l">317: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$column</span>-&gt;name);
 <a href="#318" id="318" class="l">318: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$column</span>;
 <a href="#319" id="319" class="l">319: </a>        }
 <a href="#320" id="320" class="l">320: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
@@ -437,7 +439,7 @@
 <a href="#333" id="333" class="l">333: </a>            }
 <a href="#334" id="334" class="l">334: </a>            <span class="php-var">$column</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(
 <a href="#335" id="335" class="l">335: </a>                <span class="php-var">$name</span>, <span class="php-keyword1">false</span>, self::NON_SLICE, <span class="php-keyword1">false</span>);
-<a href="#336" id="336" class="l">336: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$name</span>);
+<a href="#336" id="336" class="l">336: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$column</span>-&gt;name);
 <a href="#337" id="337" class="l">337: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$column</span>;
 <a href="#338" id="338" class="l">338: </a>        }
 <a href="#339" id="339" class="l">339: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
@@ -509,8 +511,8 @@
 <a href="#405" id="405" class="l">405: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
 <a href="#406" id="406" class="l">406: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
 <a href="#407" id="407" class="l">407: </a>                <span class="php-var">$col</span> = <span class="php-var">$cosc</span>-&gt;column;
-<a href="#408" id="408" class="l">408: </a>                <span class="php-var">$col</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$col</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#409" id="409" class="l">409: </a>                <span class="php-var">$col</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$col</span>-&gt;value, <span class="php-var">$col</span>-&gt;name);
+<a href="#408" id="408" class="l">408: </a>                <span class="php-var">$col</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$col</span>-&gt;value, <span class="php-var">$col</span>-&gt;name);
+<a href="#409" id="409" class="l">409: </a>                <span class="php-var">$col</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$col</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
 <a href="#410" id="410" class="l">410: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$col</span>;
 <a href="#411" id="411" class="l">411: </a>            }
 <a href="#412" id="412" class="l">412: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
@@ -545,8 +547,8 @@
 <a href="#441" id="441" class="l">441: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
 <a href="#442" id="442" class="l">442: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
 <a href="#443" id="443" class="l">443: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#444" id="444" class="l">444: </a>                <span class="php-var">$c</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#445" id="445" class="l">445: </a>                <span class="php-var">$c</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#444" id="444" class="l">444: </a>                <span class="php-var">$c</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#445" id="445" class="l">445: </a>                <span class="php-var">$c</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
 <a href="#446" id="446" class="l">446: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$c</span>;
 <a href="#447" id="447" class="l">447: </a>            }
 <a href="#448" id="448" class="l">448: </a>        } <span class="php-keyword1">else</span> {
@@ -562,8 +564,8 @@
 <a href="#458" id="458" class="l">458: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
 <a href="#459" id="459" class="l">459: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
 <a href="#460" id="460" class="l">460: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#461" id="461" class="l">461: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>);
-<a href="#462" id="462" class="l">462: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#461" id="461" class="l">461: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#462" id="462" class="l">462: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>);
 <a href="#463" id="463" class="l">463: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$value</span>;
 <a href="#464" id="464" class="l">464: </a>            }
 <a href="#465" id="465" class="l">465: </a>        } <span class="php-keyword1">else</span> {
@@ -579,8 +581,8 @@
 <a href="#475" id="475" class="l">475: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
 <a href="#476" id="476" class="l">476: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
 <a href="#477" id="477" class="l">477: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#478" id="478" class="l">478: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#479" id="479" class="l">479: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#478" id="478" class="l">478: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#479" id="479" class="l">479: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
 <a href="#480" id="480" class="l">480: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>);
 <a href="#481" id="481" class="l">481: </a>            }
 <a href="#482" id="482" class="l">482: </a>        } <span class="php-keyword1">else</span> {

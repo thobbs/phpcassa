@@ -8,7 +8,7 @@
 	<title>File phpcassa/Schema/DataType/FloatType.php | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<script type="text/javascript" src="elementlist.js?3836923824"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -45,6 +45,8 @@
 							</ul></li>
 				<li><a href="namespace-phpcassa.Util.html">Util</a>
 						</li>
+				<li><a href="namespace-phpcassa.UUID.html">UUID</a>
+						</li>
 							</ul></li>
 			</ul>
 		</div>
@@ -60,8 +62,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.BytesType.html">BytesType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CassandraType.html">CassandraType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CompositeType.html">CompositeType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.DateType.html">DateType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.DoubleType.html">DoubleType</a></li>
 				<li class="active"><a href="class-phpcassa.Schema.DataType.FloatType.html">FloatType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.Int32Type.html">Int32Type</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.IntegerType.html">IntegerType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LexicalUUIDType.html">LexicalUUIDType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LongType.html">LongType</a></li>
@@ -70,6 +74,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.UUIDType.html">UUIDType</a></li>
 			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-phpcassa.Schema.DataType.Serialized.html">Serialized</a></li>
+			</ul>
 
 
 
@@ -113,29 +121,31 @@
 <pre><code><a href="#1" id="1" class="l"> 1: </a><span class="xlang">&lt;?php</span>
 <a href="#2" id="2" class="l"> 2: </a><span class="php-keyword1">namespace</span> phpcassa\Schema\DataType;
 <a href="#3" id="3" class="l"> 3: </a>
-<a href="#4" id="4" class="l"> 4: </a><span class="php-comment">/**
-</span><a href="#5" id="5" class="l"> 5: </a><span class="php-comment"> * Stores data as a 4-byte single-precision float.
-</span><a href="#6" id="6" class="l"> 6: </a><span class="php-comment"> *
-</span><a href="#7" id="7" class="l"> 7: </a><span class="php-comment"> * @package phpcassa\Schema\DataType
-</span><a href="#8" id="8" class="l"> 8: </a><span class="php-comment"> */</span>
-<a href="#9" id="9" class="l"> 9: </a><span class="php-keyword1">class</span> FloatType <span class="php-keyword1">extends</span> CassandraType
-<a href="#10" id="10" class="l">10: </a>{
-<a href="#11" id="11" class="l">11: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <span class="php-keyword2">pack</span>(<span class="php-var">$value</span>, <span class="php-var">$is_name</span>=<span class="php-keyword1">true</span>, <span class="php-var">$slice_end</span>=<span class="php-keyword1">null</span>, <span class="php-var">$is_data</span>=<span class="php-keyword1">false</span>) {
-<a href="#12" id="12" class="l">12: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$is_name</span> &amp;&amp; <span class="php-var">$is_data</span>)
-<a href="#13" id="13" class="l">13: </a>            <span class="php-var">$value</span> = <span class="php-keyword2">unserialize</span>(<span class="php-var">$value</span>);
-<a href="#14" id="14" class="l">14: </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">pack</span>(<span class="php-quote">&quot;f&quot;</span>, <span class="php-var">$value</span>);
-<a href="#15" id="15" class="l">15: </a>    }
-<a href="#16" id="16" class="l">16: </a>
-<a href="#17" id="17" class="l">17: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <span class="php-keyword2">unpack</span>(<span class="php-var">$data</span>, <span class="php-var">$handle_serialize</span>=<span class="php-keyword1">true</span>) {
-<a href="#18" id="18" class="l">18: </a>        <span class="php-var">$value</span> = <span class="php-keyword2">array_shift</span>(<span class="php-keyword2">unpack</span>(<span class="php-quote">&quot;f&quot;</span>, <span class="php-var">$data</span>));
-<a href="#19" id="19" class="l">19: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$handle_serialize</span>) {
-<a href="#20" id="20" class="l">20: </a>            <span class="php-keyword1">return</span> <span class="php-keyword2">serialize</span>(<span class="php-var">$value</span>);
-<a href="#21" id="21" class="l">21: </a>        } <span class="php-keyword1">else</span> {
-<a href="#22" id="22" class="l">22: </a>            <span class="php-keyword1">return</span> <span class="php-var">$value</span>;
-<a href="#23" id="23" class="l">23: </a>        }
-<a href="#24" id="24" class="l">24: </a>    }
-<a href="#25" id="25" class="l">25: </a>}
-<a href="#26" id="26" class="l">26: </a></code></pre>
+<a href="#4" id="4" class="l"> 4: </a><span class="php-keyword1">use</span> phpcassa\Schema\DataType\Serialized;
+<a href="#5" id="5" class="l"> 5: </a>
+<a href="#6" id="6" class="l"> 6: </a><span class="php-comment">/**
+</span><a href="#7" id="7" class="l"> 7: </a><span class="php-comment"> * Stores data as a 4-byte single-precision float.
+</span><a href="#8" id="8" class="l"> 8: </a><span class="php-comment"> *
+</span><a href="#9" id="9" class="l"> 9: </a><span class="php-comment"> * @package phpcassa\Schema\DataType
+</span><a href="#10" id="10" class="l">10: </a><span class="php-comment"> */</span>
+<a href="#11" id="11" class="l">11: </a><span class="php-keyword1">class</span> FloatType <span class="php-keyword1">extends</span> CassandraType <span class="php-keyword1">implements</span> Serialized
+<a href="#12" id="12" class="l">12: </a>{
+<a href="#13" id="13" class="l">13: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <span class="php-keyword2">pack</span>(<span class="php-var">$value</span>, <span class="php-var">$is_name</span>=<span class="php-keyword1">true</span>, <span class="php-var">$slice_end</span>=<span class="php-keyword1">null</span>, <span class="php-var">$is_data</span>=<span class="php-keyword1">false</span>) {
+<a href="#14" id="14" class="l">14: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$is_name</span> &amp;&amp; <span class="php-var">$is_data</span>)
+<a href="#15" id="15" class="l">15: </a>            <span class="php-var">$value</span> = <span class="php-keyword2">unserialize</span>(<span class="php-var">$value</span>);
+<a href="#16" id="16" class="l">16: </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">pack</span>(<span class="php-quote">&quot;f&quot;</span>, <span class="php-var">$value</span>);
+<a href="#17" id="17" class="l">17: </a>    }
+<a href="#18" id="18" class="l">18: </a>
+<a href="#19" id="19" class="l">19: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <span class="php-keyword2">unpack</span>(<span class="php-var">$data</span>, <span class="php-var">$handle_serialize</span>=<span class="php-keyword1">true</span>) {
+<a href="#20" id="20" class="l">20: </a>        <span class="php-var">$value</span> = <span class="php-keyword2">current</span>(<span class="php-keyword2">unpack</span>(<span class="php-quote">&quot;f&quot;</span>, <span class="php-var">$data</span>));
+<a href="#21" id="21" class="l">21: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$handle_serialize</span>) {
+<a href="#22" id="22" class="l">22: </a>            <span class="php-keyword1">return</span> <span class="php-keyword2">serialize</span>(<span class="php-var">$value</span>);
+<a href="#23" id="23" class="l">23: </a>        } <span class="php-keyword1">else</span> {
+<a href="#24" id="24" class="l">24: </a>            <span class="php-keyword1">return</span> <span class="php-var">$value</span>;
+<a href="#25" id="25" class="l">25: </a>        }
+<a href="#26" id="26" class="l">26: </a>    }
+<a href="#27" id="27" class="l">27: </a>}
+<a href="#28" id="28" class="l">28: </a></code></pre>
 
 	<div id="footer">
 		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>

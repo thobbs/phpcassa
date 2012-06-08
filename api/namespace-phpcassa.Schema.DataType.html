@@ -7,7 +7,7 @@
 	<title>Namespace phpcassa\Schema\DataType | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<script type="text/javascript" src="elementlist.js?3836923824"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -44,6 +44,8 @@
 							</ul></li>
 				<li><a href="namespace-phpcassa.Util.html">Util</a>
 						</li>
+				<li><a href="namespace-phpcassa.UUID.html">UUID</a>
+						</li>
 							</ul></li>
 			</ul>
 		</div>
@@ -59,8 +61,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.BytesType.html">BytesType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CassandraType.html">CassandraType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CompositeType.html">CompositeType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.DateType.html">DateType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.DoubleType.html">DoubleType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.FloatType.html">FloatType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.Int32Type.html">Int32Type</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.IntegerType.html">IntegerType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LexicalUUIDType.html">LexicalUUIDType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LongType.html">LongType</a></li>
@@ -69,6 +73,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.UUIDType.html">UUIDType</a></li>
 			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-phpcassa.Schema.DataType.Serialized.html">Serialized</a></li>
+			</ul>
 
 
 
@@ -135,12 +143,20 @@
 	<td>Holds multiple types as subcomponents.</td>
 </tr>
 <tr>
+	<td class="name"><a href="class-phpcassa.Schema.DataType.DateType.html">DateType</a></td>
+	<td>Stores a date as a number of milliseconds since the unix epoch.</td>
+</tr>
+<tr>
 	<td class="name"><a href="class-phpcassa.Schema.DataType.DoubleType.html">DoubleType</a></td>
 	<td>Stores data as an 8-byte double-precision float.</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-phpcassa.Schema.DataType.FloatType.html">FloatType</a></td>
 	<td>Stores data as a 4-byte single-precision float.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-phpcassa.Schema.DataType.Int32Type.html">Int32Type</a></td>
+	<td>Stores data as an 4-byte signed integer.</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-phpcassa.Schema.DataType.IntegerType.html">IntegerType</a></td>
@@ -152,7 +168,7 @@
 </tr>
 <tr>
 	<td class="name"><a href="class-phpcassa.Schema.DataType.LongType.html">LongType</a></td>
-	<td>Stores data as an 8-byte integer.</td>
+	<td>Stores data as an 8-byte signed integer.</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-phpcassa.Schema.DataType.TimeUUIDType.html">TimeUUIDType</a></td>
@@ -168,6 +184,13 @@
 </tr>
 </table>
 
+<table class="summary" id="interfaces">
+<caption>Interfaces summary</caption>
+<tr>
+	<td class="name"><a href="class-phpcassa.Schema.DataType.Serialized.html">Serialized</a></td>
+	<td></td>
+</tr>
+</table>
 
 
 

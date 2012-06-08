@@ -7,7 +7,7 @@
 	<title>Class phpcassa\Batch\Mutator | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<script type="text/javascript" src="elementlist.js?3836923824"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -43,6 +43,8 @@
 						</li>
 							</ul></li>
 				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+				<li><a href="namespace-phpcassa.UUID.html">UUID</a>
 						</li>
 							</ul></li>
 			</ul>
@@ -143,7 +145,7 @@ families into a single batch operation.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-phpcassa.Batch.Mutator.html#23" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code> <var>$pool</var></span>, <span>phpcassa\ConsistencyLevel <var>$consistency_level</var> = ConsistencyLevel::ONE</span> )</code>
+		<code><a href="source-class-phpcassa.Batch.Mutator.html#23" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code> <var>$pool</var></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <code><a href="class-cassandra.ConsistencyLevel.html#ONE">cassandra\ConsistencyLevel::<b>ONE</b></a></code></span> )</code>
 
 		<div class="description short">
 			
@@ -162,7 +164,7 @@ families into a single batch operation.</p>
 					<dt><var>$pool</var></dt>
 					<dd><code><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code></code><br> the connection pool to use for all operations</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>phpcassa\ConsistencyLevel</code><br> the default consistency level this mutator will write at, with a default of
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> the default consistency level this mutator will write at, with a default of
 ConsistencyLevel::ONE</dd>
 				</dl></div>
 
@@ -183,7 +185,7 @@ ConsistencyLevel::ONE</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_send">#</a>
-		<code><a href="source-class-phpcassa.Batch.Mutator.html#44" title="Go to source code">send</a>( <span>phpcassa\ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.Mutator.html#44" title="Go to source code">send</a>( <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -203,7 +205,7 @@ call send() again later or take other recovery actions.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>phpcassa\ConsistencyLevel</code><br> optional override for the mutator's default consistency level</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> optional override for the mutator's default consistency level</dd>
 				</dl></div>
 
 

@@ -8,7 +8,7 @@
 	<title>File phpcassa/Schema/DataType/BooleanType.php | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<script type="text/javascript" src="elementlist.js?3836923824"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -45,6 +45,8 @@
 							</ul></li>
 				<li><a href="namespace-phpcassa.Util.html">Util</a>
 						</li>
+				<li><a href="namespace-phpcassa.UUID.html">UUID</a>
+						</li>
 							</ul></li>
 			</ul>
 		</div>
@@ -60,8 +62,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.BytesType.html">BytesType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CassandraType.html">CassandraType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CompositeType.html">CompositeType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.DateType.html">DateType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.DoubleType.html">DoubleType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.FloatType.html">FloatType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.Int32Type.html">Int32Type</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.IntegerType.html">IntegerType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LexicalUUIDType.html">LexicalUUIDType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LongType.html">LongType</a></li>
@@ -70,6 +74,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.UUIDType.html">UUIDType</a></li>
 			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-phpcassa.Schema.DataType.Serialized.html">Serialized</a></li>
+			</ul>
 
 
 
@@ -127,7 +135,7 @@
 <a href="#15" id="15" class="l">15: </a>
 <a href="#16" id="16" class="l">16: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <span class="php-keyword2">unpack</span>(<span class="php-var">$data</span>, <span class="php-var">$is_name</span>=<span class="php-keyword1">null</span>)
 <a href="#17" id="17" class="l">17: </a>    {
-<a href="#18" id="18" class="l">18: </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">unpack</span>(<span class="php-quote">'C'</span>, <span class="php-var">$value</span>);
+<a href="#18" id="18" class="l">18: </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">current</span>(<span class="php-keyword2">unpack</span>(<span class="php-quote">'C'</span>, <span class="php-var">$data</span>)) === <span class="php-num">1</span>;
 <a href="#19" id="19" class="l">19: </a>    }
 <a href="#20" id="20" class="l">20: </a>}
 <a href="#21" id="21" class="l">21: </a>

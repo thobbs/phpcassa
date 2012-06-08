@@ -7,7 +7,7 @@
 	<title>Tree | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3954666785"></script>
+	<script type="text/javascript" src="elementlist.js?3836923824"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -43,6 +43,8 @@
 						</li>
 							</ul></li>
 				<li><a href="namespace-phpcassa.Util.html">Util</a>
+						</li>
+				<li><a href="namespace-phpcassa.UUID.html">UUID</a>
 						</li>
 							</ul></li>
 			</ul>
@@ -102,8 +104,10 @@
 				<li><a href="class-phpcassa.Schema.DataType.BytesType.html">phpcassa\Schema\DataType\BytesType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CassandraType.html">phpcassa\Schema\DataType\CassandraType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.CompositeType.html">phpcassa\Schema\DataType\CompositeType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.DateType.html">phpcassa\Schema\DataType\DateType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.DoubleType.html">phpcassa\Schema\DataType\DoubleType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.FloatType.html">phpcassa\Schema\DataType\FloatType</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.Int32Type.html">phpcassa\Schema\DataType\Int32Type</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.IntegerType.html">phpcassa\Schema\DataType\IntegerType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LexicalUUIDType.html">phpcassa\Schema\DataType\LexicalUUIDType</a></li>
 				<li><a href="class-phpcassa.Schema.DataType.LongType.html">phpcassa\Schema\DataType\LongType</a></li>
@@ -124,6 +128,7 @@
 			<ul>
 				<li><a href="class-cassandra.CassandraIf.html">cassandra\CassandraIf</a></li>
 				<li><a href="class-Iterator.html">Iterator</a></li>
+				<li><a href="class-phpcassa.Schema.DataType.Serialized.html">phpcassa\Schema\DataType\Serialized</a></li>
 				<li><a href="class-Traversable.html">Traversable</a></li>
 			</ul>
 
@@ -140,7 +145,7 @@
 				<li><a href="class-Exception.html">Exception</a></li>
 				<li><a href="class-phpcassa.Connection.MaxRetriesException.html">phpcassa\Connection\MaxRetriesException</a></li>
 				<li><a href="class-phpcassa.Connection.NoServerAvailable.html">phpcassa\Connection\NoServerAvailable</a></li>
-				<li><a href="class-phpcassa.Util.UUIDException.html">phpcassa\Util\UUIDException</a></li>
+				<li><a href="class-phpcassa.UUID.UUIDException.html">phpcassa\UUID\UUIDException</a></li>
 				<li><a href="class-TApplicationException.html">TApplicationException</a></li>
 				<li><a href="class-TException.html">TException</a></li>
 			</ul>
@@ -548,6 +553,8 @@
 				</li>
 
 			<li><div class="notlast"><a href="class-phpcassa.Schema.DataType.CompositeType.html"><span>phpcassa\Schema\DataType\CompositeType</span></a>
+			 implements 
+				<a href="class-phpcassa.Schema.DataType.Serialized.html"><span>phpcassa\Schema\DataType\Serialized</span></a>
 			
 			
 			</div>
@@ -555,6 +562,8 @@
 				</li>
 
 			<li><div class="notlast"><a href="class-phpcassa.Schema.DataType.DoubleType.html"><span>phpcassa\Schema\DataType\DoubleType</span></a>
+			 implements 
+				<a href="class-phpcassa.Schema.DataType.Serialized.html"><span>phpcassa\Schema\DataType\Serialized</span></a>
 			
 			
 			</div>
@@ -562,6 +571,15 @@
 				</li>
 
 			<li><div class="notlast"><a href="class-phpcassa.Schema.DataType.FloatType.html"><span>phpcassa\Schema\DataType\FloatType</span></a>
+			 implements 
+				<a href="class-phpcassa.Schema.DataType.Serialized.html"><span>phpcassa\Schema\DataType\Serialized</span></a>
+			
+			
+			</div>
+
+				</li>
+
+			<li><div class="notlast"><a href="class-phpcassa.Schema.DataType.Int32Type.html"><span>phpcassa\Schema\DataType\Int32Type</span></a>
 			
 			
 			</div>
@@ -580,7 +598,16 @@
 			
 			</div>
 
-				</li>
+				<ul>
+
+			<li class="last"><div class="last"><a href="class-phpcassa.Schema.DataType.DateType.html"><span>phpcassa\Schema\DataType\DateType</span></a>
+			 implements 
+				<a href="class-phpcassa.Schema.DataType.Serialized.html"><span>phpcassa\Schema\DataType\Serialized</span></a>
+			
+			
+			</div>
+
+				</ul></li>
 
 			<li><div class="notlast"><a href="class-phpcassa.Schema.DataType.UTF8Type.html"><span>phpcassa\Schema\DataType\UTF8Type</span></a>
 			
@@ -590,6 +617,8 @@
 				</li>
 
 			<li class="last"><div class="last"><a href="class-phpcassa.Schema.DataType.UUIDType.html"><span>phpcassa\Schema\DataType\UUIDType</span></a>
+			 implements 
+				<a href="class-phpcassa.Schema.DataType.Serialized.html"><span>phpcassa\Schema\DataType\Serialized</span></a>
 			
 			
 			</div>
@@ -661,7 +690,14 @@
 
 				</li>
 
-			<li class="last"><div class="last"><a href="class-cassandra.CassandraIf.html"><span>cassandra\CassandraIf</span></a>
+			<li><div class="notlast"><a href="class-cassandra.CassandraIf.html"><span>cassandra\CassandraIf</span></a>
+			
+			
+			</div>
+
+				</li>
+
+			<li class="last"><div class="last"><a href="class-phpcassa.Schema.DataType.Serialized.html"><span>phpcassa\Schema\DataType\Serialized</span></a>
 			
 			
 			</div>
@@ -760,7 +796,7 @@
 
 				</li>
 
-			<li class="last"><div class="last"><a href="class-phpcassa.Util.UUIDException.html"><span>phpcassa\Util\UUIDException</span></a>
+			<li class="last"><div class="last"><a href="class-phpcassa.UUID.UUIDException.html"><span>phpcassa\UUID\UUIDException</span></a>
 			
 			
 			</div>
