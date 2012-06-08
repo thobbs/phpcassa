@@ -13,8 +13,11 @@ class AutopackStandardTest extends StandardBase {
         parent::setUpBeforeClass();
 
         $sys = new SystemManager();
-        $cfattrs = array("comparator_type" => DataType::LONG_TYPE);
-        $sys->create_column_family(self::$KS, 'StdLong', $cfattrs);
+
+        if (self::$have64Bit) {
+            $cfattrs = array("comparator_type" => DataType::LONG_TYPE);
+            $sys->create_column_family(self::$KS, 'StdLong', $cfattrs);
+        }
 
         $cfattrs = array("comparator_type" => DataType::INTEGER_TYPE);
         $sys->create_column_family(self::$KS, 'StdInteger', $cfattrs);
@@ -32,14 +35,18 @@ class AutopackStandardTest extends StandardBase {
     public function setUp() {
         $this->client = new ConnectionPool(self::$KS);
 
-        $this->cf_long  = new ColumnFamily($this->client, 'StdLong');
+        if (self::$have64Bit) {
+            $this->cf_long  = new ColumnFamily($this->client, 'StdLong');
+        }
         $this->cf_int   = new ColumnFamily($this->client, 'StdInteger');
         $this->cf_int32  = new ColumnFamily($this->client, 'StdInt32');
         $this->cf_ascii = new ColumnFamily($this->client, 'StdAscii');
         $this->cf_utf8  = new ColumnFamily($this->client, 'StdUTF8');
 
-        $this->cfs = array($this->cf_long, $this->cf_int, $this->cf_ascii,
-                           $this->cf_utf8);
+        $this->cfs = array($this->cf_int, $this->cf_ascii, $this->cf_utf8);
+        if (self::$have64Bit) {
+            $this->cfs[] = $this->cf_long;
+        }
     }
 
     public function test_false_colnames() {
@@ -53,10 +60,12 @@ class AutopackStandardTest extends StandardBase {
     protected function make_type_groups() {
         $type_groups = array();
 
-        $long_cols = array(111111111111,
-                           222222222222,
-                           333333333333);
-        $type_groups[] = $this->make_group($this->cf_long, $long_cols);
+        if (self::$have64Bit) {
+            $long_cols = array(111111111111,
+                               222222222222,
+                               333333333333);
+            $type_groups[] = $this->make_group($this->cf_long, $long_cols);
+        }
 
         $int_cols = array(1, 2, 3);
         $type_groups[] = $this->make_group($this->cf_int, $int_cols);

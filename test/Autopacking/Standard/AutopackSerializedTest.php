@@ -35,7 +35,7 @@ class AutopackStandardSerializedTest extends StandardBase {
         $cfattrs = array("comparator_type" => DataType::DATE_TYPE);
         $sys->create_column_family(self::$KS, 'StdDate', $cfattrs);
 
-        $cfattrs = array("comparator_type" => 'CompositeType(LongType, AsciiType)');
+        $cfattrs = array("comparator_type" => 'CompositeType(Int32Type, AsciiType)');
         $sys->create_column_family(self::$KS, 'StdComposite', $cfattrs);
     }
 
@@ -54,9 +54,14 @@ class AutopackStandardSerializedTest extends StandardBase {
                            $this->cf_composite);
 
         // make a millisecond precision timestamp
-        $base_time = Clock::get_time();
-        $base_time -= ((int)$base_time) % 1000;
-        $base_time /= 1e6;
+        if (PHP_INT_MAX === 2147483647) {
+            $base_time = (double)time();
+        } else {
+            // make a millisecond precision timestamp
+            $base_time = Clock::get_time();
+            $base_time -= ((int)$base_time) % 1000;
+            $base_time /= 1e6;
+        }
 
         $this->DATE1 = $base_time + 0;
         $this->DATE2 = $base_time + 1;
@@ -96,6 +101,10 @@ class AutopackStandardSerializedTest extends StandardBase {
     }
 
     public function test_uuid1_generation() {
+        if (PHP_INT_MAX === 2147483647) {
+            $this->markTestSkipped();
+        }
+
         $micros = 1293769171436849;
         $uuid = UUID::import(UUID::uuid1(null, $micros));
         $t = (int)($uuid->time * 1000000);
@@ -112,6 +121,6 @@ class AutopackStandardSerializedTest extends StandardBase {
         $time3 /= 1000000;
 
         $unpacked = DateType::unpack(DateType::pack($time1), false);
-        $this->assertEquals($time3, $unpacked);
+        $this->assertEquals($time3, $unpacked, "", 0.005);
     }
 }

@@ -30,7 +30,7 @@ class AutopackSerializedSupersTest extends SuperBase {
         $cfattrs["comparator_type"] = DataType::LEXICAL_UUID_TYPE;
         $sys->create_column_family(self::$KS, 'SuperLex', $cfattrs);
 
-        $cfattrs["comparator_type"] = "CompositeType(LongType, AsciiType)";
+        $cfattrs["comparator_type"] = "CompositeType(Int32Type, AsciiType)";
         $sys->create_column_family(self::$KS, 'SuperComposite', $cfattrs);
     }
 

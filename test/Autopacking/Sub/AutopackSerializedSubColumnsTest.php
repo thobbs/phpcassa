@@ -16,7 +16,7 @@ class AutopackSerializedSubColumnsTest extends SubBase {
         parent::setUpBeforeClass();
 
         $sys = new SystemManager();
-        $cfattrs = array("column_type" => "Super", "comparator_type" => DataType::LONG_TYPE);
+        $cfattrs = array("column_type" => "Super", "comparator_type" => "Int32Type");
 
         $cfattrs["subcomparator_type"] = DataType::FLOAT_TYPE;
         $sys->create_column_family(self::$KS, 'SuperLongSubFloat', $cfattrs);
@@ -30,7 +30,7 @@ class AutopackSerializedSubColumnsTest extends SubBase {
         $cfattrs["subcomparator_type"] = DataType::LEXICAL_UUID_TYPE;
         $sys->create_column_family(self::$KS, 'SuperLongSubLex', $cfattrs);
 
-        $cfattrs["subcomparator_type"] = "CompositeType(LongType, AsciiType)";
+        $cfattrs["subcomparator_type"] = "CompositeType(Int32Type, AsciiType)";
         $sys->create_column_family(self::$KS, 'SuperLongSubComposite', $cfattrs);
     }
 

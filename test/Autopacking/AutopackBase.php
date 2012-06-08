@@ -9,6 +9,8 @@ abstract class AutopackBase extends PHPUnit_Framework_TestCase {
 
     protected $SERIALIZED = false;
 
+    public static $have64Bit;
+
     protected static $VALS = array('val1', 'val2', 'val3');
     protected static $KEYS = array('key1', 'key2', 'key3');
     protected static $KS = "TestAutopacking";
@@ -45,3 +47,5 @@ abstract class AutopackBase extends PHPUnit_Framework_TestCase {
         }
     }
 }
+
+AutopackBase::$have64Bit = (PHP_INT_MAX !== 2147483647);
