@@ -573,8 +573,8 @@ class ColumnFamily {
         $new_clause = new IndexClause();
         foreach($index_clause->expressions as $expr) {
             $new_expr = new IndexExpression();
-            $new_expr->value = $this->pack_value($expr->value, $expr->column_name);
             $new_expr->column_name = $this->pack_name($expr->column_name);
+            $new_expr->value = $this->pack_value($expr->value, $new_expr->column_name);
             $new_expr->op = $expr->op;
             $new_clause->expressions[] = $new_expr;
         }
