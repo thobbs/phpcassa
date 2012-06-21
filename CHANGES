@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Changes in 1.0.a.4
+------------------
+This is a bugfix release, with the most important fix affecting some negative
+values when using IntegerType (Int32Type and LongType were not affected).
+
+This bug basically affected half of all negative integers. In particular, the
+ones where the top byte would have a leading 1 bit if it were (abs($value) - 1).
+So, -129 through -256, -32769 through -65536, etc would be packed incorrectly.
+
+If you are only reading negative IntegerType values with phpcassa, this fix
+does not affect you.
+
+Bugfixes
+^^^^^^^^
+- Fix bad packing of some negative IntegerType values
+- Pack IndexExpression values correctly when using a non-string comparator
+
 Changes in 1.0.a.3
 ------------------
 This is primarily a bug fix release, with most of the bugs
