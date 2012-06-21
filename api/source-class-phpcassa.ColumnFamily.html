@@ -679,8 +679,8 @@
 <a href="#573" id="573" class="l"> 573: </a>        <span class="php-var">$new_clause</span> = <span class="php-keyword1">new</span> IndexClause();
 <a href="#574" id="574" class="l"> 574: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$index_clause</span>-&gt;expressions <span class="php-keyword1">as</span> <span class="php-var">$expr</span>) {
 <a href="#575" id="575" class="l"> 575: </a>            <span class="php-var">$new_expr</span> = <span class="php-keyword1">new</span> IndexExpression();
-<a href="#576" id="576" class="l"> 576: </a>            <span class="php-var">$new_expr</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$expr</span>-&gt;value, <span class="php-var">$expr</span>-&gt;column_name);
-<a href="#577" id="577" class="l"> 577: </a>            <span class="php-var">$new_expr</span>-&gt;column_name = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$expr</span>-&gt;column_name);
+<a href="#576" id="576" class="l"> 576: </a>            <span class="php-var">$new_expr</span>-&gt;column_name = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$expr</span>-&gt;column_name);
+<a href="#577" id="577" class="l"> 577: </a>            <span class="php-var">$new_expr</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$expr</span>-&gt;value, <span class="php-var">$new_expr</span>-&gt;column_name);
 <a href="#578" id="578" class="l"> 578: </a>            <span class="php-var">$new_expr</span>-&gt;op = <span class="php-var">$expr</span>-&gt;op;
 <a href="#579" id="579" class="l"> 579: </a>            <span class="php-var">$new_clause</span>-&gt;expressions[] = <span class="php-var">$new_expr</span>;
 <a href="#580" id="580" class="l"> 580: </a>        }
