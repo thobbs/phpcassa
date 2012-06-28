@@ -34,8 +34,8 @@ or
 Create a column family object
 -----------------------------
 
-    $users = new ColumnFamily($pool, 'Standard1'); // ColumnFamily
-    $super = new ColumnFamily($pool, 'Super1'); // SuperColumnFamily
+    $users = new ColumnFamily($pool, 'Standard1');
+    $super = new SuperColumnFamily($pool, 'Super1');
 
 Inserting
 ---------
@@ -45,7 +45,7 @@ Inserting
 Querying
 --------
 
-    $users->get('key'); 
+    $users->get('key');
     $users->multiget(array('key1', 'key2'));
 
 Removing
