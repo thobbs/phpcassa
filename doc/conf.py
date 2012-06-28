@@ -33,7 +33,7 @@ project = 'phpcassa'
 # The short X.Y version.
 version = '1.0'
 # The full version, including alpha/beta/rc tags.
-release = '1.0.a.4'
+release = '1.0.a.5'
 
 # List of documents that shouldn't be included in the build.
 unused_docs = []
