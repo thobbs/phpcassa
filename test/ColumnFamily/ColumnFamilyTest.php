@@ -139,6 +139,13 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
 
         $this->assertEquals($this->cf->get_count(self::$KEYS[0], null, array('1', '2')), 2);
         $this->assertEquals($this->cf->get_count(self::$KEYS[0], null, array('1')), 1);
+
+        // check that the default limit of 100 isn't applied here
+        $cols = array();
+        foreach (range(1, 110) as $i)
+            $cols[(string)$i] = (string)$i;
+        $this->cf->insert(self::$KEYS[0], $cols);
+        $this->assertEquals(110, $this->cf->get_count(self::$KEYS[0]));
     }
 
     private function multiget_slice_helper($start, $finish, $expected) {
