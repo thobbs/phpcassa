@@ -672,7 +672,7 @@ class ColumnFamily {
         $cfmap = array();
         if ($this->insert_format == self::DICTIONARY_FORMAT) {
             foreach($rows as $key => $columns) {
-                $packed_key = $this->pack_key($key);
+                $packed_key = $this->pack_key($key, $handle_serialize=true);
                 $cfmap[$packed_key][$this->column_family] =
                         $this->make_mutation($columns, $timestamp, $ttl);
             }
