@@ -2,6 +2,7 @@
 namespace phpcassa;
 
 use phpcassa\ColumnFamily;
+use phpcassa\ColumnSlice;
 
 use cassandra\Deletion;
 use cassandra\ColumnParent;
@@ -225,8 +226,7 @@ class SuperColumnFamily extends ColumnFamily {
             $deletion = new Deletion();
             $deletion->super_column = $this->pack_name($super_column, true);
             if ($subcolumns !== null) {
-                $predicate = $this->create_slice_predicate($subcolumns, '', '', false,
-                                                           self::DEFAULT_COLUMN_COUNT);
+                $predicate = $this->create_slice_predicate($subcolumns, null);
                 $deletion->predicate = $predicate;
             }
             return $this->_remove_multi($key, $deletion, $consistency_level);
