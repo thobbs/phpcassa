@@ -1,6 +1,7 @@
 <?php
 namespace phpcassa;
 
+use phpcassa\ColumnSlice;
 use phpcassa\Schema\DataType;
 use phpcassa\Schema\DataType\BytesType;
 use phpcassa\Schema\DataType\CompositeType;
@@ -431,7 +432,8 @@ class ColumnFamily {
                               $consistency_level=null) {
 
         $cp = $this->create_column_parent();
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        $slice = $this->create_slice_predicate(
+            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
         return $this->_get_count($key, $cp, $slice, $consistency_level);
     }
 
@@ -457,7 +459,8 @@ class ColumnFamily {
                                    $consistency_level=null) {
 
         $cp = $this->create_column_parent();
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        $slice = $this->create_slice_predicate(
+            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
 
         return $this->_multiget_count($keys, $cp, $slice, $consistency_level);
     }
@@ -573,8 +576,8 @@ class ColumnFamily {
         $new_clause = new IndexClause();
         foreach($index_clause->expressions as $expr) {
             $new_expr = new IndexExpression();
-            $new_expr->value = $this->pack_value($expr->value, $expr->column_name);
             $new_expr->column_name = $this->pack_name($expr->column_name);
+            $new_expr->value = $this->pack_value($expr->value, $new_expr->column_name);
             $new_expr->op = $expr->op;
             $new_clause->expressions[] = $new_expr;
         }
@@ -669,7 +672,7 @@ class ColumnFamily {
         $cfmap = array();
         if ($this->insert_format == self::DICTIONARY_FORMAT) {
             foreach($rows as $key => $columns) {
-                $packed_key = $this->pack_key($key);
+                $packed_key = $this->pack_key($key, $handle_serialize=true);
                 $cfmap[$packed_key][$this->column_family] =
                         $this->make_mutation($columns, $timestamp, $ttl);
             }
@@ -799,7 +802,9 @@ class ColumnFamily {
             return $write_consistency_level;
     }
 
-    protected function create_slice_predicate($column_names, $column_slice) {
+    protected function create_slice_predicate($column_names,
+                                              $column_slice,
+                                              $default_count=ColumnSlice::DEFAULT_COLUMN_COUNT) {
 
         $predicate = new SlicePredicate();
         if ($column_names !== null) {
@@ -840,7 +845,7 @@ class ColumnFamily {
                 $slice_range->reversed = $column_slice->reversed;
                 $slice_range->count = $column_slice->count;
             } else {
-                $slice_range = new ColumnSlice();
+                $slice_range = new ColumnSlice("", "", $default_count);
             }
             $predicate->slice_range = $slice_range;
         }

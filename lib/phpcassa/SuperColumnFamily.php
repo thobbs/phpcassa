@@ -99,7 +99,8 @@ class SuperColumnFamily extends ColumnFamily {
                                         $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        $slice = $this->create_slice_predicate(
+            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
 
         return $this->_get_count($key, $cp, $slice, $consistency_level);
     }
@@ -124,7 +125,8 @@ class SuperColumnFamily extends ColumnFamily {
                                              $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        $slice = $this->create_slice_predicate(
+            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
 
         return $this->_multiget_count($keys, $cp, $slice, $consistency_level);
     }

@@ -4,6 +4,7 @@ require_once(__DIR__.'/AutopackBase.php');
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\ColumnFamily;
 use phpcassa\Schema\DataType;
+use phpcassa\Schema\DataType\IntegerType;
 use phpcassa\SystemManager;
 
 use phpcassa\UUID;
@@ -99,5 +100,15 @@ class AutopackValuesTest extends AutopackBase {
 
         $cf->insert('key', $columns);
         $this->assertEquals($columns, $cf->get('key'));
+    }
+
+    public function test_integer_type() {
+        $i = new IntegerType();
+        $to_test = array(
+            0, 1, 2, 127, 128, 129, 255, 256, 257, 65535, 65536, 65537,
+            -1, -2, -127, -128, -129, -255, -256, -257, -65535, -65536, -65537);
+        foreach ($to_test as $test_val) {
+            $this->assertEquals($test_val, $i->unpack($i->pack($test_val)));
+        }
     }
 }

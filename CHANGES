@@ -1,6 +1,44 @@
 Changelog
 =========
 
+Changes in 1.0.a.5
+------------------
+This is a bugfix release, with yet another important fix related to packing.
+In this case, FloatType and DoubleType data were being store in little-endian
+format, while Cassandra expects big-endian format.  If you are only using
+phpcassa, you might not have noticed this, but if you were also using other
+clients, you could get some unexpected values.
+
+This release only reads and writes FloatType and DoubleType values in the
+correct, big-endian format, so any values writting in the old little-endian
+format will not be read correctly. If you need help migrating the old values
+to the new format, please let me know, and I can help you write a quick
+migration script.
+
+Bugfixes
+^^^^^^^^
+- Store FloatType and DoubleType in big-endian format
+- Handle serialized keys in batch_insert() with DICTIONARY_FORMAT
+  correctly
+- Don't limit get_count(), multiget_count() to 100 by default
+
+Changes in 1.0.a.4
+------------------
+This is a bugfix release, with the most important fix affecting some negative
+values when using IntegerType (Int32Type and LongType were not affected).
+
+This bug basically affected half of all negative integers. In particular, the
+ones where the top byte would have a leading 1 bit if it were (abs($value) - 1).
+So, -129 through -256, -32769 through -65536, etc would be packed incorrectly.
+
+If you are only reading negative IntegerType values with phpcassa, this fix
+does not affect you.
+
+Bugfixes
+^^^^^^^^
+- Fix bad packing of some negative IntegerType values
+- Pack IndexExpression values correctly when using a non-string comparator
+
 Changes in 1.0.a.3
 ------------------
 This is primarily a bug fix release, with most of the bugs

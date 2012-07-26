@@ -12,6 +12,7 @@ class IntegerType extends CassandraType {
 
     public function pack($value, $is_name=null, $slice_end=null, $is_data=null)
     {
+        $value = (int)$value;
         $out = array();
         if ($value >= 0) {
             while ($value >= 256) {
@@ -28,10 +29,13 @@ class IntegerType extends CassandraType {
                 $out[] = pack('C', 0xff & ~$value);
                 $value >>= 8;
             }
-            if ($value <= 127)
+            if ($value <= 127) {
                 $out[] = pack('C', 0xff & ~$value);
-            else
-                $out[] = pack('n', 0xffff & ~$value);
+            } else {
+                $top = pack('n', 0xffff & ~$value);
+                // we have two bytes, need to reverse them
+                $out[] = strrev($top);
+            }
         }
 
         return strrev(implode($out));

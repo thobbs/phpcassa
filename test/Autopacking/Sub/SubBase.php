@@ -15,9 +15,9 @@ abstract class SubBase extends AutopackBase {
                 $name = serialize($name);
                 $subs[$name] = self::$VALS[$i];
             }
-            $dict = array(222222222222 => $subs);
+            $dict = array(22222222 => $subs);
         } else {
-            $dict = array(222222222222 => array($cols[0] => self::$VALS[0],
+            $dict = array(22222222 => array($cols[0] => self::$VALS[0],
                                                 $cols[1] => self::$VALS[1],
                                                 $cols[2] => self::$VALS[2]));
         }
@@ -29,7 +29,7 @@ abstract class SubBase extends AutopackBase {
     }
 
     public function test_super_column_family_subs() {
-        $LONG = 222222222222;
+        $LONG = 22222222;
         $type_groups = $this->make_type_groups();
 
         foreach($type_groups as $group) {
