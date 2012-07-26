@@ -142,7 +142,6 @@ class SystemManager {
                 if (strpos($value, ".") === false)
                     $value = "org.apache.cassandra.locator.$value";
                 $ksdef->strategy_class = $value;
-                break;
             } else {
                 $ksdef->$attr = $value;
             }
