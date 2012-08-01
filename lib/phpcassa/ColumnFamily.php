@@ -292,10 +292,11 @@ class ColumnFamily {
     public function get($key,
                         $column_slice=null,
                         $column_names=null,
-                        $consistency_level=null) {
+                        $consistency_level=null,
+                        $default_count=ColumnSlice::DEFAULT_COLUMN_COUNT) {
 
         $column_parent = $this->create_column_parent();
-        $predicate = $this->create_slice_predicate($column_names, $column_slice);
+        $predicate = $this->create_slice_predicate($column_names, $column_slice, $default_count);
         return $this->_get($key, $column_parent, $predicate, $consistency_level);
     }
 
