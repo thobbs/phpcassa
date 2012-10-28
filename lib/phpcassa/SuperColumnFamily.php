@@ -21,7 +21,7 @@ use cassandra\SuperColumn;
  *
  * @package phpcassa
  */
-class SuperColumnFamily extends ColumnFamily {
+class SuperColumnFamily extends AbstractColumnFamily {
 
     /**
      * Fetch a single super column.
