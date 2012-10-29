@@ -1,0 +1,20 @@
+{
+    "name": "thobbs/phpcassa",
+    "description": "PHP Cassandra Library",
+    "keywords": ["Cassandra"],
+    "type": "library",
+    "homepage": "https://github.com/thobbs/phpcassa",
+    "license": "Apache2",
+    "authors": [
+        {
+            "name": "Tyler Hobbs",
+            "homepage": "https://github.com/thobbs/phpcassa/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload":{
+        "files": ["lib/autoload.php"]
+    }
+}
