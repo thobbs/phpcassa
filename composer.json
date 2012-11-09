@@ -8,7 +8,7 @@
     "authors": [
         {
             "name": "Tyler Hobbs",
-            "homepage": "https://github.com/thobbs/phpcassa/graphs/contributors"
+            "homepage": "https://github.com/thobbs/phpcassa"
         }
     ],
     "require": {
