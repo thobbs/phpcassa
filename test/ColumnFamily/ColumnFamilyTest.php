@@ -204,7 +204,21 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         }
     }
 
+    protected static function endswith($haystack, $needle) {
+        $start  = strlen($needle) * -1; //negative
+        return (substr($haystack, $start) === $needle);
+    }
+
+    protected function require_opp() {
+        $partitioner = $this->pool->call('describe_partitioner');
+        if ($this->endswith($partitioner, "RandomPartitioner") ||
+            $this->endswith($partitioner, "Murmur3Partitioner")) {
+            $this->markTestSkipped();
+        }
+    }
+
     public function test_insert_get_range() {
+        $this->require_opp();
         $cl = ConsistencyLevel::ONE;
         $cf = new ColumnFamily($this->pool,
                                'Standard1', true, true,
@@ -356,7 +370,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_batched_get_indexed_slices() {
-
+        $this->require_opp();
         $cl = ConsistencyLevel::ONE;
         $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
@@ -471,7 +485,6 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($count, 201);
 
 
- 
         # Row count above total number of rows, buffer_size = total number of rows
         $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
@@ -483,8 +496,8 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
             $count++;
         }
         $this->assertEquals($count, 201);
- 
- 
+
+
         # Row count above total number of rows, buffer_size = total number of rows
         $cf = new ColumnFamily($this->pool, 'Indexed1', true, true,
                                $read_consistency_level=$cl, $write_consistency_level=$cl,
@@ -501,6 +514,7 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_get_indexed_slices() {
+        $this->require_opp();
         $indexed_cf = new ColumnFamily($this->pool, 'Indexed1');
         $indexed_cf->truncate();
 
