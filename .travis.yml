@@ -12,6 +12,3 @@ env:
 
 services:
   - cassandra
-
-before_script:
-  - phpunit
