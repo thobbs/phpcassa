@@ -1,4 +1,4 @@
-<?
+<?php
 namespace phpcassa\Batch;
 
 use phpcassa\Batch\Mutator;
@@ -9,9 +9,10 @@ use phpcassa\Batch\Mutator;
  *
  * @package phpcassa\Batch
  */
-class CfMutator extends Mutator {
+class CfMutator extends AbstractMutator {
 
     protected $cf;
+    protected $mutatorInstance;
 
     /**
      * Initialize a mutator for a given column family.
@@ -29,7 +30,8 @@ class CfMutator extends Mutator {
             $wcl = $column_family->write_consistency_level;
         else
             $wcl = $write_consistency_level;
-        parent::__construct($column_family->pool, $wcl);
+
+        $this->mutatorInstance = new Mutator($column_family->pool, $wcl);
     }
 
     /**
@@ -43,7 +45,7 @@ class CfMutator extends Mutator {
      * @param int $ttl a TTL to apply to all columns inserted here
      */
     public function insert($key, $columns, $timestamp=null, $ttl=null) {
-        return parent::insert($this->cf, $key, $columns, $timestamp, $ttl);
+        return $this->mutatorInstance->insert($this->cf, $key, $columns, $timestamp, $ttl);
     }
 
     /**
@@ -57,6 +59,6 @@ class CfMutator extends Mutator {
      *        this function is called, not when send() is called)
      */
     public function remove($key, $columns=null, $super_column=null, $timestamp=null) {
-        return parent::remove($this->cf, $key, $columns, $super_column, $timestamp);
+        return $this->mutatorInstance->remove($this->cf, $key, $columns, $super_column, $timestamp);
     }
 }

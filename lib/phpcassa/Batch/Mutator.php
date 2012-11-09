@@ -1,4 +1,4 @@
-<?
+<?php
 namespace phpcassa\Batch;
 
 use phpcassa\Util\Clock;
@@ -14,12 +14,8 @@ use cassandra\SlicePredicate;
  *
  * @package phpcassa\Batch
  */
-class Mutator
+class Mutator extends AbstractMutator
 {
-    protected $pool;
-    protected $buffer;
-    protected $cl;
-
     /**
      * Intialize a mutator with a connection pool and consistency level.
      *
@@ -34,53 +30,6 @@ class Mutator
         $this->pool = $pool;
         $this->buffer = array();
         $this->cl =  $consistency_level;
-    }
-
-    protected function enqueue($key, $cf, $mutations) {
-        $mut = array($key, $cf->column_family, $mutations);
-        $this->buffer[] = $mut;
-    }
-
-    /**
-     * Send all buffered mutations.
-     *
-     * If an error occurs, the buffer will be preserverd, allowing you to
-     * attempt to call send() again later or take other recovery actions.
-     *
-     * @param cassandra\ConsistencyLevel $consistency_level optional
-     *        override for the mutator's default consistency level
-     */
-    public function send($consistency_level=null) {
-        if ($consistency_level === null)
-            $wcl = $this->cl;
-        else
-            $wcl = $consistency_level;
-
-        $mutations = array();
-        foreach ($this->buffer as $mut_set) {
-            list($key, $cf, $cols) = $mut_set;
-
-            if (isset($mutations[$key])) {
-                $key_muts = $mutations[$key];
-            } else {
-                $key_muts = array();
-            }
-
-            if (isset($key_muts[$cf])) {
-                $cf_muts = $key_muts[$cf];
-            } else {
-                $cf_muts = array();
-            }
-
-            $cf_muts = array_merge($cf_muts, $cols);
-            $key_muts[$cf] = $cf_muts;
-            $mutations[$key] = $key_muts;
-        }
-
-        if (!empty($mutations)) {
-            $this->pool->call('batch_mutate', $mutations, $wcl);
-        }
-        $this->buffer = array();
     }
 
     /**
