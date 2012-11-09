@@ -1,5 +1,7 @@
 <?php
 
+namespace phpcassa\Batch;
+
 /**
  * Common methods shared by CfMutator and Mutator classes
  */
