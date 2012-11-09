@@ -16,10 +16,6 @@ use cassandra\SlicePredicate;
  */
 class Mutator extends AbstractMutator
 {
-    protected $pool;
-    protected $buffer;
-    protected $cl;
-
     /**
      * Intialize a mutator with a connection pool and consistency level.
      *

@@ -7,6 +7,10 @@ namespace phpcassa\Batch;
  */
 abstract class AbstractMutator
 {
+    protected $pool;
+    protected $buffer;
+    protected $cl;
+
     /**
      * Send all buffered mutations.
      *
