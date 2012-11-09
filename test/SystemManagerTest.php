@@ -104,4 +104,3 @@ class SystemManagerTest extends PHPUnit_Framework_TestCase {
         $this->sys->drop_keyspace($ksname);
     }
 }
-?>

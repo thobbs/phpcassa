@@ -88,6 +88,3 @@ class TestSuperCounterColumnFamily extends PHPUnit_Framework_TestCase {
     }
 
 }
-
-
-?>

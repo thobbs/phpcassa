@@ -120,7 +120,8 @@ class AutopackStandardSerializedTest extends StandardBase {
         $time3 -= ((int)$time3) % 1000;
         $time3 /= 1000000;
 
-        $unpacked = DateType::unpack(DateType::pack($time1), false);
+        $dtInstance = new DateType();
+        $unpacked = $dtInstance->unpack($dtInstance->pack($time1), false);
         $this->assertEquals($time3, $unpacked, "", 0.005);
     }
 }
