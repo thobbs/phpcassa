@@ -9,7 +9,7 @@ use phpcassa\Batch\Mutator;
  *
  * @package phpcassa\Batch
  */
-class CfMutator {
+class CfMutator extends AbstractMutator {
 
     protected $cf;
     protected $mutatorInstance;
