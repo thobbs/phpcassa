@@ -1,4 +1,4 @@
-<?
+<?php
 namespace phpcassa\Batch;
 
 use phpcassa\Util\Clock;
