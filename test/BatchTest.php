@@ -22,7 +22,7 @@ class BatchTest extends PHPUnit_Framework_TestCase {
             $sys = new SystemManager();
 
             $ksdefs = $sys->describe_keyspaces();
-            $exists = False;
+            $exists = false;
             foreach ($ksdefs as $ksdef)
                 $exists = $exists || $ksdef->name == self::$KS;
 
@@ -72,6 +72,8 @@ class BatchTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_cf_mutator() {
+        $this->setExpectedException('\cassandra\NotFoundException');
+
         $batch = $this->cf->batch();
         $batch->insert("key1", array("col1" => "val1"));
         $batch->insert("key1", array("col2" => "val2"));
@@ -96,11 +98,12 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra\NotFoundException');
         $this->cf->get("key1");
     }
 
     public function test_super_cf_mutator() {
+        $this->setExpectedException('\cassandra\NotFoundException');
+
         $batch = $this->super_cf->batch();
         $batch->insert("key1", array("super1" => array("col1" => "val1")));
         $batch->insert("key1", array("super1" => array("col2" => "val2")));
@@ -128,11 +131,12 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra\NotFoundException');
         $this->super_cf->get("key1");
     }
 
     public function test_counter_cf_mutator() {
+        $this->setExpectedException('\cassandra\NotFoundException');
+
         $batch = $this->counter_cf->batch();
         $batch->insert("key1", array("col1" => 1));
         $batch->insert("key1", array("col2" => 1));
@@ -158,11 +162,12 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra\NotFoundException');
         $this->counter_cf->get("key1");
     }
 
     public function test_counter_super_cf_mutator() {
+        $this->setExpectedException('\cassandra\NotFoundException');
+
         $batch = $this->counter_super_cf->batch();
         $batch->insert("key1", array("super1" => array("col1" => 1)));
         $batch->insert("key1", array("super1" => array("col2" => 1)));
@@ -191,9 +196,8 @@ class BatchTest extends PHPUnit_Framework_TestCase {
         $batch->remove("key2");
         $batch->send();
 
-        $this->setExpectedException('\cassandra\NotFoundException');
         $this->counter_super_cf->get("key1");
     }
 
 }
-?>
+

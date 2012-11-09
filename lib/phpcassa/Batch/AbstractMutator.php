@@ -8,7 +8,7 @@ namespace phpcassa\Batch;
 abstract class AbstractMutator
 {
     protected $pool;
-    protected $buffer;
+    protected $buffer = array();
     protected $cl;
 
     /**
