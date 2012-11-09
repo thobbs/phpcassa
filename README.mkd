@@ -1,5 +1,8 @@
 phpcassa
 ========
+
+[![Build Status](https://secure.travis-ci.org/ricardclau/phpcassa.png?branch=master)](http://travis-ci.org/ricardclau/phpcassa)
+
 phpcassa is a PHP client library for [Apache Cassandra](http://cassandra.apache.org).
 
 * Compatible with Cassandra 0.7, 0.8, 1.0, and 1.1
