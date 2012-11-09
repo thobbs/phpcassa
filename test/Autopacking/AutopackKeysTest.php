@@ -89,7 +89,21 @@ class AutopackKeysTest extends AutopackBase {
         $this->uuid_cf->get($uuid);
     }
 
+    protected static function endswith($haystack, $needle) {
+        $start  = strlen($needle) * -1; //negative
+        return (substr($haystack, $start) === $needle);
+    }
+
+    protected function require_opp() {
+        $partitioner = $this->client->call('describe_partitioner');
+        if ($this->endswith($partitioner, "RandomPartitioner") ||
+            $this->endswith($partitioner, "Murmur3Partitioner")) {
+            $this->markTestSkipped();
+        }
+    }
+
     public function test_get_range() {
+        $this->require_opp();
         $this->cf->truncate();
         $this->cf->insert(0, array("a" => "a"));
         $this->cf->insert(1, array("b" => "b"));
@@ -113,6 +127,7 @@ class AutopackKeysTest extends AutopackBase {
     }
 
     public function test_get_range_serialized() {
+        $this->require_opp();
         $this->uuid_cf->truncate();
         $uuid1 = UUID::uuid1();
         $uuid2 = UUID::uuid1();
@@ -139,6 +154,7 @@ class AutopackKeysTest extends AutopackBase {
     }
 
     public function test_get_indexed_slices() {
+        $this->require_opp();
         $this->cf->truncate();
         $this->cf->insert(0, array("subcol" => 0));
         $this->cf->insert(1, array("subcol" => 1));
@@ -167,6 +183,7 @@ class AutopackKeysTest extends AutopackBase {
     }
 
     public function test_get_indexed_slices_serialized() {
+        $this->require_opp();
         $this->uuid_cf->truncate();
 
         $uuid1 = UUID::uuid1();

@@ -133,10 +133,10 @@ class SystemManager {
             $ksdef = new KsDef();
             $ksdef->strategy_class = 'SimpleStrategy';
             $ksdef->strategy_options = array("replication_factor" => "1");
-            $ksdef->cf_defs = array();
         }
 
         $ksdef->name = $name;
+        $ksdef->cf_defs = array();
         foreach ($attrs as $attr => $value) {
             if ($attr == "strategy_class") {
                 if (strpos($value, ".") === false)
