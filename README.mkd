@@ -29,52 +29,52 @@ Opening Connections
 -------------------
 
 ~~~php
-    $pool = new ConnectionPool('Keyspace1');
+$pool = new ConnectionPool('Keyspace1');
 ~~~
 
 or
 
 ~~~php
-    $pool = new ConnectionPool('Keyspace1', array('localhost'));
+$pool = new ConnectionPool('Keyspace1', array('localhost'));
 ~~~
 
 Create a column family object
 -----------------------------
 
 ~~~php
-    $users = new ColumnFamily($pool, 'Standard1');
-    $super = new SuperColumnFamily($pool, 'Super1');
+$users = new ColumnFamily($pool, 'Standard1');
+$super = new SuperColumnFamily($pool, 'Super1');
 ~~~
 
 Inserting
 ---------
 
 ~~~php
-    $users->insert('key', array('column1' => 'value1', 'column2' => 'value2'));
+$users->insert('key', array('column1' => 'value1', 'column2' => 'value2'));
 ~~~
 
 Querying
 --------
 
 ~~~php
-    $users->get('key');
-    $users->multiget(array('key1', 'key2'));
+$users->get('key');
+$users->multiget(array('key1', 'key2'));
 ~~~
 
 Removing
 --------
 
 ~~~php
-    $users->remove('key1'); // removes whole row
-    $users->remove('key1', 'column1'); // removes 'column1'
+$users->remove('key1'); // removes whole row
+$users->remove('key1', 'column1'); // removes 'column1'
 ~~~
 
 Other
 -----
 
 ~~~php
-    $users->get_count('key1'); // counts the number of columns in row 'key1'
-    $users->get_range('key1', 'key9'); // gets all rows with keys between '1' and '9'
+$users->get_count('key1'); // counts the number of columns in row 'key1'
+$users->get_range('key1', 'key9'); // gets all rows with keys between '1' and '9'
 ~~~
 
 Using the C Extension
@@ -85,16 +85,18 @@ The C extension is crucial for phpcassa's performance.
 You need to configure and make to be able to use the C extension.
 
 ~~~bash
-    cd lib/thrift/ext/thrift_protocol
-    phpize
-    ./configure
-    make
-    sudo make install
+cd lib/thrift/ext/thrift_protocol
+phpize
+./configure
+make
+sudo make install
 ~~~
 
 Add the following line to your php.ini file:
 
-    extension=thrift_protocol.so
+~~~
+extension=thrift_protocol.so
+~~~
 
 Getting Help
 ------------
