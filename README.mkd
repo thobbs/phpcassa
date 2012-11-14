@@ -25,8 +25,7 @@ Examples
 --------
 You can find a few fully working example scripts in the `examples/` directory.
 
-Opening Connections
--------------------
+### Opening Connections
 
 ~~~php
 $pool = new ConnectionPool('Keyspace1');
@@ -38,39 +37,34 @@ or
 $pool = new ConnectionPool('Keyspace1', array('localhost'));
 ~~~
 
-Create a column family object
------------------------------
+### Create a column family object
 
 ~~~php
 $users = new ColumnFamily($pool, 'Standard1');
 $super = new SuperColumnFamily($pool, 'Super1');
 ~~~
 
-Inserting
----------
+### Inserting
 
 ~~~php
 $users->insert('key', array('column1' => 'value1', 'column2' => 'value2'));
 ~~~
 
-Querying
---------
+### Querying
 
 ~~~php
 $users->get('key');
 $users->multiget(array('key1', 'key2'));
 ~~~
 
-Removing
---------
+### Removing
 
 ~~~php
 $users->remove('key1'); // removes whole row
 $users->remove('key1', 'column1'); // removes 'column1'
 ~~~
 
-Other
------
+### Other
 
 ~~~php
 $users->get_count('key1'); // counts the number of columns in row 'key1'
