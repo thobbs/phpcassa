@@ -292,9 +292,16 @@ class ConnectionPool {
     }
 
     /**
+     * This method called every time an error is logged. By default, it will
+     * call the PHP builtin function error_log() with a messageType of 0. To
+     * change this behavior, you can create a subclass and override this
+     * method.
      *
-     * Extracing error log function call so that writing to the error log
-     * can be  over written.
+     * Note that PHP has strange logging behavior. In particular, if you are
+     * running the PHP cli and you haven't set a directive for error_log in
+     * your php.ini, this will log to stdout even if you've called
+     * error_reporting(0), which is supposed to suppress all logging.
+     *
      * @param string $errorMsg
      * @param int $messageType
      */
