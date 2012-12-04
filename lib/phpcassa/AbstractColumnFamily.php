@@ -9,6 +9,7 @@ use phpcassa\Schema\DataType\Serialized;
 
 use phpcassa\Iterator\IndexedColumnFamilyIterator;
 use phpcassa\Iterator\RangeColumnFamilyIterator;
+use phpcassa\Iterator\RangeTokenColumnFamilyIterator;
 
 use phpcassa\Batch\CfMutator;
 
@@ -542,6 +543,73 @@ abstract class AbstractColumnFamily {
         return new RangeColumnFamilyIterator($this, $buffsz, $start, $finish,
             $count, $cp, $slice, $this->rcl($cl));
     }
+
+
+
+
+
+    /**
+     * Get an iterator over a token range.
+     * 
+     * Example usages of get_range_by_token() :
+     *   1. You can iterate part of the ring.
+     *      This helps to start several processes,
+     *      that scans the ring in parallel in fashion similar to Hadoop.
+     *      Then full ring scan will take only 1 / <number of processes>
+     * 
+     *   2. You can iterate "local" token range for each Cassandra node.
+     *      You can start one process on each cassandra node,
+     *      that iterates only on token range for this node.
+     *      In this case you minimize the network traffic between nodes.
+     * 
+     *   3. Combinations of the above.
+     *
+     * @param string $token_start fetch rows with a token >= this
+     * @param string $token_finish fetch rows with a token <= this
+     * @param int $row_count limit the number of rows returned to this amount
+     * @param \phpcassa\ColumnSlice a slice of columns to fetch, or null
+     * @param mixed[] $column_names limit the columns or super columns fetched to this list
+     * @param ConsistencyLevel $consistency_level affects the guaranteed
+     *        number of nodes that must respond before the operation returns
+     * @param int $buffer_size When calling `get_range`, the intermediate results need
+     *        to be buffered if we are fetching many rows, otherwise the Cassandra
+     *        server will overallocate memory and fail.  This is the size of
+     *        that buffer in number of rows.
+     *
+     * @return phpcassa\Iterator\RangeColumnFamilyIterator
+     */
+    public function get_range_by_token($token_start="",
+                              $token_finish="",
+                              $row_count=self::DEFAULT_ROW_COUNT,
+                              $column_slice=null,
+                              $column_names=null,
+                              $consistency_level=null,
+                              $buffer_size=null) {
+
+        $cp = $this->create_column_parent();
+        $slice = $this->create_slice_predicate($column_names, $column_slice);
+
+        return $this->_get_range_by_token($token_start, $token_finish, $row_count,
+            $cp, $slice, $consistency_level, $buffer_size);
+    }
+
+    protected function _get_range_by_token($tokenstart, $tokenfinish, $count, $cp, $slice, $cl, $buffsz) {
+
+        if ($buffsz == null)
+            $buffsz = $this->buffer_size;
+        if ($buffsz < 2) {
+            $ire = new InvalidRequestException();
+            $ire->message = 'buffer_size cannot be less than 2';
+            throw $ire;
+        }
+
+        return new RangeTokenColumnFamilyIterator($this, $buffsz, $tokenstart, $tokenfinish,
+                                             $count, $cp, $slice, $this->rcl($cl));
+    }
+
+
+
+
 
     /**
      * Fetch a set of rows from this column family based on an index clause.
