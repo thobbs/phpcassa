@@ -710,7 +710,7 @@ abstract class AbstractColumnFamily {
             if(count($ttl) !== count($rows))
                 throw new UnexpectedValueException("ttl array size must match rows array size");
         }
-        
+
         $cfmap = array();
         if ($this->insert_format == self::DICTIONARY_FORMAT) {
             foreach($rows as $key => $columns) {
