@@ -7,7 +7,7 @@
 	<title>Class phpcassa\SuperColumnFamily | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3836923824"></script>
+	<script type="text/javascript" src="elementlist.js?4162256369"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -56,6 +56,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-phpcassa.AbstractColumnFamily.html">AbstractColumnFamily</a></li>
 				<li><a href="class-phpcassa.ColumnFamily.html">ColumnFamily</a></li>
 				<li><a href="class-phpcassa.ColumnSlice.html">ColumnSlice</a></li>
 				<li class="active"><a href="class-phpcassa.SuperColumnFamily.html">SuperColumnFamily</a></li>
@@ -116,7 +117,7 @@
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-			<a href="class-phpcassa.ColumnFamily.html"><span>phpcassa\ColumnFamily</span></a>
+			<a href="class-phpcassa.AbstractColumnFamily.html"><span>phpcassa\AbstractColumnFamily</span></a>
 			
 			
 			
@@ -370,7 +371,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_super_column_range">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#134" title="Go to source code">get_super_column_range</a>( <span>mixed <var>$super_column</var></span>, <span>string <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.ColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\ColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#134" title="Go to source code">get_super_column_range</a>( <span>mixed <var>$super_column</var></span>, <span>string <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -537,7 +538,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove_counter">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#239" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#238" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -580,24 +581,25 @@ returns</dd>
 	</table>
 
 	<table class="summary inherited">
-	<caption>Methods inherited from <a href="class-phpcassa.ColumnFamily.html#methods">phpcassa\ColumnFamily</a></caption>
+	<caption>Methods inherited from <a href="class-phpcassa.AbstractColumnFamily.html#methods">phpcassa\AbstractColumnFamily</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-phpcassa.ColumnFamily.html#___construct">__construct()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_batch">batch()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_batch_insert">batch_insert()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_get">get()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_get_count">get_count()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_get_indexed_slices">get_indexed_slices()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_get_range">get_range()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_insert">insert()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_multiget">multiget()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_multiget_count">multiget_count()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_remove">remove()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_set_autopack_keys">set_autopack_keys()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_set_autopack_names">set_autopack_names()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_set_autopack_values">set_autopack_values()</a>, 
-			<a href="class-phpcassa.ColumnFamily.html#_truncate">truncate()</a>
+			<a href="class-phpcassa.AbstractColumnFamily.html#___construct">__construct()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_batch">batch()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_batch_insert">batch_insert()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_get">get()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_get_count">get_count()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_get_indexed_slices">get_indexed_slices()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_get_range">get_range()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_get_range_by_token">get_range_by_token()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_insert">insert()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_multiget">multiget()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_multiget_count">multiget_count()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_remove">remove()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_set_autopack_keys">set_autopack_keys()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_set_autopack_names">set_autopack_names()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_set_autopack_values">set_autopack_values()</a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#_truncate">truncate()</a>
 		</code></td>
 	</tr>
 	</table>
@@ -606,14 +608,14 @@ returns</dd>
 
 
 	<table class="summary inherited">
-	<caption>Constants inherited from <a href="class-phpcassa.ColumnFamily.html#constants">phpcassa\ColumnFamily</a></caption>
+	<caption>Constants inherited from <a href="class-phpcassa.AbstractColumnFamily.html#constants">phpcassa\AbstractColumnFamily</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-phpcassa.ColumnFamily.html#ARRAY_FORMAT"><b>ARRAY_FORMAT</b></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#DEFAULT_BUFFER_SIZE"><b>DEFAULT_BUFFER_SIZE</b></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#DEFAULT_ROW_COUNT"><b>DEFAULT_ROW_COUNT</b></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#DICTIONARY_FORMAT"><b>DICTIONARY_FORMAT</b></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#OBJECT_FORMAT"><b>OBJECT_FORMAT</b></a>
+			<a href="class-phpcassa.AbstractColumnFamily.html#ARRAY_FORMAT"><b>ARRAY_FORMAT</b></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_BUFFER_SIZE"><b>DEFAULT_BUFFER_SIZE</b></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT"><b>DEFAULT_ROW_COUNT</b></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#DICTIONARY_FORMAT"><b>DICTIONARY_FORMAT</b></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#OBJECT_FORMAT"><b>OBJECT_FORMAT</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -621,17 +623,17 @@ returns</dd>
 
 
 	<table class="summary inherited">
-	<caption>Properties inherited from <a href="class-phpcassa.ColumnFamily.html#properties">phpcassa\ColumnFamily</a></caption>
+	<caption>Properties inherited from <a href="class-phpcassa.AbstractColumnFamily.html#properties">phpcassa\AbstractColumnFamily</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-phpcassa.ColumnFamily.html#$autopack_keys"><var>$autopack_keys</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$autopack_names"><var>$autopack_names</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$autopack_values"><var>$autopack_values</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$buffer_size"><var>$buffer_size</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$insert_format"><var>$insert_format</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$read_consistency_level"><var>$read_consistency_level</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$return_format"><var>$return_format</var></a>, 
-			<a href="class-phpcassa.ColumnFamily.html#$write_consistency_level"><var>$write_consistency_level</var></a>
+			<a href="class-phpcassa.AbstractColumnFamily.html#$autopack_keys"><var>$autopack_keys</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$autopack_names"><var>$autopack_names</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$autopack_values"><var>$autopack_values</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$buffer_size"><var>$buffer_size</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$insert_format"><var>$insert_format</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$read_consistency_level"><var>$read_consistency_level</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$return_format"><var>$return_format</var></a>, 
+			<a href="class-phpcassa.AbstractColumnFamily.html#$write_consistency_level"><var>$write_consistency_level</var></a>
 		</code></td>
 	</tr>
 	</table>

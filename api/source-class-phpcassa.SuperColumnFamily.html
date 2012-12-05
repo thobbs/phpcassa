@@ -8,7 +8,7 @@
 	<title>File phpcassa/SuperColumnFamily.php | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3836923824"></script>
+	<script type="text/javascript" src="elementlist.js?4162256369"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -57,6 +57,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-phpcassa.AbstractColumnFamily.html">AbstractColumnFamily</a></li>
 				<li><a href="class-phpcassa.ColumnFamily.html">ColumnFamily</a></li>
 				<li><a href="class-phpcassa.ColumnSlice.html">ColumnSlice</a></li>
 				<li class="active"><a href="class-phpcassa.SuperColumnFamily.html">SuperColumnFamily</a></li>
@@ -127,7 +128,7 @@
 </span><a href="#21" id="21" class="l"> 21: </a><span class="php-comment"> *
 </span><a href="#22" id="22" class="l"> 22: </a><span class="php-comment"> * @package phpcassa
 </span><a href="#23" id="23" class="l"> 23: </a><span class="php-comment"> */</span>
-<a href="#24" id="24" class="l"> 24: </a><span class="php-keyword1">class</span> SuperColumnFamily <span class="php-keyword1">extends</span> ColumnFamily {
+<a href="#24" id="24" class="l"> 24: </a><span class="php-keyword1">class</span> SuperColumnFamily <span class="php-keyword1">extends</span> AbstractColumnFamily {
 <a href="#25" id="25" class="l"> 25: </a>
 <a href="#26" id="26" class="l"> 26: </a>    <span class="php-comment">/**
 </span><a href="#27" id="27" class="l"> 27: </a><span class="php-comment">     * Fetch a single super column.
@@ -334,271 +335,270 @@
 <a href="#228" id="228" class="l">228: </a>            <span class="php-var">$deletion</span> = <span class="php-keyword1">new</span> Deletion();
 <a href="#229" id="229" class="l">229: </a>            <span class="php-var">$deletion</span>-&gt;super_column = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$super_column</span>, <span class="php-keyword1">true</span>);
 <a href="#230" id="230" class="l">230: </a>            <span class="php-keyword1">if</span> (<span class="php-var">$subcolumns</span> !== <span class="php-keyword1">null</span>) {
-<a href="#231" id="231" class="l">231: </a>                <span class="php-var">$predicate</span> = <span class="php-var">$this</span>-&gt;create_slice_predicate(<span class="php-var">$subcolumns</span>, <span class="php-quote">''</span>, <span class="php-quote">''</span>, <span class="php-keyword1">false</span>,
-<a href="#232" id="232" class="l">232: </a>                                                           self::DEFAULT_COLUMN_COUNT);
-<a href="#233" id="233" class="l">233: </a>                <span class="php-var">$deletion</span>-&gt;predicate = <span class="php-var">$predicate</span>;
-<a href="#234" id="234" class="l">234: </a>            }
-<a href="#235" id="235" class="l">235: </a>            <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_remove_multi(<span class="php-var">$key</span>, <span class="php-var">$deletion</span>, <span class="php-var">$consistency_level</span>);
-<a href="#236" id="236" class="l">236: </a>        }
-<a href="#237" id="237" class="l">237: </a>    }
-<a href="#238" id="238" class="l">238: </a>
-<a href="#239" id="239" class="l">239: </a>    <span class="php-comment">/**
-</span><a href="#240" id="240" class="l">240: </a><span class="php-comment">     * Remove a counter at the specified location.
-</span><a href="#241" id="241" class="l">241: </a><span class="php-comment">     *
-</span><a href="#242" id="242" class="l">242: </a><span class="php-comment">     * Note that counters have limited support for deletes: if you remove a
-</span><a href="#243" id="243" class="l">243: </a><span class="php-comment">     * counter, you must wait to issue any following update until the delete
-</span><a href="#244" id="244" class="l">244: </a><span class="php-comment">     * has reached all the nodes and all of them have been fully compacted.
-</span><a href="#245" id="245" class="l">245: </a><span class="php-comment">     *
-</span><a href="#246" id="246" class="l">246: </a><span class="php-comment">     * Available in Cassandra 0.8.0 and later.
-</span><a href="#247" id="247" class="l">247: </a><span class="php-comment">     *
-</span><a href="#248" id="248" class="l">248: </a><span class="php-comment">     * @param string $key the key for the row
-</span><a href="#249" id="249" class="l">249: </a><span class="php-comment">     * @param mixed $super_column the super column the counter is in
-</span><a href="#250" id="250" class="l">250: </a><span class="php-comment">     * @param mixed $column the column name of the counter; if left as null,
-</span><a href="#251" id="251" class="l">251: </a><span class="php-comment">     *                      the entire super column will be removed
-</span><a href="#252" id="252" class="l">252: </a><span class="php-comment">     * @param ConsistencyLevel $consistency_level affects the guaranteed
-</span><a href="#253" id="253" class="l">253: </a><span class="php-comment">     *        number of nodes that must respond before the operation returns
-</span><a href="#254" id="254" class="l">254: </a><span class="php-comment">     */</span>
-<a href="#255" id="255" class="l">255: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> remove_counter(<span class="php-var">$key</span>, <span class="php-var">$super_column</span>, <span class="php-var">$column</span>=<span class="php-keyword1">null</span>,
-<a href="#256" id="256" class="l">256: </a>                                   <span class="php-var">$consistency_level</span>=<span class="php-keyword1">null</span>) {
-<a href="#257" id="257" class="l">257: </a>        <span class="php-var">$cp</span> = <span class="php-keyword1">new</span> ColumnPath();
-<a href="#258" id="258" class="l">258: </a>        <span class="php-var">$packed_key</span> = <span class="php-var">$this</span>-&gt;pack_key(<span class="php-var">$key</span>);
-<a href="#259" id="259" class="l">259: </a>        <span class="php-var">$cp</span>-&gt;column_family = <span class="php-var">$this</span>-&gt;column_family;
-<a href="#260" id="260" class="l">260: </a>        <span class="php-var">$cp</span>-&gt;super_column = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$super_column</span>, <span class="php-keyword1">true</span>);
-<a href="#261" id="261" class="l">261: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$column</span> !== <span class="php-keyword1">null</span>)
-<a href="#262" id="262" class="l">262: </a>            <span class="php-var">$cp</span>-&gt;column = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$column</span>);
-<a href="#263" id="263" class="l">263: </a>        <span class="php-var">$this</span>-&gt;pool-&gt;call(<span class="php-quote">&quot;remove_counter&quot;</span>, <span class="php-var">$packed_key</span>, <span class="php-var">$cp</span>,
-<a href="#264" id="264" class="l">264: </a>            <span class="php-var">$this</span>-&gt;wcl(<span class="php-var">$consistency_level</span>));
-<a href="#265" id="265" class="l">265: </a>    }
-<a href="#266" id="266" class="l">266: </a>
-<a href="#267" id="267" class="l">267: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> dict_to_coscs(<span class="php-var">$data</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
-<a href="#268" id="268" class="l">268: </a>        <span class="php-var">$have_counters</span> = <span class="php-var">$this</span>-&gt;has_counters;
-<a href="#269" id="269" class="l">269: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#270" id="270" class="l">270: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$data</span> <span class="php-keyword1">as</span> <span class="php-var">$name</span> =&gt; <span class="php-var">$value</span>) {
-<a href="#271" id="271" class="l">271: </a>            <span class="php-var">$cosc</span> = <span class="php-keyword1">new</span> ColumnOrSuperColumn();
-<a href="#272" id="272" class="l">272: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$have_counters</span>) {
-<a href="#273" id="273" class="l">273: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> CounterSuperColumn();
-<a href="#274" id="274" class="l">274: </a>                <span class="php-var">$cosc</span>-&gt;counter_super_column = <span class="php-var">$sub</span>;
-<a href="#275" id="275" class="l">275: </a>            } <span class="php-keyword1">else</span> {
-<a href="#276" id="276" class="l">276: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> SuperColumn();
-<a href="#277" id="277" class="l">277: </a>                <span class="php-var">$cosc</span>-&gt;super_column = <span class="php-var">$sub</span>;
-<a href="#278" id="278" class="l">278: </a>            }
-<a href="#279" id="279" class="l">279: </a>            <span class="php-var">$sub</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$name</span>, <span class="php-keyword1">true</span>, self::NON_SLICE, <span class="php-keyword1">true</span>);
-<a href="#280" id="280" class="l">280: </a>            <span class="php-var">$sub</span>-&gt;columns = <span class="php-var">$this</span>-&gt;dict_to_columns(<span class="php-var">$value</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>);
-<a href="#281" id="281" class="l">281: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$cosc</span>;
-<a href="#282" id="282" class="l">282: </a>        }
-<a href="#283" id="283" class="l">283: </a>
-<a href="#284" id="284" class="l">284: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#285" id="285" class="l">285: </a>    }
-<a href="#286" id="286" class="l">286: </a>
-<a href="#287" id="287" class="l">287: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> array_to_coscs(<span class="php-var">$data</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
-<a href="#288" id="288" class="l">288: </a>        <span class="php-var">$have_counters</span> = <span class="php-var">$this</span>-&gt;has_counters;
-<a href="#289" id="289" class="l">289: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#290" id="290" class="l">290: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$data</span> <span class="php-keyword1">as</span> <span class="php-var">$supercol</span>) {
-<a href="#291" id="291" class="l">291: </a>            <span class="php-keyword1">list</span>(<span class="php-var">$name</span>, <span class="php-var">$columns</span>) = <span class="php-var">$supercol</span>;
-<a href="#292" id="292" class="l">292: </a>            <span class="php-var">$cosc</span> = <span class="php-keyword1">new</span> ColumnOrSuperColumn();
-<a href="#293" id="293" class="l">293: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$have_counters</span>) {
-<a href="#294" id="294" class="l">294: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> CounterSuperColumn();
-<a href="#295" id="295" class="l">295: </a>                <span class="php-var">$cosc</span>-&gt;counter_super_column = <span class="php-var">$sub</span>;
-<a href="#296" id="296" class="l">296: </a>            } <span class="php-keyword1">else</span> {
-<a href="#297" id="297" class="l">297: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> SuperColumn();
-<a href="#298" id="298" class="l">298: </a>                <span class="php-var">$cosc</span>-&gt;super_column = <span class="php-var">$sub</span>;
-<a href="#299" id="299" class="l">299: </a>            }
-<a href="#300" id="300" class="l">300: </a>            <span class="php-var">$sub</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$name</span>, <span class="php-keyword1">true</span>, self::NON_SLICE, <span class="php-keyword1">false</span>);
-<a href="#301" id="301" class="l">301: </a>            <span class="php-var">$sub</span>-&gt;columns = <span class="php-var">$this</span>-&gt;array_to_columns(<span class="php-var">$columns</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>);
-<a href="#302" id="302" class="l">302: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$cosc</span>;
-<a href="#303" id="303" class="l">303: </a>        }
-<a href="#304" id="304" class="l">304: </a>
-<a href="#305" id="305" class="l">305: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#306" id="306" class="l">306: </a>    }
-<a href="#307" id="307" class="l">307: </a>
-<a href="#308" id="308" class="l">308: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> dict_to_columns(<span class="php-var">$array</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
-<a href="#309" id="309" class="l">309: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#310" id="310" class="l">310: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$array</span> <span class="php-keyword1">as</span> <span class="php-var">$name</span> =&gt; <span class="php-var">$value</span>) {
-<a href="#311" id="311" class="l">311: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;has_counters) {
-<a href="#312" id="312" class="l">312: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> CounterColumn();
-<a href="#313" id="313" class="l">313: </a>            } <span class="php-keyword1">else</span> {
-<a href="#314" id="314" class="l">314: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> Column();
-<a href="#315" id="315" class="l">315: </a>                <span class="php-var">$column</span>-&gt;timestamp = <span class="php-var">$timestamp</span>;
-<a href="#316" id="316" class="l">316: </a>                <span class="php-var">$column</span>-&gt;ttl = <span class="php-var">$ttl</span>;
-<a href="#317" id="317" class="l">317: </a>            }
-<a href="#318" id="318" class="l">318: </a>            <span class="php-var">$column</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(
-<a href="#319" id="319" class="l">319: </a>                <span class="php-var">$name</span>, <span class="php-keyword1">false</span>, self::NON_SLICE, <span class="php-keyword1">true</span>);
-<a href="#320" id="320" class="l">320: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$column</span>-&gt;name);
-<a href="#321" id="321" class="l">321: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$column</span>;
-<a href="#322" id="322" class="l">322: </a>        }
-<a href="#323" id="323" class="l">323: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#324" id="324" class="l">324: </a>    }
-<a href="#325" id="325" class="l">325: </a>
-<a href="#326" id="326" class="l">326: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> array_to_columns(<span class="php-var">$array</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
-<a href="#327" id="327" class="l">327: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#328" id="328" class="l">328: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$array</span> <span class="php-keyword1">as</span> <span class="php-var">$col</span>) {
-<a href="#329" id="329" class="l">329: </a>            <span class="php-keyword1">list</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>) = <span class="php-var">$col</span>;
-<a href="#330" id="330" class="l">330: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;has_counters) {
-<a href="#331" id="331" class="l">331: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> CounterColumn();
-<a href="#332" id="332" class="l">332: </a>            } <span class="php-keyword1">else</span> {
-<a href="#333" id="333" class="l">333: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> Column();
-<a href="#334" id="334" class="l">334: </a>                <span class="php-var">$column</span>-&gt;timestamp = <span class="php-var">$timestamp</span>;
-<a href="#335" id="335" class="l">335: </a>                <span class="php-var">$column</span>-&gt;ttl = <span class="php-var">$ttl</span>;
-<a href="#336" id="336" class="l">336: </a>            }
-<a href="#337" id="337" class="l">337: </a>            <span class="php-var">$column</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(
-<a href="#338" id="338" class="l">338: </a>                <span class="php-var">$name</span>, <span class="php-keyword1">false</span>, self::NON_SLICE, <span class="php-keyword1">false</span>);
-<a href="#339" id="339" class="l">339: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$column</span>-&gt;name);
-<a href="#340" id="340" class="l">340: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$column</span>;
-<a href="#341" id="341" class="l">341: </a>        }
-<a href="#342" id="342" class="l">342: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#343" id="343" class="l">343: </a>    }
-<a href="#344" id="344" class="l">344: </a>
-<a href="#345" id="345" class="l">345: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> coscs_to_dict(<span class="php-var">$array_of_coscs</span>) {
-<a href="#346" id="346" class="l">346: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#347" id="347" class="l">347: </a>        <span class="php-var">$first</span> = <span class="php-var">$array_of_coscs</span>[<span class="php-num">0</span>];
-<a href="#348" id="348" class="l">348: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
-<a href="#349" id="349" class="l">349: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#350" id="350" class="l">350: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;column-&gt;name, <span class="php-keyword1">false</span>);
-<a href="#351" id="351" class="l">351: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$cosc</span>-&gt;column-&gt;value, <span class="php-var">$cosc</span>-&gt;column-&gt;name);
-<a href="#352" id="352" class="l">352: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$value</span>;
-<a href="#353" id="353" class="l">353: </a>            }
-<a href="#354" id="354" class="l">354: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
-<a href="#355" id="355" class="l">355: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#356" id="356" class="l">356: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;super_column-&gt;name, <span class="php-keyword1">true</span>);
-<a href="#357" id="357" class="l">357: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;super_column-&gt;columns;
-<a href="#358" id="358" class="l">358: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$this</span>-&gt;columns_to_dict(<span class="php-var">$columns</span>, <span class="php-keyword1">false</span>);
-<a href="#359" id="359" class="l">359: </a>            }
-<a href="#360" id="360" class="l">360: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span> (<span class="php-var">$first</span>-&gt;counter_column) {
-<a href="#361" id="361" class="l">361: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#362" id="362" class="l">362: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_column-&gt;name, <span class="php-keyword1">false</span>);
-<a href="#363" id="363" class="l">363: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$cosc</span>-&gt;counter_column-&gt;value;
-<a href="#364" id="364" class="l">364: </a>            }
-<a href="#365" id="365" class="l">365: </a>        } <span class="php-keyword1">else</span> { <span class="php-comment">// counter_super_column</span>
-<a href="#366" id="366" class="l">366: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#367" id="367" class="l">367: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;name, <span class="php-keyword1">true</span>);
-<a href="#368" id="368" class="l">368: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;columns;
-<a href="#369" id="369" class="l">369: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$this</span>-&gt;columns_to_dict(<span class="php-var">$columns</span>, <span class="php-keyword1">true</span>);
-<a href="#370" id="370" class="l">370: </a>            }
-<a href="#371" id="371" class="l">371: </a>        }
-<a href="#372" id="372" class="l">372: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#373" id="373" class="l">373: </a>    }
-<a href="#374" id="374" class="l">374: </a>
-<a href="#375" id="375" class="l">375: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> coscs_to_array(<span class="php-var">$array_of_coscs</span>) {
-<a href="#376" id="376" class="l">376: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#377" id="377" class="l">377: </a>        <span class="php-var">$first</span> = <span class="php-var">$array_of_coscs</span>[<span class="php-num">0</span>];
-<a href="#378" id="378" class="l">378: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
-<a href="#379" id="379" class="l">379: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#380" id="380" class="l">380: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;column-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#381" id="381" class="l">381: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$cosc</span>-&gt;column-&gt;value, <span class="php-var">$cosc</span>-&gt;column-&gt;name);
-<a href="#382" id="382" class="l">382: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>);
-<a href="#383" id="383" class="l">383: </a>            }
-<a href="#384" id="384" class="l">384: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
-<a href="#385" id="385" class="l">385: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#386" id="386" class="l">386: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;super_column-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
-<a href="#387" id="387" class="l">387: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;super_column-&gt;columns;
-<a href="#388" id="388" class="l">388: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$this</span>-&gt;columns_to_array(<span class="php-var">$columns</span>, <span class="php-keyword1">false</span>));
-<a href="#389" id="389" class="l">389: </a>            }
-<a href="#390" id="390" class="l">390: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span> (<span class="php-var">$first</span>-&gt;counter_column) {
-<a href="#391" id="391" class="l">391: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#392" id="392" class="l">392: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_column-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#393" id="393" class="l">393: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$cosc</span>-&gt;counter_column-&gt;value);
-<a href="#394" id="394" class="l">394: </a>            }
-<a href="#395" id="395" class="l">395: </a>        } <span class="php-keyword1">else</span> { <span class="php-comment">// counter_super_column</span>
-<a href="#396" id="396" class="l">396: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#397" id="397" class="l">397: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
-<a href="#398" id="398" class="l">398: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;columns;
-<a href="#399" id="399" class="l">399: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$this</span>-&gt;columns_to_array(<span class="php-var">$columns</span>, <span class="php-keyword1">true</span>));
-<a href="#400" id="400" class="l">400: </a>            }
-<a href="#401" id="401" class="l">401: </a>        }
-<a href="#402" id="402" class="l">402: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#403" id="403" class="l">403: </a>    }
-<a href="#404" id="404" class="l">404: </a>
-<a href="#405" id="405" class="l">405: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> unpack_coscs_attrs(<span class="php-var">$array_of_coscs</span>) {
-<a href="#406" id="406" class="l">406: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#407" id="407" class="l">407: </a>        <span class="php-var">$first</span> = <span class="php-var">$array_of_coscs</span>[<span class="php-num">0</span>];
-<a href="#408" id="408" class="l">408: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
-<a href="#409" id="409" class="l">409: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#410" id="410" class="l">410: </a>                <span class="php-var">$col</span> = <span class="php-var">$cosc</span>-&gt;column;
-<a href="#411" id="411" class="l">411: </a>                <span class="php-var">$col</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$col</span>-&gt;value, <span class="php-var">$col</span>-&gt;name);
-<a href="#412" id="412" class="l">412: </a>                <span class="php-var">$col</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$col</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#413" id="413" class="l">413: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$col</span>;
-<a href="#414" id="414" class="l">414: </a>            }
-<a href="#415" id="415" class="l">415: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
-<a href="#416" id="416" class="l">416: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#417" id="417" class="l">417: </a>                <span class="php-var">$supercol</span> = <span class="php-var">$cosc</span>-&gt;super_column;
-<a href="#418" id="418" class="l">418: </a>                <span class="php-var">$supercol</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(
-<a href="#419" id="419" class="l">419: </a>                        <span class="php-var">$supercol</span>-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
-<a href="#420" id="420" class="l">420: </a>                <span class="php-var">$supercol</span>-&gt;columns = <span class="php-var">$this</span>-&gt;unpack_subcolumn_attrs(
-<a href="#421" id="421" class="l">421: </a>                        <span class="php-var">$supercol</span>-&gt;columns, <span class="php-keyword1">false</span>);
-<a href="#422" id="422" class="l">422: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$supercol</span>;
-<a href="#423" id="423" class="l">423: </a>            }
-<a href="#424" id="424" class="l">424: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span> (<span class="php-var">$first</span>-&gt;counter_column) {
-<a href="#425" id="425" class="l">425: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#426" id="426" class="l">426: </a>                <span class="php-var">$col</span> = <span class="php-var">$cosc</span>-&gt;counter_column;
-<a href="#427" id="427" class="l">427: </a>                <span class="php-var">$col</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$col</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#428" id="428" class="l">428: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$col</span>;
-<a href="#429" id="429" class="l">429: </a>            }
-<a href="#430" id="430" class="l">430: </a>        } <span class="php-keyword1">else</span> { <span class="php-comment">// counter_super_column</span>
-<a href="#431" id="431" class="l">431: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
-<a href="#432" id="432" class="l">432: </a>                <span class="php-var">$supercol</span> = <span class="php-var">$cosc</span>-&gt;super_column;
-<a href="#433" id="433" class="l">433: </a>                <span class="php-var">$supercol</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(
-<a href="#434" id="434" class="l">434: </a>                        <span class="php-var">$supercol</span>-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
-<a href="#435" id="435" class="l">435: </a>                <span class="php-var">$supercol</span>-&gt;columns = <span class="php-var">$this</span>-&gt;unpack_subcolumn_attrs(
-<a href="#436" id="436" class="l">436: </a>                        <span class="php-var">$supercol</span>-&gt;columns, <span class="php-keyword1">true</span>);
-<a href="#437" id="437" class="l">437: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$supercol</span>;
-<a href="#438" id="438" class="l">438: </a>            }
-<a href="#439" id="439" class="l">439: </a>        }
-<a href="#440" id="440" class="l">440: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#441" id="441" class="l">441: </a>    }
-<a href="#442" id="442" class="l">442: </a>
-<a href="#443" id="443" class="l">443: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> unpack_subcolumn_attrs(<span class="php-var">$columns</span>, <span class="php-var">$have_counters</span>) {
-<a href="#444" id="444" class="l">444: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#445" id="445" class="l">445: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
-<a href="#446" id="446" class="l">446: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#447" id="447" class="l">447: </a>                <span class="php-var">$c</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
-<a href="#448" id="448" class="l">448: </a>                <span class="php-var">$c</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#449" id="449" class="l">449: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$c</span>;
-<a href="#450" id="450" class="l">450: </a>            }
-<a href="#451" id="451" class="l">451: </a>        } <span class="php-keyword1">else</span> {
-<a href="#452" id="452" class="l">452: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#453" id="453" class="l">453: </a>                <span class="php-var">$c</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#454" id="454" class="l">454: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$c</span>;
-<a href="#455" id="455" class="l">455: </a>            }
-<a href="#456" id="456" class="l">456: </a>        }
-<a href="#457" id="457" class="l">457: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#458" id="458" class="l">458: </a>    }
-<a href="#459" id="459" class="l">459: </a>
-<a href="#460" id="460" class="l">460: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> columns_to_dict(<span class="php-var">$columns</span>, <span class="php-var">$have_counters</span>) {
-<a href="#461" id="461" class="l">461: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#462" id="462" class="l">462: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
-<a href="#463" id="463" class="l">463: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#464" id="464" class="l">464: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
-<a href="#465" id="465" class="l">465: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>);
-<a href="#466" id="466" class="l">466: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$value</span>;
-<a href="#467" id="467" class="l">467: </a>            }
-<a href="#468" id="468" class="l">468: </a>        } <span class="php-keyword1">else</span> {
-<a href="#469" id="469" class="l">469: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#470" id="470" class="l">470: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>);
-<a href="#471" id="471" class="l">471: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$c</span>-&gt;value;
-<a href="#472" id="472" class="l">472: </a>            }
-<a href="#473" id="473" class="l">473: </a>        }
-<a href="#474" id="474" class="l">474: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#475" id="475" class="l">475: </a>    }
-<a href="#476" id="476" class="l">476: </a>
-<a href="#477" id="477" class="l">477: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> columns_to_array(<span class="php-var">$columns</span>, <span class="php-var">$have_counters</span>) {
-<a href="#478" id="478" class="l">478: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
-<a href="#479" id="479" class="l">479: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
-<a href="#480" id="480" class="l">480: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#481" id="481" class="l">481: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
-<a href="#482" id="482" class="l">482: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#483" id="483" class="l">483: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>);
-<a href="#484" id="484" class="l">484: </a>            }
-<a href="#485" id="485" class="l">485: </a>        } <span class="php-keyword1">else</span> {
-<a href="#486" id="486" class="l">486: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
-<a href="#487" id="487" class="l">487: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
-<a href="#488" id="488" class="l">488: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$c</span>-&gt;value);
-<a href="#489" id="489" class="l">489: </a>            }
-<a href="#490" id="490" class="l">490: </a>        }
-<a href="#491" id="491" class="l">491: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
-<a href="#492" id="492" class="l">492: </a>    }
-<a href="#493" id="493" class="l">493: </a>
-<a href="#494" id="494" class="l">494: </a>}
-<a href="#495" id="495" class="l">495: </a></code></pre>
+<a href="#231" id="231" class="l">231: </a>                <span class="php-var">$predicate</span> = <span class="php-var">$this</span>-&gt;create_slice_predicate(<span class="php-var">$subcolumns</span>, <span class="php-keyword1">null</span>);
+<a href="#232" id="232" class="l">232: </a>                <span class="php-var">$deletion</span>-&gt;predicate = <span class="php-var">$predicate</span>;
+<a href="#233" id="233" class="l">233: </a>            }
+<a href="#234" id="234" class="l">234: </a>            <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_remove_multi(<span class="php-var">$key</span>, <span class="php-var">$deletion</span>, <span class="php-var">$consistency_level</span>);
+<a href="#235" id="235" class="l">235: </a>        }
+<a href="#236" id="236" class="l">236: </a>    }
+<a href="#237" id="237" class="l">237: </a>
+<a href="#238" id="238" class="l">238: </a>    <span class="php-comment">/**
+</span><a href="#239" id="239" class="l">239: </a><span class="php-comment">     * Remove a counter at the specified location.
+</span><a href="#240" id="240" class="l">240: </a><span class="php-comment">     *
+</span><a href="#241" id="241" class="l">241: </a><span class="php-comment">     * Note that counters have limited support for deletes: if you remove a
+</span><a href="#242" id="242" class="l">242: </a><span class="php-comment">     * counter, you must wait to issue any following update until the delete
+</span><a href="#243" id="243" class="l">243: </a><span class="php-comment">     * has reached all the nodes and all of them have been fully compacted.
+</span><a href="#244" id="244" class="l">244: </a><span class="php-comment">     *
+</span><a href="#245" id="245" class="l">245: </a><span class="php-comment">     * Available in Cassandra 0.8.0 and later.
+</span><a href="#246" id="246" class="l">246: </a><span class="php-comment">     *
+</span><a href="#247" id="247" class="l">247: </a><span class="php-comment">     * @param string $key the key for the row
+</span><a href="#248" id="248" class="l">248: </a><span class="php-comment">     * @param mixed $super_column the super column the counter is in
+</span><a href="#249" id="249" class="l">249: </a><span class="php-comment">     * @param mixed $column the column name of the counter; if left as null,
+</span><a href="#250" id="250" class="l">250: </a><span class="php-comment">     *                      the entire super column will be removed
+</span><a href="#251" id="251" class="l">251: </a><span class="php-comment">     * @param ConsistencyLevel $consistency_level affects the guaranteed
+</span><a href="#252" id="252" class="l">252: </a><span class="php-comment">     *        number of nodes that must respond before the operation returns
+</span><a href="#253" id="253" class="l">253: </a><span class="php-comment">     */</span>
+<a href="#254" id="254" class="l">254: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> remove_counter(<span class="php-var">$key</span>, <span class="php-var">$super_column</span>, <span class="php-var">$column</span>=<span class="php-keyword1">null</span>,
+<a href="#255" id="255" class="l">255: </a>                                   <span class="php-var">$consistency_level</span>=<span class="php-keyword1">null</span>) {
+<a href="#256" id="256" class="l">256: </a>        <span class="php-var">$cp</span> = <span class="php-keyword1">new</span> ColumnPath();
+<a href="#257" id="257" class="l">257: </a>        <span class="php-var">$packed_key</span> = <span class="php-var">$this</span>-&gt;pack_key(<span class="php-var">$key</span>);
+<a href="#258" id="258" class="l">258: </a>        <span class="php-var">$cp</span>-&gt;column_family = <span class="php-var">$this</span>-&gt;column_family;
+<a href="#259" id="259" class="l">259: </a>        <span class="php-var">$cp</span>-&gt;super_column = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$super_column</span>, <span class="php-keyword1">true</span>);
+<a href="#260" id="260" class="l">260: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$column</span> !== <span class="php-keyword1">null</span>)
+<a href="#261" id="261" class="l">261: </a>            <span class="php-var">$cp</span>-&gt;column = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$column</span>);
+<a href="#262" id="262" class="l">262: </a>        <span class="php-var">$this</span>-&gt;pool-&gt;call(<span class="php-quote">&quot;remove_counter&quot;</span>, <span class="php-var">$packed_key</span>, <span class="php-var">$cp</span>,
+<a href="#263" id="263" class="l">263: </a>            <span class="php-var">$this</span>-&gt;wcl(<span class="php-var">$consistency_level</span>));
+<a href="#264" id="264" class="l">264: </a>    }
+<a href="#265" id="265" class="l">265: </a>
+<a href="#266" id="266" class="l">266: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> dict_to_coscs(<span class="php-var">$data</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
+<a href="#267" id="267" class="l">267: </a>        <span class="php-var">$have_counters</span> = <span class="php-var">$this</span>-&gt;has_counters;
+<a href="#268" id="268" class="l">268: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#269" id="269" class="l">269: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$data</span> <span class="php-keyword1">as</span> <span class="php-var">$name</span> =&gt; <span class="php-var">$value</span>) {
+<a href="#270" id="270" class="l">270: </a>            <span class="php-var">$cosc</span> = <span class="php-keyword1">new</span> ColumnOrSuperColumn();
+<a href="#271" id="271" class="l">271: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$have_counters</span>) {
+<a href="#272" id="272" class="l">272: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> CounterSuperColumn();
+<a href="#273" id="273" class="l">273: </a>                <span class="php-var">$cosc</span>-&gt;counter_super_column = <span class="php-var">$sub</span>;
+<a href="#274" id="274" class="l">274: </a>            } <span class="php-keyword1">else</span> {
+<a href="#275" id="275" class="l">275: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> SuperColumn();
+<a href="#276" id="276" class="l">276: </a>                <span class="php-var">$cosc</span>-&gt;super_column = <span class="php-var">$sub</span>;
+<a href="#277" id="277" class="l">277: </a>            }
+<a href="#278" id="278" class="l">278: </a>            <span class="php-var">$sub</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$name</span>, <span class="php-keyword1">true</span>, self::NON_SLICE, <span class="php-keyword1">true</span>);
+<a href="#279" id="279" class="l">279: </a>            <span class="php-var">$sub</span>-&gt;columns = <span class="php-var">$this</span>-&gt;dict_to_columns(<span class="php-var">$value</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>);
+<a href="#280" id="280" class="l">280: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$cosc</span>;
+<a href="#281" id="281" class="l">281: </a>        }
+<a href="#282" id="282" class="l">282: </a>
+<a href="#283" id="283" class="l">283: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#284" id="284" class="l">284: </a>    }
+<a href="#285" id="285" class="l">285: </a>
+<a href="#286" id="286" class="l">286: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> array_to_coscs(<span class="php-var">$data</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
+<a href="#287" id="287" class="l">287: </a>        <span class="php-var">$have_counters</span> = <span class="php-var">$this</span>-&gt;has_counters;
+<a href="#288" id="288" class="l">288: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#289" id="289" class="l">289: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$data</span> <span class="php-keyword1">as</span> <span class="php-var">$supercol</span>) {
+<a href="#290" id="290" class="l">290: </a>            <span class="php-keyword1">list</span>(<span class="php-var">$name</span>, <span class="php-var">$columns</span>) = <span class="php-var">$supercol</span>;
+<a href="#291" id="291" class="l">291: </a>            <span class="php-var">$cosc</span> = <span class="php-keyword1">new</span> ColumnOrSuperColumn();
+<a href="#292" id="292" class="l">292: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$have_counters</span>) {
+<a href="#293" id="293" class="l">293: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> CounterSuperColumn();
+<a href="#294" id="294" class="l">294: </a>                <span class="php-var">$cosc</span>-&gt;counter_super_column = <span class="php-var">$sub</span>;
+<a href="#295" id="295" class="l">295: </a>            } <span class="php-keyword1">else</span> {
+<a href="#296" id="296" class="l">296: </a>                <span class="php-var">$sub</span> = <span class="php-keyword1">new</span> SuperColumn();
+<a href="#297" id="297" class="l">297: </a>                <span class="php-var">$cosc</span>-&gt;super_column = <span class="php-var">$sub</span>;
+<a href="#298" id="298" class="l">298: </a>            }
+<a href="#299" id="299" class="l">299: </a>            <span class="php-var">$sub</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(<span class="php-var">$name</span>, <span class="php-keyword1">true</span>, self::NON_SLICE, <span class="php-keyword1">false</span>);
+<a href="#300" id="300" class="l">300: </a>            <span class="php-var">$sub</span>-&gt;columns = <span class="php-var">$this</span>-&gt;array_to_columns(<span class="php-var">$columns</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>);
+<a href="#301" id="301" class="l">301: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$cosc</span>;
+<a href="#302" id="302" class="l">302: </a>        }
+<a href="#303" id="303" class="l">303: </a>
+<a href="#304" id="304" class="l">304: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#305" id="305" class="l">305: </a>    }
+<a href="#306" id="306" class="l">306: </a>
+<a href="#307" id="307" class="l">307: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> dict_to_columns(<span class="php-var">$array</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
+<a href="#308" id="308" class="l">308: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#309" id="309" class="l">309: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$array</span> <span class="php-keyword1">as</span> <span class="php-var">$name</span> =&gt; <span class="php-var">$value</span>) {
+<a href="#310" id="310" class="l">310: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;has_counters) {
+<a href="#311" id="311" class="l">311: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> CounterColumn();
+<a href="#312" id="312" class="l">312: </a>            } <span class="php-keyword1">else</span> {
+<a href="#313" id="313" class="l">313: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> Column();
+<a href="#314" id="314" class="l">314: </a>                <span class="php-var">$column</span>-&gt;timestamp = <span class="php-var">$timestamp</span>;
+<a href="#315" id="315" class="l">315: </a>                <span class="php-var">$column</span>-&gt;ttl = <span class="php-var">$ttl</span>;
+<a href="#316" id="316" class="l">316: </a>            }
+<a href="#317" id="317" class="l">317: </a>            <span class="php-var">$column</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(
+<a href="#318" id="318" class="l">318: </a>                <span class="php-var">$name</span>, <span class="php-keyword1">false</span>, self::NON_SLICE, <span class="php-keyword1">true</span>);
+<a href="#319" id="319" class="l">319: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$column</span>-&gt;name);
+<a href="#320" id="320" class="l">320: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$column</span>;
+<a href="#321" id="321" class="l">321: </a>        }
+<a href="#322" id="322" class="l">322: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#323" id="323" class="l">323: </a>    }
+<a href="#324" id="324" class="l">324: </a>
+<a href="#325" id="325" class="l">325: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> array_to_columns(<span class="php-var">$array</span>, <span class="php-var">$timestamp</span>, <span class="php-var">$ttl</span>) {
+<a href="#326" id="326" class="l">326: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#327" id="327" class="l">327: </a>        <span class="php-keyword1">foreach</span>(<span class="php-var">$array</span> <span class="php-keyword1">as</span> <span class="php-var">$col</span>) {
+<a href="#328" id="328" class="l">328: </a>            <span class="php-keyword1">list</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>) = <span class="php-var">$col</span>;
+<a href="#329" id="329" class="l">329: </a>            <span class="php-keyword1">if</span>(<span class="php-var">$this</span>-&gt;has_counters) {
+<a href="#330" id="330" class="l">330: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> CounterColumn();
+<a href="#331" id="331" class="l">331: </a>            } <span class="php-keyword1">else</span> {
+<a href="#332" id="332" class="l">332: </a>                <span class="php-var">$column</span> = <span class="php-keyword1">new</span> Column();
+<a href="#333" id="333" class="l">333: </a>                <span class="php-var">$column</span>-&gt;timestamp = <span class="php-var">$timestamp</span>;
+<a href="#334" id="334" class="l">334: </a>                <span class="php-var">$column</span>-&gt;ttl = <span class="php-var">$ttl</span>;
+<a href="#335" id="335" class="l">335: </a>            }
+<a href="#336" id="336" class="l">336: </a>            <span class="php-var">$column</span>-&gt;name = <span class="php-var">$this</span>-&gt;pack_name(
+<a href="#337" id="337" class="l">337: </a>                <span class="php-var">$name</span>, <span class="php-keyword1">false</span>, self::NON_SLICE, <span class="php-keyword1">false</span>);
+<a href="#338" id="338" class="l">338: </a>            <span class="php-var">$column</span>-&gt;value = <span class="php-var">$this</span>-&gt;pack_value(<span class="php-var">$value</span>, <span class="php-var">$column</span>-&gt;name);
+<a href="#339" id="339" class="l">339: </a>            <span class="php-var">$ret</span>[] = <span class="php-var">$column</span>;
+<a href="#340" id="340" class="l">340: </a>        }
+<a href="#341" id="341" class="l">341: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#342" id="342" class="l">342: </a>    }
+<a href="#343" id="343" class="l">343: </a>
+<a href="#344" id="344" class="l">344: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> coscs_to_dict(<span class="php-var">$array_of_coscs</span>) {
+<a href="#345" id="345" class="l">345: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#346" id="346" class="l">346: </a>        <span class="php-var">$first</span> = <span class="php-var">$array_of_coscs</span>[<span class="php-num">0</span>];
+<a href="#347" id="347" class="l">347: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
+<a href="#348" id="348" class="l">348: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#349" id="349" class="l">349: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;column-&gt;name, <span class="php-keyword1">false</span>);
+<a href="#350" id="350" class="l">350: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$cosc</span>-&gt;column-&gt;value, <span class="php-var">$cosc</span>-&gt;column-&gt;name);
+<a href="#351" id="351" class="l">351: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$value</span>;
+<a href="#352" id="352" class="l">352: </a>            }
+<a href="#353" id="353" class="l">353: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
+<a href="#354" id="354" class="l">354: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#355" id="355" class="l">355: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;super_column-&gt;name, <span class="php-keyword1">true</span>);
+<a href="#356" id="356" class="l">356: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;super_column-&gt;columns;
+<a href="#357" id="357" class="l">357: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$this</span>-&gt;columns_to_dict(<span class="php-var">$columns</span>, <span class="php-keyword1">false</span>);
+<a href="#358" id="358" class="l">358: </a>            }
+<a href="#359" id="359" class="l">359: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span> (<span class="php-var">$first</span>-&gt;counter_column) {
+<a href="#360" id="360" class="l">360: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#361" id="361" class="l">361: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_column-&gt;name, <span class="php-keyword1">false</span>);
+<a href="#362" id="362" class="l">362: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$cosc</span>-&gt;counter_column-&gt;value;
+<a href="#363" id="363" class="l">363: </a>            }
+<a href="#364" id="364" class="l">364: </a>        } <span class="php-keyword1">else</span> { <span class="php-comment">// counter_super_column</span>
+<a href="#365" id="365" class="l">365: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#366" id="366" class="l">366: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;name, <span class="php-keyword1">true</span>);
+<a href="#367" id="367" class="l">367: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;columns;
+<a href="#368" id="368" class="l">368: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$this</span>-&gt;columns_to_dict(<span class="php-var">$columns</span>, <span class="php-keyword1">true</span>);
+<a href="#369" id="369" class="l">369: </a>            }
+<a href="#370" id="370" class="l">370: </a>        }
+<a href="#371" id="371" class="l">371: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#372" id="372" class="l">372: </a>    }
+<a href="#373" id="373" class="l">373: </a>
+<a href="#374" id="374" class="l">374: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> coscs_to_array(<span class="php-var">$array_of_coscs</span>) {
+<a href="#375" id="375" class="l">375: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#376" id="376" class="l">376: </a>        <span class="php-var">$first</span> = <span class="php-var">$array_of_coscs</span>[<span class="php-num">0</span>];
+<a href="#377" id="377" class="l">377: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
+<a href="#378" id="378" class="l">378: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#379" id="379" class="l">379: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;column-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#380" id="380" class="l">380: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$cosc</span>-&gt;column-&gt;value, <span class="php-var">$cosc</span>-&gt;column-&gt;name);
+<a href="#381" id="381" class="l">381: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>);
+<a href="#382" id="382" class="l">382: </a>            }
+<a href="#383" id="383" class="l">383: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
+<a href="#384" id="384" class="l">384: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#385" id="385" class="l">385: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;super_column-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
+<a href="#386" id="386" class="l">386: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;super_column-&gt;columns;
+<a href="#387" id="387" class="l">387: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$this</span>-&gt;columns_to_array(<span class="php-var">$columns</span>, <span class="php-keyword1">false</span>));
+<a href="#388" id="388" class="l">388: </a>            }
+<a href="#389" id="389" class="l">389: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span> (<span class="php-var">$first</span>-&gt;counter_column) {
+<a href="#390" id="390" class="l">390: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#391" id="391" class="l">391: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_column-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#392" id="392" class="l">392: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$cosc</span>-&gt;counter_column-&gt;value);
+<a href="#393" id="393" class="l">393: </a>            }
+<a href="#394" id="394" class="l">394: </a>        } <span class="php-keyword1">else</span> { <span class="php-comment">// counter_super_column</span>
+<a href="#395" id="395" class="l">395: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#396" id="396" class="l">396: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
+<a href="#397" id="397" class="l">397: </a>                <span class="php-var">$columns</span> = <span class="php-var">$cosc</span>-&gt;counter_super_column-&gt;columns;
+<a href="#398" id="398" class="l">398: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$this</span>-&gt;columns_to_array(<span class="php-var">$columns</span>, <span class="php-keyword1">true</span>));
+<a href="#399" id="399" class="l">399: </a>            }
+<a href="#400" id="400" class="l">400: </a>        }
+<a href="#401" id="401" class="l">401: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#402" id="402" class="l">402: </a>    }
+<a href="#403" id="403" class="l">403: </a>
+<a href="#404" id="404" class="l">404: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> unpack_coscs_attrs(<span class="php-var">$array_of_coscs</span>) {
+<a href="#405" id="405" class="l">405: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#406" id="406" class="l">406: </a>        <span class="php-var">$first</span> = <span class="php-var">$array_of_coscs</span>[<span class="php-num">0</span>];
+<a href="#407" id="407" class="l">407: </a>        <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;column) { <span class="php-comment">// normal columns</span>
+<a href="#408" id="408" class="l">408: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#409" id="409" class="l">409: </a>                <span class="php-var">$col</span> = <span class="php-var">$cosc</span>-&gt;column;
+<a href="#410" id="410" class="l">410: </a>                <span class="php-var">$col</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$col</span>-&gt;value, <span class="php-var">$col</span>-&gt;name);
+<a href="#411" id="411" class="l">411: </a>                <span class="php-var">$col</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$col</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#412" id="412" class="l">412: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$col</span>;
+<a href="#413" id="413" class="l">413: </a>            }
+<a href="#414" id="414" class="l">414: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span>(<span class="php-var">$first</span>-&gt;super_column) { <span class="php-comment">// super columns</span>
+<a href="#415" id="415" class="l">415: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#416" id="416" class="l">416: </a>                <span class="php-var">$supercol</span> = <span class="php-var">$cosc</span>-&gt;super_column;
+<a href="#417" id="417" class="l">417: </a>                <span class="php-var">$supercol</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(
+<a href="#418" id="418" class="l">418: </a>                        <span class="php-var">$supercol</span>-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
+<a href="#419" id="419" class="l">419: </a>                <span class="php-var">$supercol</span>-&gt;columns = <span class="php-var">$this</span>-&gt;unpack_subcolumn_attrs(
+<a href="#420" id="420" class="l">420: </a>                        <span class="php-var">$supercol</span>-&gt;columns, <span class="php-keyword1">false</span>);
+<a href="#421" id="421" class="l">421: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$supercol</span>;
+<a href="#422" id="422" class="l">422: </a>            }
+<a href="#423" id="423" class="l">423: </a>        } <span class="php-keyword1">else</span> <span class="php-keyword1">if</span> (<span class="php-var">$first</span>-&gt;counter_column) {
+<a href="#424" id="424" class="l">424: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#425" id="425" class="l">425: </a>                <span class="php-var">$col</span> = <span class="php-var">$cosc</span>-&gt;counter_column;
+<a href="#426" id="426" class="l">426: </a>                <span class="php-var">$col</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$col</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#427" id="427" class="l">427: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$col</span>;
+<a href="#428" id="428" class="l">428: </a>            }
+<a href="#429" id="429" class="l">429: </a>        } <span class="php-keyword1">else</span> { <span class="php-comment">// counter_super_column</span>
+<a href="#430" id="430" class="l">430: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$array_of_coscs</span> <span class="php-keyword1">as</span> <span class="php-var">$cosc</span>) {
+<a href="#431" id="431" class="l">431: </a>                <span class="php-var">$supercol</span> = <span class="php-var">$cosc</span>-&gt;super_column;
+<a href="#432" id="432" class="l">432: </a>                <span class="php-var">$supercol</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(
+<a href="#433" id="433" class="l">433: </a>                        <span class="php-var">$supercol</span>-&gt;name, <span class="php-keyword1">true</span>, <span class="php-keyword1">false</span>);
+<a href="#434" id="434" class="l">434: </a>                <span class="php-var">$supercol</span>-&gt;columns = <span class="php-var">$this</span>-&gt;unpack_subcolumn_attrs(
+<a href="#435" id="435" class="l">435: </a>                        <span class="php-var">$supercol</span>-&gt;columns, <span class="php-keyword1">true</span>);
+<a href="#436" id="436" class="l">436: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$supercol</span>;
+<a href="#437" id="437" class="l">437: </a>            }
+<a href="#438" id="438" class="l">438: </a>        }
+<a href="#439" id="439" class="l">439: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#440" id="440" class="l">440: </a>    }
+<a href="#441" id="441" class="l">441: </a>
+<a href="#442" id="442" class="l">442: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> unpack_subcolumn_attrs(<span class="php-var">$columns</span>, <span class="php-var">$have_counters</span>) {
+<a href="#443" id="443" class="l">443: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#444" id="444" class="l">444: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
+<a href="#445" id="445" class="l">445: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
+<a href="#446" id="446" class="l">446: </a>                <span class="php-var">$c</span>-&gt;value = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#447" id="447" class="l">447: </a>                <span class="php-var">$c</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#448" id="448" class="l">448: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$c</span>;
+<a href="#449" id="449" class="l">449: </a>            }
+<a href="#450" id="450" class="l">450: </a>        } <span class="php-keyword1">else</span> {
+<a href="#451" id="451" class="l">451: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
+<a href="#452" id="452" class="l">452: </a>                <span class="php-var">$c</span>-&gt;name = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#453" id="453" class="l">453: </a>                <span class="php-var">$ret</span>[] = <span class="php-var">$c</span>;
+<a href="#454" id="454" class="l">454: </a>            }
+<a href="#455" id="455" class="l">455: </a>        }
+<a href="#456" id="456" class="l">456: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#457" id="457" class="l">457: </a>    }
+<a href="#458" id="458" class="l">458: </a>
+<a href="#459" id="459" class="l">459: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> columns_to_dict(<span class="php-var">$columns</span>, <span class="php-var">$have_counters</span>) {
+<a href="#460" id="460" class="l">460: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#461" id="461" class="l">461: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
+<a href="#462" id="462" class="l">462: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
+<a href="#463" id="463" class="l">463: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#464" id="464" class="l">464: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>);
+<a href="#465" id="465" class="l">465: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$value</span>;
+<a href="#466" id="466" class="l">466: </a>            }
+<a href="#467" id="467" class="l">467: </a>        } <span class="php-keyword1">else</span> {
+<a href="#468" id="468" class="l">468: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
+<a href="#469" id="469" class="l">469: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>);
+<a href="#470" id="470" class="l">470: </a>                <span class="php-var">$ret</span>[<span class="php-var">$name</span>] = <span class="php-var">$c</span>-&gt;value;
+<a href="#471" id="471" class="l">471: </a>            }
+<a href="#472" id="472" class="l">472: </a>        }
+<a href="#473" id="473" class="l">473: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#474" id="474" class="l">474: </a>    }
+<a href="#475" id="475" class="l">475: </a>
+<a href="#476" id="476" class="l">476: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> columns_to_array(<span class="php-var">$columns</span>, <span class="php-var">$have_counters</span>) {
+<a href="#477" id="477" class="l">477: </a>        <span class="php-var">$ret</span> = <span class="php-keyword1">array</span>();
+<a href="#478" id="478" class="l">478: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$have_counters</span>) {
+<a href="#479" id="479" class="l">479: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
+<a href="#480" id="480" class="l">480: </a>                <span class="php-var">$value</span> = <span class="php-var">$this</span>-&gt;unpack_value(<span class="php-var">$c</span>-&gt;value, <span class="php-var">$c</span>-&gt;name);
+<a href="#481" id="481" class="l">481: </a>                <span class="php-var">$name</span>  = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#482" id="482" class="l">482: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$value</span>);
+<a href="#483" id="483" class="l">483: </a>            }
+<a href="#484" id="484" class="l">484: </a>        } <span class="php-keyword1">else</span> {
+<a href="#485" id="485" class="l">485: </a>            <span class="php-keyword1">foreach</span>(<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$c</span>) {
+<a href="#486" id="486" class="l">486: </a>                <span class="php-var">$name</span> = <span class="php-var">$this</span>-&gt;unpack_name(<span class="php-var">$c</span>-&gt;name, <span class="php-keyword1">false</span>, <span class="php-keyword1">false</span>);
+<a href="#487" id="487" class="l">487: </a>                <span class="php-var">$ret</span>[] = <span class="php-keyword1">array</span>(<span class="php-var">$name</span>, <span class="php-var">$c</span>-&gt;value);
+<a href="#488" id="488" class="l">488: </a>            }
+<a href="#489" id="489" class="l">489: </a>        }
+<a href="#490" id="490" class="l">490: </a>        <span class="php-keyword1">return</span> <span class="php-var">$ret</span>;
+<a href="#491" id="491" class="l">491: </a>    }
+<a href="#492" id="492" class="l">492: </a>
+<a href="#493" id="493" class="l">493: </a>}
+<a href="#494" id="494" class="l">494: </a></code></pre>
 
 	<div id="footer">
 		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>

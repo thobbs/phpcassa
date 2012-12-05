@@ -7,7 +7,7 @@
 	<title>Class phpcassa\Batch\CfMutator | phpcassa</title>
 
 	<script type="text/javascript" src="resources/combined.js?144019575"></script>
-	<script type="text/javascript" src="elementlist.js?3836923824"></script>
+	<script type="text/javascript" src="elementlist.js?4162256369"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
 
 </head>
@@ -56,6 +56,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-phpcassa.Batch.AbstractMutator.html">AbstractMutator</a></li>
 				<li class="active"><a href="class-phpcassa.Batch.CfMutator.html">CfMutator</a></li>
 				<li><a href="class-phpcassa.Batch.Mutator.html">Mutator</a></li>
 			</ul>
@@ -112,7 +113,7 @@ operations on a single column family.</p>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-			<a href="class-phpcassa.Batch.Mutator.html"><span>phpcassa\Batch\Mutator</span></a>
+			<a href="class-phpcassa.Batch.AbstractMutator.html"><span>phpcassa\Batch\AbstractMutator</span></a>
 			
 			
 			
@@ -155,7 +156,7 @@ operations on a single column family.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-phpcassa.Batch.CfMutator.html#16" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.ColumnFamily.html">phpcassa\ColumnFamily</a></code> <var>$column_family</var></span>, <span>phpcassa\ConsistencyLevel <var>$write_consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.CfMutator.html#17" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.ColumnFamily.html">phpcassa\ColumnFamily</a></code> <var>$column_family</var></span>, <span>phpcassa\ConsistencyLevel <var>$write_consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -196,7 +197,7 @@ with a default of ConsistencyLevel::ONE</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_insert">#</a>
-		<code><a href="source-class-phpcassa.Batch.CfMutator.html#35" title="Go to source code">insert</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.CfMutator.html#37" title="Go to source code">insert</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -241,7 +242,7 @@ send() is called)</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><a href="source-class-phpcassa.Batch.CfMutator.html#49" title="Go to source code">remove</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$super_column</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.CfMutator.html#51" title="Go to source code">remove</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$super_column</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -278,10 +279,10 @@ send() is called)</dd>
 	</table>
 
 	<table class="summary inherited">
-	<caption>Methods inherited from <a href="class-phpcassa.Batch.Mutator.html#methods">phpcassa\Batch\Mutator</a></caption>
+	<caption>Methods inherited from <a href="class-phpcassa.Batch.AbstractMutator.html#methods">phpcassa\Batch\AbstractMutator</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-phpcassa.Batch.Mutator.html#_send">send()</a>
+			<a href="class-phpcassa.Batch.AbstractMutator.html#_send">send()</a>
 		</code></td>
 	</tr>
 	</table>
