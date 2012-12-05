@@ -47,8 +47,6 @@ class RangeTokenColumnFamilyIterator extends ColumnFamilyIterator {
         }
 
         $this->expected_page_size = $buff_sz;
-        // Moved below.
-        //$this->buffer_number++;
 
         $key_range = new KeyRange();
         if (is_string($this->next_start_key) && $this->column_family->key_type instanceof Serialized) {
@@ -56,10 +54,6 @@ class RangeTokenColumnFamilyIterator extends ColumnFamilyIterator {
         } else {
             $handle_serialize = false;
         }
-
-
-
-
 
         if ($this->buffer_number == 0){
             // First time use start token
@@ -72,15 +66,7 @@ class RangeTokenColumnFamilyIterator extends ColumnFamilyIterator {
         // In both cases end is the final token.
         $key_range->end_token = $this->token_finish;
 
-        //print_r($key_range);
-
-        // Moved from top.
         $this->buffer_number++;
-
-
-
-
-
         $key_range->count = $buff_sz;
 
         $resp = $this->column_family->pool->call("get_range_slices", $this->column_parent, $this->predicate,
