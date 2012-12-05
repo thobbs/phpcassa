@@ -12,6 +12,7 @@ use phpcassa\Index\IndexClause;
 use cassandra\ConsistencyLevel;
 use cassandra\NotFoundException;
 
+
 class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
 
     private static $KEYS = array('key1', 'key2', 'key3');
@@ -118,6 +119,46 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($rows[self::$KEYS[0]], $columns1);
         $this->assertEquals($rows[self::$KEYS[1]], $columns2);
         $this->assertNotContains(self::$KEYS[2], $rows);
+    }
+    
+    public function test_batch_insert_ttl() {
+        
+        //Mandatory for ttl in response
+        $this->cf->return_format = ColumnFamily::OBJECT_FORMAT;
+        
+        // 1st test: $ttl is an Integer
+        $columns1 = array('1' => 'val1', '2' => 'val2');
+        $columns2 = array('3' => 'val1', '4' => 'val2');
+        $rows = array(self::$KEYS[0] => $columns1,
+        self::$KEYS[1] => $columns2);
+        $this->cf->batch_insert($rows,null,5);
+        $rows = $this->cf->multiget(self::$KEYS);
+        $this->assertCount(2, $rows);
+        
+        foreach ($rows as $objectRow){
+            $key = $objectRow[0];
+            foreach ($objectRow[1] as $column){
+                $this->assertEquals($column->ttl,5);
+            }
+        }
+        
+        //2nd test: $ttl is an Array
+        $rows = array(self::$KEYS[0] => $columns1,
+        self::$KEYS[1] => $columns2);
+        $ttlArray = array(self::$KEYS[0] => 10, self::$KEYS[1] => 15);
+        $this->cf->batch_insert($rows,NULL,$ttlArray);
+        $rows = $this->cf->multiget(self::$KEYS);
+        $this->assertCount(2, $rows);
+        
+        foreach ($rows as $objectRow){
+            $key = $objectRow[0];
+            foreach ($objectRow[1] as $column){
+                if($key == self::$KEYS[0])
+                    $this->assertEquals($column->ttl,10);
+                if($key == self::$KEYS[1])
+                    $this->assertEquals($column->ttl,15);
+            }
+        }
     }
 
     public function test_insert_get_count() {
