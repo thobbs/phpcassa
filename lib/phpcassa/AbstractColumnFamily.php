@@ -704,19 +704,36 @@ abstract class AbstractColumnFamily {
         if ($timestamp === null)
             $timestamp = Clock::get_time();
 
+        $arrayTTL = false;
+        if(is_array($ttl)){
+            $arrayTTL = true;
+            if(count($ttl) !== count($rows))
+                throw new UnexpectedValueException("ttl array size must match rows array size");
+        }
+        
         $cfmap = array();
         if ($this->insert_format == self::DICTIONARY_FORMAT) {
             foreach($rows as $key => $columns) {
                 $packed_key = $this->pack_key($key, $handle_serialize=true);
+                if($arrayTTL){
+                    $ttlRow = $ttl[$packed_key];
+                } else {
+                    $ttlRow = $ttl;
+                }
                 $cfmap[$packed_key][$this->column_family] =
-                    $this->make_mutation($columns, $timestamp, $ttl);
+                    $this->make_mutation($columns, $timestamp, $ttlRow);
             }
         } else if ($this->insert_format == self::ARRAY_FORMAT) {
             foreach($rows as $row) {
                 list($key, $columns) = $row;
                 $packed_key = $this->pack_key($key);
+                if($arrayTTL){
+                    $ttlRow = $ttl[$packed_key];
+                } else {
+                    $ttlRow = $ttl;
+                }
                 $cfmap[$packed_key][$this->column_family] =
-                    $this->make_mutation($columns, $timestamp, $ttl);
+                    $this->make_mutation($columns, $timestamp, $ttlRow);
             }
         } else {
             throw new UnexpectedValueException("Bad insert_format selected");
