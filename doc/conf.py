@@ -4,7 +4,8 @@
 #
 # This file is execfile()d with the current directory set to its containing dir.
 
-import sys, os
+import sys
+import os
 sys.path.append(os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
@@ -33,7 +34,7 @@ project = 'phpcassa'
 # The short X.Y version.
 version = '1.0'
 # The full version, including alpha/beta/rc tags.
-release = '1.0.a.5'
+release = '1.0.a.6'
 
 # List of documents that shouldn't be included in the build.
 unused_docs = []

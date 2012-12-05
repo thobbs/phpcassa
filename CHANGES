@@ -1,6 +1,33 @@
 Changelog
 =========
 
+Changes in 1.0.a.6
+------------------
+This release adds a couple of minor features and primarily
+fixes bugs related to estrict warnings and creating and altering
+keyspaces.  It should be entirely compatible with the previous
+release of phpcassa.
+
+Features
+^^^^^^^^
+- Accept a map of key => ttl for the $ttl parameter in
+  ColumnFamily.batch_insert()
+- Add ColumnFamily.get_range_by_token()
+
+Bugfixes
+^^^^^^^^
+- Create deletion predicate correctly in remove_super_column()
+- Always apply all supplied attributes to KsDefs when creating
+  keyspaces through SystemManager()
+- Fix estrict warnings related to subclassing
+- Fix alter_keyspace(), which was failing to clear cf_defs from
+  the KsDef
+
+Miscellaneous
+^^^^^^^^^^^^^
+- Add composer.json file
+- Integration with Travis CI
+
 Changes in 1.0.a.5
 ------------------
 This is a bugfix release, with yet another important fix related to packing.
