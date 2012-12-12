@@ -4,7 +4,7 @@
     "keywords": ["Cassandra"],
     "type": "library",
     "homepage": "https://github.com/thobbs/phpcassa",
-    "license": "Apache2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Tyler Hobbs",
