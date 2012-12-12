@@ -430,7 +430,7 @@ abstract class AbstractColumnFamily {
 
         $cp = $this->create_column_parent();
         $slice = $this->create_slice_predicate(
-            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
+            $column_names, $column_slice, null, ColumnSlice::MAX_COUNT);
         return $this->_get_count($key, $cp, $slice, $consistency_level);
     }
 
@@ -457,7 +457,7 @@ abstract class AbstractColumnFamily {
 
         $cp = $this->create_column_parent();
         $slice = $this->create_slice_predicate(
-            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
+            $column_names, $column_slice, null, ColumnSlice::MAX_COUNT);
 
         return $this->_multiget_count($keys, $cp, $slice, $consistency_level);
     }
@@ -854,15 +854,20 @@ abstract class AbstractColumnFamily {
             return $write_consistency_level;
     }
 
-    protected function create_slice_predicate($column_names,
+    protected function create_slice_predicate(
+        $column_names,
         $column_slice,
-        $default_count=ColumnSlice::DEFAULT_COLUMN_COUNT) {
+        $is_super=NULL,
+        $default_count=ColumnSlice::DEFAULT_COLUMN_COUNT)
+    {
+        if ($is_super === null)
+            $is_super = $this->is_super;
 
         $predicate = new SlicePredicate();
         if ($column_names !== null) {
             $packed_cols = array();
             foreach($column_names as $col)
-                $packed_cols[] = $this->pack_name($col, $this->is_super);
+                $packed_cols[] = $this->pack_name($col, $is_super);
             $predicate->column_names = $packed_cols;
         } else {
             if ($column_slice !== null) {
@@ -876,7 +881,7 @@ abstract class AbstractColumnFamily {
                         $slice_end = self::SLICE_START;
 
                     $slice_range->start = $this->pack_name(
-                        $column_start, $this->is_super, $slice_end);
+                        $column_start, $is_super, $slice_end);
                 } else {
                     $slice_range->start = '';
                 }
@@ -889,7 +894,7 @@ abstract class AbstractColumnFamily {
                         $slice_end = self::SLICE_FINISH;
 
                     $slice_range->finish = $this->pack_name(
-                        $column_finish, $this->is_super, $slice_end);
+                        $column_finish, $is_super, $slice_end);
                 } else {
                     $slice_range->finish = '';
                 }

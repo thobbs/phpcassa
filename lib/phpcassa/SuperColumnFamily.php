@@ -44,8 +44,7 @@ class SuperColumnFamily extends AbstractColumnFamily {
                                      $consistency_level=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
-
+        $slice = $this->create_slice_predicate($column_names, $column_slice, false);
         return $this->_get($key, $cp, $slice, $consistency_level);
     }
 
@@ -75,7 +74,7 @@ class SuperColumnFamily extends AbstractColumnFamily {
                                           $buffer_size=16)  {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        $slice = $this->create_slice_predicate($column_names, $column_slice, false);
 
         return $this->_multiget($keys, $cp, $slice, $consistency_level, $buffer_size);
     }
@@ -100,7 +99,7 @@ class SuperColumnFamily extends AbstractColumnFamily {
 
         $cp = $this->create_column_parent($super_column);
         $slice = $this->create_slice_predicate(
-            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
+            $column_names, $column_slice, false, ColumnSlice::MAX_COUNT);
 
         return $this->_get_count($key, $cp, $slice, $consistency_level);
     }
@@ -126,7 +125,7 @@ class SuperColumnFamily extends AbstractColumnFamily {
 
         $cp = $this->create_column_parent($super_column);
         $slice = $this->create_slice_predicate(
-            $column_names, $column_slice, ColumnSlice::MAX_COUNT);
+            $column_names, $column_slice, false, ColumnSlice::MAX_COUNT);
 
         return $this->_multiget_count($keys, $cp, $slice, $consistency_level);
     }
@@ -163,7 +162,7 @@ class SuperColumnFamily extends AbstractColumnFamily {
                                            $buffer_size=null) {
 
         $cp = $this->create_column_parent($super_column);
-        $slice = $this->create_slice_predicate($column_names, $column_slice);
+        $slice = $this->create_slice_predicate($column_names, $column_slice, false);
 
         return $this->_get_range($key_start, $key_finish, $row_count,
             $cp, $slice, $consistency_level, $buffer_size);
@@ -228,7 +227,7 @@ class SuperColumnFamily extends AbstractColumnFamily {
             $deletion = new Deletion();
             $deletion->super_column = $this->pack_name($super_column, true);
             if ($subcolumns !== null) {
-                $predicate = $this->create_slice_predicate($subcolumns, null);
+                $predicate = $this->create_slice_predicate($subcolumns, null, false);
                 $deletion->predicate = $predicate;
             }
             return $this->_remove_multi($key, $deletion, $consistency_level);
