@@ -87,7 +87,8 @@ class ColumnFamilyIterator implements \Iterator {
         {
             # Save this key in case we run off the end
             if ($this->array_format) {
-                $this->next_start_key = current($this->current_buffer)[0];
+                $cur = current($this->current_buffer);
+                $this->next_start_key = $cur[0];
             } else {
                 $this->next_start_key = key($this->current_buffer);
             }
