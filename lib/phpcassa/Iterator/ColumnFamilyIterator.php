@@ -1,6 +1,8 @@
 <?php
 namespace phpcassa\Iterator;
 
+use phpcassa\ColumnFamily;
+
 /**
  * @package phpcassa/Iterator
  */
@@ -33,6 +35,7 @@ class ColumnFamilyIterator implements \Iterator {
         $this->column_parent = $column_parent;
         $this->predicate = $predicate;
         $this->read_consistency_level = $read_consistency_level;
+        $this->array_format = $column_family->return_format == ColumnFamily::ARRAY_FORMAT;
 
         if ($this->row_count !== null)
             $this->buffer_size = min($this->row_count, $buffer_size);
@@ -83,7 +86,11 @@ class ColumnFamilyIterator implements \Iterator {
         if ($this->current_buffer != null)
         {
             # Save this key in case we run off the end
-            $this->next_start_key = key($this->current_buffer);
+            if ($this->array_format) {
+                $this->next_start_key = current($this->current_buffer)[0];
+            } else {
+                $this->next_start_key = key($this->current_buffer);
+            }
             next($this->current_buffer);
 
             if (count(current($this->current_buffer)) == 0)

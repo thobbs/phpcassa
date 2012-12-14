@@ -29,12 +29,20 @@ class AutopackKeysTest extends AutopackBase {
         );
         $sys->create_column_family(self::$KS, 'UUIDKeys', $cfattrs);
         $sys->create_index(self::$KS, 'UUIDKeys', 'subcol', DataType::LONG_TYPE);
+
+        $cfattrs = array(
+            "column_type" => "Standard",
+            "key_validation_class" => "CompositeType(IntegerType, IntegerType)"
+        );
+        $sys->create_column_family(self::$KS, 'CompositeKeys', $cfattrs);
+
     }
 
     public function setUp() {
         $this->client = new ConnectionPool(self::$KS);
         $this->cf = new ColumnFamily($this->client, 'LongKeys');
         $this->uuid_cf = new ColumnFamily($this->client, 'UUIDKeys');
+        $this->composite_cf = new ColumnFamily($this->client, 'CompositeKeys');
     }
 
     public function tearDown() {
@@ -153,6 +161,33 @@ class AutopackKeysTest extends AutopackBase {
         $this->assertEquals($expected, $res);
     }
 
+    public function test_get_range_composite_key() {
+        $this->composite_cf->insert_format = ColumnFamily::ARRAY_FORMAT;
+        $this->composite_cf->return_format = ColumnFamily::ARRAY_FORMAT;
+
+        // insert 100 rows
+        $cols = array("col" => "val");
+        $rows = array();
+        for ($i = 0; $i < 100; $i++) {
+            $key = array($i, $i % 10);
+            $rows[] = array($key, $cols);
+        }
+        $this->composite_cf->batch_insert($rows);
+
+        $this->composite_cf->buffer_size = 10;
+        $rowcount = 0;
+        $rows = $this->composite_cf->get_range("", "", 2147483647);
+        foreach ($rows as $row) {
+            $key = $row[0];
+            $rowcount++;
+            if ($rowcount > 110) {
+                throw new Exception("avoiding an infinite loop, this should " .
+                    "have stopped by now");
+            }
+        }
+        $this->assertEquals(100, $rowcount);
+    }
+
     public function test_get_indexed_slices() {
         $this->require_opp();
         $this->cf->truncate();
@@ -216,5 +251,4 @@ class AutopackKeysTest extends AutopackBase {
         $res = iterator_to_array($this->uuid_cf->get_indexed_slices($clause));
         $this->assertEquals(array(serialize($uuid1) => array("subcol" => 0)), $res);
     }
-
 }
