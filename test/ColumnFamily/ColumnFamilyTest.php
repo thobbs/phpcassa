@@ -75,6 +75,35 @@ class ColumnFamilyTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($this->cf->get(self::$KEYS[0]), array('col' => 'val'));
     }
 
+    public function test_insert_get_ttl() {
+
+        //Mandatory for ttl in response
+        $this->cf->return_format = ColumnFamily::OBJECT_FORMAT;
+
+        //Data
+        $columns = array('col1' => 'val1',
+                         'col2' => 'val2',
+                         'col3' => 'val3');
+
+        // 1st test: $ttl is an Int
+        $ttl = 7;
+        $this->cf->insert(self::$KEYS[0], $columns,null,$ttl);
+        $row = $this->cf->get(self::$KEYS[0]);
+        foreach($row as $column){
+            $this->assertEquals($column->ttl,7);
+        }
+        
+        //2nd test: $ttl is an array
+        $ttl = array('col1' => 10,
+                    'col3' => 12);
+
+        $this->cf->insert(self::$KEYS[0], $columns,null,$ttl);
+        $row = $this->cf->get(self::$KEYS[0]);
+        $this->assertEquals($row[0]->ttl,10);
+        $this->assertEquals($row[1]->ttl,NULL);
+        $this->assertEquals($row[2]->ttl,12);
+    }
+
     public function test_insert_multiget() {
         $columns1 = array('1' => 'val1', '2' => 'val2');
         $columns2 = array('3' => 'val1', '4' => 'val2');
