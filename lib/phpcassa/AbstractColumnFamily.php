@@ -704,22 +704,11 @@ abstract class AbstractColumnFamily {
         if ($timestamp === null)
             $timestamp = Clock::get_time();
 
-        $arrayTTL = false;
-        if(is_array($ttl)){
-            $arrayTTL = true;
-            if(count($ttl) !== count($rows))
-                throw new UnexpectedValueException("ttl array size must match rows array size");
-        }
-
         $cfmap = array();
         if ($this->insert_format == self::DICTIONARY_FORMAT) {
             foreach($rows as $key => $columns) {
                 $packed_key = $this->pack_key($key, $handle_serialize=true);
-                if($arrayTTL){
-                    $ttlRow = $ttl[$packed_key];
-                } else {
-                    $ttlRow = $ttl;
-                }
+                $ttlRow = $this->get_ttl($ttl, $packed_key);
                 $cfmap[$packed_key][$this->column_family] =
                     $this->make_mutation($columns, $timestamp, $ttlRow);
             }
@@ -727,11 +716,7 @@ abstract class AbstractColumnFamily {
             foreach($rows as $row) {
                 list($key, $columns) = $row;
                 $packed_key = $this->pack_key($key);
-                if($arrayTTL){
-                    $ttlRow = $ttl[$packed_key];
-                } else {
-                    $ttlRow = $ttl;
-                }
+                $ttlRow = $this->get_ttl($ttl, $packed_key);
                 $cfmap[$packed_key][$this->column_family] =
                     $this->make_mutation($columns, $timestamp, $ttlRow);
             }
@@ -1128,7 +1113,7 @@ abstract class AbstractColumnFamily {
                 $sub = new Column();
                 $c_or_sc->column = $sub;
                 $sub->timestamp = $timestamp;
-                $sub->ttl = $ttl;
+                $sub->ttl = $this->get_ttl($ttl,$name);
             }
             $sub->name = $this->pack_name(
                 $name, false, self::NON_SLICE, true);
@@ -1151,7 +1136,7 @@ abstract class AbstractColumnFamily {
                 $sub = new Column();
                 $c_or_sc->column = $sub;
                 $sub->timestamp = $timestamp;
-                $sub->ttl = $ttl;
+                $sub->ttl = $this->get_ttl($ttl,$name);
             }
             $sub->name = $this->pack_name(
                 $name, false, self::NON_SLICE, false);
@@ -1159,5 +1144,27 @@ abstract class AbstractColumnFamily {
             $ret[] = $c_or_sc;
         }
         return $ret;
+    }
+
+ /**
+  * 
+  * Return a ttl from an array of TTL or uniq int ttl and a key in this array 
+  * @param int/mixed[] $ttl time to live for the columns or rows; after ttl seconds they will be deleted
+  * @param string $packed_key the row or column to get the ttl from
+  * @return int or NULL in case of no ttl was found
+  */
+    protected function get_ttl($ttl, $packed_key){
+
+        $ttlRow = null;
+
+        if(is_array($ttl)){
+            if(isset($ttl[$packed_key])){
+                $ttlRow = $ttl[$packed_key];
+            }
+        } else {
+            $ttlRow = $ttl;
+        }
+
+        return $ttlRow;
     }
 }
