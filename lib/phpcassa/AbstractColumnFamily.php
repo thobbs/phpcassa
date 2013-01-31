@@ -1113,7 +1113,7 @@ abstract class AbstractColumnFamily {
                 $sub = new Column();
                 $c_or_sc->column = $sub;
                 $sub->timestamp = $timestamp;
-                $sub->ttl = $this->get_ttl($ttl,$name);
+                $sub->ttl = $this->get_ttl($ttl, $name);
             }
             $sub->name = $this->pack_name(
                 $name, false, self::NON_SLICE, true);
@@ -1136,7 +1136,7 @@ abstract class AbstractColumnFamily {
                 $sub = new Column();
                 $c_or_sc->column = $sub;
                 $sub->timestamp = $timestamp;
-                $sub->ttl = $this->get_ttl($ttl,$name);
+                $sub->ttl = $this->get_ttl($ttl, $name);
             }
             $sub->name = $this->pack_name(
                 $name, false, self::NON_SLICE, false);
@@ -1153,18 +1153,13 @@ abstract class AbstractColumnFamily {
   * @param string $packed_key the row or column to get the ttl from
   * @return int or NULL in case of no ttl was found
   */
-    protected function get_ttl($ttl, $packed_key){
-
-        $ttlRow = null;
-
+    protected function get_ttl($ttl, $packed_key) {
         if(is_array($ttl)){
-            if(isset($ttl[$packed_key])){
-                $ttlRow = $ttl[$packed_key];
-            }
+            if(isset($ttl[$packed_key]))
+                return $ttl[$packed_key];
+            return null;
         } else {
-            $ttlRow = $ttl;
+            return $ttl;
         }
-
-        return $ttlRow;
     }
 }
