@@ -61,4 +61,18 @@ class CfMutator extends AbstractMutator {
     public function remove($key, $columns=null, $super_column=null, $timestamp=null) {
         return $this->mutatorInstance->remove($this->cf, $key, $columns, $super_column, $timestamp);
     }
+    
+    /**
+     * Send all buffered mutations.
+     *
+     * If an error occurs, the buffer will be preserverd, allowing you to
+     * attempt to call send() again later or take other recovery actions.
+     *
+     * @param cassandra\ConsistencyLevel $consistency_level optional
+     *        override for the mutator's default consistency level
+     */
+    public function send($consistency_level=null) {
+        return $this->mutatorInstance->send($consistency_level);
+    }
+
 }
