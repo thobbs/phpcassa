@@ -15,7 +15,10 @@
     "require": {
         "php": ">=5.3.0"
     },
-    "autoload":{
+    "suggest": {
+        "ext-thrift_protocol": "Enabling the thrift protocol extension is crucial for phpcassa's performance"
+    },
+    "autoload": {
         "files": ["lib/autoload.php"]
     }
 }
