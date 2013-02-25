@@ -30,8 +30,10 @@ class AutopackSerializedSupersTest extends SuperBase {
         $cfattrs["comparator_type"] = DataType::LEXICAL_UUID_TYPE;
         $sys->create_column_family(self::$KS, 'SuperLex', $cfattrs);
 
-        $cfattrs["comparator_type"] = "CompositeType(Int32Type, AsciiType)";
-        $sys->create_column_family(self::$KS, 'SuperComposite', $cfattrs);
+        # NOTE: this is broken in Cassandra 1.2.0 through 1.2.2
+        # see: https://issues.apache.org/jira/browse/CASSANDRA-5287
+        // $cfattrs["comparator_type"] = "CompositeType(Int32Type, AsciiType)";
+        // $sys->create_column_family(self::$KS, 'SuperComposite', $cfattrs);
     }
 
     public function setUp() {
@@ -41,10 +43,10 @@ class AutopackSerializedSupersTest extends SuperBase {
         $this->cf_supdouble    = new SuperColumnFamily($this->client, 'SuperDouble');
         $this->cf_suptime      = new SuperColumnFamily($this->client, 'SuperTime');
         $this->cf_suplex       = new SuperColumnFamily($this->client, 'SuperLex');
-        $this->cf_supcomposite = new SuperColumnFamily($this->client, 'SuperComposite');
+        // $this->cf_supcomposite = new SuperColumnFamily($this->client, 'SuperComposite');
 
         $this->cfs = array($this->cf_supfloat, $this->cf_supdouble, $this->cf_suptime,
-                           $this->cf_suplex, $this->cf_supcomposite);
+                           $this->cf_suplex); // $this->cf_supcomposite);
 
         $this->TIME1 = UUID::mint();
         $this->TIME2 = UUID::mint();
@@ -70,8 +72,8 @@ class AutopackSerializedSupersTest extends SuperBase {
         $lex_cols = array($this->LEX1, $this->LEX2, $this->LEX3);
         $type_groups[] = self::make_super_group($this->cf_suplex, $lex_cols);
 
-        $composite_cols = array(array(1, 'a'), array(2, 'b'), array(3, 'c'));
-        $type_groups[] = self::make_super_group($this->cf_supcomposite, $composite_cols);
+        // $composite_cols = array(array(1, 'a'), array(2, 'b'), array(3, 'c'));
+        // $type_groups[] = self::make_super_group($this->cf_supcomposite, $composite_cols);
 
         return $type_groups;
     }
