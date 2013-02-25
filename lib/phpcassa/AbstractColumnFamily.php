@@ -727,6 +727,15 @@ abstract class AbstractColumnFamily {
         return $this->pool->call("batch_mutate", $cfmap, $this->wcl($consistency_level));
     }
 
+    /**
+     * Create a new phpcassa\Batch\CfMutator instance targetting this column
+     * family.
+     *
+     * @param phpcassa\ConsistencyLevel $consistency_level the consistency
+     *        level the batch mutator will write at; if left as NULL, this
+     *        defaults to phpcassa\ColumnFamily::write_consistency_level.
+     * @return a phpcassa\Batch\CfMutator instance
+     */
     public function batch($consistency_level=null) {
         return new CfMutator($this, $consistency_level);
     }

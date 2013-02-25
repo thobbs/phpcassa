@@ -2,6 +2,11 @@
 
 namespace phpcassa\Batch;
 
+use phpcassa\Util\Clock;
+use cassandra\Deletion;
+use cassandra\Mutation;
+use cassandra\SlicePredicate;
+
 /**
  * Common methods shared by CfMutator and Mutator classes
  */
@@ -56,5 +61,44 @@ abstract class AbstractMutator
     protected function enqueue($key, $cf, $mutations) {
         $mut = array($key, $cf->column_family, $mutations);
         $this->buffer[] = $mut;
+    }
+
+    protected function insert_cf($column_family, $key, $columns, $timestamp=null, $ttl=null) {
+        if (!empty($columns)) {
+            if ($timestamp === null)
+                $timestamp = Clock::get_time();
+            $key = $column_family->pack_key($key);
+            $mut_list = $column_family->make_mutation($columns, $timestamp, $ttl);
+            $this->enqueue($key, $column_family, $mut_list);
+        }
+        return $this;
+    }
+
+    protected function remove_cf($column_family, $key, $columns=null, $super_column=null, $timestamp=null) {
+        if ($timestamp === null)
+            $timestamp = Clock::get_time();
+        $deletion = new Deletion();
+        $deletion->timestamp = $timestamp;
+
+        if ($super_column !== null) {
+            $deletion->super_column = $column_family->pack_name($super_column, true);
+        }
+        if ($columns !== null) {
+            $is_super = $column_family->is_super && $super_column === null;
+            $packed_cols = array();
+            foreach ($columns as $col) {
+                $packed_cols[] = $column_family->pack_name($col, $is_super);
+            }
+            $predicate = new SlicePredicate();
+            $predicate->column_names = $packed_cols;
+            $deletion->predicate = $predicate;
+        }
+
+        $mutation = new Mutation();
+        $mutation->deletion = $deletion;
+        $packed_key = $column_family->pack_key($key);
+        $this->enqueue($packed_key, $column_family, array($mutation));
+
+        return $this;
     }
 }
