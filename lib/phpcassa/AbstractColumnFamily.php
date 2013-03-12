@@ -501,8 +501,8 @@ abstract class AbstractColumnFamily {
     /**
      * Get an iterator over a range of rows.
      *
-     * @param string $key_start fetch rows with a key >= this
-     * @param string $key_finish fetch rows with a key <= this
+     * @param mixed $key_start fetch rows with a key >= this
+     * @param mixed $key_finish fetch rows with a key <= this
      * @param int $row_count limit the number of rows returned to this amount
      * @param \phpcassa\ColumnSlice a slice of columns to fetch, or null
      * @param mixed[] $column_names limit the columns or super columns fetched to this list

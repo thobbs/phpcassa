@@ -138,8 +138,8 @@ class SuperColumnFamily extends AbstractColumnFamily {
      * is omitted from the results.
      *
      * @param mixed $super_column return only columns in this super column
-     * @param string $key_start fetch rows with a key >= this
-     * @param string $key_finish fetch rows with a key <= this
+     * @param mixed $key_start fetch rows with a key >= this
+     * @param mixed $key_finish fetch rows with a key <= this
      * @param int $row_count limit the number of rows returned to this amount
      * @param \phpcassa\ColumnSlice a slice of subcolumns to fetch, or null
      * @param mixed[] $column_names limit the subcolumns fetched to this list
