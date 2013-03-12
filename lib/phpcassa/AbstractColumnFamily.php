@@ -753,7 +753,8 @@ abstract class AbstractColumnFamily {
      */
     public function remove($key, $column_names=null, $consistency_level=null) {
 
-        if ($column_names === null || count($column_names) == 1)
+        if (($column_names === null || count($column_names) == 1)
+            && ! $this->has_counters)
         {
             $cp = new ColumnPath();
             $cp->column_family = $this->column_family;
