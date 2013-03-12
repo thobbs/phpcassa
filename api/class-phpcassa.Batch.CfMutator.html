@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 
 	<title>Class phpcassa\Batch\CfMutator | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -139,8 +139,9 @@ operations on a single column family.</p>
 		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a>\<a href="namespace-phpcassa.Batch.html">Batch</a><br />
 		<b>Package:</b> phpcassa\Batch<br />
 
-		<b>Located at</b> <a href="source-class-phpcassa.Batch.CfMutator.html#6" title="Go to source code">phpcassa/Batch/CfMutator.php</a><br />
+		<b>Located at</b> <a href="source-class-phpcassa.Batch.CfMutator.html#6-63" title="Go to source code">phpcassa/Batch/CfMutator.php</a><br />
 	</div>
+
 
 
 	<table class="summary" id="methods">
@@ -156,7 +157,7 @@ operations on a single column family.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-phpcassa.Batch.CfMutator.html#17" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.ColumnFamily.html">phpcassa\ColumnFamily</a></code> <var>$column_family</var></span>, <span>phpcassa\ConsistencyLevel <var>$write_consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.CfMutator.html#16-34" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.ColumnFamily.html">phpcassa\ColumnFamily</a></code> <var>$column_family</var></span>, <span>phpcassa\ConsistencyLevel <var>$write_consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -173,12 +174,13 @@ operations on a single column family.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$column_family</var></dt>
-					<dd><code><code><a href="class-phpcassa.ColumnFamily.html">phpcassa\ColumnFamily</a></code></code><br> an initialized instanced of ColumnFamily; this object's pool will be used for
-all operations.</dd>
+					<dd><code><code><a href="class-phpcassa.ColumnFamily.html">phpcassa\ColumnFamily</a></code></code><br>$column_family an initialized instanced of ColumnFamily; this object's pool will
+be used for all operations.</dd>
 					<dt><var>$write_consistency_level</var></dt>
-					<dd><code>phpcassa\ConsistencyLevel</code><br>$consistency_level the default consistency level this mutator will write at,
-with a default of ConsistencyLevel::ONE</dd>
+					<dd><code>phpcassa\ConsistencyLevel</code><br>$write_consistency_level the consistency level this mutator will write at; if
+left as NULL, this defaults to $column_family-&gt;write_consistency_level.</dd>
 				</dl></div>
+
 
 
 
@@ -197,7 +199,7 @@ with a default of ConsistencyLevel::ONE</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_insert">#</a>
-		<code><a href="source-class-phpcassa.Batch.CfMutator.html#37" title="Go to source code">insert</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.CfMutator.html#36-48" title="Go to source code">insert</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -214,16 +216,17 @@ with a default of ConsistencyLevel::ONE</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>mixed</code><br> the row key</dd>
+					<dd><code>mixed</code><br>$key the row key</dd>
 					<dt><var>$columns</var></dt>
-					<dd><code>mixed[]</code><br> an array of columns to insert, whose format should match
+					<dd><code>mixed[]</code><br>$columns an array of columns to insert, whose format should match
 $column_family-&gt;insert_format</dd>
 					<dt><var>$timestamp</var></dt>
-					<dd><code>integer</code><br> an optional timestamp (default is "now", when this function is called, not when
-send() is called)</dd>
+					<dd><code>integer</code><br>$timestamp an optional timestamp (default is "now", when this function is
+called, not when send() is called)</dd>
 					<dt><var>$ttl</var></dt>
-					<dd><code>integer</code><br> a TTL to apply to all columns inserted here</dd>
+					<dd><code>integer</code><br>$ttl a TTL to apply to all columns inserted here</dd>
 				</dl></div>
+
 
 
 
@@ -242,7 +245,7 @@ send() is called)</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><a href="source-class-phpcassa.Batch.CfMutator.html#51" title="Go to source code">remove</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$super_column</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.Batch.CfMutator.html#50-62" title="Go to source code">remove</a>( <span>mixed <var>$key</var></span>, <span>mixed[] <var>$columns</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$super_column</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -259,16 +262,17 @@ send() is called)</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>mixed</code><br> the row key</dd>
+					<dd><code>mixed</code><br>$key the row key</dd>
 					<dt><var>$columns</var></dt>
-					<dd><code>mixed[]</code><br> a list of columns or super columns to delete</dd>
+					<dd><code>mixed[]</code><br>$columns a list of columns or super columns to delete</dd>
 					<dt><var>$super_column</var></dt>
 					<dd><code>mixed</code><br>$supercolumn if you want to delete only some subcolumns from a single super
 column, set this to the super column name</dd>
 					<dt><var>$timestamp</var></dt>
-					<dd><code>integer</code><br> an optional timestamp (default is "now", when this function is called, not when
-send() is called)</dd>
+					<dd><code>integer</code><br>$timestamp an optional timestamp (default is "now", when this function is
+called, not when send() is called)</dd>
 				</dl></div>
+
 
 
 
@@ -295,10 +299,18 @@ send() is called)</dd>
 
 
 
+
+
+
+
+
+
+
+
 </div>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

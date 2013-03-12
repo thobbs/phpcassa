@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 
 	<title>Class phpcassa\SuperColumnFamily | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -143,8 +143,9 @@
 		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
 		<b>Package:</b> phpcassa<br />
 
-		<b>Located at</b> <a href="source-class-phpcassa.SuperColumnFamily.html#16" title="Go to source code">phpcassa/SuperColumnFamily.php</a><br />
+		<b>Located at</b> <a href="source-class-phpcassa.SuperColumnFamily.html#16-492" title="Go to source code">phpcassa/SuperColumnFamily.php</a><br />
 	</div>
+
 
 
 	<table class="summary" id="methods">
@@ -160,7 +161,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_super_column">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#26" title="Go to source code">get_super_column</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#26-49" title="Go to source code">get_super_column</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -179,22 +180,23 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> row key to fetch</dd>
+					<dd><code>string</code><br>$key row key to fetch</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> return only subcolumns of this super column</dd>
+					<dd><code>mixed</code><br>$super_column return only subcolumns of this super column</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the subcolumns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the subcolumns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>array(subcolumn_name =&gt; subcolumn_value)<br />
 				</div>
+
 
 
 
@@ -212,7 +214,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_multiget_super_column">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#52" title="Go to source code">multiget_super_column</a>( <span>string[] <var>$keys</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-num">16</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#51-80" title="Go to source code">multiget_super_column</a>( <span>string[] <var>$keys</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-num">16</span></span> )</code>
 
 		<div class="description short">
 			
@@ -232,26 +234,27 @@ super column layer is omitted.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keys</var></dt>
-					<dd><code>string[]</code><br> row keys to fetch</dd>
+					<dd><code>string[]</code><br>$keys row keys to fetch</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> return only subcolumns of this super column</dd>
+					<dd><code>mixed</code><br>$super_column return only subcolumns of this super column</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the subcolumns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the subcolumns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 					<dt><var>$buffer_size</var></dt>
-					<dd><code>integer</code><br> the number of keys to multiget at a single time. If your rows are large, having
-a high buffer size gives poor performance; if your rows are small, consider
-increasing this value.</dd>
+					<dd><code>integer</code><br>$buffer_size the number of keys to multiget at a single time. If your rows are
+large, having a high buffer size gives poor performance; if your rows are small,
+consider increasing this value.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>array(key =&gt; array(subcolumn_name =&gt; subcolumn_value))<br />
 				</div>
+
 
 
 
@@ -269,7 +272,7 @@ increasing this value.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_subcolumn_count">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#83" title="Go to source code">get_subcolumn_count</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#82-105" title="Go to source code">get_subcolumn_count</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -286,22 +289,23 @@ increasing this value.</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> row to be counted</dd>
+					<dd><code>string</code><br>$key row to be counted</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> count only subcolumns in this super column</dd>
+					<dd><code>mixed</code><br>$super_column count only subcolumns in this super column</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to count, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the possible subcolumns or counted to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the possible subcolumns or counted to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br />
 				</div>
+
 
 
 
@@ -319,7 +323,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_multiget_subcolumn_count">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#108" title="Go to source code">multiget_subcolumn_count</a>( <span>string[] <var>$keys</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#107-131" title="Go to source code">multiget_subcolumn_count</a>( <span>string[] <var>$keys</var></span>, <span>mixed <var>$super_column</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -338,22 +342,23 @@ rows.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keys</var></dt>
-					<dd><code>string[]</code><br> rows to be counted</dd>
+					<dd><code>string[]</code><br>$keys rows to be counted</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> count only subcolumns in this super column</dd>
+					<dd><code>mixed</code><br>$super_column count only subcolumns in this super column</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to count, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the possible subcolumns counted to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the possible subcolumns counted to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>array(row_key =&gt; subcolumn_count)<br />
 				</div>
+
 
 
 
@@ -371,7 +376,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_super_column_range">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#134" title="Go to source code">get_super_column_range</a>( <span>mixed <var>$super_column</var></span>, <span>string <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#133-169" title="Go to source code">get_super_column_range</a>( <span>mixed <var>$super_column</var></span>, <span>mixed <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>mixed <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -392,23 +397,23 @@ from the results.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> return only columns in this super column</dd>
+					<dd><code>mixed</code><br>$super_column return only columns in this super column</dd>
 					<dt><var>$key_start</var></dt>
-					<dd><code>string</code><br> fetch rows with a key &gt;= this</dd>
+					<dd><code>mixed</code><br>$key_start fetch rows with a key &gt;= this</dd>
 					<dt><var>$key_finish</var></dt>
-					<dd><code>string</code><br> fetch rows with a key &lt;= this</dd>
+					<dd><code>mixed</code><br>$key_finish fetch rows with a key &lt;= this</dd>
 					<dt><var>$row_count</var></dt>
-					<dd><code>integer</code><br> limit the number of rows returned to this amount</dd>
+					<dd><code>integer</code><br>$row_count limit the number of rows returned to this amount</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of subcolumns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the subcolumns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the subcolumns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 					<dt><var>$buffer_size</var></dt>
-					<dd><code>integer</code><br> When calling <code>get_range</code>, the intermediate results need to be
-buffered if we are fetching many rows, otherwise the Cassandra server will
+					<dd><code>integer</code><br>$buffer_size When calling <code>get_range</code>, the intermediate results need
+to be buffered if we are fetching many rows, otherwise the Cassandra server will
 overallocate memory and fail. This is the size of that buffer in number of rows.</dd>
 				</dl></div>
 
@@ -416,6 +421,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<div class="list">
 					<code><code><a href="class-phpcassa.Iterator.RangeColumnFamilyIterator.html">phpcassa\Iterator\RangeColumnFamilyIterator</a></code></code><br />
 				</div>
+
 
 
 
@@ -433,7 +439,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_add">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#172" title="Go to source code">add</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var></span>, <span>integer <var>$value</var> = <span class="php-num">1</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#171-200" title="Go to source code">add</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var></span>, <span>integer <var>$value</var> = <span class="php-num">1</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -459,17 +465,18 @@ for column families with counters.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> the row to insert or update the columns in</dd>
+					<dd><code>string</code><br>$key the row to insert or update the columns in</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> the super column to use</dd>
+					<dd><code>mixed</code><br>$super_column the super column to use</dd>
 					<dt><var>$column</var></dt>
-					<dd><code>mixed</code><br> the column name of the counter</dd>
+					<dd><code>mixed</code><br>$column the column name of the counter</dd>
 					<dt><var>$value</var></dt>
-					<dd><code>integer</code><br> the amount to adjust the counter by</dd>
+					<dd><code>integer</code><br>$value the amount to adjust the counter by</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
+
 
 
 
@@ -488,7 +495,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove_super_column">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#203" title="Go to source code">remove_super_column</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed[] <var>$subcolumns</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#202-235" title="Go to source code">remove_super_column</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed[] <var>$subcolumns</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -507,20 +514,22 @@ column.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> the row to remove columns from</dd>
+					<dd><code>string</code><br>$key the row to remove columns from</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> only remove this super column or its subcolumns</dd>
+					<dd><code>mixed</code><br>$super_column only remove this super column or its subcolumns</dd>
 					<dt><var>$subcolumns</var></dt>
-					<dd><code>mixed[]</code><br> the subcolumns to remove. If null, the entire supercolumn will be removed.</dd>
+					<dd><code>mixed[]</code><br>$subcolumns the subcolumns to remove. If null, the entire supercolumn will be
+removed.</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br>the timestamp for the operation<br />
 				</div>
+
 
 
 
@@ -538,7 +547,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove_counter">#</a>
-		<code><a href="source-class-phpcassa.SuperColumnFamily.html#238" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SuperColumnFamily.html#237-263" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$super_column</var></span>, <span>mixed <var>$column</var> = <span class="php-keyword1">null</span></span>, <span>ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -561,19 +570,22 @@ nodes and all of them have been fully compacted.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> the key for the row</dd>
+					<dd><code>string</code><br>$key the key for the row</dd>
 					<dt><var>$super_column</var></dt>
-					<dd><code>mixed</code><br> the super column the counter is in</dd>
+					<dd><code>mixed</code><br>$super_column the super column the counter is in</dd>
 					<dt><var>$column</var></dt>
-					<dd><code>mixed</code><br> the column name of the counter; if left as null, the entire super column will
-be removed</dd>
+					<dd><code>mixed</code><br>$column the column name of the counter; if left as null, the entire super column
+will be removed</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code>ConsistencyLevel</code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code>ConsistencyLevel</code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 
 
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-phpcassa.AbstractColumnFamily.html#_remove_counter">phpcassa\AbstractColumnFamily::remove_counter()</a></code></div>
 
 		</div>
 		</div></td>
@@ -607,6 +619,10 @@ returns</dd>
 
 
 
+
+
+
+
 	<table class="summary inherited">
 	<caption>Constants inherited from <a href="class-phpcassa.AbstractColumnFamily.html#constants">phpcassa\AbstractColumnFamily</a></caption>
 	<tr>
@@ -619,6 +635,7 @@ returns</dd>
 		</code></td>
 	</tr>
 	</table>
+
 
 
 
@@ -639,10 +656,13 @@ returns</dd>
 	</table>
 
 
+
+
+
 </div>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

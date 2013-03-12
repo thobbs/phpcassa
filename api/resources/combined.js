@@ -1,6 +1,6 @@
 
 var ApiGen = ApiGen || {};
-ApiGen.config = {"resources":{"resources":"resources"},"templates":{"common":{"overview.latte":"index.html","combined.js.latte":"resources\/combined.js","elementlist.js.latte":"elementlist.js"},"optional":{"sitemap":{"filename":"sitemap.xml","template":"sitemap.xml.latte"},"opensearch":{"filename":"opensearch.xml","template":"opensearch.xml.latte"},"robots":{"filename":"robots.txt","template":"robots.txt.latte"}},"main":{"package":{"filename":"package-%s.html","template":"package.latte"},"namespace":{"filename":"namespace-%s.html","template":"namespace.latte"},"class":{"filename":"class-%s.html","template":"class.latte"},"constant":{"filename":"constant-%s.html","template":"constant.latte"},"function":{"filename":"function-%s.html","template":"function.latte"},"source":{"filename":"source-%s.html","template":"source.latte"},"tree":{"filename":"tree.html","template":"tree.latte"},"deprecated":{"filename":"deprecated.html","template":"deprecated.latte"},"todo":{"filename":"todo.html","template":"todo.latte"}}},"options":{"elementDetailsCollapsed":true,"elementsOrder":"natural"}};
+ApiGen.config = {"require":{"min":"2.8.0"},"resources":{"resources":"resources"},"templates":{"common":{"overview.latte":"index.html","combined.js.latte":"resources\/combined.js","elementlist.js.latte":"elementlist.js","404.latte":"404.html"},"optional":{"sitemap":{"filename":"sitemap.xml","template":"sitemap.xml.latte"},"opensearch":{"filename":"opensearch.xml","template":"opensearch.xml.latte"},"robots":{"filename":"robots.txt","template":"robots.txt.latte"}},"main":{"package":{"filename":"package-%s.html","template":"package.latte"},"namespace":{"filename":"namespace-%s.html","template":"namespace.latte"},"class":{"filename":"class-%s.html","template":"class.latte"},"constant":{"filename":"constant-%s.html","template":"constant.latte"},"function":{"filename":"function-%s.html","template":"function.latte"},"source":{"filename":"source-%s.html","template":"source.latte"},"tree":{"filename":"tree.html","template":"tree.latte"},"deprecated":{"filename":"deprecated.html","template":"deprecated.latte"},"todo":{"filename":"todo.html","template":"todo.latte"}}},"options":{"elementDetailsCollapsed":true,"elementsOrder":"natural"},"config":"\/usr\/share\/php\/data\/ApiGen\/templates\/default\/config.neon"};
 
 
 /*! jQuery v1.7 jquery.com | jquery.org/license */
@@ -141,6 +141,8 @@ $.fn.extend({
 
 		// if the formatMatch option is not specified, then use formatItem for backwards compatibility
 		options.formatMatch = options.formatMatch || options.formatItem;
+
+		options.show = options.show || function(list) {};
 
 		return this.each(function() {
 			new $.Autocompleter(this, options);
@@ -828,6 +830,7 @@ $.Autocompleter.Select = function (options, input, select, config) {
 				top: offset.top + input.offsetHeight,
 				left: offset.left
 			}).show();
+			options.show(element);
 			if(options.scroll) {
 				list.scrollTop(0);
 				list.css({
@@ -978,7 +981,7 @@ jQuery.fn.sortElements = (function(){
 
 })();
 /*!
- * ApiGen 2.6.1 - API documentation generator for PHP 5.3+
+ * ApiGen 2.8.0 - API documentation generator for PHP 5.3+
  *
  * Copyright (c) 2010-2011 David Grudl (http://davidgrudl.com)
  * Copyright (c) 2011-2012 Jaroslav Hanslík (https://github.com/kukulich)
@@ -989,9 +992,15 @@ jQuery.fn.sortElements = (function(){
  */
 
 $(function() {
-	// Menu
-
+	var $document = $(document);
+	var $left = $('#left');
+	var $right = $('#right');
+	var $rightInner = $('#rightInner');
+	var $splitter = $('#splitter');
 	var $groups = $('#groups');
+	var $content = $('#content');
+
+	// Menu
 
 	// Hide deep packages and namespaces
 	$('ul span', $groups).click(function(event) {
@@ -1021,11 +1030,9 @@ $(function() {
 
 	// Content
 
-	var $content = $('#content');
-
 	// Search autocompletion
 	var autocompleteFound = false;
-	var autocompleteFiles = {'c': 'class', 'co': 'constant', 'f': 'function', 'm': 'class', 'p': 'class', 'cc': 'class'};
+	var autocompleteFiles = {'c': 'class', 'co': 'constant', 'f': 'function', 'm': 'class', 'mm': 'class', 'p': 'class', 'mp': 'class', 'cc': 'class'};
 	var $search = $('#search input[name=q]');
 	$search
 		.autocomplete(ApiGen.elements, {
@@ -1033,13 +1040,23 @@ $(function() {
 			scrollHeight: 200,
 			max: 20,
 			formatItem: function(data) {
-				return data[1].replace(/^(.+\\)(.+)$/, '<small>$1</small>$2');
+				return data[1].replace(/^(.+\\)(.+)$/, '<span><small>$1</small>$2</span>');
 			},
 			formatMatch: function(data) {
 				return data[1];
 			},
 			formatResult: function(data) {
 				return data[1];
+			},
+			show: function($list) {
+				var $items = $('li span', $list);
+				var maxWidth = Math.max.apply(null, $items.map(function() {
+					return $(this).width();
+				}));
+				// 10px padding
+				$list
+					.width(Math.max(maxWidth + 10, $search.innerWidth()))
+					.css('left', $search.offset().left + $search.outerWidth() - $list.outerWidth());
 			}
 		}).result(function(event, data) {
 			autocompleteFound = true;
@@ -1048,10 +1065,13 @@ $(function() {
 			var parts = data[1].split(/::|$/);
 			var file = $.sprintf(ApiGen.config.templates.main[autocompleteFiles[data[0]]].filename, parts[0].replace(/[^\w]/g, '.'));
 			if (parts[1]) {
-				file += '#' + parts[1].replace(/([\w]+)\(\)/, '_$1');
+				file += '#' + ('mm' === data[0] || 'mp' === data[0] ? 'm' : '') + parts[1].replace(/([\w]+)\(\)/, '_$1');
 			}
 			location.push(file);
 			window.location = location.join('/');
+
+			// Workaround for Opera bug
+			$(this).closest('form').attr('action', location.join('/'));
 		}).closest('form')
 			.submit(function() {
 				var query = $search.val();
@@ -1111,11 +1131,6 @@ $(function() {
 	}
 
 	// Splitter
-	var $document = $(document);
-	var $left = $('#left');
-	var $right = $('#right');
-	var $rightInner = $('#rightInner');
-	var $splitter = $('#splitter');
 	var splitterWidth = $splitter.width();
 	function setSplitterPosition(position)
 	{
@@ -1162,5 +1177,88 @@ $(function() {
 	}
 	setNavigationPosition();
 	$(window).resize(setNavigationPosition);
+
+	// Select selected lines
+	var matches = window.location.hash.substr(1).match(/^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$/);
+	if (null !== matches) {
+		var lists = matches[0].split(',');
+		for (var i = 0; i < lists.length; i++) {
+			var lines = lists[i].split('-');
+			lines[1] = lines[1] || lines[0];
+			for (var j = lines[0]; j <= lines[1]; j++) {
+				$('#' + j).addClass('selected');
+			}
+		}
+
+		var $firstLine = $('#' + parseInt(matches[0]));
+		if ($firstLine.length > 0) {
+			$right.scrollTop($firstLine.offset().top);
+		}
+	}
+
+	// Save selected lines
+	var lastLine;
+	$('a.l').click(function(event) {
+		event.preventDefault();
+
+		var $selectedLine = $(this).parent();
+		var selectedLine = parseInt($selectedLine.attr('id'));
+
+		if (event.shiftKey) {
+			if (lastLine) {
+				for (var i = Math.min(selectedLine, lastLine); i <= Math.max(selectedLine, lastLine); i++) {
+					$('#' + i).addClass('selected');
+				}
+			} else {
+				$selectedLine.addClass('selected');
+			}
+		} else if (event.ctrlKey) {
+			$selectedLine.toggleClass('selected');
+		} else {
+			var $selected = $('.l.selected')
+				.not($selectedLine)
+				.removeClass('selected');
+			if ($selected.length > 0) {
+				$selectedLine.addClass('selected');
+			} else {
+				$selectedLine.toggleClass('selected');
+			}
+		}
+
+		lastLine = $selectedLine.hasClass('selected') ? selectedLine : null;
+
+		// Update hash
+		var lines = $('.l.selected')
+			.map(function() {
+				return parseInt($(this).attr('id'));
+			})
+			.get()
+			.sort(function(a, b) {
+				return a - b;
+			});
+
+		var hash = [];
+		var list = [];
+		for (var j = 0; j < lines.length; j++) {
+			if (0 === j && j + 1 === lines.length) {
+				hash.push(lines[j]);
+			} else if (0 === j) {
+				list[0] = lines[j];
+			} else if (lines[j - 1] + 1 !== lines[j] && j + 1 === lines.length) {
+				hash.push(list.join('-'));
+				hash.push(lines[j]);
+			} else if (lines[j - 1] + 1 !== lines[j]) {
+				hash.push(list.join('-'));
+				list = [lines[j]];
+			} else if (j + 1 === lines.length) {
+				list[1] = lines[j];
+				hash.push(list.join('-'));
+			} else {
+				list[1] = lines[j];
+			}
+		}
+
+		window.location.hash = hash.join(',');
+	});
 });
 

@@ -2,14 +2,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 	<meta name="robots" content="noindex" />
 
 	<title>File phpcassa/Index/IndexExpression.php | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -101,42 +101,42 @@
 		</ul>
 	</div>
 
-<pre><code><a href="#1" id="1" class="l"> 1: </a><span class="xlang">&lt;?php</span>
-<a href="#2" id="2" class="l"> 2: </a><span class="php-keyword1">namespace</span> phpcassa\Index;
-<a href="#3" id="3" class="l"> 3: </a>
-<a href="#4" id="4" class="l"> 4: </a><span class="php-keyword1">use</span> phpcassa\ColumnFamily;
-<a href="#5" id="5" class="l"> 5: </a>
-<a href="#6" id="6" class="l"> 6: </a><span class="php-comment">/**
-</span><a href="#7" id="7" class="l"> 7: </a><span class="php-comment"> * @package phpcassa\Index
-</span><a href="#8" id="8" class="l"> 8: </a><span class="php-comment"> */</span>
-<a href="#9" id="9" class="l"> 9: </a><span class="php-keyword1">class</span> IndexExpression <span class="php-keyword1">extends</span> \cassandra\IndexExpression {
-<a href="#10" id="10" class="l">10: </a>
-<a href="#11" id="11" class="l">11: </a>    <span class="php-comment">/**
-</span><a href="#12" id="12" class="l">12: </a><span class="php-comment">     * Constructs an IndexExpression to be used in an IndexClause, which can
-</span><a href="#13" id="13" class="l">13: </a><span class="php-comment">     * be used with get_indexed_slices().
-</span><a href="#14" id="14" class="l">14: </a><span class="php-comment">     * @param mixed $column_name the name of the column this expression will apply to;
-</span><a href="#15" id="15" class="l">15: </a><span class="php-comment">     *        this column may or may not be indexed
-</span><a href="#16" id="16" class="l">16: </a><span class="php-comment">     * @param mixed $value the value that will be compared to column values using op
-</span><a href="#17" id="17" class="l">17: </a><span class="php-comment">     * @param string $op the operator to apply to column values
-</span><a href="#18" id="18" class="l">18: </a><span class="php-comment">     *        and the 'value' parameter.  Valid options include &quot;EQ&quot;, &quot;LT&quot;, &quot;LTE&quot;,
-</span><a href="#19" id="19" class="l">19: </a><span class="php-comment">     *        &quot;GT&quot;, and &quot;GTE&quot;. Defaults to testing for equality.
-</span><a href="#20" id="20" class="l">20: </a><span class="php-comment">     */</span>
-<a href="#21" id="21" class="l">21: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> __construct(<span class="php-var">$column_name</span>, <span class="php-var">$value</span>, <span class="php-var">$op</span>=<span class="php-quote">&quot;EQ&quot;</span>) {
-<a href="#22" id="22" class="l">22: </a>        parent::__construct();
-<a href="#23" id="23" class="l">23: </a>        <span class="php-var">$this</span>-&gt;column_name = <span class="php-var">$column_name</span>;
-<a href="#24" id="24" class="l">24: </a>        <span class="php-var">$this</span>-&gt;value = <span class="php-var">$value</span>;
-<a href="#25" id="25" class="l">25: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_int</span>(<span class="php-var">$op</span>)) {
-<a href="#26" id="26" class="l">26: </a>            <span class="php-var">$this</span>-&gt;op = <span class="php-var">$op</span>;
-<a href="#27" id="27" class="l">27: </a>        } <span class="php-keyword1">else</span> {
-<a href="#28" id="28" class="l">28: </a>            <span class="php-var">$operators</span> = <span class="php-var">$GLOBALS</span>[<span class="php-quote">'\cassandra\E_IndexOperator'</span>];
-<a href="#29" id="29" class="l">29: </a>            <span class="php-var">$this</span>-&gt;op = <span class="php-var">$operators</span>[<span class="php-var">$op</span>];
-<a href="#30" id="30" class="l">30: </a>        }
-<a href="#31" id="31" class="l">31: </a>    }
-<a href="#32" id="32" class="l">32: </a>}
-<a href="#33" id="33" class="l">33: </a></code></pre>
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a><span class="php-keyword1">namespace</span> phpcassa\Index;
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a>
+</span><span id="4" class="l"><a class="l" href="#4"> 4: </a><span class="php-keyword1">use</span> phpcassa\ColumnFamily;
+</span><span id="5" class="l"><a class="l" href="#5"> 5: </a>
+</span><span id="6" class="l"><a class="l" href="#6"> 6: </a><span class="php-comment">/**
+</span></span><span id="7" class="l"><a class="l" href="#7"> 7: </a><span class="php-comment"> * @package phpcassa\Index
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8: </a><span class="php-comment"> */</span>
+</span><span id="9" class="l"><a class="l" href="#9"> 9: </a><span class="php-keyword1">class</span> <a id="IndexExpression" href="#IndexExpression">IndexExpression</a> <span class="php-keyword1">extends</span> \cassandra\IndexExpression {
+</span><span id="10" class="l"><a class="l" href="#10">10: </a>
+</span><span id="11" class="l"><a class="l" href="#11">11: </a>    <span class="php-comment">/**
+</span></span><span id="12" class="l"><a class="l" href="#12">12: </a><span class="php-comment">     * Constructs an IndexExpression to be used in an IndexClause, which can
+</span></span><span id="13" class="l"><a class="l" href="#13">13: </a><span class="php-comment">     * be used with get_indexed_slices().
+</span></span><span id="14" class="l"><a class="l" href="#14">14: </a><span class="php-comment">     * @param mixed $column_name the name of the column this expression will apply to;
+</span></span><span id="15" class="l"><a class="l" href="#15">15: </a><span class="php-comment">     *        this column may or may not be indexed
+</span></span><span id="16" class="l"><a class="l" href="#16">16: </a><span class="php-comment">     * @param mixed $value the value that will be compared to column values using op
+</span></span><span id="17" class="l"><a class="l" href="#17">17: </a><span class="php-comment">     * @param string $op the operator to apply to column values
+</span></span><span id="18" class="l"><a class="l" href="#18">18: </a><span class="php-comment">     *        and the 'value' parameter.  Valid options include &quot;EQ&quot;, &quot;LT&quot;, &quot;LTE&quot;,
+</span></span><span id="19" class="l"><a class="l" href="#19">19: </a><span class="php-comment">     *        &quot;GT&quot;, and &quot;GTE&quot;. Defaults to testing for equality.
+</span></span><span id="20" class="l"><a class="l" href="#20">20: </a><span class="php-comment">     */</span>
+</span><span id="21" class="l"><a class="l" href="#21">21: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(<span class="php-var">$column_name</span>, <span class="php-var">$value</span>, <span class="php-var">$op</span>=<span class="php-quote">&quot;EQ&quot;</span>) {
+</span><span id="22" class="l"><a class="l" href="#22">22: </a>        parent::__construct();
+</span><span id="23" class="l"><a class="l" href="#23">23: </a>        <span class="php-var">$this</span>-&gt;column_name = <span class="php-var">$column_name</span>;
+</span><span id="24" class="l"><a class="l" href="#24">24: </a>        <span class="php-var">$this</span>-&gt;value = <span class="php-var">$value</span>;
+</span><span id="25" class="l"><a class="l" href="#25">25: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_int</span>(<span class="php-var">$op</span>)) {
+</span><span id="26" class="l"><a class="l" href="#26">26: </a>            <span class="php-var">$this</span>-&gt;op = <span class="php-var">$op</span>;
+</span><span id="27" class="l"><a class="l" href="#27">27: </a>        } <span class="php-keyword1">else</span> {
+</span><span id="28" class="l"><a class="l" href="#28">28: </a>            <span class="php-var">$operators</span> = <span class="php-var">$GLOBALS</span>[<span class="php-quote">'\cassandra\E_IndexOperator'</span>];
+</span><span id="29" class="l"><a class="l" href="#29">29: </a>            <span class="php-var">$this</span>-&gt;op = <span class="php-var">$operators</span>[<span class="php-var">$op</span>];
+</span><span id="30" class="l"><a class="l" href="#30">30: </a>        }
+</span><span id="31" class="l"><a class="l" href="#31">31: </a>    }
+</span><span id="32" class="l"><a class="l" href="#32">32: </a>}
+</span><span id="33" class="l"><a class="l" href="#33">33: </a></span></code></pre>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

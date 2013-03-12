@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 
 	<title>Class phpcassa\SystemManager | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -128,8 +128,9 @@ getting information about the state and configuration of the cluster.</p>
 		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
 		<b>Package:</b> phpcassa<br />
 
-		<b>Located at</b> <a href="source-class-phpcassa.SystemManager.html#12" title="Go to source code">phpcassa/SystemManager.php</a><br />
+		<b>Located at</b> <a href="source-class-phpcassa.SystemManager.html#12-458" title="Go to source code">phpcassa/SystemManager.php</a><br />
 	</div>
+
 
 
 	<table class="summary" id="methods">
@@ -145,7 +146,7 @@ getting information about the state and configuration of the cluster.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#24" title="Go to source code">__construct</a>( <span>string <var>$server</var> = <span class="php-quote">'localhost:9160'</span></span>, <span>array <var>$credentials</var> = <span class="php-keyword1">NULL</span></span>, <span>integer <var>$send_timeout</var> = <span class="php-num">15000</span></span>, <span>integer <var>$recv_timeout</var> = <span class="php-num">15000</span></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#24-42" title="Go to source code">__construct</a>( <span>string <var>$server</var> = <span class="php-quote">'localhost:9160'</span></span>, <span>array <var>$credentials</var> = <span class="php-keyword1">NULL</span></span>, <span>integer <var>$send_timeout</var> = <span class="php-num">15000</span></span>, <span>integer <var>$recv_timeout</var> = <span class="php-num">15000</span></span> )</code>
 
 		<div class="description short">
 			
@@ -158,17 +159,18 @@ getting information about the state and configuration of the cluster.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$server</var></dt>
-					<dd><code>string</code><br> the host and port to connect to, in the form 'host:port'. Defaults to
+					<dd><code>string</code><br>$server the host and port to connect to, in the form 'host:port'. Defaults to
 'localhost:9160'.</dd>
 					<dt><var>$credentials</var></dt>
-					<dd><code>array</code><br> if using authentication or authorization with Cassandra, a username and
-password need to be supplied. This should be in the form array("username" =&gt;
-username, "password" =&gt; password)</dd>
+					<dd><code>array</code><br>$credentials if using authentication or authorization with Cassandra, a username
+and password need to be supplied. This should be in the form array("username"
+=&gt; username, "password" =&gt; password)</dd>
 					<dt><var>$send_timeout</var></dt>
-					<dd><code>integer</code><br> the socket send timeout in milliseconds. Defaults to 15000.</dd>
+					<dd><code>integer</code><br>$send_timeout the socket send timeout in milliseconds. Defaults to 15000.</dd>
 					<dt><var>$recv_timeout</var></dt>
-					<dd><code>integer</code><br> the socket receive timeout in milliseconds. Defaults to 15000.</dd>
+					<dd><code>integer</code><br>$recv_timeout the socket receive timeout in milliseconds. Defaults to 15000.</dd>
 				</dl></div>
+
 
 
 
@@ -187,7 +189,7 @@ username, "password" =&gt; password)</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_close">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#44" title="Go to source code">close</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#44-49" title="Go to source code">close</a>( )</code>
 
 		<div class="description short">
 			
@@ -198,6 +200,7 @@ username, "password" =&gt; password)</dd>
 		<div class="description detailed hidden">
 			
 <p>Closes the underlying Thrift connection.</p>
+
 
 
 
@@ -219,7 +222,7 @@ username, "password" =&gt; password)</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_create_keyspace">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#60" title="Go to source code">create_keyspace</a>( <span>string <var>$keyspace</var></span>, <span>array <var>$attrs</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#60-88" title="Go to source code">create_keyspace</a>( <span>string <var>$keyspace</var></span>, <span>array <var>$attrs</var></span> )</code>
 
 		<div class="description short">
 			
@@ -259,13 +262,14 @@ class="php-var">$attrs</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the keyspace name</dd>
+					<dd><code>string</code><br>$keyspace the keyspace name</dd>
 					<dt><var>$attrs</var></dt>
-					<dd><code>array</code><br> an array that maps attribute names to values. Valid attribute names include
-"strategy_class", "strategy_options", and "replication_factor". By default,
-SimpleStrategy will be used with a replication factor of 1 and no strategy
-options.</dd>
+					<dd><code>array</code><br>$attrs an array that maps attribute names to values. Valid attribute names
+include "strategy_class", "strategy_options", and "replication_factor". By
+default, SimpleStrategy will be used with a replication factor of 1 and no
+strategy options.</dd>
 				</dl></div>
+
 
 
 
@@ -284,7 +288,7 @@ options.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_alter_keyspace">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#90" title="Go to source code">alter_keyspace</a>( <span>string <var>$keyspace</var></span>, <span>array <var>$attrs</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#90-112" title="Go to source code">alter_keyspace</a>( <span>string <var>$keyspace</var></span>, <span>array <var>$attrs</var></span> )</code>
 
 		<div class="description short">
 			
@@ -315,11 +319,12 @@ class="php-var">$attrs</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the keyspace to modify</dd>
+					<dd><code>string</code><br>$keyspace the keyspace to modify</dd>
 					<dt><var>$attrs</var></dt>
-					<dd><code>array</code><br> an array that maps attribute names to values. Valid attribute names include
-"strategy_class", "strategy_options", and "replication_factor".</dd>
+					<dd><code>array</code><br>$attrs an array that maps attribute names to values. Valid attribute names
+include "strategy_class", "strategy_options", and "replication_factor".</dd>
 				</dl></div>
+
 
 
 
@@ -338,7 +343,7 @@ class="php-var">$attrs</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_drop_keyspace">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#119" title="Go to source code">drop_keyspace</a>( <span> <var>$keyspace</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#119-122" title="Go to source code">drop_keyspace</a>( <span>mixed <var>$keyspace</var></span> )</code>
 
 		<div class="description short">
 			
@@ -346,6 +351,7 @@ class="php-var">$attrs</span>);
 
 		<div class="description detailed hidden">
 			
+
 
 
 
@@ -366,7 +372,7 @@ class="php-var">$attrs</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_create_column_family">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#152" title="Go to source code">create_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>array <var>$attrs</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#152-177" title="Go to source code">create_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>array <var>$attrs</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -404,12 +410,13 @@ class="php-var">$attrs</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the keyspace containing the column family</dd>
+					<dd><code>string</code><br>$keyspace the keyspace containing the column family</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the name of the column family</dd>
+					<dd><code>string</code><br>$column_family the name of the column family</dd>
 					<dt><var>$attrs</var></dt>
-					<dd><code>array</code><br> an array that maps attribute names to values.</dd>
+					<dd><code>array</code><br>$attrs an array that maps attribute names to values.</dd>
 				</dl></div>
+
 
 
 
@@ -428,7 +435,7 @@ class="php-var">$attrs</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_alter_column_family">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#206" title="Go to source code">alter_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>array <var>$attrs</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#206-227" title="Go to source code">alter_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>array <var>$attrs</var></span> )</code>
 
 		<div class="description short">
 			
@@ -460,12 +467,13 @@ class="php-var">$attrs</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the keyspace containing the column family</dd>
+					<dd><code>string</code><br>$keyspace the keyspace containing the column family</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the name of the column family</dd>
+					<dd><code>string</code><br>$column_family the name of the column family</dd>
 					<dt><var>$attrs</var></dt>
-					<dd><code>array</code><br> an array that maps attribute names to values.</dd>
+					<dd><code>array</code><br>$attrs an array that maps attribute names to values.</dd>
 				</dl></div>
+
 
 
 
@@ -484,7 +492,7 @@ class="php-var">$attrs</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_drop_column_family">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#235" title="Go to source code">drop_column_family</a>( <span> <var>$keyspace</var></span>, <span> <var>$column_family</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#235-239" title="Go to source code">drop_column_family</a>( <span>mixed <var>$keyspace</var></span>, <span>mixed <var>$column_family</var></span> )</code>
 
 		<div class="description short">
 			
@@ -492,6 +500,7 @@ class="php-var">$attrs</span>);
 
 		<div class="description detailed hidden">
 			
+
 
 
 
@@ -512,7 +521,7 @@ class="php-var">$attrs</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_truncate_column_family">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#241" title="Go to source code">truncate_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#241-264" title="Go to source code">truncate_column_family</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span> )</code>
 
 		<div class="description short">
 			
@@ -547,10 +556,11 @@ class="php-quote">&quot;ColumnFamily1&quot;</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the keyspace the CF is in</dd>
+					<dd><code>string</code><br>$keyspace the keyspace the CF is in</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the column family name</dd>
+					<dd><code>string</code><br>$column_family the column family name</dd>
 				</dl></div>
+
 
 
 
@@ -569,7 +579,7 @@ class="php-quote">&quot;ColumnFamily1&quot;</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_create_index">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#266" title="Go to source code">create_index</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span>, <span>string <var>$data_type</var> = self::KEEP</span>, <span>string <var>$index_name</var> = <span class="php-keyword1">NULL</span></span>, <span><code><a href="class-cassandra.IndexType.html">cassandra\IndexType</a></code> <var>$index_type</var> = <code><a href="class-cassandra.IndexType.html#KEYS">cassandra\IndexType::<b>KEYS</b></a></code></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#266-289" title="Go to source code">create_index</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span>, <span>string <var>$data_type</var> = self::KEEP</span>, <span>string <var>$index_name</var> = <span class="php-keyword1">NULL</span></span>, <span><code><a href="class-cassandra.IndexType.html">cassandra\IndexType</a></code> <var>$index_type</var> = phpcassa\IndexType::KEYS</span> )</code>
 
 		<div class="description short">
 			
@@ -599,19 +609,20 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the name of the keyspace containing the column family</dd>
+					<dd><code>string</code><br>$keyspace the name of the keyspace containing the column family</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the name of the column family</dd>
+					<dd><code>string</code><br>$column_family the name of the column family</dd>
 					<dt><var>$column</var></dt>
-					<dd><code>string</code><br> the name of the column to put the index on</dd>
+					<dd><code>string</code><br>$column the name of the column to put the index on</dd>
 					<dt><var>$data_type</var></dt>
-					<dd><code>string</code><br> the data type of the values being indexed</dd>
+					<dd><code>string</code><br>$data_type the data type of the values being indexed</dd>
 					<dt><var>$index_name</var></dt>
-					<dd><code>string</code><br> an optional name for the index</dd>
+					<dd><code>string</code><br>$index_name an optional name for the index</dd>
 					<dt><var>$index_type</var></dt>
-					<dd><code><code><a href="class-cassandra.IndexType.html">cassandra\IndexType</a></code></code><br> the type of index. Defaults to \cassandra\IndexType::KEYS_INDEX, which is
-currently the only option.</dd>
+					<dd><code><code><a href="class-cassandra.IndexType.html">cassandra\IndexType</a></code></code><br>$index_type the type of index. Defaults to \cassandra\IndexType::KEYS_INDEX,
+which is currently the only option.</dd>
 				</dl></div>
+
 
 
 
@@ -630,7 +641,7 @@ currently the only option.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_drop_index">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#291" title="Go to source code">drop_index</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#291-308" title="Go to source code">drop_index</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span> )</code>
 
 		<div class="description short">
 			
@@ -659,12 +670,13 @@ class="php-quote">&quot;name&quot;</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the name of the keyspace containing the column family</dd>
+					<dd><code>string</code><br>$keyspace the name of the keyspace containing the column family</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the name of the column family</dd>
+					<dd><code>string</code><br>$column_family the name of the column family</dd>
 					<dt><var>$column</var></dt>
-					<dd><code>string</code><br> the name of the column to drop the index from</dd>
+					<dd><code>string</code><br>$column the name of the column to drop the index from</dd>
 				</dl></div>
+
 
 
 
@@ -683,7 +695,7 @@ class="php-quote">&quot;name&quot;</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_alter_column">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#310" title="Go to source code">alter_column</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span>, <span>string <var>$data_type</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#310-327" title="Go to source code">alter_column</a>( <span>string <var>$keyspace</var></span>, <span>string <var>$column_family</var></span>, <span>string <var>$column</var></span>, <span>string <var>$data_type</var></span> )</code>
 
 		<div class="description short">
 			
@@ -713,14 +725,15 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the name of the keyspace containing the column family</dd>
+					<dd><code>string</code><br>$keyspace the name of the keyspace containing the column family</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the name of the column family</dd>
+					<dd><code>string</code><br>$column_family the name of the column family</dd>
 					<dt><var>$column</var></dt>
-					<dd><code>string</code><br> the name of the column to put the index on</dd>
+					<dd><code>string</code><br>$column the name of the column to put the index on</dd>
 					<dt><var>$data_type</var></dt>
-					<dd><code>string</code><br> the data type of the values being indexed</dd>
+					<dd><code>string</code><br>$data_type the data type of the values being indexed</dd>
 				</dl></div>
+
 
 
 
@@ -739,7 +752,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_ring">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#380" title="Go to source code">describe_ring</a>( <span> <var>$keyspace</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#380-387" title="Go to source code">describe_ring</a>( <span>mixed <var>$keyspace</var></span> )</code>
 
 		<div class="description short">
 			
@@ -761,6 +774,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -775,7 +789,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_cluster_name">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#389" title="Go to source code">describe_cluster_name</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#389-396" title="Go to source code">describe_cluster_name</a>( )</code>
 
 		<div class="description short">
 			
@@ -797,6 +811,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -811,7 +826,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_version">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#398" title="Go to source code">describe_version</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#398-407" title="Go to source code">describe_version</a>( )</code>
 
 		<div class="description short">
 			
@@ -835,6 +850,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -849,7 +865,7 @@ class="php-quote">&quot;UTF8Type&quot;</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_schema_versions">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#409" title="Go to source code">describe_schema_versions</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#409-417" title="Go to source code">describe_schema_versions</a>( )</code>
 
 		<div class="description short">
 			
@@ -873,6 +889,7 @@ versions indicate a schema conflict.</p>
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -887,7 +904,7 @@ versions indicate a schema conflict.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_partitioner">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#419" title="Go to source code">describe_partitioner</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#419-426" title="Go to source code">describe_partitioner</a>( )</code>
 
 		<div class="description short">
 			
@@ -909,6 +926,7 @@ versions indicate a schema conflict.</p>
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -923,7 +941,7 @@ versions indicate a schema conflict.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_snitch">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#428" title="Go to source code">describe_snitch</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#428-435" title="Go to source code">describe_snitch</a>( )</code>
 
 		<div class="description short">
 			
@@ -945,6 +963,7 @@ versions indicate a schema conflict.</p>
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -959,7 +978,7 @@ versions indicate a schema conflict.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_keyspace">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#437" title="Go to source code">describe_keyspace</a>( <span>string <var>$keyspace</var></span> )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#437-448" title="Go to source code">describe_keyspace</a>( <span>string <var>$keyspace</var></span> )</code>
 
 		<div class="description short">
 			
@@ -978,13 +997,14 @@ all configuration settings for the keyspace and column families.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keyspace</var></dt>
-					<dd><code>string</code><br> the keyspace name</dd>
+					<dd><code>string</code><br>$keyspace the keyspace name</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code><code><a href="class-cassandra.KsDef.html">cassandra\KsDef</a></code></code><br />
 				</div>
+
 
 
 
@@ -1002,7 +1022,7 @@ all configuration settings for the keyspace and column families.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_describe_keyspaces">#</a>
-		<code><a href="source-class-phpcassa.SystemManager.html#450" title="Go to source code">describe_keyspaces</a>( )</code>
+		<code><a href="source-class-phpcassa.SystemManager.html#450-457" title="Go to source code">describe_keyspaces</a>( )</code>
 
 		<div class="description short">
 			
@@ -1024,6 +1044,7 @@ all configuration settings for the keyspace and column families.</p>
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -1038,10 +1059,18 @@ all configuration settings for the keyspace and column families.</p>
 
 
 
+
+
+
+
+
+
+
+
 </div>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

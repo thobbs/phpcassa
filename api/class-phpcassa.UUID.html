@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 
 	<title>Class phpcassa\UUID | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -122,8 +122,9 @@
 		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
 		<b>Package:</b> phpcassa<br />
 
-		<b>Located at</b> <a href="source-class-phpcassa.UUID.html#42" title="Go to source code">phpcassa/UUID.php</a><br />
+		<b>Located at</b> <a href="source-class-phpcassa.UUID.html#42-361" title="Go to source code">phpcassa/UUID.php</a><br />
 	</div>
+
 
 
 	<table class="summary" id="methods">
@@ -139,7 +140,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uuid1">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#76" title="Go to source code">uuid1</a>( <span>string <var>$node</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$time</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#76-86" title="Go to source code">uuid1</a>( <span>string <var>$node</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$time</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -156,17 +157,18 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$node</var></dt>
-					<dd><code>string</code><br> what to use for the MAC portion of the UUID. This will be generated randomly if
-left as NULL</dd>
+					<dd><code>string</code><br>$node what to use for the MAC portion of the UUID. This will be generated
+randomly if left as NULL</dd>
 					<dt><var>$time</var></dt>
-					<dd><code>integer</code><br> timestamp to use for the UUID. This should be a number of microseconds since
-the UNIX epoch.</dd>
+					<dd><code>integer</code><br>$time timestamp to use for the UUID. This should be a number of microseconds
+since the UNIX epoch.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>string</code><br>a byte[] representation of a UUID<br />
 				</div>
+
 
 
 
@@ -184,7 +186,7 @@ the UNIX epoch.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uuid3">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#88" title="Go to source code">uuid3</a>( <span> <var>$node</var> = <span class="php-keyword1">null</span></span>, <span> <var>$namespace</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#88-94" title="Go to source code">uuid3</a>( <span>mixed <var>$node</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$namespace</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -203,6 +205,7 @@ the UNIX epoch.</dd>
 				<div class="list">
 					<code>string</code><br>a byte[] representation of a UUID<br />
 				</div>
+
 
 
 
@@ -220,7 +223,7 @@ the UNIX epoch.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uuid4">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#96" title="Go to source code">uuid4</a>( )</code>
+		<code><a href="source-class-phpcassa.UUID.html#96-102" title="Go to source code">uuid4</a>( )</code>
 
 		<div class="description short">
 			
@@ -239,6 +242,7 @@ the UNIX epoch.</dd>
 				<div class="list">
 					<code>string</code><br>a byte[] representation of a UUID<br />
 				</div>
+
 
 
 
@@ -256,7 +260,7 @@ the UNIX epoch.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uuid5">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#104" title="Go to source code">uuid5</a>( <span> <var>$node</var></span>, <span> <var>$namespace</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#104-110" title="Go to source code">uuid5</a>( <span>mixed <var>$node</var></span>, <span>mixed <var>$namespace</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -278,6 +282,7 @@ the UNIX epoch.</dd>
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -292,7 +297,7 @@ the UNIX epoch.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_import">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#112" title="Go to source code">import</a>( <span> <var>$uuid</var></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#112-117" title="Go to source code">import</a>( <span>mixed <var>$uuid</var></span> )</code>
 
 		<div class="description short">
 			
@@ -303,6 +308,7 @@ the UNIX epoch.</dd>
 		<div class="description detailed hidden">
 			
 <p>Import an existing UUID.</p>
+
 
 
 
@@ -324,7 +330,7 @@ the UNIX epoch.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_mint">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#119" title="Go to source code">mint</a>( <span>integer <var>$ver</var> = <span class="php-num">1</span></span>, <span> <var>$node</var> = <span class="php-keyword1">NULL</span></span>, <span> <var>$ns</var> = <span class="php-keyword1">NULL</span></span>, <span> <var>$time</var> = <span class="php-keyword1">NULL</span></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#119-139" title="Go to source code">mint</a>( <span>integer <var>$ver</var> = <span class="php-num">1</span></span>, <span>mixed <var>$node</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$ns</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$time</var> = <span class="php-keyword1">NULL</span></span> )</code>
 
 		<div class="description short">
 			
@@ -341,7 +347,7 @@ the UNIX epoch.</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$ver</var></dt>
-					<dd><code>integer</code><br> the UUID version to generate.</dd>
+					<dd><code>integer</code><br>$ver the UUID version to generate.</dd>
 					<dt><var>$node</var></dt>
 					<dd></dd>
 					<dt><var>$ns</var></dt>
@@ -349,6 +355,7 @@ the UNIX epoch.</dd>
 					<dt><var>$time</var></dt>
 					<dd></dd>
 				</dl></div>
+
 
 
 
@@ -367,7 +374,7 @@ the UNIX epoch.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_compare">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#141" title="Go to source code">compare</a>( <span> <var>$a</var></span>, <span> <var>$b</var></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#141-151" title="Go to source code">compare</a>( <span>mixed <var>$a</var></span>, <span>mixed <var>$b</var></span> )</code>
 
 		<div class="description short">
 			
@@ -380,6 +387,7 @@ true if they are bit-exact, or if neither is valid.</p>
 			
 <p>Compare the binary representations of two UUIDs. The comparison will return
 true if they are bit-exact, or if neither is valid.</p>
+
 
 
 
@@ -401,7 +409,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___toString">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#153" title="Go to source code">__toString</a>( )</code>
+		<code><a href="source-class-phpcassa.UUID.html#153-155" title="Go to source code">__toString</a>( )</code>
 
 		<div class="description short">
 			
@@ -409,6 +417,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<div class="description detailed hidden">
 			
+
 
 
 
@@ -429,7 +438,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___get">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#157" title="Go to source code">__get</a>( <span> <var>$var</var></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#157-199" title="Go to source code">__get</a>( <span>mixed <var>$var</var></span> )</code>
 
 		<div class="description short">
 			
@@ -437,6 +446,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<div class="description detailed hidden">
 			
+
 
 
 
@@ -457,7 +467,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_initRandom">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#317" title="Go to source code">initRandom</a>( )</code>
+		<code><a href="source-class-phpcassa.UUID.html#317-332" title="Go to source code">initRandom</a>( )</code>
 
 		<div class="description short">
 			
@@ -465,6 +475,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<div class="description detailed hidden">
 			
+
 
 
 
@@ -485,7 +496,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_randomBytes">#</a>
-		<code><a href="source-class-phpcassa.UUID.html#334" title="Go to source code">randomBytes</a>( <span> <var>$bytes</var></span> )</code>
+		<code><a href="source-class-phpcassa.UUID.html#334-336" title="Go to source code">randomBytes</a>( <span>mixed <var>$bytes</var></span> )</code>
 
 		<div class="description short">
 			
@@ -493,6 +504,7 @@ true if they are bit-exact, or if neither is valid.</p>
 
 		<div class="description detailed hidden">
 			
+
 
 
 
@@ -507,13 +519,15 @@ true if they are bit-exact, or if neither is valid.</p>
 
 
 
+
+
+
+
 	<table class="summary" id="constants">
 	<caption>Constants summary</caption>
 	<tr data-order="MD5" id="MD5">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#46" title="Go to source code"><b>MD5</b></a>
 		</code></td>
@@ -533,9 +547,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="SHA1" id="SHA1">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#47" title="Go to source code"><b>SHA1</b></a>
 		</code></td>
@@ -555,9 +567,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="clearVer" id="clearVer">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#48" title="Go to source code"><b>clearVer</b></a>
 		</code></td>
@@ -577,9 +587,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="clearVar" id="clearVar">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#49" title="Go to source code"><b>clearVar</b></a>
 		</code></td>
@@ -599,9 +607,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="varRes" id="varRes">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#50" title="Go to source code"><b>varRes</b></a>
 		</code></td>
@@ -621,9 +627,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="varMS" id="varMS">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#51" title="Go to source code"><b>varMS</b></a>
 		</code></td>
@@ -643,9 +647,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="varRFC" id="varRFC">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#52" title="Go to source code"><b>varRFC</b></a>
 		</code></td>
@@ -665,9 +667,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="varNCS" id="varNCS">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#53" title="Go to source code"><b>varNCS</b></a>
 		</code></td>
@@ -687,9 +687,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="version1" id="version1">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#54" title="Go to source code"><b>version1</b></a>
 		</code></td>
@@ -709,9 +707,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="version3" id="version3">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#55" title="Go to source code"><b>version3</b></a>
 		</code></td>
@@ -731,9 +727,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="version4" id="version4">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#56" title="Go to source code"><b>version4</b></a>
 		</code></td>
@@ -753,9 +747,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="version5" id="version5">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#57" title="Go to source code"><b>version5</b></a>
 		</code></td>
@@ -775,9 +767,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="interval" id="interval">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>float</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#58" title="Go to source code"><b>interval</b></a>
 		</code></td>
@@ -797,9 +787,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="nsDNS" id="nsDNS">
 
-		<td class="attributes"><code>
-			string
-		</code></td>
+		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#59" title="Go to source code"><b>nsDNS</b></a>
 		</code></td>
@@ -819,9 +807,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="nsURL" id="nsURL">
 
-		<td class="attributes"><code>
-			string
-		</code></td>
+		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#60" title="Go to source code"><b>nsURL</b></a>
 		</code></td>
@@ -841,9 +827,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="nsOID" id="nsOID">
 
-		<td class="attributes"><code>
-			string
-		</code></td>
+		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#61" title="Go to source code"><b>nsOID</b></a>
 		</code></td>
@@ -863,9 +847,7 @@ true if they are bit-exact, or if neither is valid.</p>
 	</tr>
 	<tr data-order="nsX500" id="nsX500">
 
-		<td class="attributes"><code>
-			string
-		</code></td>
+		<td class="attributes"><code>string</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.UUID.html#62" title="Go to source code"><b>nsX500</b></a>
 		</code></td>
@@ -890,10 +872,14 @@ true if they are bit-exact, or if neither is valid.</p>
 
 
 
+
+
+
+
 </div>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

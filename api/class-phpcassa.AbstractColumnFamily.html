@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 
 	<title>Class phpcassa\AbstractColumnFamily | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -132,8 +132,9 @@
 		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
 		<b>Package:</b> phpcassa<br />
 
-		<b>Located at</b> <a href="source-class-phpcassa.AbstractColumnFamily.html#34" title="Go to source code">phpcassa/AbstractColumnFamily.php</a><br />
+		<b>Located at</b> <a href="source-class-phpcassa.AbstractColumnFamily.html#34-1174" title="Go to source code">phpcassa/AbstractColumnFamily.php</a><br />
 	</div>
+
 
 
 	<table class="summary" id="methods">
@@ -149,7 +150,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#155" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code> <var>$pool</var></span>, <span>string <var>$column_family</var></span>, <span>boolean <var>$autopack_names</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$autopack_values</var> = <span class="php-keyword1">true</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$read_consistency_level</var> = <code><a href="class-cassandra.ConsistencyLevel.html#ONE">cassandra\ConsistencyLevel::<b>ONE</b></a></code></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$write_consistency_level</var> = <code><a href="class-cassandra.ConsistencyLevel.html#ONE">cassandra\ConsistencyLevel::<b>ONE</b></a></code></span>, <span>integer <var>$buffer_size</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_BUFFER_SIZE">phpcassa\AbstractColumnFamily::<b>DEFAULT_BUFFER_SIZE</b></a></code></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#155-218" title="Go to source code">__construct</a>( <span><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code> <var>$pool</var></span>, <span>string <var>$column_family</var></span>, <span>boolean <var>$autopack_names</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$autopack_values</var> = <span class="php-keyword1">true</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$read_consistency_level</var> = phpcassa\ConsistencyLevel::ONE</span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$write_consistency_level</var> = phpcassa\ConsistencyLevel::ONE</span>, <span>integer <var>$buffer_size</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_BUFFER_SIZE">phpcassa\AbstractColumnFamily::<b>DEFAULT_BUFFER_SIZE</b></a></code></span> )</code>
 
 		<div class="description short">
 			
@@ -166,24 +167,27 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$pool</var></dt>
-					<dd><code><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code></code><br> the pool to use when querying Cassandra</dd>
+					<dd><code><code><a href="class-phpcassa.Connection.ConnectionPool.html">phpcassa\Connection\ConnectionPool</a></code></code><br>$pool the pool to use when querying Cassandra</dd>
 					<dt><var>$column_family</var></dt>
-					<dd><code>string</code><br> the name of the column family in Cassandra</dd>
+					<dd><code>string</code><br>$column_family the name of the column family in Cassandra</dd>
 					<dt><var>$autopack_names</var></dt>
-					<dd><code>boolean</code><br> whether or not to automatically convert column names to and from their binary
-representation in Cassandra based on their comparator type</dd>
+					<dd><code>boolean</code><br>$autopack_names whether or not to automatically convert column names to and from
+their binary representation in Cassandra based on their comparator type</dd>
 					<dt><var>$autopack_values</var></dt>
-					<dd><code>boolean</code><br> whether or not to automatically convert column values to and from their binary
-representation in Cassandra based on their validator type</dd>
+					<dd><code>boolean</code><br>$autopack_values whether or not to automatically convert column values to and
+from their binary representation in Cassandra based on their validator type</dd>
 					<dt><var>$read_consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> the default consistency level for read operations on this column family</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$read_consistency_level the default consistency level for read operations on
+this column family</dd>
 					<dt><var>$write_consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> the default consistency level for write operations on this column family</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$write_consistency_level the default consistency level for write operations on
+this column family</dd>
 					<dt><var>$buffer_size</var></dt>
-					<dd><code>integer</code><br> When calling <code>get_range</code>, the intermediate results need to be
-buffered if we are fetching many rows, otherwise the Cassandra server will
+					<dd><code>integer</code><br>$buffer_size When calling <code>get_range</code>, the intermediate results need
+to be buffered if we are fetching many rows, otherwise the Cassandra server will
 overallocate memory and fail. This is the size of that buffer in number of rows.</dd>
 				</dl></div>
+
 
 
 
@@ -202,7 +206,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_set_autopack_names">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#225" title="Go to source code">set_autopack_names</a>( <span>boolean <var>$pack_names</var></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#225-242" title="Go to source code">set_autopack_names</a>( <span>boolean <var>$pack_names</var></span> )</code>
 
 		<div class="description short">
 			
@@ -215,8 +219,9 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$pack_names</var></dt>
-					<dd><code>boolean</code><br> whether or not column names are automatically packed/unpacked</dd>
+					<dd><code>boolean</code><br>$pack_names whether or not column names are automatically packed/unpacked</dd>
 				</dl></div>
+
 
 
 
@@ -235,7 +240,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_set_autopack_values">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#244" title="Go to source code">set_autopack_values</a>( <span>boolean <var>$pack_values</var></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#244-258" title="Go to source code">set_autopack_values</a>( <span>boolean <var>$pack_values</var></span> )</code>
 
 		<div class="description short">
 			
@@ -248,8 +253,9 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$pack_values</var></dt>
-					<dd><code>boolean</code><br> whether or not column values are automatically packed/unpacked</dd>
+					<dd><code>boolean</code><br>$pack_values whether or not column values are automatically packed/unpacked</dd>
 				</dl></div>
+
 
 
 
@@ -268,7 +274,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_set_autopack_keys">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#260" title="Go to source code">set_autopack_keys</a>( <span>boolean <var>$pack_keys</var></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#260-276" title="Go to source code">set_autopack_keys</a>( <span>boolean <var>$pack_keys</var></span> )</code>
 
 		<div class="description short">
 			
@@ -281,9 +287,10 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$pack_keys</var></dt>
-					<dd><code>boolean</code><br> whether or not keys are automatically packed/unpacked Available since Cassandra
-0.8.0.</dd>
+					<dd><code>boolean</code><br>$pack_keys whether or not keys are automatically packed/unpacked Available since
+Cassandra 0.8.0.</dd>
 				</dl></div>
+
 
 
 
@@ -302,7 +309,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#278" title="Go to source code">get</a>( <span>string <var>$key</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#278-297" title="Go to source code">get</a>( <span>string <var>$key</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -319,20 +326,21 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> row key to fetch</dd>
+					<dd><code>string</code><br>$key row key to fetch</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the columns or super columns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the columns or super columns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>array(column_name =&gt; column_value)<br />
 				</div>
+
 
 
 
@@ -350,7 +358,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_multiget">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#310" title="Go to source code">multiget</a>( <span>string[] <var>$keys</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-num">16</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#310-334" title="Go to source code">multiget</a>( <span>string[] <var>$keys</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-num">16</span></span> )</code>
 
 		<div class="description short">
 			
@@ -367,24 +375,25 @@ returns</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keys</var></dt>
-					<dd><code>string[]</code><br> row keys to fetch</dd>
+					<dd><code>string[]</code><br>$keys row keys to fetch</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the columns or super columns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the columns or super columns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 					<dt><var>$buffer_size</var></dt>
-					<dd><code>integer</code><br> the number of keys to multiget at a single time. If your rows are large, having
-a high buffer size gives poor performance; if your rows are small, consider
-increasing this value.</dd>
+					<dd><code>integer</code><br>$buffer_size the number of keys to multiget at a single time. If your rows are
+large, having a high buffer size gives poor performance; if your rows are small,
+consider increasing this value.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>array(key =&gt; array(column_name =&gt; column_value))<br />
 				</div>
+
 
 
 
@@ -402,7 +411,7 @@ increasing this value.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_count">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#415" title="Go to source code">get_count</a>( <span>string <var>$key</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#415-435" title="Go to source code">get_count</a>( <span>string <var>$key</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -419,20 +428,21 @@ increasing this value.</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> row to be counted</dd>
+					<dd><code>string</code><br>$key row to be counted</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to count, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the possible columns or super columns counted to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the possible columns or super columns counted to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br />
 				</div>
+
 
 
 
@@ -450,7 +460,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_multiget_count">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#442" title="Go to source code">multiget_count</a>( <span>string[] <var>$keys</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#442-463" title="Go to source code">multiget_count</a>( <span>string[] <var>$keys</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -467,20 +477,21 @@ returns</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$keys</var></dt>
-					<dd><code>string[]</code><br> rows to be counted</dd>
+					<dd><code>string[]</code><br>$keys rows to be counted</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to count, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the possible columns or super columns counted to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the possible columns or super columns counted to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>array(row_key =&gt; row_count)<br />
 				</div>
+
 
 
 
@@ -498,7 +509,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_range">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#501" title="Go to source code">get_range</a>( <span>string <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#501-531" title="Go to source code">get_range</a>( <span>mixed <var>$key_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>mixed <var>$key_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -515,21 +526,21 @@ returns</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key_start</var></dt>
-					<dd><code>string</code><br> fetch rows with a key &gt;= this</dd>
+					<dd><code>mixed</code><br>$key_start fetch rows with a key &gt;= this</dd>
 					<dt><var>$key_finish</var></dt>
-					<dd><code>string</code><br> fetch rows with a key &lt;= this</dd>
+					<dd><code>mixed</code><br>$key_finish fetch rows with a key &lt;= this</dd>
 					<dt><var>$row_count</var></dt>
-					<dd><code>integer</code><br> limit the number of rows returned to this amount</dd>
+					<dd><code>integer</code><br>$row_count limit the number of rows returned to this amount</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the columns or super columns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the columns or super columns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 					<dt><var>$buffer_size</var></dt>
-					<dd><code>integer</code><br> When calling <code>get_range</code>, the intermediate results need to be
-buffered if we are fetching many rows, otherwise the Cassandra server will
+					<dd><code>integer</code><br>$buffer_size When calling <code>get_range</code>, the intermediate results need
+to be buffered if we are fetching many rows, otherwise the Cassandra server will
 overallocate memory and fail. This is the size of that buffer in number of rows.</dd>
 				</dl></div>
 
@@ -537,6 +548,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<div class="list">
 					<code><code><a href="class-phpcassa.Iterator.RangeColumnFamilyIterator.html">phpcassa\Iterator\RangeColumnFamilyIterator</a></code></code><br />
 				</div>
+
 
 
 
@@ -554,7 +566,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_range_by_token">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#551" title="Go to source code">get_range_by_token</a>( <span>string <var>$token_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$token_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#551-594" title="Go to source code">get_range_by_token</a>( <span>string <var>$token_start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>string <var>$token_finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$row_count</var> = <code><a href="class-phpcassa.AbstractColumnFamily.html#DEFAULT_ROW_COUNT">phpcassa\AbstractColumnFamily::<b>DEFAULT_ROW_COUNT</b></a></code></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -580,21 +592,21 @@ node. In this case you minimize the network traffic between nodes.<br />
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$token_start</var></dt>
-					<dd><code>string</code><br> fetch rows with a token &gt;= this</dd>
+					<dd><code>string</code><br>$token_start fetch rows with a token &gt;= this</dd>
 					<dt><var>$token_finish</var></dt>
-					<dd><code>string</code><br> fetch rows with a token &lt;= this</dd>
+					<dd><code>string</code><br>$token_finish fetch rows with a token &lt;= this</dd>
 					<dt><var>$row_count</var></dt>
-					<dd><code>integer</code><br> limit the number of rows returned to this amount</dd>
+					<dd><code>integer</code><br>$row_count limit the number of rows returned to this amount</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the columns or super columns fetched to this list</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the columns or super columns fetched to this list</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 					<dt><var>$buffer_size</var></dt>
-					<dd><code>integer</code><br> When calling <code>get_range</code>, the intermediate results need to be
-buffered if we are fetching many rows, otherwise the Cassandra server will
+					<dd><code>integer</code><br>$buffer_size When calling <code>get_range</code>, the intermediate results need
+to be buffered if we are fetching many rows, otherwise the Cassandra server will
 overallocate memory and fail. This is the size of that buffer in number of rows.</dd>
 				</dl></div>
 
@@ -602,6 +614,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<div class="list">
 					<code><code><a href="class-phpcassa.Iterator.RangeColumnFamilyIterator.html">phpcassa\Iterator\RangeColumnFamilyIterator</a></code></code><br />
 				</div>
+
 
 
 
@@ -619,7 +632,7 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_get_indexed_slices">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#614" title="Go to source code">get_indexed_slices</a>( <span><code><a href="class-phpcassa.Index.IndexClause.html">phpcassa\Index\IndexClause</a></code> <var>$index_clause</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span> <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#614-657" title="Go to source code">get_indexed_slices</a>( <span><code><a href="class-phpcassa.Index.IndexClause.html">phpcassa\Index\IndexClause</a></code> <var>$index_clause</var></span>, <span><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code> <var>$column_slice</var> = <span class="php-keyword1">null</span></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$consistency_level</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$buffer_size</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -636,14 +649,14 @@ overallocate memory and fail. This is the size of that buffer in number of rows.
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$index_clause</var></dt>
-					<dd><code><code><a href="class-phpcassa.Index.IndexClause.html">phpcassa\Index\IndexClause</a></code></code><br> limits the keys that are returned based on expressions that compare the value
-of a column to a given value. At least one of the expressions in the IndexClause
-must be on an indexed column.</dd>
+					<dd><code><code><a href="class-phpcassa.Index.IndexClause.html">phpcassa\Index\IndexClause</a></code></code><br>$index_clause limits the keys that are returned based on expressions that
+compare the value of a column to a given value. At least one of the expressions
+in the IndexClause must be on an indexed column.</dd>
 					<dt><var>$column_slice</var></dt>
 					<dd><code><code><a href="class-phpcassa.ColumnSlice.html">phpcassa\ColumnSlice</a></code></code><br>a slice of columns to fetch, or null</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> limit the columns or super columns fetched to this list number of nodes that
-must respond before the operation returns</dd>
+					<dd><code>mixed[]</code><br>$column_names limit the columns or super columns fetched to this list number of
+nodes that must respond before the operation returns</dd>
 					<dt><var>$consistency_level</var></dt>
 					<dd></dd>
 					<dt><var>$buffer_size</var></dt>
@@ -654,6 +667,7 @@ must respond before the operation returns</dd>
 				<div class="list">
 					<code><code><a href="class-phpcassa.Iterator.IndexedColumnFamilyIterator.html">phpcassa\Iterator\IndexedColumnFamilyIterator</a></code></code><br />
 				</div>
+
 
 
 
@@ -671,7 +685,7 @@ must respond before the operation returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_insert">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#659" title="Go to source code">insert</a>( <span>string <var>$key</var></span>, <span>mixed[] <var>$columns</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#659-687" title="Go to source code">insert</a>( <span>string <var>$key</var></span>, <span>mixed[] <var>$columns</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -688,23 +702,24 @@ must respond before the operation returns</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> the row to insert or update the columns in</dd>
+					<dd><code>string</code><br>$key the row to insert or update the columns in</dd>
 					<dt><var>$columns</var></dt>
-					<dd><code>mixed[]</code><br> array(column_name =&gt; column_value) the columns to insert or update</dd>
+					<dd><code>mixed[]</code><br>$columns array(column_name =&gt; column_value) the columns to insert or update</dd>
 					<dt><var>$timestamp</var></dt>
-					<dd><code>integer</code><br> the timestamp to use for this insertion. Leaving this as null will result in a
-timestamp being generated for you</dd>
+					<dd><code>integer</code><br>$timestamp the timestamp to use for this insertion. Leaving this as null will
+result in a timestamp being generated for you</dd>
 					<dt><var>$ttl</var></dt>
-					<dd><code>integer</code><br> time to live for the columns; after ttl seconds they will be deleted</dd>
+					<dd><code>integer</code><br>$ttl time to live for the columns; after ttl seconds they will be deleted</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br>the timestamp for the operation<br />
 				</div>
+
 
 
 
@@ -722,7 +737,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_batch_insert">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#689" title="Go to source code">batch_insert</a>( <span>array <var>$rows</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#689-728" title="Go to source code">batch_insert</a>( <span>array <var>$rows</var></span>, <span>integer <var>$timestamp</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -741,22 +756,23 @@ atomic per row.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$rows</var></dt>
-					<dd><code>array</code><br> an array of keys, each of which maps to an array of columns. This looks like
-array(key =&gt; array(column_name =&gt; column_value))</dd>
+					<dd><code>array</code><br>$rows an array of keys, each of which maps to an array of columns. This looks
+like array(key =&gt; array(column_name =&gt; column_value))</dd>
 					<dt><var>$timestamp</var></dt>
-					<dd><code>integer</code><br> the timestamp to use for these insertions. Leaving this as null will result in
-a timestamp being generated for you</dd>
+					<dd><code>integer</code><br>$timestamp the timestamp to use for these insertions. Leaving this as null will
+result in a timestamp being generated for you</dd>
 					<dt><var>$ttl</var></dt>
-					<dd><code>integer</code><br> time to live for the columns; after ttl seconds they will be deleted</dd>
+					<dd><code>integer</code><br>$ttl time to live for the columns; after ttl seconds they will be deleted</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br>the timestamp for the operation<br />
 				</div>
+
 
 
 
@@ -767,23 +783,40 @@ returns</dd>
 
 		<td class="attributes"><code>
 			 public 
-			
+			a
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_batch">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#745" title="Go to source code">batch</a>( <span> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#730-741" title="Go to source code">batch</a>( <span>phpcassa\ConsistencyLevel <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
+<p>Create a new phpcassa\Batch\CfMutator instance targetting this column
+family.</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>Create a new phpcassa\Batch\CfMutator instance targetting this column
+family.</p>
 
 
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$consistency_level</var></dt>
+					<dd><code>phpcassa\ConsistencyLevel</code><br>$consistency_level the consistency level the batch mutator will write at; if
+left as NULL, this defaults to phpcassa\ColumnFamily::write_consistency_level.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>a</code><br>phpcassa\Batch\CfMutator instance<br />
+				</div>
 
 
 
@@ -802,7 +835,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#749" title="Go to source code">remove</a>( <span>string <var>$key</var></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#743-775" title="Go to source code">remove</a>( <span>string <var>$key</var></span>, <span>mixed[] <var>$column_names</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -819,18 +852,20 @@ returns</dd>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> the row to remove columns from</dd>
+					<dd><code>string</code><br>$key the row to remove columns from</dd>
 					<dt><var>$column_names</var></dt>
-					<dd><code>mixed[]</code><br> the columns or supercolumns to remove. If null, the entire row will be removed.</dd>
+					<dd><code>mixed[]</code><br>$column_names the columns or supercolumns to remove. If null, the entire row
+will be removed.</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br>the timestamp for the operation<br />
 				</div>
+
 
 
 
@@ -848,7 +883,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove_counter">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#802" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$column</var></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#796-817" title="Go to source code">remove_counter</a>( <span>string <var>$key</var></span>, <span>mixed <var>$column</var></span>, <span><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code> <var>$consistency_level</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -871,13 +906,14 @@ nodes and all of them have been fully compacted.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$key</var></dt>
-					<dd><code>string</code><br> the key for the row</dd>
+					<dd><code>string</code><br>$key the key for the row</dd>
 					<dt><var>$column</var></dt>
-					<dd><code>mixed</code><br> the column name of the counter</dd>
+					<dd><code>mixed</code><br>$column the column name of the counter</dd>
 					<dt><var>$consistency_level</var></dt>
-					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br> affects the guaranteed number of nodes that must respond before the operation
-returns</dd>
+					<dd><code><code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code></code><br>$consistency_level affects the guaranteed number of nodes that must respond
+before the operation returns</dd>
 				</dl></div>
+
 
 
 
@@ -896,7 +932,7 @@ returns</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_truncate">#</a>
-		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#825" title="Go to source code">truncate</a>( )</code>
+		<code><a href="source-class-phpcassa.AbstractColumnFamily.html#819-832" title="Go to source code">truncate</a>( )</code>
 
 		<div class="description short">
 			
@@ -922,6 +958,7 @@ throw an UnavailableException if some hosts are down.</p>
 
 
 
+
 		</div>
 		</div></td>
 	</tr>
@@ -930,15 +967,17 @@ throw an UnavailableException if some hosts are down.</p>
 
 
 
+
+
+
+
 	<table class="summary" id="constants">
 	<caption>Constants summary</caption>
 	<tr data-order="DEFAULT_ROW_COUNT" id="DEFAULT_ROW_COUNT">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#41" title="Go to source code"><b>DEFAULT_ROW_COUNT</b></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#41-42" title="Go to source code"><b>DEFAULT_ROW_COUNT</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">100</span></code></td>
 		<td class="description"><div>
@@ -960,9 +999,7 @@ throw an UnavailableException if some hosts are down.</p>
 	</tr>
 	<tr data-order="DEFAULT_BUFFER_SIZE" id="DEFAULT_BUFFER_SIZE">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
 				<a href="source-class-phpcassa.AbstractColumnFamily.html#44" title="Go to source code"><b>DEFAULT_BUFFER_SIZE</b></a>
 		</code></td>
@@ -982,11 +1019,9 @@ throw an UnavailableException if some hosts are down.</p>
 	</tr>
 	<tr data-order="DICTIONARY_FORMAT" id="DICTIONARY_FORMAT">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#46" title="Go to source code"><b>DICTIONARY_FORMAT</b></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#46-58" title="Go to source code"><b>DICTIONARY_FORMAT</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">1</span></code></td>
 		<td class="description"><div>
@@ -1019,11 +1054,9 @@ ColumnFamily::insert_format and ColumnFamily::return_format.</p>
 	</tr>
 	<tr data-order="ARRAY_FORMAT" id="ARRAY_FORMAT">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#60" title="Go to source code"><b>ARRAY_FORMAT</b></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#60-72" title="Go to source code"><b>ARRAY_FORMAT</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">2</span></code></td>
 		<td class="description"><div>
@@ -1057,11 +1090,9 @@ ColumnFamily::return_format.</p>
 	</tr>
 	<tr data-order="OBJECT_FORMAT" id="OBJECT_FORMAT">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#74" title="Go to source code"><b>OBJECT_FORMAT</b></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#74-87" title="Go to source code"><b>OBJECT_FORMAT</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">3</span></code></td>
 		<td class="description"><div>
@@ -1100,17 +1131,17 @@ ColumnFamily::insert_format.</p>
 
 
 
+
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
 	<tr data-order="autopack_names" id="$autopack_names">
-
 		<td class="attributes"><code>
-			public 
-			
+			public  
+			mixed
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#108" title="Go to source code"><var>$autopack_names</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#108-112" title="Go to source code"><var>$autopack_names</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -1133,14 +1164,13 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="autopack_values" id="$autopack_values">
-
 		<td class="attributes"><code>
-			public 
-			
+			public  
+			mixed
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#114" title="Go to source code"><var>$autopack_values</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#114-118" title="Go to source code"><var>$autopack_values</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -1163,14 +1193,13 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="autopack_keys" id="$autopack_keys">
-
 		<td class="attributes"><code>
-			public 
-			
+			public  
+			mixed
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#120" title="Go to source code"><var>$autopack_keys</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#120-124" title="Go to source code"><var>$autopack_keys</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -1193,16 +1222,15 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="read_consistency_level" id="$read_consistency_level">
-
 		<td class="attributes"><code>
-			public 
+			public  
 			<code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#126" title="Go to source code"><var>$read_consistency_level</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#126-127" title="Go to source code"><var>$read_consistency_level</var></a>
 		</td>
-		<td class="value"><code><code><a href="class-cassandra.ConsistencyLevel.html#ONE">cassandra\ConsistencyLevel::<b>ONE</b></a></code></code></td>
+		<td class="value"><code>phpcassa\ConsistencyLevel::ONE</code></td>
 		<td class="description"><div>
 			<a href="#$read_consistency_level" class="anchor">#</a>
 
@@ -1221,16 +1249,15 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="write_consistency_level" id="$write_consistency_level">
-
 		<td class="attributes"><code>
-			public 
+			public  
 			<code><a href="class-cassandra.ConsistencyLevel.html">cassandra\ConsistencyLevel</a></code>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#128" title="Go to source code"><var>$write_consistency_level</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#128-129" title="Go to source code"><var>$write_consistency_level</var></a>
 		</td>
-		<td class="value"><code><code><a href="class-cassandra.ConsistencyLevel.html#ONE">cassandra\ConsistencyLevel::<b>ONE</b></a></code></code></td>
+		<td class="value"><code>phpcassa\ConsistencyLevel::ONE</code></td>
 		<td class="description"><div>
 			<a href="#$write_consistency_level" class="anchor">#</a>
 
@@ -1249,14 +1276,13 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="return_format" id="$return_format">
-
 		<td class="attributes"><code>
-			public 
+			public  
 			integer
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#131" title="Go to source code"><var>$return_format</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#131-137" title="Go to source code"><var>$return_format</var></a>
 		</td>
 		<td class="value"><code><code><a href="class-phpcassa.AbstractColumnFamily.html#DICTIONARY_FORMAT">phpcassa\AbstractColumnFamily::<b>DICTIONARY_FORMAT</b></a></code></code></td>
 		<td class="description"><div>
@@ -1279,14 +1305,13 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="insert_format" id="$insert_format">
-
 		<td class="attributes"><code>
-			public 
+			public  
 			integer
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#139" title="Go to source code"><var>$insert_format</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#139-145" title="Go to source code"><var>$insert_format</var></a>
 		</td>
 		<td class="value"><code><code><a href="class-phpcassa.AbstractColumnFamily.html#DICTIONARY_FORMAT">phpcassa\AbstractColumnFamily::<b>DICTIONARY_FORMAT</b></a></code></code></td>
 		<td class="description"><div>
@@ -1309,14 +1334,13 @@ true.</p>
 		</div></td>
 	</tr>
 	<tr data-order="buffer_size" id="$buffer_size">
-
 		<td class="attributes"><code>
-			public 
+			public  
 			integer
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-phpcassa.AbstractColumnFamily.html#147" title="Go to source code"><var>$buffer_size</var></a>
+				<a href="source-class-phpcassa.AbstractColumnFamily.html#147-153" title="Go to source code"><var>$buffer_size</var></a>
 		</td>
 		<td class="value"><code><span class="php-num">100</span></code></td>
 		<td class="description"><div>
@@ -1346,10 +1370,13 @@ The default is 100.</p>
 
 
 
+
+
+
 </div>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

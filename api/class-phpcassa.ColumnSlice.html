@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="generator" content="ApiGen 2.6.1" />
+	<meta name="generator" content="ApiGen 2.8.0" />
 
 	<title>Class phpcassa\ColumnSlice | phpcassa</title>
 
-	<script type="text/javascript" src="resources/combined.js?144019575"></script>
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
 	<script type="text/javascript" src="elementlist.js?4162256369"></script>
-	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?1532301413" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
 
@@ -149,8 +149,9 @@ column.</p>
 		<b>Namespace:</b> <a href="namespace-phpcassa.html">phpcassa</a><br />
 		<b>Package:</b> phpcassa<br />
 
-		<b>Located at</b> <a href="source-class-phpcassa.ColumnSlice.html#6" title="Go to source code">phpcassa/ColumnSlice.php</a><br />
+		<b>Located at</b> <a href="source-class-phpcassa.ColumnSlice.html#6-40" title="Go to source code">phpcassa/ColumnSlice.php</a><br />
 	</div>
+
 
 
 	<table class="summary" id="methods">
@@ -166,7 +167,7 @@ column.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-phpcassa.ColumnSlice.html#20" title="Go to source code">__construct</a>( <span>mixed <var>$start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>mixed <var>$finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$count</var> = <code><a href="class-phpcassa.ColumnSlice.html#DEFAULT_COLUMN_COUNT">phpcassa\ColumnSlice::<b>DEFAULT_COLUMN_COUNT</b></a></code></span>, <span>boolean <var>$reversed</var> = <span class="php-keyword1">False</span></span> )</code>
+		<code><a href="source-class-phpcassa.ColumnSlice.html#20-39" title="Go to source code">__construct</a>( <span>mixed <var>$start</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>mixed <var>$finish</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>integer <var>$count</var> = <code><a href="class-phpcassa.ColumnSlice.html#DEFAULT_COLUMN_COUNT">phpcassa\ColumnSlice::<b>DEFAULT_COLUMN_COUNT</b></a></code></span>, <span>boolean <var>$reversed</var> = <span class="php-keyword1">False</span></span> )</code>
 
 		<div class="description short">
 			
@@ -183,19 +184,22 @@ column.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$start</var></dt>
-					<dd><code>mixed</code><br> the column to start with, or '' for the beginning of the row</dd>
+					<dd><code>mixed</code><br>$start the column to start with, or '' for the beginning of the row</dd>
 					<dt><var>$finish</var></dt>
-					<dd><code>mixed</code><br> the column to finish with, or '' for the end of the row</dd>
+					<dd><code>mixed</code><br>$finish the column to finish with, or '' for the end of the row</dd>
 					<dt><var>$count</var></dt>
-					<dd><code>integer</code><br> an upper bound on the number of columns to fetch. The default limit is 100
-columns.</dd>
+					<dd><code>integer</code><br>$count an upper bound on the number of columns to fetch. The default limit is
+100 columns.</dd>
 					<dt><var>$reversed</var></dt>
-					<dd><code>boolean</code><br> whether or not to reverse the column slice, going backwards from $start to
-$finish.</dd>
+					<dd><code>boolean</code><br>$reversed whether or not to reverse the column slice, going backwards from
+$start to $finish.</dd>
 				</dl></div>
 
 
 
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-cassandra.SliceRange.html#___construct">cassandra\SliceRange::__construct()</a></code></div>
 
 		</div>
 		</div></td>
@@ -215,15 +219,17 @@ $finish.</dd>
 
 
 
+
+
+
+
 	<table class="summary" id="constants">
 	<caption>Constants summary</caption>
 	<tr data-order="DEFAULT_COLUMN_COUNT" id="DEFAULT_COLUMN_COUNT">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-phpcassa.ColumnSlice.html#14" title="Go to source code"><b>DEFAULT_COLUMN_COUNT</b></a>
+				<a href="source-class-phpcassa.ColumnSlice.html#14-15" title="Go to source code"><b>DEFAULT_COLUMN_COUNT</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">100</span></code></td>
 		<td class="description"><div>
@@ -245,11 +251,9 @@ $finish.</dd>
 	</tr>
 	<tr data-order="MAX_COUNT" id="MAX_COUNT">
 
-		<td class="attributes"><code>
-			integer
-		</code></td>
+		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-				<a href="source-class-phpcassa.ColumnSlice.html#17" title="Go to source code"><b>MAX_COUNT</b></a>
+				<a href="source-class-phpcassa.ColumnSlice.html#17-18" title="Go to source code"><b>MAX_COUNT</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-num">2147483647</span></code></td>
 		<td class="description"><div>
@@ -270,6 +274,7 @@ $finish.</dd>
 		</div></td>
 	</tr>
 	</table>
+
 
 
 
@@ -296,10 +301,13 @@ $finish.</dd>
 	</table>
 
 
+
+
+
 </div>
 
 	<div id="footer">
-		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.6.1</a>
+		phpcassa API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>
