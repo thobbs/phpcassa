@@ -6,8 +6,12 @@ php:
   - 5.4
 
 before_install:
-    - sudo apt-get install libjna-java
-    - sudo ln -s /usr/share/java/jna.jar /usr/local/cassandra/lib/
-    - sudo service cassandra start
-    - sleep 3
-    - sudo service cassandra status
+  - sudo apt-get install libjna-java
+  - sudo ln -s /usr/share/java/jna.jar /usr/local/cassandra/lib/
+  - sudo service cassandra restart
+  - sleep 3
+  - sudo service cassandra status
+  - sleep 10
+
+services:
+  - cassandra
