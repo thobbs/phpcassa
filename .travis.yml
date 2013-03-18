@@ -5,10 +5,9 @@ php:
   - 5.3
   - 5.4
 
-env:
-  - CASSANDRA_VERSION=1.1
-  - CASSANDRA_VERSION=1.0
-  - CASSANDRA_VERSION=0.8
-
-services:
-  - cassandra
+before_install:
+    - sudo apt-get install libjna-java
+    - sudo ln -s /usr/share/java/jna.jar /usr/local/cassandra/lib/
+    - sudo service cassandra start
+    - sleep 3
+    - sudo service cassandra status
