@@ -50,7 +50,7 @@ class CompositeType extends CassandraType implements Serialized
             }
 
             $type = $this->inner_types[$i];
-            $packed = $type->pack($item);
+            $packed = $type->pack($item, false);
             $len = strlen($packed);
             $res .= pack("C2", $len&0xFF00, $len&0xFF).$packed.pack("C1", $eoc);
         }
@@ -67,7 +67,7 @@ class CompositeType extends CassandraType implements Serialized
             $component_data = substr($data, 2, $len);
 
             $type = $this->inner_types[$component_idx];
-            $unpacked = $type->unpack($component_data);
+            $unpacked = $type->unpack($component_data, false);
             $components[] = $unpacked;
 
             $data = substr($data, $len + 3);
