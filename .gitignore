@@ -3,6 +3,7 @@
 *.diff
 *.pyc
 doc/_build/*
+built_docs
 thrift/ext/thrift_protocol/.deps
 thrift/ext/thrift_protocol/.libs/
 thrift/ext/thrift_protocol/Makefile
