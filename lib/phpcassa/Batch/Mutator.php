@@ -57,4 +57,5 @@ class Mutator extends AbstractMutator
      */
     public function remove($column_family, $key, $columns=null, $super_column=null, $timestamp=null) {
         return $this->remove_cf($column_family, $key, $columns, $super_column, $timestamp);
+    }
 }
