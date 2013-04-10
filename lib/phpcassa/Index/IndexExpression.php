@@ -1,12 +1,22 @@
 <?php
 namespace phpcassa\Index;
 
+use cassandra\IndexOperator;
+
 use phpcassa\ColumnFamily;
 
 /**
  * @package phpcassa\Index
  */
 class IndexExpression extends \cassandra\IndexExpression {
+
+    static protected $names_to_values = array(
+        "EQ" => IndexOperator::EQ,
+        "GTE" => IndexOperator::GTE,
+        "GT" => IndexOperator::GT,
+        "LTE" => IndexOperator::LTE,
+        "LT" => IndexOperator::LT
+    );
 
     /**
      * Constructs an IndexExpression to be used in an IndexClause, which can
@@ -25,8 +35,7 @@ class IndexExpression extends \cassandra\IndexExpression {
         if (is_int($op)) {
             $this->op = $op;
         } else {
-            $operators = $GLOBALS['\cassandra\E_IndexOperator'];
-            $this->op = $operators[$op];
+            $this->op = IndexExpression::$names_to_values[$op];
         }
     }
 }

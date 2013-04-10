@@ -1,11 +1,10 @@
 <?php
 namespace phpcassa\Connection;
 
-// These don't use namespaces yet, so we can't rely on the autoloader
-require_once $GLOBALS['THRIFT_ROOT'].'/transport/TSocket.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/protocol/TBinaryProtocol.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/transport/TFramedTransport.php';
-require_once $GLOBALS['THRIFT_ROOT'].'/transport/TBufferedTransport.php';
+use Thrift\Transport\TSocket;
+use Thrift\Transport\TFramedTransport;
+use Thrift\Transport\TBufferedTransport;
+use Thrift\Protocol\TBinaryProtocolAccelerated;
 
 use cassandra\CassandraClient;
 use cassandra\AuthenticationRequest;
@@ -36,18 +35,18 @@ class ConnectionWrapper {
             $port = (int)$server[1];
         else
             $port = self::DEFAULT_PORT;
-        $socket = new \TSocket($host, $port);
+        $socket = new TSocket($host, $port);
 
         if($send_timeout) $socket->setSendTimeout($send_timeout);
         if($recv_timeout) $socket->setRecvTimeout($recv_timeout);
 
         if($framed_transport) {
-            $transport = new \TFramedTransport($socket, true, true);
+            $transport = new TFramedTransport($socket, true, true);
         } else {
-            $transport = new \TBufferedTransport($socket, 1024, 1024);
+            $transport = new TBufferedTransport($socket, 1024, 1024);
         }
 
-        $this->client = new CassandraClient(new \TBinaryProtocolAccelerated($transport));
+        $this->client = new CassandraClient(new TBinaryProtocolAccelerated($transport));
         $transport->open();
 
         $this->set_keyspace($keyspace);

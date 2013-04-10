@@ -1,5 +1,7 @@
 <?php
 
+use Thrift\Protocol\TBinaryProtocolAccelerated;
+
 use phpcassa\Connection\ConnectionPool;
 use phpcassa\Connection\MaxRetriesException;
 use phpcassa\Connection\NoServerAvailable;

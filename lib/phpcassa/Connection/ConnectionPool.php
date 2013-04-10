@@ -1,6 +1,9 @@
 <?php
 namespace phpcassa\Connection;
 
+use Thrift\Exception\TException;
+use Thrift\Exception\TTransportException;
+
 use phpcassa\Connection\ConnectionWrapper;
 use phpcassa\Connection\MaxRetriesException;
 use phpcassa\Connection\NoServerAvailable;
@@ -126,7 +129,7 @@ class ConnectionPool {
                 array_push($this->queue, $new_conn);
                 $this->stats['created'] += 1;
                 return;
-            } catch (\TException $e) {
+            } catch (TException $e) {
                 $h = $this->servers[$this->list_position];
                 $err = $e;
                 $msg = $e->getMessage();
@@ -270,7 +273,7 @@ class ConnectionPool {
             } catch (UnavailableException $ue) {
                 $last_err = $ue;
                 $this->handle_conn_failure($conn, $f, $ue, $retry_count);
-            } catch (\TTransportException $tte) {
+            } catch (TTransportException $tte) {
                 $last_err = $tte;
                 $this->handle_conn_failure($conn, $f, $tte, $retry_count);
             } catch (\Exception $e) {
