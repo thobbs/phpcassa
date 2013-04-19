@@ -12,6 +12,7 @@ use Thrift\Type\TMessageType;
 use Thrift\Exception\TException;
 use Thrift\Exception\TProtocolException;
 use Thrift\Protocol\TProtocol;
+use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
@@ -69,6 +70,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function __construct($input, $output=null) {
     $this->input_ = $input;
     $this->output_ = $output ? $output : $input;
+    $this->bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
   }
 
   public function login(\cassandra\AuthenticationRequest $auth_request)
@@ -81,8 +83,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_login_args();
     $args->auth_request = $auth_request;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'login', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -97,8 +98,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_login()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_login_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_login_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -135,8 +135,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_set_keyspace_args();
     $args->keyspace = $keyspace;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'set_keyspace', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -151,8 +150,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_set_keyspace()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_set_keyspace_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_set_keyspace_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -188,8 +186,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->key = $key;
     $args->column_path = $column_path;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'get', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -204,8 +201,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_get()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -254,8 +250,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_parent = $column_parent;
     $args->predicate = $predicate;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'get_slice', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -270,8 +265,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_get_slice()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_slice_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_slice_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -317,8 +311,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_parent = $column_parent;
     $args->predicate = $predicate;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'get_count', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -333,8 +326,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_get_count()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_count_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_count_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -380,8 +372,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_parent = $column_parent;
     $args->predicate = $predicate;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'multiget_slice', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -396,8 +387,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_multiget_slice()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_multiget_slice_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_multiget_slice_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -443,8 +433,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_parent = $column_parent;
     $args->predicate = $predicate;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'multiget_count', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -459,8 +448,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_multiget_count()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_multiget_count_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_multiget_count_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -506,8 +494,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->predicate = $predicate;
     $args->range = $range;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'get_range_slices', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -522,8 +509,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_get_range_slices()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_range_slices_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_range_slices_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -569,8 +555,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->range = $range;
     $args->start_column = $start_column;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'get_paged_slice', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -585,8 +570,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_get_paged_slice()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_paged_slice_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_paged_slice_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -632,8 +616,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->index_clause = $index_clause;
     $args->column_predicate = $column_predicate;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'get_indexed_slices', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -648,8 +631,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_get_indexed_slices()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_indexed_slices_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_get_indexed_slices_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -695,8 +677,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_parent = $column_parent;
     $args->column = $column;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'insert', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -711,8 +692,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_insert()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_insert_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_insert_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -755,8 +735,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_parent = $column_parent;
     $args->column = $column;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'add', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -771,8 +750,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_add()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_add_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_add_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -815,8 +793,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->column_path = $column_path;
     $args->timestamp = $timestamp;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'remove', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -831,8 +808,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_remove()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_remove_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_remove_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -874,8 +850,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->key = $key;
     $args->path = $path;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'remove_counter', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -890,8 +865,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_remove_counter()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_remove_counter_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_remove_counter_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -932,8 +906,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args = new \cassandra\Cassandra_batch_mutate_args();
     $args->mutation_map = $mutation_map;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'batch_mutate', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -948,8 +921,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_batch_mutate()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_batch_mutate_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_batch_mutate_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -990,8 +962,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args = new \cassandra\Cassandra_atomic_batch_mutate_args();
     $args->mutation_map = $mutation_map;
     $args->consistency_level = $consistency_level;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'atomic_batch_mutate', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1006,8 +977,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_atomic_batch_mutate()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_atomic_batch_mutate_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_atomic_batch_mutate_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1047,8 +1017,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_truncate_args();
     $args->cfname = $cfname;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'truncate', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1063,8 +1032,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_truncate()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_truncate_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_truncate_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1103,8 +1071,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_schema_versions()
   {
     $args = new \cassandra\Cassandra_describe_schema_versions_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_schema_versions', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1119,8 +1086,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_schema_versions()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_schema_versions_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_schema_versions_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1156,8 +1122,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_keyspaces()
   {
     $args = new \cassandra\Cassandra_describe_keyspaces_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_keyspaces', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1172,8 +1137,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_keyspaces()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_keyspaces_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_keyspaces_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1209,8 +1173,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_cluster_name()
   {
     $args = new \cassandra\Cassandra_describe_cluster_name_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_cluster_name', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1225,8 +1188,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_cluster_name()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_cluster_name_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_cluster_name_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1259,8 +1221,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_version()
   {
     $args = new \cassandra\Cassandra_describe_version_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_version', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1275,8 +1236,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_version()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_version_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_version_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1310,8 +1270,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_describe_ring_args();
     $args->keyspace = $keyspace;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_ring', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1326,8 +1285,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_ring()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_ring_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_ring_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1363,8 +1321,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_token_map()
   {
     $args = new \cassandra\Cassandra_describe_token_map_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_token_map', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1379,8 +1336,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_token_map()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_token_map_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_token_map_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1416,8 +1372,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_partitioner()
   {
     $args = new \cassandra\Cassandra_describe_partitioner_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_partitioner', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1432,8 +1387,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_partitioner()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_partitioner_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_partitioner_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1466,8 +1420,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_describe_snitch()
   {
     $args = new \cassandra\Cassandra_describe_snitch_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_snitch', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1482,8 +1435,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_snitch()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_snitch_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_snitch_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1517,8 +1469,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_describe_keyspace_args();
     $args->keyspace = $keyspace;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_keyspace', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1533,8 +1484,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_keyspace()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_keyspace_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_keyspace_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1577,8 +1527,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->start_token = $start_token;
     $args->end_token = $end_token;
     $args->keys_per_split = $keys_per_split;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_splits', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1593,8 +1542,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_splits()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_splits_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_splits_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1630,8 +1578,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   public function send_trace_next_query()
   {
     $args = new \cassandra\Cassandra_trace_next_query_args();
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'trace_next_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1646,8 +1593,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_trace_next_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_trace_next_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_trace_next_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1684,8 +1630,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->start_token = $start_token;
     $args->end_token = $end_token;
     $args->keys_per_split = $keys_per_split;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'describe_splits_ex', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1700,8 +1645,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_describe_splits_ex()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_splits_ex_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_describe_splits_ex_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1738,8 +1682,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_system_add_column_family_args();
     $args->cf_def = $cf_def;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'system_add_column_family', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1754,8 +1697,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_system_add_column_family()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_add_column_family_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_add_column_family_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1795,8 +1737,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_system_drop_column_family_args();
     $args->column_family = $column_family;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'system_drop_column_family', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1811,8 +1752,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_system_drop_column_family()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_drop_column_family_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_drop_column_family_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1852,8 +1792,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_system_add_keyspace_args();
     $args->ks_def = $ks_def;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'system_add_keyspace', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1868,8 +1807,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_system_add_keyspace()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_add_keyspace_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_add_keyspace_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1909,8 +1847,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_system_drop_keyspace_args();
     $args->keyspace = $keyspace;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'system_drop_keyspace', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1925,8 +1862,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_system_drop_keyspace()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_drop_keyspace_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_drop_keyspace_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1966,8 +1902,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_system_update_keyspace_args();
     $args->ks_def = $ks_def;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'system_update_keyspace', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -1982,8 +1917,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_system_update_keyspace()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_update_keyspace_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_update_keyspace_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2023,8 +1957,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_system_update_column_family_args();
     $args->cf_def = $cf_def;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'system_update_column_family', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2039,8 +1972,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_system_update_column_family()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_update_column_family_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_system_update_column_family_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2081,8 +2013,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args = new \cassandra\Cassandra_execute_cql_query_args();
     $args->query = $query;
     $args->compression = $compression;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'execute_cql_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2097,8 +2028,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_execute_cql_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_cql_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_cql_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2146,8 +2076,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->query = $query;
     $args->compression = $compression;
     $args->consistency = $consistency;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'execute_cql3_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2162,8 +2091,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_execute_cql3_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_cql3_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_cql3_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2210,8 +2138,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args = new \cassandra\Cassandra_prepare_cql_query_args();
     $args->query = $query;
     $args->compression = $compression;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'prepare_cql_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2226,8 +2153,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_prepare_cql_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_prepare_cql_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_prepare_cql_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2265,8 +2191,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args = new \cassandra\Cassandra_prepare_cql3_query_args();
     $args->query = $query;
     $args->compression = $compression;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'prepare_cql3_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2281,8 +2206,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_prepare_cql3_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_prepare_cql3_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_prepare_cql3_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2320,8 +2244,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args = new \cassandra\Cassandra_execute_prepared_cql_query_args();
     $args->itemId = $itemId;
     $args->values = $values;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'execute_prepared_cql_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2336,8 +2259,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_execute_prepared_cql_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_prepared_cql_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_prepared_cql_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2385,8 +2307,7 @@ class CassandraClient implements \cassandra\CassandraIf {
     $args->itemId = $itemId;
     $args->values = $values;
     $args->consistency = $consistency;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'execute_prepared_cql3_query', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2401,8 +2322,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_execute_prepared_cql3_query()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_prepared_cql3_query_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_execute_prepared_cql3_query_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2448,8 +2368,7 @@ class CassandraClient implements \cassandra\CassandraIf {
   {
     $args = new \cassandra\Cassandra_set_cql_version_args();
     $args->version = $version;
-    $bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
+    if ($this->bin_accel)
     {
       thrift_protocol_write_binary($this->output_, 'set_cql_version', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
@@ -2464,8 +2383,7 @@ class CassandraClient implements \cassandra\CassandraIf {
 
   public function recv_set_cql_version()
   {
-    $bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_set_cql_version_result', $this->input_->isStrictRead());
+    if ($this->bin_accel) $result = thrift_protocol_read_binary($this->input_, '\cassandra\Cassandra_set_cql_version_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
