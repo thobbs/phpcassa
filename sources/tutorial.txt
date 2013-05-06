@@ -366,7 +366,7 @@ the following:
 
   $sys = new SystemManager();
   $sys->create_column_family('Keyspace', 'Users');
-  $sys->create_index('Keyspace', 'Users', 'birthdate', LongType());
+  $sys->create_index('Keyspace', 'Users', 'birthdate', LongType);
 
   $column_family = new ColumnFamily($conn, 'Users');
   $column_family->insert('winston', array('birthdate' => 1984));
@@ -379,7 +379,7 @@ the following:
 
   foreach($rows as $key => $columns) {
       // Do stuff with $key and $columns
-      Print_r($columns)
+      Print_r($columns);
   }
 
 Although at least one `IndexExpression` in every clause must use an equality

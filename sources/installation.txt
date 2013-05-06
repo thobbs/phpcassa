@@ -14,7 +14,7 @@ You need to configure and make to be able to use the C extension:
 
 .. code-block:: bash
 
-    cd lib/thrift/ext/thrift_protocol
+    cd ext/thrift_protocol
     phpize
     ./configure
     make

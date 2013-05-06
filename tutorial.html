@@ -403,7 +403,7 @@ the following:</p>
 
 <span class="nv">$sys</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SystemManager</span><span class="p">();</span>
 <span class="nv">$sys</span><span class="o">-&gt;</span><span class="na">create_column_family</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">);</span>
-<span class="nv">$sys</span><span class="o">-&gt;</span><span class="na">create_index</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">,</span> <span class="s1">&#39;birthdate&#39;</span><span class="p">,</span> <span class="nx">LongType</span><span class="p">());</span>
+<span class="nv">$sys</span><span class="o">-&gt;</span><span class="na">create_index</span><span class="p">(</span><span class="s1">&#39;Keyspace&#39;</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">,</span> <span class="s1">&#39;birthdate&#39;</span><span class="p">,</span> <span class="nx">LongType</span><span class="p">);</span>
 
 <span class="nv">$column_family</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ColumnFamily</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="s1">&#39;Users&#39;</span><span class="p">);</span>
 <span class="nv">$column_family</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">&#39;winston&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;birthdate&#39;</span> <span class="o">=&gt;</span> <span class="mi">1984</span><span class="p">));</span>
@@ -416,7 +416,7 @@ the following:</p>
 
 <span class="k">foreach</span><span class="p">(</span><span class="nv">$rows</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$columns</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// Do stuff with $key and $columns</span>
-    <span class="nx">Print_r</span><span class="p">(</span><span class="nv">$columns</span><span class="p">)</span>
+    <span class="nx">Print_r</span><span class="p">(</span><span class="nv">$columns</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
