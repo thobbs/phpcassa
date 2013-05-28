@@ -37,12 +37,17 @@ for this tutorial:
     Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
     [default@unknown] connect localhost/9160;
     Connected to: "Test Cluster" on localhost/9160
-    [default@unknown] create keyspace Keyspace1;
+
+    [default@unknown] create keyspace Keyspace1
+        with placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy'
+        and strategy_options = {replication_factor:1};
     4f9e42c4-645e-11e0-ad9e-e700f669bcfc
     Waiting for schema agreement...
     ... schemas agree across the cluster
+
     [default@unknown] use Keyspace1;
     Authenticated to keyspace: Keyspace1
+
     [default@Keyspace1] create column family ColumnFamily1;
     632cf985-645e-11e0-ad9e-e700f669bcfc
     Waiting for schema agreement...
