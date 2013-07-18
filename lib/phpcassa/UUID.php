@@ -115,6 +115,16 @@ class UUID {
     public static function import($uuid) {
         return new self(self::makeBin($uuid, 16));
     }
+    
+    /**
+     * Check if value can be accepted by @link(import)
+     * TODO: Not only strings but also binary
+     * @param $maybeUuidAsScalar
+     * @return bool
+     */
+    static public function canImport( $maybeUuidAsScalar ) {
+        return (bool)preg_match('/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/',$maybeUuidAsScalar);
+    }
 
  /**
   * Create a new UUID based on provided data.

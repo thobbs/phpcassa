@@ -251,4 +251,20 @@ class AutopackKeysTest extends AutopackBase {
         $res = iterator_to_array($this->uuid_cf->get_indexed_slices($clause));
         $this->assertEquals(array(serialize($uuid1) => array("subcol" => 0)), $res);
     }
+    
+    public function test_uuid_as_string() {
+        $dataKey = 'a0e13b40-ed53-11e2-91e2-0800200c9a66';
+        $dataColumns = array(
+            'b0885790-ed53-11e2-91e2-0800200c9a66' => 'bdb54c20-ed53-11e2-91e2-0800200c9a66',
+        );
+
+        $this->uuid_cf->truncate();
+        $this->uuid_cf->insert(
+            $dataKey,
+            $dataColumns
+        );
+
+        $back = $this->uuid_cf->get($dataKey);
+        $this->assertEquals($back,$dataColumns);
+    }
 }
