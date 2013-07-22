@@ -12,8 +12,12 @@ use phpcassa\UUID;
 class UUIDType extends CassandraType implements Serialized
 {
     public function pack($value, $is_name=true, $slice_end=null, $is_data=false) {
-        if ($is_name && $is_data)
+        if ($is_name && $is_data) {
             $value = unserialize($value);
+        }
+        if ( !($value instanceof UUID) && is_string($value) ) {
+            $value = UUID::import($value);
+        }
         return $value->bytes;
     }
 
