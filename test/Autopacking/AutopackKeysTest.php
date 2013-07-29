@@ -252,7 +252,7 @@ class AutopackKeysTest extends AutopackBase {
         $res = iterator_to_array($this->uuid_cf->get_indexed_slices($clause));
         $this->assertEquals(array(serialize($uuid1) => array("subcol" => 0)), $res);
     }
-    
+
     public function test_uuid_as_string() {
         $dataKey = 'a0e13b40-ed53-11e2-91e2-0800200c9a66';
         $dataColumns = array(
@@ -270,7 +270,7 @@ class AutopackKeysTest extends AutopackBase {
     }
 
     /**
-     * @expectedException UUIDException
+     * @expectedException phpcassa\UUID\UUIDException
      */
     public function test_uuid_as_string_bad_value() {
         $this->uuid_cf->truncate();
