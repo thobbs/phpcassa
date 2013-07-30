@@ -1,11 +1,19 @@
 language: php
 
 php:
-  - 5.3.3
   - 5.3
   - 5.4
+  - 5.5
 
 before_install:
   - test -f "/usr/local/cassandra/etc/cassandra-env.sh" && sudo rm -f /usr/local/cassandra/conf/cassandra-env.sh && sudo ln -s /usr/local/cassandra/etc/cassandra-env.sh /usr/local/cassandra/conf/cassandra-env.sh
   - sudo service cassandra start
-  - sleep 3
+  - sleep 5
+
+env:
+  - THRIFT_EXT=no
+  - THRIFT_EXT=yes
+
+before_script:
+  - if [ "$THRIFT_EXT" == "yes" ]; then sh -c "cd ext/thrift_protocol && phpize && ./configure --enable-thrift_protocol && make && sudo make install"; fi
+  - if [ "$THRIFT_EXT" == "yes" ]; then echo "extension=thrift_protocol.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`; fi
