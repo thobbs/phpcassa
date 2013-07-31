@@ -5,7 +5,7 @@ phpcassa
 
 phpcassa is a PHP client library for [Apache Cassandra](http://cassandra.apache.org).
 
-* Compatible with Cassandra 0.7, 0.8, 1.0, and 1.1
+* Compatible with Cassandra 0.7 through 1.2
 * Optional C extension for improved performance
 
 phpcassa is compatible with PHP 5.3+

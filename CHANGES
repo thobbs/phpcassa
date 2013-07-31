@@ -1,6 +1,34 @@
 Changelog
 =========
 
+Changes in 1.1.0
+----------------
+The largest change in this release is an upgrade
+to the Thrift 0.9.0 PHP library, which brings improvements
+to the C extension and fixes autoloading issues around
+namespacing of Thrift classes.
+
+Features
+^^^^^^^^
+- Add support for per-column TTLs on insert
+- Upgrade to Thrift 0.9.0
+- Accept string representation of UUIDs on inserts
+
+Bugfixes
+^^^^^^^^
+- Fix subcolumn name packing in super column methods
+- Prevent get_range() infinite loop with ARRAY_FORMAT
+- Fix syntax error with php 5.3
+- Resolve php strict inheritance issues with CfMutator
+- Fix full row and single column counter deletions
+- Properly handle non-scalar types inside composites
+
+Miscellaneous
+^^^^^^^^^^^^^
+- Suggest C extension in composer config
+- Add VERSION file
+- Move C extension to ext/ directory
+
 Changes in 1.0.a.6
 ------------------
 This release adds a couple of minor features and primarily

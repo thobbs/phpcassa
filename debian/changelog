@@ -1,3 +1,9 @@
+phpcassa (1.1.0) unstable; urgency=low
+
+  * Upgrade Thrift to 0.9.0 
+
+ -- Tyler Hobbs <tyler@datastax.com>  Wed, 31 Jul 2013 17:39:34 -0500
+
 phpcassa (1.0.a.3) unstable; urgency=low
 
   * Bugfixes
