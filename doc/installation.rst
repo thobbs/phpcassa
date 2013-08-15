@@ -12,6 +12,9 @@ The C extension is crucial for phpcassa's performance.
 
 You need to configure and make to be able to use the C extension:
 
+*Note*: if `checkinstall` is available, run `sudo checkinstall` in place of
+`sudo make install`.
+
 .. code-block:: bash
 
     cd ext/thrift_protocol
