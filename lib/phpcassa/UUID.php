@@ -60,6 +60,10 @@ class UUID {
     const nsURL  = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
     const nsOID  = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
     const nsX500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
+    const NODE_MAX = '7F7F7F7F7F7F';
+    const NODE_MIN = '808080808080';
+    const SEQ_MAX = '7F7F';
+    const SEQ_MIN = '8080';
     protected static $randomFunc = 'randomTwister';
     protected static $randomSource = NULL;
 
@@ -81,8 +85,8 @@ class UUID {
      *        since the UNIX epoch.
      * @return string a byte[] representation of a UUID
      */
-    public static function uuid1($node=null, $time=null) {
-        return UUID::mint(1, $node, null, $time);
+    public static function uuid1($node=null, $time=null, $sequence = null) {
+        return UUID::mint(1, $node, null, $time, $sequence);
     }
 
     /**
@@ -116,11 +120,19 @@ class UUID {
         return new self(self::makeBin($uuid, 16));
     }
 
+    public static function maxTimeuuid($unixtimeMicroseconds) {
+        return self::uuid1(self::NODE_MAX,$unixtimeMicroseconds,self::SEQ_MAX);
+    }
+
+    public static function minTimeuuid($unixtimeMicroseconds) {
+        return self::uuid1(self::NODE_MIN,$unixtimeMicroseconds,self::SEQ_MIN);
+    }
+
  /**
   * Create a new UUID based on provided data.
   * @param int $ver the UUID version to generate.
   */
- public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL) {
+ public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL, $sequence = NULL ) {
   switch((int) $ver) {
    case 1:
     return new self(self::mintTime($node, $time));
@@ -221,7 +233,7 @@ class UUID {
  }
 
 
- protected static function mintTime($node = NULL, $time_arg = NULL) {
+ protected static function mintTime($node = NULL, $time_arg = NULL, $sequence = NULL ) {
   /* Generates a Version 1 UUID.  
      These are derived from the time at which they were generated. */
   // Get time since Gregorian calendar reform in 100ns intervals
@@ -241,8 +253,12 @@ class UUID {
   $time = pack("H*", str_pad($time, 16, "0", STR_PAD_LEFT));
   // Reorder bytes to their proper locations in the UUID
   $uuid  = $time[4].$time[5].$time[6].$time[7].$time[2].$time[3].$time[0].$time[1];
-  // Generate a random clock sequence
-  $uuid .= self::randomBytes(2);
+  if ( !$sequence ) {
+      $sequence = self::randomBytes(2);
+  } else {
+      $sequence = self::makeBin($sequence, 2);
+  }
+  $uuid .= $sequence;
   // set variant
   $uuid[8] = chr(ord($uuid[8]) & self::clearVar | self::varRFC);
   // set version
