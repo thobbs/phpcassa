@@ -135,7 +135,7 @@ class UUID {
  public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL, $sequence = NULL ) {
   switch((int) $ver) {
    case 1:
-    return new self(self::mintTime($node, $time));
+    return new self(self::mintTime($node, $time, $sequence));
    case 2:
     // Version 2 is not supported 
     throw new UUIDException("Version 2 is unsupported.");
