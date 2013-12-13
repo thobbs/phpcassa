@@ -19,5 +19,13 @@ class UUIDTest extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('\phpcassa\UUID',$obUuid);
         $this->assertEquals($time,$obUuid->time);
     }
+    
+    
+    public function testNodeAndSequenceAreNotRandom() {
+        $time = time();
+        $obUuid1 = UUID::uuid1(UUID::NODE_MAX,$time*self::MICROSECONDS,UUID::SEQ_MAX);
+        $obUuid2 = UUID::uuid1(UUID::NODE_MAX,$time*self::MICROSECONDS,UUID::SEQ_MAX);
+        $this->assertEquals($obUuid1,$obUuid2);
+    }
 
 }
