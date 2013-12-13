@@ -260,7 +260,7 @@ class UUID {
   $time = pack("H*", str_pad($time, 16, "0", STR_PAD_LEFT));
   // Reorder bytes to their proper locations in the UUID
   $uuid  = $time[4].$time[5].$time[6].$time[7].$time[2].$time[3].$time[0].$time[1];
-  if ( !$sequence ) {
+  if ( null === $sequence ) {
       $sequence = self::randomBytes(2);
   } else {
       $sequence = self::makeBin($sequence, 2);
