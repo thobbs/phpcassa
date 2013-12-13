@@ -128,10 +128,17 @@ class UUID {
         return self::uuid1(self::NODE_MIN,$unixtimeMicroseconds,self::SEQ_MIN);
     }
 
- /**
-  * Create a new UUID based on provided data.
-  * @param int $ver the UUID version to generate.
-  */
+/**
+ * Create a new UUID based on provided data.
+ *
+ * @param int $ver the UUID version to generate.
+ * @param string|null $node MAC address, bin or hex
+ * @param string|null $ns UUID namespace
+ * @param int|null $time Unix time, NB: microseconds = time() * 1000000
+ * @param string|null $sequence Do not use unless need fully deterministic UUID
+ * @return UUID
+ * @throws UUID\UUIDException
+ */
  public static function mint($ver = 1, $node = NULL, $ns = NULL, $time = NULL, $sequence = NULL ) {
   switch((int) $ver) {
    case 1:
