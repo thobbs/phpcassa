@@ -22,6 +22,26 @@ class MapType extends CassandraType
         return $int;
     }
 
+    private function writeUInt16BE($value)
+    {
+        return strrev(pack('s*', $value));
+    }
+
+    public function pack(Array $data) {
+        $return = $this->writeUInt16BE(count($data));
+
+        foreach ($data as $key=>$value){
+            $packed = $this->keyType->pack($key);
+            $return.= $this->writeUInt16BE(strlen($packed));
+            $return.= $packed;
+            $packed = $this->valueType->pack($value);
+            $return.= $this->writeUInt16BE(strlen($packed));
+            $return.= $packed;
+        }
+
+        return $return;
+    }
+
     public function unpack($data) {
         $offset = 0;
         $total = self::readUInt16BE($data,$offset);

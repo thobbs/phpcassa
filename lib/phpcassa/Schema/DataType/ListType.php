@@ -8,10 +8,10 @@ namespace phpcassa\Schema\DataType;
  */
 class ListType extends CassandraType
 {
-    protected $innerType;
+    protected $valueType;
 
-    public function __construct(CassandraType $innerType){
-        $this->innerType = $innerType;
+    public function __construct(CassandraType $valueType){
+        $this->valueType = $valueType;
     }
 
     private function readUInt16BE($value,$offset)
@@ -20,16 +20,33 @@ class ListType extends CassandraType
         return $int;
     }
 
-    public function unpack($data, $handle_serialize=true) {
+    private function writeUInt16BE($value)
+    {
+        return strrev(pack('s*', $value));
+    }
+
+    public function pack(Array $data) {
+        $return = $this->writeUInt16BE(count($data));
+
+        foreach ($data as $value){
+            $packed = $this->valueType->pack($value);
+            $return.= $this->writeUInt16BE(strlen($packed));
+            $return.= $packed;
+        }
+
+        return $return;
+    }
+
+    public function unpack($data) {
         $offset = 0;
-        $total = self::readUInt16BE($data,$offset);
+        $total = $this->readUInt16BE($data,$offset);
         $offset += 2;
 
         $items = [];
         for ($i = 0;$i < $total;$i++){
-            $length = self::readUInt16BE($data,$offset);
+            $length = $this->readUInt16BE($data,$offset);
             $offset += 2;
-            $items[] = $this->innerType->unpack(substr($data,$offset,$length));
+            $items[] = $this->valueType->unpack(substr($data,$offset,$length));
             $offset += $length;
         }
 
