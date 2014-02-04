@@ -22,6 +22,8 @@ class DataType
     const LEXICAL_UUID_TYPE = "LexicalUUIDType";
     const UUID_TYPE = "UUIDType";
     const DATE_TYPE = "DateType";
+    const SET_TYPE = "SetType";
+    const LIST_TYPE = "ListType";
 
     public static $class_map;
 
@@ -39,7 +41,9 @@ class DataType
             'UUIDType'        => 'phpcassa\Schema\DataType\UUIDType',
             'BooleanType'     => 'phpcassa\Schema\DataType\BooleanType',
             'DateType'        => 'phpcassa\Schema\DataType\DateType',
-            'Int32Type'        => 'phpcassa\Schema\DataType\Int32Type',
+            'Int32Type'       => 'phpcassa\Schema\DataType\Int32Type',
+            'SetType'         => 'phpcassa\Schema\DataType\SetType',
+            'ListType'        => 'phpcassa\Schema\DataType\ListType',
         );
     }
 
@@ -81,6 +85,15 @@ class DataType
             return new CompositeType(self::get_inner_types($typestr));
         } else if (strpos($typestr, 'ReversedType') !== false) {
             return self::get_type_for(self::get_inner_type($typestr));
+        } else if (strpos($typestr,"(") !== false){
+            preg_match('/(?<type>.+[^\(])(\(((?<subtype>.+[^\)]))\))/is',$typestr,$columnType);
+
+            $type_name = self::extract_type_name($columnType['type']);
+            $type_class = self::$class_map[$type_name];
+            $subtype_name = self::extract_type_name($columnType['subtype']);
+            $subtype_class = self::$class_map[$subtype_name];
+
+            return new $type_class(new $subtype_class);
         } else {
             $type_name = self::extract_type_name($typestr);
             $type_class = self::$class_map[$type_name];
