@@ -24,6 +24,7 @@ class DataType
     const DATE_TYPE = "DateType";
     const SET_TYPE = "SetType";
     const LIST_TYPE = "ListType";
+    const MAP_TYPE = "MapType";
 
     public static $class_map;
 
@@ -44,6 +45,7 @@ class DataType
             'Int32Type'       => 'phpcassa\Schema\DataType\Int32Type',
             'SetType'         => 'phpcassa\Schema\DataType\SetType',
             'ListType'        => 'phpcassa\Schema\DataType\ListType',
+            'MapType'        => 'phpcassa\Schema\DataType\MapType'
         );
     }
 
@@ -85,15 +87,22 @@ class DataType
             return new CompositeType(self::get_inner_types($typestr));
         } else if (strpos($typestr, 'ReversedType') !== false) {
             return self::get_type_for(self::get_inner_type($typestr));
-        } else if (strpos($typestr,"(") !== false){
-            preg_match('/(?<type>.+[^\(])(\(((?<subtype>.+[^\)]))\))/is',$typestr,$columnType);
-
+        } else if (preg_match('/(?<type>.+[^\(])(\(((?<keytype>.+[^\)]),(?<valuetype>.+[^\)]))\))/is',$typestr,$columnType)){
             $type_name = self::extract_type_name($columnType['type']);
             $type_class = self::$class_map[$type_name];
-            $subtype_name = self::extract_type_name($columnType['subtype']);
-            $subtype_class = self::$class_map[$subtype_name];
+            $keytype_name = self::extract_type_name($columnType['keytype']);
+            $keytype_class = self::$class_map[$keytype_name];
+            $valuetype_name = self::extract_type_name($columnType['valuetype']);
+            $valuetype_class = self::$class_map[$valuetype_name];
 
-            return new $type_class(new $subtype_class);
+            return new $type_class(new $keytype_class,new $valuetype_class);
+        } else if (preg_match('/(?<type>.+[^\(])(\(((?<valuetype>.+[^\)]))\))/is',$typestr,$columnType)){
+            $type_name = self::extract_type_name($columnType['type']);
+            $type_class = self::$class_map[$type_name];
+            $valuetype_name = self::extract_type_name($columnType['valuetype']);
+            $valuetype_class = self::$class_map[$valuetype_name];
+
+            return new $type_class(new $valuetype_class);
         } else {
             $type_name = self::extract_type_name($typestr);
             $type_class = self::$class_map[$type_name];
