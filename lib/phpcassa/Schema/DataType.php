@@ -2,6 +2,7 @@
 namespace phpcassa\Schema;
 
 use phpcassa\Schema\DataType\CompositeType;
+use phpcassa\Schema\DataType\DualCompositeType;
 
 /**
  * Maps type strings to packer and unpacker functions.
@@ -78,7 +79,8 @@ class DataType
 
     public static function get_type_for($typestr) {
         if (strpos($typestr, 'CompositeType') !== false) {
-            return new CompositeType(self::get_inner_types($typestr));
+            $inner_types = self::get_inner_types($typestr);
+            return count($inner_types) == 2 ? new DualCompositeType($inner_types) : new CompositeType($inner_types);
         } else if (strpos($typestr, 'ReversedType') !== false) {
             return self::get_type_for(self::get_inner_type($typestr));
         } else {
