@@ -14,10 +14,10 @@ class DualCompositeType extends CompositeType
 {
 
     public function unpack($data, $is_name=true) {
-        $mark = unpack("Cm", $data[1])['m'];
+        $mark = unpack("Cm", $data[1]);
         $components = array(
-            $this->inner_types[0]->unpack(substr($data, 2, $mark)),
-            $this->inner_types[1]->unpack(substr($data, $mark + 5, -1)),
+            $this->inner_types[0]->unpack(substr($data, 2, $mark['m'])),
+            $this->inner_types[1]->unpack(substr($data, $mark['m'] + 5, -1)),
         );
 
         if ($is_name) {
