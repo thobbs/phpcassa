@@ -116,7 +116,7 @@ class ColumnFamilyIterator implements \Iterator {
             if (!$beyond_last_row)
             {
                 $this->rows_seen++;
-                if ($this->rows_seen > $this->row_count) {
+                if ($this->row_count !== null && ($this->rows_seen > $this->row_count)) {
                     $this->is_valid = false;
                     return;
                 }
@@ -186,7 +186,7 @@ class ColumnFamilyIterator implements \Iterator {
                             // pointing at a valid row, so increment our seen
                             // row count.
                             $this->rows_seen++;
-                            if ($this->rows_seen > $this->row_count) {
+                            if ($this->row_count !== null && ($this->rows_seen > $this->row_count)) {
                                 $this->is_valid = false;
                                 return;
                             }
