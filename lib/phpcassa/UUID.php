@@ -179,8 +179,6 @@ class UUID {
     return $this->bytes;
    case "hex":
     return bin2hex($this->bytes);
-   case "string":
-    return $this->__toString();
    case "urn":
     return "urn:uuid:".$this->__toString();
    case "version":
