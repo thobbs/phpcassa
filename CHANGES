@@ -1,6 +1,20 @@
 Changelog
 =========
 
+Changes in 1.1.1
+----------------
+
+Features
+^^^^^^^^
+- Allow null row_count to represent no limit
+- Add UUID::minTimeuuid() and UUID::maxTimeuuid()
+- Make Clock::get_time() more efficient
+
+Miscellaneous
+-------------
+- UUID->string doesn't need to be dynamic
+- Tweak phpunit for hhvm, update TravisCI config
+
 Changes in 1.1.0
 ----------------
 The largest change in this release is an upgrade
