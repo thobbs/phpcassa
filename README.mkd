@@ -14,7 +14,7 @@ phpcassa is open source under the [MIT license](http://www.opensource.org/licens
 
 Deprecated
 ----------
-At this point, *phpcassa has been deprecated and will no longer be supported*.
+At this point, **phpcassa has been deprecated and will no longer be supported**.
 
 I suggest using the DataStax PHP driver located here: https://github.com/datastax/php-driver.  It supports CQL, has many excellent features, and is well maintained.
 
